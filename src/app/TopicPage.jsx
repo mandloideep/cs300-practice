@@ -9,6 +9,8 @@ import StepExplanation from "../ui/StepExplanation.jsx";
 import StepNav from "../ui/StepNav.jsx";
 import LiveRegion from "../ui/LiveRegion.jsx";
 import { LocalDownload, MarkDone } from "../ui/StepActions.jsx";
+import TopicProgress from "../progress/TopicProgress.jsx";
+import { useProgress } from "../progress/store.js";
 
 export default function TopicPage() {
   const { id, n = "1" } = useParams();
@@ -20,6 +22,7 @@ export default function TopicPage() {
 
 function TopicContent({ id, n, index }) {
   const result = use(loadTopic(id));
+  const progress = useProgress();
 
   if (result.status === "missing") {
     return (
@@ -67,6 +70,7 @@ function TopicContent({ id, n, index }) {
             ))}
           </p>
         )}
+        <TopicProgress topic={topic} progress={progress} showEmpty />
       </header>
       {step ? (
         <StepView

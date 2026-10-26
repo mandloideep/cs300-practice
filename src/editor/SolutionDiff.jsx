@@ -16,8 +16,8 @@ export default function SolutionDiff({ files, solution, initialFile }) {
 
   useEffect(() => {
     const view = new MergeView({
-      a: { doc: studentDoc, extensions: readOnlyExtensions(activeFile) },
-      b: { doc: solutionDoc, extensions: readOnlyExtensions(activeFile) },
+      a: { doc: studentDoc, extensions: readOnlyExtensions(activeFile, `Your file ${activeFile}`) },
+      b: { doc: solutionDoc, extensions: readOnlyExtensions(activeFile, `Solution ${activeFile}`) },
       parent: hostRef.current,
       collapseUnchanged: { margin: 3, minSize: 6 },
       gutter: true,

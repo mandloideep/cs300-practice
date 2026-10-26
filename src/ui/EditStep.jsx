@@ -14,6 +14,7 @@ import Dialog, { ConfirmDialog } from "./Dialog.jsx";
 import ResultPane from "./ResultPane.jsx";
 import ConsolePane from "./ConsolePane.jsx";
 import CheckPanel, { checkSummaryText, summarizeChecks } from "./CheckPanel.jsx";
+import { WorkspaceDownload } from "./StepActions.jsx";
 
 const SolutionDiff = lazy(() => import("../editor/SolutionDiff.jsx"));
 
@@ -167,35 +168,55 @@ export default function EditStep({ topic, step, presets, announce, explanation }
         <section className="pane pane--editor" aria-labelledby="editor-heading">
           <div className="pane__header">
             <h2 id="editor-heading">Editor</h2>
-            <div className="toolbar" role="toolbar" aria-label="Workspace actions">
-              <button
-                type="button"
-                className="button button--primary"
-                onClick={requestRun}
-                disabled={running}
-              >
-                Run
-              </button>
-              <button
-                type="button"
-                className="button"
-                onClick={() => session.runChecks()}
-                disabled={status !== "settled"}
-              >
-                Run checks
-              </button>
-              <button type="button" className="button" onClick={() => setDialog("solution")}>
-                Show solution
-              </button>
-              <button
-                type="button"
-                className="button"
-                onClick={() => setDialog("reset")}
-                disabled={modifiedFiles.size === 0}
-              >
-                Reset to starter
-              </button>
-            </div>
+            <span className="meta">
+              {modifiedFiles.size === 0
+                ? "Starter files"
+                : `${modifiedFiles.size} ${modifiedFiles.size === 1 ? "file" : "files"} edited`}
+            </span>
+          </div>
+          <CodeEditor
+            ref={editorRef}
+            files={files}
+            activeFile={activeFile}
+            onActiveFileChange={setActiveFile}
+            onChange={onChange}
+            onRun={requestRun}
+            modifiedFiles={modifiedFiles}
+          />
+          <p className="editor-hint meta" id="editor-keyboard-hint">
+            Inside the editor, <kbd>Tab</kbd> indents. To move on to the buttons below, press{" "}
+            <kbd>Esc</kbd> and then <kbd>Tab</kbd>. Run with <kbd>Ctrl</kbd>+<kbd>Enter</kbd> or{" "}
+            <kbd>⌘</kbd>+<kbd>Enter</kbd>.
+          </p>
+          <div className="toolbar" role="toolbar" aria-label="Workspace actions">
+            <button
+              type="button"
+              className="button button--primary"
+              onClick={requestRun}
+              disabled={running}
+            >
+              Run
+            </button>
+            <button
+              type="button"
+              className="button"
+              onClick={() => session.runChecks()}
+              disabled={status !== "settled"}
+            >
+              Run checks
+            </button>
+            <button type="button" className="button" onClick={() => setDialog("solution")}>
+              Show solution
+            </button>
+            <button
+              type="button"
+              className="button"
+              onClick={() => setDialog("reset")}
+              disabled={modifiedFiles.size === 0}
+            >
+              Reset to starter
+            </button>
+            <WorkspaceDownload topic={topic} step={step} files={files} announce={announce} />
           </div>
           {step.api && (
             <ApiSourceSelector
@@ -207,19 +228,9 @@ export default function EditStep({ topic, step, presets, announce, explanation }
               onFixtureControlsChange={setFixtureControls}
             />
           )}
-          <CodeEditor
-            ref={editorRef}
-            files={files}
-            activeFile={activeFile}
-            onActiveFileChange={setActiveFile}
-            onChange={onChange}
-            onRun={requestRun}
-            modifiedFiles={modifiedFiles}
-          />
         </section>
         <ResultPane session={session} onJumpToCode={jumpToCode} />
         <ConsolePane session={session} onJumpToCode={jumpToCode} files={files} />
-        <CheckPanel step={step} session={session} />
         <InspectorPane session={session} step={step} onJumpToCode={jumpToCode} />
         {(step.api || step.fixtures) && (
           <NetworkPane
@@ -229,6 +240,7 @@ export default function EditStep({ topic, step, presets, announce, explanation }
             presets={presets}
           />
         )}
+        <CheckPanel step={step} session={session} />
       </div>
 
       <ConfirmDialog
