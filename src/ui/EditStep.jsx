@@ -195,6 +195,7 @@ export default function EditStep({ topic, step, presets, announce, explanation }
             onChange={onChange}
             onRun={requestRun}
             modifiedFiles={modifiedFiles}
+            session={session}
           />
           <p className="editor-hint meta" id="editor-keyboard-hint">
             Inside the editor, <kbd>Tab</kbd> indents. To move on to the buttons below, press{" "}
@@ -250,7 +251,12 @@ export default function EditStep({ topic, step, presets, announce, explanation }
         </section>
         <ResultPane session={session} onJumpToCode={jumpToCode} />
         <ConsolePane session={session} onJumpToCode={jumpToCode} files={files} />
-        <InspectorPane session={session} step={step} onJumpToCode={jumpToCode} />
+        <InspectorPane
+          session={session}
+          step={step}
+          onJumpToCode={jumpToCode}
+          announce={announce}
+        />
         {(step.api || step.fixtures) && (
           <NetworkPane
             session={session}
