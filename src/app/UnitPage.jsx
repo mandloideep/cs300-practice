@@ -3,10 +3,13 @@ import { Link, useParams } from "react-router";
 import { loadIndex } from "./content.js";
 import { NotFoundNotice, contentFallback } from "./ContentState.jsx";
 import PageTitle from "./PageTitle.jsx";
+import { TopicProgress } from "./Catalog.jsx";
+import { useProgress } from "../progress/store.js";
 
 export default function UnitPage() {
   const { pathId, unit: unitId } = useParams();
   const index = use(loadIndex());
+  const progress = useProgress();
   const fallback = contentFallback(index, { standalone: true });
   if (fallback) return fallback;
 
@@ -28,7 +31,7 @@ export default function UnitPage() {
     );
   }
 
-  const titles = new Map((index.data.topics ?? []).map((topic) => [topic.id, topic.title]));
+  const topicsById = new Map((index.data.topics ?? []).map((topic) => [topic.id, topic]));
   const required = (unit.topics ?? []).filter((topic) => topic.required);
   const optional = (unit.topics ?? []).filter((topic) => !topic.required);
 
@@ -42,8 +45,18 @@ export default function UnitPage() {
         <h1>{unit.title}</h1>
         {unit.intro && <p>{unit.intro}</p>}
       </div>
-      <TopicLinks heading="Required topics" topics={required} titles={titles} />
-      <TopicLinks heading="Optional topics" topics={optional} titles={titles} />
+      <TopicLinks
+        heading="Required topics"
+        topics={required}
+        topicsById={topicsById}
+        progress={progress}
+      />
+      <TopicLinks
+        heading="Optional topics"
+        topics={optional}
+        topicsById={topicsById}
+        progress={progress}
+      />
       {unit.localNotes?.length > 0 && (
         <section className="notice" aria-labelledby="local-notes-heading">
           <h2 id="local-notes-heading">On your own computer</h2>
@@ -58,17 +71,31 @@ export default function UnitPage() {
   );
 }
 
-function TopicLinks({ heading, topics, titles }) {
+function TopicLinks({ heading, topics, topicsById, progress }) {
   if (topics.length === 0) return null;
   return (
     <section>
       <h2>{heading}</h2>
-      <ol className="step-list">
-        {topics.map((topic) => (
-          <li key={topic.id}>
-            <Link to={`/topic/${topic.id}`}>{titles.get(topic.id) ?? topic.id}</Link>
-          </li>
-        ))}
+      <ol className="card-list">
+        {topics.map((entry) => {
+          const topic = topicsById.get(entry.id);
+          return (
+            <li key={entry.id}>
+              <article className="card">
+                <h3>
+                  <Link to={`/topic/${entry.id}`}>{topic?.title ?? entry.id}</Link>
+                </h3>
+                {topic?.summary && <p>{topic.summary}</p>}
+                {topic && (
+                  <p className="meta">
+                    {topic.steps?.length ?? 0} steps · about {topic.minutes} minutes
+                  </p>
+                )}
+                {topic && <TopicProgress topic={topic} progress={progress} />}
+              </article>
+            </li>
+          );
+        })}
       </ol>
     </section>
   );

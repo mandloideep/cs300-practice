@@ -1,9 +1,12 @@
-import { use } from "react";
+import { use, useId, useRef, useState } from "react";
 import { Link } from "react-router";
 import { loadIndex } from "./content.js";
 import { contentFallback } from "./ContentState.jsx";
 import PageTitle from "./PageTitle.jsx";
 import { countLabel } from "./format.js";
+import { TopicsByArea } from "./Catalog.jsx";
+import { UnitList } from "./PathPage.jsx";
+import { exportProgress, importProgress, setChosenPath, useProgress } from "../progress/store.js";
 
 export default function Home() {
   const index = use(loadIndex());
@@ -19,19 +22,52 @@ export default function Home() {
         </p>
       </div>
       {contentFallback(index) ?? <HomeContent index={index.data} />}
+      <ProgressTransfer />
     </>
   );
 }
 
 function HomeContent({ index }) {
+  const progress = useProgress();
   const paths = index.paths ?? [];
+  const chosen = paths.find((path) => path.id === progress.pathId);
+
+  function choose(pathId, focusId) {
+    setChosenPath(pathId);
+    requestAnimationFrame(() => document.getElementById(focusId)?.focus());
+  }
+
+  if (chosen) {
+    return (
+      <section aria-labelledby="current-path-heading">
+        <p className="eyebrow">Your path</p>
+        <h2 id="current-path-heading" tabIndex={-1}>
+          <Link to={`/path/${chosen.id}`}>{chosen.title}</Link>
+        </h2>
+        <UnitList path={chosen} index={index} headingLevel={3} />
+        <p>
+          <Link to="/topics">Browse all {countLabel(index.topics?.length ?? 0, "topic")}</Link>
+          {" · "}
+          <button
+            type="button"
+            className="link-button"
+            onClick={() => choose(null, "paths-heading")}
+          >
+            Stop following {chosen.title}
+          </button>
+        </p>
+      </section>
+    );
+  }
+
   return (
     <>
-      <section aria-labelledby="paths-heading">
-        <h2 id="paths-heading">Semester paths</h2>
-        {paths.length === 0 ? (
-          <p className="meta">No paths are published yet.</p>
-        ) : (
+      {paths.length > 0 && (
+        <section aria-labelledby="paths-heading">
+          <h2 id="paths-heading" tabIndex={-1}>
+            Semester paths
+          </h2>
+          <p className="meta">Follow a path to see its weeks on this page each time you visit.</p>
           <ul className="card-list">
             {paths.map((path) => (
               <li key={path.id}>
@@ -40,18 +76,93 @@ function HomeContent({ index }) {
                     <Link to={`/path/${path.id}`}>{path.title}</Link>
                   </h3>
                   <p className="meta">{countLabel(path.units?.length ?? 0, "unit")}</p>
+                  <button
+                    type="button"
+                    className="button button--small"
+                    onClick={() => choose(path.id, "current-path-heading")}
+                  >
+                    Follow {path.title}
+                  </button>
                 </article>
               </li>
             ))}
           </ul>
-        )}
-      </section>
-      <section aria-labelledby="topics-heading">
-        <h2 id="topics-heading">Topics</h2>
-        <p>
-          <Link to="/topics">Browse all {countLabel(index.topics?.length ?? 0, "topic")}</Link>
-        </p>
+        </section>
+      )}
+      <section aria-labelledby="catalog-heading">
+        <h2 id="catalog-heading">All topics</h2>
+        <TopicsByArea index={index} headingLevel={3} />
       </section>
     </>
+  );
+}
+
+function ProgressTransfer() {
+  const progress = useProgress();
+  const inputRef = useRef(null);
+  const [message, setMessage] = useState(null);
+  const id = useId();
+  const completedCount = Object.keys(progress.completed).length;
+
+  function onExport() {
+    const blob = new Blob([exportProgress()], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `cs300-lab-progress-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    setMessage({ kind: "ok", text: "Your progress was saved as a JSON file." });
+  }
+
+  async function onImport(event) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    try {
+      const next = importProgress(await file.text());
+      const count = Object.keys(next.completed).length;
+      setMessage({
+        kind: "ok",
+        text: `Imported progress with ${countLabel(count, "completed step")}.`,
+      });
+    } catch (error) {
+      setMessage({ kind: "error", text: error.message });
+    }
+  }
+
+  return (
+    <section className="progress-transfer" aria-labelledby={`${id}-heading`}>
+      <h2 id={`${id}-heading`}>Your progress</h2>
+      <p className="meta">
+        Progress stays in this browser only: {countLabel(completedCount, "completed step")} and any
+        files you edited. Export it to move it to another browser or device.
+      </p>
+      <div className="button-row">
+        <button type="button" className="button" onClick={onExport}>
+          Export progress
+        </button>
+        <button type="button" className="button" onClick={() => inputRef.current?.click()}>
+          Import progress
+        </button>
+        <input
+          ref={inputRef}
+          type="file"
+          accept="application/json,.json"
+          className="visually-hidden"
+          tabIndex={-1}
+          aria-hidden="true"
+          onChange={onImport}
+        />
+      </div>
+      <p
+        role="status"
+        className={message?.kind === "error" ? "form-message form-message--error" : "form-message"}
+      >
+        {message?.text}
+      </p>
+    </section>
   );
 }
