@@ -1,0 +1,13 @@
+dist/
+dist-d2l/
+public/content/
+public/runtime/
+package-lock.json
+test-results/
+playwright-report/
+.claude/
+
+# Markdown keeps one sentence per line and hand-written tables; edit blocks in step.md
+# and the workspace files their anchors point at must stay byte-exact.
+*.md
+content/

@@ -1,0 +1,19 @@
+node_modules/
+dist/
+dist-d2l/
+public/content/
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# Editors and OS
+.DS_Store
+*.log
+.vscode/
+.idea/
+
+# Claude Code worktrees
+.claude/worktrees/

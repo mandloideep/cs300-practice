@@ -1,0 +1,100 @@
+:root {
+  color-scheme: light dark;
+
+  /* Color: light */
+  --color-bg: #f7f8fa;
+  --color-surface: #ffffff;
+  --color-surface-raised: #ffffff;
+  --color-surface-sunken: #eef1f5;
+  --color-border: #d5dbe3;
+  --color-border-strong: #a9b3c1;
+  --color-text: #1b2330;
+  --color-text-muted: #556172;
+  --color-accent: #1f4e8c;
+  --color-accent-hover: #173d6e;
+  --color-accent-contrast: #ffffff;
+  --color-accent-soft: #e3ecf8;
+  --color-link: #1d56a8;
+  --color-link-visited: #5b3c96;
+  --color-success: #1d6b3a;
+  --color-success-soft: #e2f3e8;
+  --color-warning: #8a5a00;
+  --color-warning-soft: #fdf1d8;
+  --color-danger: #a8232f;
+  --color-danger-soft: #fbe5e7;
+  --color-focus: #0b63ce;
+  --color-code-bg: #f1f3f6;
+
+  /* Spacing, on a 4px grid */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* Type */
+  --font-sans:
+    system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.25rem;
+  --leading-tight: 1.25;
+  --leading-normal: 1.6;
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-bold: 700;
+
+  /* Shape */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgb(16 24 40 / 0.06), 0 1px 3px rgb(16 24 40 / 0.08);
+
+  /* Focus ring */
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 2px;
+  --focus-ring: var(--focus-ring-width) solid var(--color-focus);
+
+  /* Layout */
+  --content-max: 72rem;
+  --reading-max: 44rem;
+  --header-height: 3.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #0f141b;
+    --color-surface: #161c25;
+    --color-surface-raised: #1c2430;
+    --color-surface-sunken: #0b0f15;
+    --color-border: #2c3644;
+    --color-border-strong: #475365;
+    --color-text: #e6eaf0;
+    --color-text-muted: #a1acbb;
+    --color-accent: #7fb0f5;
+    --color-accent-hover: #a3c7fa;
+    --color-accent-contrast: #0b1626;
+    --color-accent-soft: #1b2b42;
+    --color-link: #8dbbff;
+    --color-link-visited: #c3a6f5;
+    --color-success: #6fd398;
+    --color-success-soft: #13301f;
+    --color-warning: #f0c065;
+    --color-warning-soft: #33280f;
+    --color-danger: #ff8f99;
+    --color-danger-soft: #3a1519;
+    --color-focus: #8fc1ff;
+    --color-code-bg: #11171f;
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  }
+}
