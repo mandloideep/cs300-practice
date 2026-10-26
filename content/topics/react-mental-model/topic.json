@@ -1,0 +1,10 @@
+{
+  "id": "react-mental-model",
+  "title": "The React mental model",
+  "area": "react",
+  "summary": "We compare updating the page by hand with describing the page from data, first in plain JavaScript and then in React. You will watch React re-run only the component whose state changed and see why data flows down while events flow up.",
+  "prerequisites": [],
+  "minutes": 30,
+  "updated": "2026-10-26",
+  "changeNote": "First version."
+}
