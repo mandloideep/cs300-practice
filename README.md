@@ -69,9 +69,204 @@ On `main` it also publishes `dist/` to GitHub Pages.
 
 ## Adding a topic
 
+A topic is a folder under `content/topics/` whose name is the topic id.
+The id is permanent, because links from D2L and from other topics use it.
+
+```text
+content/topics/<topic-id>/
+  topic.json
+  01-<slug>/
+    step.md
+    workspace/        edit steps only: the starter files
+    solution/         edit steps only: the same file set as workspace/
+    check.js          optional
+    fixtures/         optional: routes.json plus body files
+    local/            local steps only: a workspace students download and run with npm
+  02-<slug>/
+```
+
+`topic.json` has every one of these fields:
+
+```json
+{
+  "id": "lists-and-keys",
+  "title": "Lists and keys",
+  "area": "react",
+  "summary": "Two sentences at most.",
+  "prerequisites": ["components-and-props"],
+  "minutes": 70,
+  "updated": "2026-10-26",
+  "changeNote": "First version."
+}
+```
+
+`area` is an id from `content/areas.json`, every prerequisite is an existing topic id, and `updated` is written as `YYYY-MM-DD`.
+Step folders are numbered `01`, `02`, and so on with no gaps, followed by a lowercase hyphenated slug.
+
+Each `step.md` starts with YAML front matter:
+
+```yaml
+---
+title: Load the products from an API
+mode: edit
+entry: src/main.jsx
+inspector:
+  views: [boundaries, flash, network]
+  watch: [App, ProductList]
+api:
+  default: fixtures
+required: [one-products-request, uses-api-base, products-render]
+---
+```
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `title` | yes | The step heading and its name in navigation |
+| `mode` | yes | `edit`, `read`, or `local` |
+| `entry` | edit steps | The workspace file the runner executes, such as `src/main.jsx`, or `index.html` for a page with no module entry |
+| `inspector.views` | no | Views that start open: `boundaries`, `flash`, `tree`, `network` |
+| `inspector.watch` | no | Component names pinned at the top of the inspector tree |
+| `api.default` | no | `fixtures`, `custom`, or a preset id; include it only when the workspace fetches |
+| `required` | no | Check ids that must pass; the default is every check `check.js` returns |
+
+The body follows the Week 8 pattern: a short explanation, small typed edits with an explanation beside each, a `**Check:**` paragraph, and an `**If it breaks:**` paragraph.
+Put each full sentence on its own line, and never use the em dash character.
+Code blocks may use the languages `jsx`, `js`, `html`, `css`, `json`, `bash`, `text`, and `diff`.
+Complete files belong only in collapsed review panels written with `<details><summary>src/App.jsx after this step</summary>`, a blank line, a fenced block, a blank line, and `</details>`.
+Link to another topic as `[Components and props](#/topic/components-and-props)`.
+
+An edit block is a fenced code block whose info string names the language and then `file`, `action`, and, for most actions, `anchor`:
+
+````markdown
+```jsx file="src/App.jsx" action="insert-after" anchor="      <ul>"
+        <li>One more item</li>
+```
+````
+
+| `action` | Effect |
+| --- | --- |
+| `replace` | Replaces the anchor lines with the code |
+| `insert-after` | Inserts the code after the last anchor line |
+| `insert-before` | Inserts the code before the first anchor line |
+| `delete` | Removes the anchor lines; the fence is empty |
+| `append` | Adds the code after the last line of the file |
+| `create` | Writes the file with the code as its content |
+
+These rules decide whether a step validates:
+
+- The code is the fence content with only its final newline removed, so a blank first or last line inside the fence is inserted too.
+- An anchor is one or more complete lines, matched exactly, including indentation, at the first place they occur in the file as it stands after the earlier edit blocks of the same step.
+  Write a multi-line anchor with a literal `\n` between the lines.
+- Values may use double or single quotes; use single quotes when the anchor contains double quotes.
+  An anchor cannot contain a backtick, because Markdown does not allow one in a code fence's info string.
+- Applying every edit block of a step, in order, to `workspace/` must produce `solution/` exactly, and every file ends with one newline.
+- `workspace/` and `solution/` have the same file set, so a file the student fills in starts in `workspace/` as a placeholder.
+
+A React workspace has a complete Vite-style `index.html` with `<div id="root"></div>` and `<script type="module" src="/src/main.jsx"></script>`.
+Workspace files import each other with relative paths that include the extension, and may import `react`, `react-dom`, `react-dom/client`, `react/jsx-runtime`, `react/jsx-dev-runtime`, and `react-router`.
+Code that students see carries no explanatory comments; the explanation belongs in `step.md`.
+
+`check.js` runs inside the result iframe after the code settles and again when the student presses Run checks:
+
+```js
+export default async function check({ document, console, network, inspector, wait }) {
+  const items = document.querySelectorAll("li");
+  return [
+    {
+      id: "three-items",
+      title: "Three list items render",
+      pass: items.length === 3,
+      hint: "The list should have one li per topic in the array.",
+    },
+  ];
+}
+```
+
+| Argument | What it holds |
+| --- | --- |
+| `document` | The result iframe's document |
+| `console` | Every console entry since the run started, as `{ level, text, time }` |
+| `network` | Every request record since the run started, with `method`, `url`, `source`, `state`, and `status` |
+| `inspector` | `{ components }`, the latest React commit: each component's `name`, `props`, `state`, and `rendered` |
+| `wait` | `(ms) => Promise<void>` |
+
+Return two to four results, give every result a `hint` that says what to look at, and prefer what the student can see: the DOM, a console message, a request, or a named component.
+A check may click and type, but it should put the page back the way it found it.
+
+A fetching step adds `fixtures/routes.json` and the body files it names:
+
+```json
+{
+  "routes": [
+    { "method": "GET", "path": "/products", "status": 200, "body": "products.json" },
+    { "method": "GET", "path": "/products/:id", "body": "product.json" }
+  ]
+}
+```
+
+Paths match the request pathname exactly, `:name` matches one segment, the query string is ignored, `status` defaults to 200, and `body` is a file in `fixtures/` or an inline JSON value.
+The workspace builds every URL from `import.meta.env.API_BASE`, so the API source selector can switch between fixtures, presets, and a custom server.
+
+Check your work before committing:
+
+```sh
+npm run validate
+```
+
+The validator names the file and the rule for every problem, and prints a unified diff when the edit blocks do not reproduce the solution.
+`npm run build:content` runs the same checks and then writes `public/content/`.
+Finally, run `npm run dev` and walk the new topic in the browser.
+
 ## Adding a path
 
+A path is one JSON file in `content/paths/`, named after its id, that orders existing topics into units for one semester.
+It never copies topic content, so improving a topic improves every path that uses it.
+
+```json
+{
+  "id": "spring-2027",
+  "title": "Spring 2027",
+  "units": [
+    {
+      "id": "week-10",
+      "title": "React, Vite, JSX, components, props, and lists",
+      "intro": "One paragraph to students in the course voice.",
+      "topics": [
+        { "id": "react-mental-model", "required": true },
+        { "id": "lists-and-keys", "required": false }
+      ],
+      "localNotes": ["What students run on their own computer this week."]
+    }
+  ]
+}
+```
+
+Every topic id must exist under `content/topics/`, every `required` is `true` or `false`, and `localNotes` is a list of sentences.
+The unit page is `#/path/<path-id>/<unit-id>`, which is the link to post in D2L.
+Run `npm run validate` after editing.
+
 ## Adding an API preset
+
+Presets are the public servers in the API source selector, listed in `content/api-presets.json`.
+Add an object to the array:
+
+```json
+{
+  "id": "tvmaze",
+  "title": "TVMaze search",
+  "baseUrl": "https://api.tvmaze.com",
+  "docsUrl": "https://www.tvmaze.com/api",
+  "endpoints": [{ "path": "/search/shows", "description": "Shows matching ?q=office" }],
+  "responseShape": "A top-level array of { score, show }.",
+  "rateLimit": "At least 20 calls every 10 seconds per address."
+}
+```
+
+`baseUrl` starts with `https://` and has no trailing slash, because workspaces append paths that start with `/`.
+Before adding a server, confirm that it needs no key and answers browser requests: `curl -s -D - -H "Origin: https://mandloideep.github.io" "<baseUrl><endpoint>"` should return 200 with an `access-control-allow-origin` header of `*` or that origin.
+Record the response shape and the published rate limit from its documentation.
+A step can start on the new preset with `api: { default: <id> }`, but fixtures remain the better default because they work offline.
+Run `npm run validate` after editing.
 
 ## Upgrading the runtime
 
