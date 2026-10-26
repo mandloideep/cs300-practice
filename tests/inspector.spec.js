@@ -270,6 +270,28 @@ test.describe("inspector behavior", () => {
     );
     await expect(overlay.locator(".box.highlight")).toHaveCount(1);
 
+    const app = lastCommit(result).components.find((c) => c.name === "App");
+    await page.evaluate(
+      (ids) => globalThis.__harness.send({ type: "inspector-highlight", componentIds: ids }),
+      [counter.id, app.id],
+    );
+    await expect(overlay.locator(".box.highlight")).toHaveCount(2);
+    await page.evaluate(
+      (id) =>
+        globalThis.__harness.send({
+          type: "inspector-highlight",
+          componentId: id,
+          componentIds: [],
+        }),
+      counter.id,
+    );
+    await expect(overlay.locator(".box.highlight")).toHaveCount(0);
+    await page.evaluate(
+      (id) => globalThis.__harness.send({ type: "inspector-highlight", componentId: id }),
+      counter.id,
+    );
+    await expect(overlay.locator(".box.highlight")).toHaveCount(1);
+
     await page.evaluate(() =>
       globalThis.__harness.send({ type: "inspector-config", views: ["tree"] }),
     );
@@ -357,5 +379,65 @@ test.describe("inspector pane on the step page", () => {
     await page.keyboard.press("Enter");
     await expect(page.getByRole("tab", { name: file, selected: true })).toBeVisible();
     await expect(page.locator(".cm-editor .cm-lineNumbers .cm-activeLineGutter")).toHaveText(line);
+  });
+
+  test("the flow view lists each step of the latest trace, highlights, announces, and keeps history", async ({
+    page,
+  }) => {
+    await page.goto("#/topic/react-mental-model/3");
+    const pane = page.locator(".pane--inspector");
+    await expect(pane.getByText(/components? · commit/)).toBeVisible({ timeout: 15_000 });
+
+    // The starter has no click handler, so nothing is traced until the solution is loaded.
+    const flowToggle = pane.getByRole("button", { name: "Flow trace" });
+    await expect(flowToggle).toHaveAttribute("aria-pressed", "false");
+    await flowToggle.click();
+    await expect(flowToggle).toHaveAttribute("aria-pressed", "true");
+    await expect(pane.getByText("Interact with the result")).toBeVisible();
+
+    // The step's check clicks the button once, which records trace 1; the click below is trace 2.
+    await page.getByRole("button", { name: "Show solution" }).click();
+    await page.getByRole("button", { name: "Load solution" }).click();
+    await expect(page.locator(".status-pill")).toHaveText("Ready", { timeout: 15_000 });
+    const timeline = pane.getByRole("list", { name: /^Flow trace \d+$/ });
+    await expect(timeline.getByRole("button").nth(1)).toHaveText(/from 0 to 1/);
+
+    const frame = page.frameLocator('iframe[title="Result of your code"]');
+    await frame.getByRole("button", { name: "Review one concept" }).click();
+    await expect(timeline.getByRole("button")).toHaveText([
+      /click on <button>, handled in ReviewPanel/,
+      /useState setter in ReviewPanel changed state 0 from 1 to 2/,
+      /ReviewPanel re-rendered in commit \d+/,
+    ]);
+    await expect(timeline.getByRole("button").first()).toHaveAccessibleName(
+      "Event: click on <button>, handled in ReviewPanel",
+    );
+    await expect(pane.getByText(/Latest trace · 3 steps · [\d.]+ ms/)).toBeVisible();
+    await expect(page.getByRole("status").filter({ hasText: "Flow trace recorded" })).toHaveText(
+      "Flow trace recorded: 3 steps",
+    );
+
+    const overlay = frame.locator("lab-inspector-overlay");
+    await timeline.getByRole("button").nth(1).hover();
+    await expect(overlay.locator(".box.highlight")).toHaveCount(1);
+    await page.mouse.move(0, 0);
+    await expect(overlay.locator(".box.highlight")).toHaveCount(0);
+    await timeline.getByRole("button").last().focus();
+    await expect(overlay.locator(".box.highlight")).toHaveCount(1);
+    await timeline.getByRole("button").last().blur();
+    await expect(overlay.locator(".box.highlight")).toHaveCount(0);
+
+    await frame.getByRole("button", { name: "Review one concept" }).click();
+    await expect(timeline.getByRole("button").nth(1)).toHaveText(/from 2 to 3/);
+    const history = pane.getByRole("list", { name: "Earlier traces" });
+    await expect(history.getByRole("button")).toHaveText([/^Trace 3/, /^Trace 2/, /^Trace 1/]);
+    await expect(history.getByRole("button").first()).toHaveAttribute("aria-current", "true");
+    await history.getByRole("button").last().click();
+    await expect(pane.getByRole("heading", { name: /^Trace 1/ })).toBeVisible();
+    await expect(timeline.getByRole("button").nth(1)).toHaveText(/from 0 to 1/);
+
+    await timeline.getByRole("button").first().click();
+    await expect(page.getByRole("tab", { name: "src/App.jsx", selected: true })).toBeVisible();
+    await expect(page.locator(".cm-editor .cm-lineNumbers .cm-activeLineGutter")).toHaveText("12");
   });
 });
