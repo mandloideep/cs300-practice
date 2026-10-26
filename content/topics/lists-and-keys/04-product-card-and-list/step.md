@@ -18,8 +18,9 @@ Here `ProductCard` will draw one product, `ProductList` will map products to car
 - `row`: a compact line with only the title and price, for a short "Top rated" list.
 
 Start with the card, above `ProductList`.
+The block ends with the first line of `ProductList`, which is already there, so you type only the new function above it.
 
-```jsx file="src/App.jsx" action="insert-before" anchor="function ProductList({ items }) {"
+```jsx file="src/App.jsx" action="replace" anchor="function ProductList({ items }) {"
 function ProductCard({ product, variant = "card" }) {
   return (
     <article className={`product product--${variant}`}>
@@ -30,6 +31,7 @@ function ProductCard({ product, variant = "card" }) {
   );
 }
 
+function ProductList({ items }) {
 ```
 
 `ProductCard` receives the whole product object as one prop.

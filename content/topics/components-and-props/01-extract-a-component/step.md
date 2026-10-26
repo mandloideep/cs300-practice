@@ -20,8 +20,9 @@ The inspector is open with the Boundaries and Tree views.
 Run the starter first and notice that only one box appears, labeled `App`, because `App` is the only component so far.
 
 Add the new component above `App`.
+The block replaces the first line of `App` and ends with that same line, so in practice you type the new function directly above it.
 
-```jsx file="src/App.jsx" action="insert-before" anchor="export default function App() {"
+```jsx file="src/App.jsx" action="replace" anchor="export default function App() {"
 function CourseCard() {
   return (
     <article className="card">
@@ -31,6 +32,7 @@ function CourseCard() {
   );
 }
 
+export default function App() {
 ```
 
 `CourseCard` is an ordinary function.

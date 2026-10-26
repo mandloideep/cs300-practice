@@ -33,10 +33,10 @@ Read it top to bottom as "App contains a SiteHeader, then the main region, then 
 Lines marked HTML are elements, not components, so the inspector does not show them as boxes.
 
 The header and footer each get their own file, the way a real Vite project keeps one component per file.
-We created the two files for you, and they are empty.
-Open the `src/SiteHeader.jsx` tab and type the header into it.
+We created the two files for you, each holding a one-line placeholder component that draws nothing.
+Open the `src/SiteHeader.jsx` tab and replace the placeholder with the header.
 
-```jsx file="src/SiteHeader.jsx" action="append"
+```jsx file="src/SiteHeader.jsx" action="replace" anchor="export default function SiteHeader() {}"
 export default function SiteHeader({ siteName }) {
   return (
     <header className="site-header">
@@ -50,9 +50,9 @@ export default function SiteHeader({ siteName }) {
 `export default` makes the function the one thing this file offers to other files, exactly like the modules we wrote in Week 8.
 The header takes the site name as a prop, so the same header could serve another department's catalog.
 
-Open the `src/SiteFooter.jsx` tab and type the footer.
+Open the `src/SiteFooter.jsx` tab and replace its placeholder with the footer.
 
-```jsx file="src/SiteFooter.jsx" action="append"
+```jsx file="src/SiteFooter.jsx" action="replace" anchor="export default function SiteFooter() {}"
 export default function SiteFooter() {
   return (
     <footer className="site-footer">
@@ -63,11 +63,13 @@ export default function SiteFooter() {
 ```
 
 Now import both at the top of `src/App.jsx`.
+The block ends with the first line of `Card`, which is already there, so the two imports and a blank line go directly above it.
 
-```jsx file="src/App.jsx" action="insert-before" anchor="function Card({ children }) {"
+```jsx file="src/App.jsx" action="replace" anchor="function Card({ children }) {"
 import SiteHeader from "./SiteHeader.jsx";
 import SiteFooter from "./SiteFooter.jsx";
 
+function Card({ children }) {
 ```
 
 A default export is imported without braces, and we can choose the local name.

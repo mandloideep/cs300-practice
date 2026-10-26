@@ -17,12 +17,14 @@ When a component should wrap *any* content, React gives us a special prop called
 Think of a picture frame: the frame supplies the border and the padding, and it does not care which picture goes inside.
 
 Add a `Card` component above `CourseCard`.
+The block ends with the first line of `CourseCard`, which is already there, so you type only the new lines above it.
 
-```jsx file="src/App.jsx" action="insert-before" anchor='function CourseCard({ title, level = "all levels" }) {'
+```jsx file="src/App.jsx" action="replace" anchor='function CourseCard({ title, level = "all levels" }) {'
 function Card({ children }) {
   return <article className="card">{children}</article>;
 }
 
+function CourseCard({ title, level = "all levels" }) {
 ```
 
 `Card` reads `children` the same way `CourseCard` reads `title`, by destructuring.
