@@ -12,8 +12,13 @@ export default function Dialog({
   wide = false,
 }) {
   const ref = useRef(null);
+  const openRef = useRef(open);
   const titleId = useId();
   const descriptionId = useId();
+
+  useEffect(() => {
+    openRef.current = open;
+  }, [open]);
 
   useEffect(() => {
     const dialog = ref.current;
@@ -28,7 +33,11 @@ export default function Dialog({
       className={wide ? "dialog dialog--wide" : "dialog"}
       aria-labelledby={titleId}
       aria-describedby={description ? descriptionId : undefined}
-      onClose={onClose}
+      onClose={() => {
+        // The close event also follows our own dialog.close() after `open` turned false; only a
+        // close the browser made on its own, while the parent still wants it open, is reported.
+        if (openRef.current) onClose();
+      }}
       onCancel={(event) => {
         event.preventDefault();
         onClose();

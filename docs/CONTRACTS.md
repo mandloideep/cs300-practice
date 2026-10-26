@@ -575,7 +575,8 @@ The `localStorage` key `cs300-lab:progress` and the exported file share one shap
 | Entry | Content |
 | --- | --- |
 | `package.json` | `name` is the folder name, `private: true`, `type: "module"`, scripts `dev`, `build`, `preview`, dependencies `react` and `react-dom` at the runtime's pinned versions, `react-router` when the workspace imports it, devDependencies `vite` and `@vitejs/plugin-react` at the versions in this repository's `package.json` |
-| `vite.config.js` | `defineConfig({ plugins: [react()] })` |
+| `vite.config.js` | `defineConfig({ plugins: [react()] })`; when a workspace module reads `import.meta.env.API_BASE`, `envPrefix: ["VITE_", "API_"]` is added |
+| `.env` | Only when a workspace module reads `import.meta.env.API_BASE`: `API_BASE=<base>` for the preset or custom base selected in the lab, or the first preset's base when the lab was on Fixtures, which exist only inside the lab; the README says which and why |
 | `index.html` | The workspace `index.html` when the workspace has one; otherwise a minimal page with `<div id="root"></div>` and `<script type="module" src="/<entry>"></script>` |
 | `README.md` | The topic title, step title, and the three commands to run |
 | workspace files | The student's edited files for the step when they exist, otherwise the starter, at their workspace paths |

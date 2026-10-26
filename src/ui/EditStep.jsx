@@ -1,6 +1,6 @@
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CodeEditor from "../editor/CodeEditor.jsx";
-import { useRunSession } from "../runner/useRunSession.js";
+import { resolveApiBase, useRunSession } from "../runner/useRunSession.js";
 import {
   clearEditedFiles,
   getEditedFiles,
@@ -35,6 +35,19 @@ function readCustomBase(topicId, n) {
   } catch {
     return "";
   }
+}
+
+// The API to write into a downloaded workspace's .env: the selected preset or custom base, or
+// the first preset when the lab was on Fixtures, which exist only inside the lab.
+function downloadApi(apiSource, presets = []) {
+  if (apiSource.kind === "fixtures") {
+    const first = presets[0];
+    return first ? { baseUrl: first.baseUrl, title: first.title, fromFixtures: true } : null;
+  }
+  const baseUrl = resolveApiBase(apiSource, presets);
+  if (!baseUrl) return null;
+  const preset = apiSource.kind === "preset" && presets.find((entry) => entry.id === apiSource.id);
+  return { baseUrl, title: preset ? preset.title : baseUrl, fromFixtures: false };
 }
 
 function initialApiSource(step, topicId) {
@@ -216,7 +229,13 @@ export default function EditStep({ topic, step, presets, announce, explanation }
             >
               Reset to starter
             </button>
-            <WorkspaceDownload topic={topic} step={step} files={files} announce={announce} />
+            <WorkspaceDownload
+              topic={topic}
+              step={step}
+              files={files}
+              api={step.api ? downloadApi(apiSource, presets) : null}
+              announce={announce}
+            />
           </div>
           {step.api && (
             <ApiSourceSelector

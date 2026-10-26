@@ -36,7 +36,14 @@ export function LocalDownload({ topic, step, announce }) {
 }
 
 // The toolbar button of an edit step: the student's current files as a plain Vite project.
-export function WorkspaceDownload({ topic, step, files, announce, className = "button" }) {
+export function WorkspaceDownload({
+  topic,
+  step,
+  files,
+  api = null,
+  announce,
+  className = "button",
+}) {
   const name = workspaceProjectName(topic.id, step.n);
 
   return (
@@ -44,7 +51,7 @@ export function WorkspaceDownload({ topic, step, files, announce, className = "b
       type="button"
       className={className}
       onClick={() => {
-        downloadWorkspace(workspaceProjectFiles({ topic, step, files }), name);
+        downloadWorkspace(workspaceProjectFiles({ topic, step, files, api }), name);
         announce(`Downloading ${name}.zip, a Vite project with your files for this step.`);
       }}
     >

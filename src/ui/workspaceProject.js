@@ -37,11 +37,24 @@ function packageJson(name, files) {
   );
 }
 
-const VITE_CONFIG = `import { defineConfig } from "vite";
+const API_BASE_READ = /import\.meta\.env\.API_BASE\b/;
+
+function readsApiBase(files) {
+  return Object.entries(files).some(
+    ([path, source]) => /\.(jsx?|mjs)$/.test(path) && API_BASE_READ.test(source),
+  );
+}
+
+function viteConfig(withApiBase) {
+  const options = withApiBase
+    ? `{ plugins: [react()], envPrefix: ["VITE_", "API_"] }`
+    : `{ plugins: [react()] }`;
+  return `import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-export default defineConfig({ plugins: [react()] });
+export default defineConfig(${options});
 `;
+}
 
 function minimalIndexHtml(title, entry) {
   return `<!doctype html>
@@ -59,7 +72,17 @@ function minimalIndexHtml(title, entry) {
 `;
 }
 
-function readme(topic, step) {
+function readme(topic, step, api) {
+  const apiNote = api
+    ? `
+The code reads the API address from \`import.meta.env.API_BASE\`, which comes from the \`.env\` file in this folder.
+${
+  api.fromFixtures
+    ? `In the lab you were using Fixtures, which exist only inside the lab, so \`.env\` points at ${api.title} instead; change it to any API you like.`
+    : `It holds the API you had selected in the lab, ${api.title}; change it to any API you like.`
+}
+`
+    : "";
   return `# ${topic.title}: step ${step.n}, ${step.title}
 
 This folder is your workspace from CS300 Lab, as a Vite project you can run on your own computer.
@@ -75,17 +98,21 @@ npm run build
 
 \`npm run dev\` prints a local address to open in your browser.
 \`npm run build\` writes a production build into \`dist/\`.
-`;
+${apiNote}`;
 }
 
 // Returns { path: source } for the project, with the workspace files at their own paths.
-export function workspaceProjectFiles({ topic, step, files }) {
+// `api` is { baseUrl, title, fromFixtures } for the API source to write into .env when a
+// workspace file reads import.meta.env.API_BASE, else null.
+export function workspaceProjectFiles({ topic, step, files, api = null }) {
   const name = workspaceProjectName(topic.id, step.n);
+  const withApiBase = Boolean(api) && readsApiBase(files);
   const project = {
     "package.json": `${packageJson(name, files)}\n`,
-    "vite.config.js": VITE_CONFIG,
-    "README.md": readme(topic, step),
+    "vite.config.js": viteConfig(withApiBase),
+    "README.md": readme(topic, step, withApiBase ? api : null),
   };
+  if (withApiBase) project[".env"] = `API_BASE=${api.baseUrl}\n`;
   if (!("index.html" in files)) {
     project["index.html"] = minimalIndexHtml(`${topic.title}: ${step.title}`, step.entry);
   }

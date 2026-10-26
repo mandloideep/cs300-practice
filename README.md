@@ -45,7 +45,7 @@ npm run preview
 | `npm run lint` | Runs ESLint over `src`, `scripts`, and `tests` |
 | `npm run format` | Formats the code with Prettier |
 | `npm run format:check` | Checks the formatting with Prettier |
-| `npm test` | Runs the Playwright tests against the Vite dev server |
+| `npm test` | Runs the Playwright tests against the Vite dev server; set `PLAYWRIGHT_PORT` when another checkout's server already holds port 4173 |
 | `npm run export:d2l -- <path-id>` | Writes a Brightspace page per unit of a path into `dist-d2l/` |
 
 Prettier does not touch Markdown or `content/`.
@@ -126,7 +126,7 @@ required: [one-products-request, uses-api-base, products-render]
 | `title` | yes | The step heading and its name in navigation |
 | `mode` | yes | `edit`, `read`, or `local` |
 | `entry` | edit steps | The workspace file the runner executes, such as `src/main.jsx`, or `index.html` for a page with no module entry |
-| `inspector.views` | no | Views that start open: `boundaries`, `flash`, `tree`, `network` |
+| `inspector.views` | no | Views that start open: `boundaries`, `flash`, `tree`, `flow`, `network` |
 | `inspector.watch` | no | Component names pinned at the top of the inspector tree |
 | `api.default` | no | `fixtures`, `custom`, or a preset id; include it only when the workspace fetches |
 | `required` | no | Check ids that must pass; the default is every check `check.js` returns |
