@@ -1,24 +1,12 @@
 import { Fragment, useEffect, useId, useRef, useState } from "react";
+import RequestBadges, {
+  badgeText,
+  duplicateExplanation,
+  shortUrl,
+  staleExplanation,
+  stateLabel,
+} from "./requests.jsx";
 import "./network.css";
-
-const STATE_LABELS = {
-  pending: "pending",
-  ok: "ok",
-  "http-error": "HTTP error",
-  "network-error": "network error",
-  "parse-error": "parse error",
-  aborted: "aborted",
-};
-
-function shortUrl(request) {
-  try {
-    const url = new URL(request.url);
-    const path = url.pathname + url.search;
-    return request.source === "other" ? url.host + path : path;
-  } catch {
-    return request.url;
-  }
-}
 
 // Allows line breaks after the separators of a URL so that it wraps between its parts.
 function breakable(text) {
@@ -137,6 +125,18 @@ function RequestDetail({ request }) {
         <>
           <dt>Error</dt>
           <dd>{request.error}</dd>
+        </>
+      )}
+      {request.stale && (
+        <>
+          <dt>Stale</dt>
+          <dd>{staleExplanation()}</dd>
+        </>
+      )}
+      {request.duplicateOf && (
+        <>
+          <dt>Duplicate</dt>
+          <dd>{duplicateExplanation(request.duplicateOf)}</dd>
         </>
       )}
       <dt>Body preview</dt>
@@ -267,7 +267,7 @@ export default function NetworkPane({ session, onJumpToCode, apiSource, presets 
                     <tr
                       className={`network-row network-row--${request.state}${request.calledFrom ? " network-row--linked" : ""}`}
                       tabIndex={0}
-                      aria-label={`${request.method} ${request.url}, ${STATE_LABELS[request.state] ?? request.state}${where}`}
+                      aria-label={`${request.method} ${request.url}, ${stateLabel(request.state)}${badgeText(request)}${where}`}
                       onClick={() => jump(request)}
                       onKeyDown={(event) => onRowKeyDown(event, request)}
                     >
@@ -277,8 +277,9 @@ export default function NetworkPane({ session, onJumpToCode, apiSource, presets 
                       </td>
                       <td className="network-state">
                         <span className={`state-badge state-badge--${request.state}`}>
-                          {STATE_LABELS[request.state] ?? request.state}
+                          {stateLabel(request.state)}
                         </span>
+                        <RequestBadges stale={request.stale} duplicateOf={request.duplicateOf} />
                       </td>
                       <td className="network-number network-status">
                         {request.status ?? <span className="network-none">no status</span>}

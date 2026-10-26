@@ -7,6 +7,13 @@
 // Records are updated in place, so check.js sees a request move from pending to settled.
 // The base URL and the controls are read at call time, so a set-api message from the parent
 // applies to the next request without re-running the workspace.
+//
+// Two mistakes are marked on the record, keyed on the line that called fetch (`calledFrom`):
+// `duplicateOf` names an identical request from the same line that was still pending when this
+// one started, and `stale` is set when a newer request from the same line delivered its result
+// first, so this one's response is out of date. A request without a known `calledFrom` gets
+// neither. With the inspector on, each start lands in the open flow trace as a `request` entry
+// and each settle as a `response` entry (docs/CONTRACTS.md section 4.3).
 
 "use strict";
 
@@ -76,9 +83,51 @@ function publish(record) {
   lab.post({ type: "network", request: { ...record } });
 }
 
+// The abort signal of each pending request, so a request the workspace already cancelled does
+// not count as pending for duplicate detection before its rejection has landed.
+const signals = new WeakMap();
+
+function sameSite(a, b) {
+  return Boolean(a && b) && a.file === b.file && a.line === b.line;
+}
+
+// A pending request from the same line with the same method and URL, newest first.
+function pendingTwin(record) {
+  if (!record.calledFrom) return null;
+  for (let i = lab.network.length - 1; i >= 0; i -= 1) {
+    const other = lab.network[i];
+    if (other === record || other.state !== "pending" || signals.get(other)?.aborted) continue;
+    if (other.method !== record.method || other.url !== record.url) continue;
+    if (sameSite(other.calledFrom, record.calledFrom)) return other;
+  }
+  return null;
+}
+
+// True when a request from the same line that started later has already delivered a result.
+function isStale(record) {
+  if (!record.calledFrom) return false;
+  return lab.network.some(
+    (other) =>
+      other !== record &&
+      other.startTime > record.startTime &&
+      other.state !== "pending" &&
+      other.state !== "aborted" &&
+      sameSite(other.calledFrom, record.calledFrom),
+  );
+}
+
 function finish(record, changes) {
   Object.assign(record, changes, { duration: Math.round(performance.now() - record.startTime) });
+  if (record.state !== "aborted") record.stale = isStale(record);
   publish(record);
+  lab.flow?.response({
+    requestId: record.id,
+    state: record.state,
+    status: record.status,
+    duration: record.duration,
+    stale: record.stale,
+    duplicateOf: record.duplicateOf,
+  });
 }
 
 function abortReason(signal) {
@@ -224,9 +273,19 @@ function shimmedFetch(input, init = {}) {
     contentType: null,
     calledFrom: callSite(),
     error: null,
+    stale: false,
+    duplicateOf: null,
   };
+  record.duplicateOf = pendingTwin(record)?.id ?? null;
+  if (signal) signals.set(record, signal);
   lab.network.push(record);
   publish(record);
+  lab.flow?.request({
+    requestId: record.id,
+    method,
+    url,
+    calledIn: lab.currentComponent?.() ?? null,
+  });
 
   let answer;
   try {

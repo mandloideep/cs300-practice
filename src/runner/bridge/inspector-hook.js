@@ -324,9 +324,9 @@ function installInspector() {
     const handlers = [];
     let native = null;
 
-    function start() {
+    // Opens a trace in the current event context, or with no event when `context` is null.
+    function start(context = handlers.at(-1) ?? native) {
       count += 1;
-      const context = handlers.at(-1) ?? native;
       const trace = {
         id: `t${count}`,
         seq: count,
@@ -404,6 +404,27 @@ function installInspector() {
       );
     }
 
+    // Called by the fetch shim when a request starts; it lands in the open trace, if any.
+    function request(fields) {
+      if (!open) return;
+      open.entries.push({
+        kind: "request",
+        time: round(performance.now() - open.startTime),
+        ...fields,
+      });
+    }
+
+    // Called by the fetch shim when a response settles; outside a trace it opens one with no
+    // event, so the response, the setter it leads to, and the render set form one trace.
+    function response(fields) {
+      const trace = open ?? start(null);
+      trace.entries.push({
+        kind: "response",
+        time: round(performance.now() - trace.startTime),
+        ...fields,
+      });
+    }
+
     // Dispatch is synchronous within its task, so a timer set at capture time clears the context
     // after every listener, including ones added to window after this one, has run.
     for (const type of NATIVE_EVENTS) {
@@ -420,9 +441,19 @@ function installInspector() {
       );
     }
 
-    return { enter, exit, onCommit };
+    return { enter, exit, onCommit, request, response };
   })();
   lab.flow = flow;
+
+  // The component whose render or effect is running right now, from the owner React DOM tracks
+  // in development; null between renders, as inside an event handler or a timer.
+  lab.currentComponent = () => {
+    for (const internals of renderers.values()) {
+      const fiber = internals.currentDispatcherRef?.A?.getOwner?.();
+      if (fiber && COMPONENT_TAGS.has(fiber.tag)) return componentName(fiber);
+    }
+    return null;
+  };
 
   // Overlay ------------------------------------------------------------------------------------
 

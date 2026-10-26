@@ -267,6 +267,15 @@
   --flow-hue: var(--color-success);
 }
 
+.flow-row--request,
+.flow-row--response {
+  --flow-hue: var(--color-text-muted);
+}
+
+.flow-row__text .state-badge {
+  vertical-align: 0.1em;
+}
+
 .flow-row__button,
 .flow-history__button {
   display: flex;

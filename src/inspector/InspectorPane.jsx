@@ -156,7 +156,15 @@ function ComponentRow({ component, previousById, selectedId, onHighlight, onJump
 // `announce` is optional: when the step page passes its live-region function the pane shares
 // that region, and otherwise it renders a polite region of its own for the flow announcements.
 export default function InspectorPane({ session, step, onJumpToCode, announce }) {
-  const { inspectorCommits, latestCommit, flowTraces = [], runId, status, send } = session;
+  const {
+    inspectorCommits,
+    latestCommit,
+    flowTraces = [],
+    networkRequests = [],
+    runId,
+    status,
+    send,
+  } = session;
   const [views, setViews] = useState(() => step.inspector?.views ?? DEFAULT_VIEWS);
   const [selected, setSelected] = useState({ runId: null, id: null });
   const [ownMessage, setOwnMessage] = useState(null);
@@ -292,6 +300,7 @@ export default function InspectorPane({ session, step, onJumpToCode, announce })
                 traces={flowTraces}
                 inspectorCommits={inspectorCommits}
                 latestCommit={latestCommit}
+                networkRequests={networkRequests}
                 runId={runId}
                 onHighlight={highlightMany}
                 onJumpToCode={onJumpToCode}
