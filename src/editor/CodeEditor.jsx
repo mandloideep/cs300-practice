@@ -128,10 +128,6 @@ export default function CodeEditor({
         aria-labelledby={`${idPrefix}-tab-${tabId(activeFile)}`}
         ref={hostRef}
       />
-      <p className="code-editor__hint meta">
-        Tab indents. To leave the editor, press <kbd>Esc</kbd> and then <kbd>Tab</kbd>. Run with{" "}
-        <kbd>Ctrl</kbd>+<kbd>Enter</kbd> or <kbd>⌘</kbd>+<kbd>Enter</kbd>.
-      </p>
     </div>
   );
 }

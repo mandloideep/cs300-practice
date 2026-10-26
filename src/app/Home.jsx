@@ -6,7 +6,14 @@ import PageTitle from "./PageTitle.jsx";
 import { countLabel } from "./format.js";
 import { TopicsByArea } from "./Catalog.jsx";
 import { UnitList } from "./PathPage.jsx";
-import { exportProgress, importProgress, setChosenPath, useProgress } from "../progress/store.js";
+import {
+  exportProgress,
+  parseProgress,
+  replaceProgress,
+  setChosenPath,
+  useProgress,
+} from "../progress/store.js";
+import { ConfirmDialog } from "../ui/Dialog.jsx";
 
 export default function Home() {
   const index = use(loadIndex());
@@ -101,8 +108,10 @@ function ProgressTransfer() {
   const progress = useProgress();
   const inputRef = useRef(null);
   const [message, setMessage] = useState(null);
+  const [pending, setPending] = useState(null);
   const id = useId();
   const completedCount = Object.keys(progress.completed).length;
+  const editedCount = Object.keys(progress.files).length;
 
   function onExport() {
     const blob = new Blob([exportProgress()], { type: "application/json" });
@@ -122,23 +131,35 @@ function ProgressTransfer() {
     event.target.value = "";
     if (!file) return;
     try {
-      const next = importProgress(await file.text());
-      const count = Object.keys(next.completed).length;
-      setMessage({
-        kind: "ok",
-        text: `Imported progress with ${countLabel(count, "completed step")}.`,
-      });
+      const parsed = parseProgress(await file.text());
+      setMessage(null);
+      setPending({ ...parsed, fileName: file.name });
     } catch (error) {
       setMessage({ kind: "error", text: error.message });
     }
+  }
+
+  function confirmImport() {
+    const next = replaceProgress(pending.snapshot);
+    setPending(null);
+    setMessage({
+      kind: "ok",
+      text: `Imported progress with ${countLabel(Object.keys(next.completed).length, "completed step")}.`,
+    });
+  }
+
+  function cancelImport() {
+    setPending(null);
+    setMessage({ kind: "ok", text: "Nothing was imported. Your progress is unchanged." });
   }
 
   return (
     <section className="progress-transfer" aria-labelledby={`${id}-heading`}>
       <h2 id={`${id}-heading`}>Your progress</h2>
       <p className="meta">
-        Progress stays in this browser only: {countLabel(completedCount, "completed step")} and any
-        files you edited. Export it to move it to another browser or device.
+        Progress stays in this browser only: {countLabel(completedCount, "completed step")} and the
+        files you edited in {countLabel(editedCount, "step")}. Export it to move it to another
+        browser or device.
       </p>
       <div className="button-row">
         <button type="button" className="button" onClick={onExport}>
@@ -163,6 +184,17 @@ function ProgressTransfer() {
       >
         {message?.text}
       </p>
+      <ConfirmDialog
+        open={Boolean(pending)}
+        title="Replace your progress?"
+        description={
+          pending &&
+          `${pending.fileName} holds ${countLabel(pending.completedSteps, "completed step")} and edited files for ${countLabel(pending.editedSteps, "step")}. Importing it replaces what this browser has now: ${countLabel(completedCount, "completed step")} and edited files for ${countLabel(editedCount, "step")}.`
+        }
+        confirmLabel="Replace progress"
+        onConfirm={confirmImport}
+        onCancel={cancelImport}
+      />
     </section>
   );
 }

@@ -1,12 +1,12 @@
 import { Link } from "react-router";
-import { stepKey, useProgress } from "../progress/store.js";
+import { isStepComplete, useProgress } from "../progress/store.js";
 
 export default function StepNav({ topic, stepNumber }) {
   const progress = useProgress();
   const steps = topic.steps ?? [];
   const previous = steps.find((step) => step.n === stepNumber - 1);
   const next = steps.find((step) => step.n === stepNumber + 1);
-  const done = steps.filter((step) => progress.completed[stepKey(topic.id, step.n)]).length;
+  const done = steps.filter((step) => isStepComplete(progress, topic.id, step.n)).length;
 
   return (
     <nav className="step-nav" aria-label="Steps in this topic">
@@ -36,7 +36,7 @@ export default function StepNav({ topic, stepNumber }) {
       </h2>
       <ol className="step-nav__list">
         {steps.map((step) => {
-          const complete = Boolean(progress.completed[stepKey(topic.id, step.n)]);
+          const complete = isStepComplete(progress, topic.id, step.n);
           const current = step.n === stepNumber;
           return (
             <li key={step.n} className={complete ? "is-complete" : undefined}>

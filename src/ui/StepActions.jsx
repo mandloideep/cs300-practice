@@ -1,19 +1,13 @@
-import { strToU8, zipSync } from "fflate";
-import { markStepComplete, stepKey, useProgress } from "../progress/store.js";
+import { isStepComplete, markStepComplete, useProgress } from "../progress/store.js";
+import {
+  saveZip,
+  workspaceProjectFiles,
+  workspaceProjectName,
+  zipFiles,
+} from "./workspaceProject.js";
 
 export function downloadWorkspace(files, name) {
-  const entries = Object.fromEntries(
-    Object.entries(files).map(([path, source]) => [`${name}/${path}`, strToU8(source)]),
-  );
-  const blob = new Blob([zipSync(entries)], { type: "application/zip" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `${name}.zip`;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  saveZip(zipFiles(files, name), `${name}.zip`);
 }
 
 export function LocalDownload({ topic, step, announce }) {
@@ -41,9 +35,27 @@ export function LocalDownload({ topic, step, announce }) {
   );
 }
 
+// The toolbar button of an edit step: the student's current files as a plain Vite project.
+export function WorkspaceDownload({ topic, step, files, announce, className = "button" }) {
+  const name = workspaceProjectName(topic.id, step.n);
+
+  return (
+    <button
+      type="button"
+      className={className}
+      onClick={() => {
+        downloadWorkspace(workspaceProjectFiles({ topic, step, files }), name);
+        announce(`Downloading ${name}.zip, a Vite project with your files for this step.`);
+      }}
+    >
+      Download this workspace
+    </button>
+  );
+}
+
 export function MarkDone({ topic, step, announce }) {
   const progress = useProgress();
-  const done = Boolean(progress.completed[stepKey(topic.id, step.n)]);
+  const done = isStepComplete(progress, topic.id, step.n);
 
   return (
     <div className="mark-done">

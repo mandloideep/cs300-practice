@@ -3,8 +3,9 @@ import { Link, useParams } from "react-router";
 import { loadIndex } from "./content.js";
 import { NotFoundNotice, contentFallback } from "./ContentState.jsx";
 import PageTitle from "./PageTitle.jsx";
-import { TopicProgress } from "./Catalog.jsx";
-import { useProgress } from "../progress/store.js";
+import TopicProgress from "../progress/TopicProgress.jsx";
+import { isStepComplete, useProgress } from "../progress/store.js";
+import { countLabel } from "./format.js";
 
 export default function UnitPage() {
   const { pathId, unit: unitId } = useParams();
@@ -34,6 +35,7 @@ export default function UnitPage() {
   const topicsById = new Map((index.data.topics ?? []).map((topic) => [topic.id, topic]));
   const required = (unit.topics ?? []).filter((topic) => topic.required);
   const optional = (unit.topics ?? []).filter((topic) => !topic.required);
+  const summary = unitSummary(required, topicsById, progress);
 
   return (
     <>
@@ -45,6 +47,7 @@ export default function UnitPage() {
         <h1>{unit.title}</h1>
         {unit.intro && <p>{unit.intro}</p>}
       </div>
+      <UnitProgress summary={summary} />
       <TopicLinks
         heading="Required topics"
         topics={required}
@@ -71,6 +74,65 @@ export default function UnitPage() {
   );
 }
 
+// The required steps of a unit in order, how many are complete, and the first one that is not.
+export function unitSummary(required, topicsById, progress) {
+  let done = 0;
+  let total = 0;
+  let next = null;
+  for (const entry of required) {
+    const topic = topicsById.get(entry.id);
+    for (const step of topic?.steps ?? []) {
+      total += 1;
+      if (isStepComplete(progress, topic.id, step.n)) done += 1;
+      else if (!next) next = { topic, step };
+    }
+  }
+  return { done, total, next };
+}
+
+function UnitProgress({ summary }) {
+  const { done, total, next } = summary;
+  if (total === 0) return null;
+  const complete = done === total;
+  const label = complete
+    ? "Every required step complete"
+    : `${done} of ${countLabel(total, "required step")} complete`;
+
+  return (
+    <section
+      className={complete ? "unit-progress is-complete" : "unit-progress"}
+      aria-labelledby="unit-progress-heading"
+    >
+      <h2 id="unit-progress-heading">Your progress</h2>
+      <p className={complete ? "meta progress-note is-complete" : "meta progress-note"}>
+        <span>
+          {complete && <span aria-hidden="true">{"✓ "}</span>}
+          {label}
+        </span>
+        <span
+          className="progress-bar"
+          role="progressbar"
+          aria-label="Required steps in this unit"
+          aria-valuemin={0}
+          aria-valuemax={total}
+          aria-valuenow={done}
+          aria-valuetext={label}
+        >
+          <span className="progress-bar__fill" style={{ width: `${(100 * done) / total}%` }} />
+        </span>
+      </p>
+      {next && (
+        <Link
+          className="button button--primary unit-progress__continue"
+          to={`/topic/${next.topic.id}/${next.step.n}`}
+        >
+          Continue: {next.topic.title}, step {next.step.n}
+        </Link>
+      )}
+    </section>
+  );
+}
+
 function TopicLinks({ heading, topics, topicsById, progress }) {
   if (topics.length === 0) return null;
   return (
@@ -88,7 +150,7 @@ function TopicLinks({ heading, topics, topicsById, progress }) {
                 {topic?.summary && <p>{topic.summary}</p>}
                 {topic && (
                   <p className="meta">
-                    {topic.steps?.length ?? 0} steps · about {topic.minutes} minutes
+                    {countLabel(topic.steps?.length ?? 0, "step")} · about {topic.minutes} minutes
                   </p>
                 )}
                 {topic && <TopicProgress topic={topic} progress={progress} />}

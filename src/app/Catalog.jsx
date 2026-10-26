@@ -4,7 +4,8 @@ import { loadIndex } from "./content.js";
 import { contentFallback } from "./ContentState.jsx";
 import PageTitle from "./PageTitle.jsx";
 import { countLabel } from "./format.js";
-import { stepKey, useProgress } from "../progress/store.js";
+import { useProgress } from "../progress/store.js";
+import TopicProgress from "../progress/TopicProgress.jsx";
 
 export default function Catalog() {
   const index = use(loadIndex());
@@ -73,17 +74,6 @@ export function TopicsByArea({ index, headingLevel = 2 }) {
       </ul>
     </section>
   ));
-}
-
-export function TopicProgress({ topic, progress }) {
-  const steps = topic.steps ?? [];
-  const done = steps.filter((step) => progress.completed[stepKey(topic.id, step.n)]).length;
-  if (done === 0) return null;
-  return (
-    <p className={done === steps.length ? "meta progress-note is-complete" : "meta progress-note"}>
-      {done === steps.length ? "✓ Complete" : `${done} of ${steps.length} steps complete`}
-    </p>
-  );
 }
 
 // How many prerequisite steps lead to each topic, so a topic is listed after the ones it needs.

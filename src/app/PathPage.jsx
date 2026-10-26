@@ -4,7 +4,7 @@ import { loadIndex } from "./content.js";
 import { NotFoundNotice, contentFallback } from "./ContentState.jsx";
 import PageTitle from "./PageTitle.jsx";
 import { countLabel } from "./format.js";
-import { setChosenPath, stepKey, useProgress } from "../progress/store.js";
+import { setChosenPath, topicCompletion, useProgress } from "../progress/store.js";
 
 export default function PathPage() {
   const { pathId } = useParams();
@@ -49,10 +49,10 @@ export function unitProgress(unit, index, progress) {
   let done = 0;
   let total = 0;
   for (const entry of unit.topics ?? []) {
-    if (!entry.required) continue;
-    const steps = topics.get(entry.id)?.steps ?? [];
-    total += steps.length;
-    done += steps.filter((step) => progress.completed[stepKey(entry.id, step.n)]).length;
+    if (!entry.required || !topics.has(entry.id)) continue;
+    const completion = topicCompletion(progress, topics.get(entry.id));
+    total += completion.total;
+    done += completion.done;
   }
   return { done, total };
 }
