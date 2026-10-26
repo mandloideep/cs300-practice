@@ -76,7 +76,7 @@ The change is `handleChange` for every keystroke and `handleSubmit` for the subm
 ## What comes next
 
 Everything so far happened inside the page: state in, JSX out.
-Next week's first topic, Effects, is about the moments a component has to reach outside: to the console, to `localStorage`, to a timer, or to the browser window.
+Next week's first topic, [Effects](#/topic/effects), is about the moments a component has to reach outside: to the console, to `localStorage`, to a timer, or to the browser window.
 
 **Check:** Take the Week 8 CourseHub, or any page you have built this term, and answer the four questions for it on paper.
 If every value on the page is either a constant, a piece of state with one owner, or something computed from state, the design is done.
