@@ -373,6 +373,7 @@ Every message is posted with `window.parent.postMessage(message, "*")` and has `
 | `check-error` | `message`, `stack` | `check.js` threw |
 | `inspector` | `commit` (below) | After each React commit |
 | `network` | `request` (below) | On each state change of a request |
+| `inspector-select` | `componentId`, `name`, `declaredAt`, `usedAt` | The student clicked a boundary label in the overlay |
 
 `args` are serialized to plain JSON: primitives as is, functions as `"[Function name]"`, DOM nodes as `"<tag#id.class>"`, objects and arrays to depth 3 with cycles cut as `"[Circular]"`, errors as `{ name, message, stack }`.
 `file` in `error` is the workspace path, mapped from the blob URL through `moduleUrls`.
@@ -403,6 +404,7 @@ An inspector commit:
 - `props` and `state` values are serialized as console `args` are.
 - `rendered` is true when the fiber performed work in this commit.
 - `rects` are relative to the iframe viewport; a component with no DOM has an empty array.
+- The overlay (boundary boxes, labels, and re-render flashes) is drawn inside the iframe document by the inspector hook, in a fixed-position layer that ignores pointer events except on labels, so that it follows scrolling and needs no coordinate mapping; the parent's inspector pane shows the tree and state and handles jump-to-code.
 - `declaredAt` comes from the compile step, which records the line of every top-level `function Name` and `const Name =` in each file; `usedAt` comes from the `jsxDEV` source of the element that produced the fiber.
 
 A network request record:
@@ -528,3 +530,4 @@ The custom base URL is saved in `localStorage` under `cs300-lab:custom-base:<top
 - 2026-10-26: Edit blocks are fenced code blocks with attributes in the info string rather than shortcodes.
 - 2026-10-26: Edit block semantics pinned (fence content minus final newline, exact anchor lines, first occurrence, `\n` for multi-line anchors) at the request of the topics-b author.
 - 2026-10-26: `useRunSession.js` belongs to the editor and layout stream; the runner delivers `buildRun`, the bridge parts, and a `__LAB__` global; `declarations` travel in the run result.
+- 2026-10-26: The inspector overlay lives inside the iframe; the iframe posts `inspector-select` when a label is clicked.
