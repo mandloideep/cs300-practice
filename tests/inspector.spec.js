@@ -43,13 +43,6 @@ test.describe("inspector commits for every React step's solution", () => {
       expect(commit, "an inspector commit arrived").toBeTruthy();
       const names = new Set(commit.components.map((component) => component.name));
       for (const name of expectedComponents(step.solution)) {
-        if (!names.has(name) && step.checkDependsOn.includes("network")) {
-          test.info().annotations.push({
-            type: "component not asserted",
-            description: `${name} renders after a fetch, which needs the fetch shim`,
-          });
-          continue;
-        }
         expect(names, `the commit lists ${name}`).toContain(name);
         const instance = commit.components.find((component) => component.name === name);
         expect(instance.declaredAt, `${name} declaredAt`).toEqual({

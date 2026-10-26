@@ -45,13 +45,6 @@ test.describe("solution of every edit step", () => {
       const [checkResults] = ofType(result, "check-results");
       expect(checkResults, "check-results arrived").toBeTruthy();
 
-      if (step.checkDependsOn.includes("network")) {
-        test.info().annotations.push({
-          type: "check not asserted",
-          description: "check.js reads network, which the fetch shim fills",
-        });
-        return;
-      }
       const required = step.required ?? checkResults.results.map((r) => r.id);
       for (const id of required) {
         const found = checkResults.results.find((r) => r.id === id);

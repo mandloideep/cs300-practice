@@ -54,13 +54,6 @@ test.describe("edit steps run their solution on the step page", () => {
       ).toEqual([]);
 
       if (!step.hasCheck) return;
-      if (step.checkDependsOn.length > 0) {
-        test.info().annotations.push({
-          type: "checks not asserted",
-          description: `check.js reads ${step.checkDependsOn.join(" and ")}, which is not delivered yet`,
-        });
-        return;
-      }
       await expect(
         page.locator(".check--fail .required-badge"),
         "required checks failing",
