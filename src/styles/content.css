@@ -228,6 +228,13 @@
   background-color: var(--shiki-light-bg);
 }
 
+/* github-light's orange (#e36209) is 3.5:1 on white; GitHub's own accessible orange is 5:1. */
+@media (prefers-color-scheme: light) {
+  .shiki span[style*="--shiki-light:#e36209" i] {
+    color: #bc4c00;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   .shiki,
   .shiki span {

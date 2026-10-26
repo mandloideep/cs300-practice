@@ -121,7 +121,7 @@ export const labHighlight = syntaxHighlighting(
   ]),
 );
 
-export function readOnlyExtensions(path) {
+export function readOnlyExtensions(path, label = `Read-only view of ${path}`) {
   return [
     lineNumbers(),
     highlightSpecialChars(),
@@ -130,6 +130,7 @@ export function readOnlyExtensions(path) {
     languageFor(path),
     labTheme,
     labHighlight,
+    EditorView.contentAttributes.of({ "aria-label": label, tabindex: "0" }),
   ];
 }
 
@@ -173,6 +174,6 @@ export function editableExtensions(path, { onRun }) {
     labTheme,
     fillHeight,
     labHighlight,
-    EditorView.contentAttributes.of({ "aria-label": `Code editor for ${path}` }),
+    EditorView.contentAttributes.of({ "aria-label": `Code editor for ${path}`, tabindex: "0" }),
   ];
 }

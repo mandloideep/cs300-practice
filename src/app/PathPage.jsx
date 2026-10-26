@@ -4,6 +4,7 @@ import { loadIndex } from "./content.js";
 import { NotFoundNotice, contentFallback } from "./ContentState.jsx";
 import PageTitle from "./PageTitle.jsx";
 import { countLabel } from "./format.js";
+import ProgressNote from "../progress/ProgressNote.jsx";
 import { setChosenPath, topicCompletion, useProgress } from "../progress/store.js";
 
 export default function PathPage() {
@@ -73,15 +74,16 @@ export function UnitList({ path, index, headingLevel = 2 }) {
               </Heading>
               <p className="meta">{countLabel(unit.topics?.length ?? 0, "topic")}</p>
               {total > 0 && (
-                <p
-                  className={
-                    done === total ? "meta progress-note is-complete" : "meta progress-note"
+                <ProgressNote
+                  done={done}
+                  total={total}
+                  label={
+                    done === total
+                      ? "Every required step complete"
+                      : `${done} of ${total} required steps complete`
                   }
-                >
-                  {done === total
-                    ? "✓ Every required step complete"
-                    : `${done} of ${total} required steps complete`}
-                </p>
+                  name={`${unit.title} progress`}
+                />
               )}
             </article>
           </li>

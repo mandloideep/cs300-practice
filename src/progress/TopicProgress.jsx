@@ -1,7 +1,8 @@
+import ProgressNote from "./ProgressNote.jsx";
 import { topicCompletion } from "./store.js";
 
-// One line of per-topic completion with a small bar; shows nothing for an untouched topic unless
-// `showEmpty` asks for the "Not started" line.
+// Per-topic completion; shows nothing for an untouched topic unless `showEmpty` asks for the
+// "Not started" line.
 export default function TopicProgress({ topic, progress, showEmpty = false }) {
   const { done, total, complete } = topicCompletion(progress, topic);
   if (total === 0) return null;
@@ -13,22 +14,12 @@ export default function TopicProgress({ topic, progress, showEmpty = false }) {
       : `${done} of ${total} steps complete`;
 
   return (
-    <p className={complete ? "meta progress-note is-complete" : "meta progress-note"}>
-      <span>
-        {complete && <span aria-hidden="true">{"✓ "}</span>}
-        {label}
-      </span>
-      <span
-        className="progress-bar"
-        role="progressbar"
-        aria-label={`${topic.title} progress`}
-        aria-valuemin={0}
-        aria-valuemax={total}
-        aria-valuenow={done}
-        aria-valuetext={label}
-      >
-        <span className="progress-bar__fill" style={{ width: `${(100 * done) / total}%` }} />
-      </span>
-    </p>
+    <ProgressNote
+      done={done}
+      total={total}
+      complete={complete}
+      label={label}
+      name={`${topic.title} progress`}
+    />
   );
 }

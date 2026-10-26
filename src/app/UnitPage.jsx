@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router";
 import { loadIndex } from "./content.js";
 import { NotFoundNotice, contentFallback } from "./ContentState.jsx";
 import PageTitle from "./PageTitle.jsx";
+import ProgressNote from "../progress/ProgressNote.jsx";
 import TopicProgress from "../progress/TopicProgress.jsx";
 import { isStepComplete, useProgress } from "../progress/store.js";
 import { countLabel } from "./format.js";
@@ -49,12 +50,14 @@ export default function UnitPage() {
       </div>
       <UnitProgress summary={summary} />
       <TopicLinks
+        id="required-topics"
         heading="Required topics"
         topics={required}
         topicsById={topicsById}
         progress={progress}
       />
       <TopicLinks
+        id="optional-topics"
         heading="Optional topics"
         topics={optional}
         topicsById={topicsById}
@@ -104,23 +107,7 @@ function UnitProgress({ summary }) {
       aria-labelledby="unit-progress-heading"
     >
       <h2 id="unit-progress-heading">Your progress</h2>
-      <p className={complete ? "meta progress-note is-complete" : "meta progress-note"}>
-        <span>
-          {complete && <span aria-hidden="true">{"✓ "}</span>}
-          {label}
-        </span>
-        <span
-          className="progress-bar"
-          role="progressbar"
-          aria-label="Required steps in this unit"
-          aria-valuemin={0}
-          aria-valuemax={total}
-          aria-valuenow={done}
-          aria-valuetext={label}
-        >
-          <span className="progress-bar__fill" style={{ width: `${(100 * done) / total}%` }} />
-        </span>
-      </p>
+      <ProgressNote done={done} total={total} label={label} name="Required steps in this unit" />
       {next && (
         <Link
           className="button button--primary unit-progress__continue"
@@ -133,11 +120,11 @@ function UnitProgress({ summary }) {
   );
 }
 
-function TopicLinks({ heading, topics, topicsById, progress }) {
+function TopicLinks({ id, heading, topics, topicsById, progress }) {
   if (topics.length === 0) return null;
   return (
-    <section>
-      <h2>{heading}</h2>
+    <section aria-labelledby={`${id}-heading`}>
+      <h2 id={`${id}-heading`}>{heading}</h2>
       <ol className="card-list">
         {topics.map((entry) => {
           const topic = topicsById.get(entry.id);
