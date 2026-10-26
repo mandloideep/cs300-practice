@@ -375,6 +375,7 @@ Every message is posted with `window.parent.postMessage(message, "*")` and has `
 | `network` | `request` (below) | On each state change of a request |
 | `inspector-select` | `componentId`, `name`, `declaredAt`, `usedAt` | The student clicked a boundary label in the overlay |
 | `flow` | `trace` (below) | After each finished flow trace (Phase 2) |
+| `location` | `pathname`, `search`, `hash`, `index`, `length` | On each change of the router's memory history, and once when the first router mounts (Phase 3) |
 
 `args` are serialized to plain JSON: primitives as is, functions as `"[Function name]"`, DOM nodes as `"<tag#id.class>"`, objects and arrays to depth 3 with cycles cut as `"[Circular]"`, errors as `{ name, message, stack }`.
 `file` in `error` is the workspace path, mapped from the blob URL through `moduleUrls`.
@@ -423,13 +424,17 @@ A network request record:
   "bodyPreview": "[{\"userId\":1,...",
   "contentType": "application/json",
   "calledFrom": { "file": "src/App.jsx", "line": 12 },
-  "error": null
+  "error": null,
+  "stale": false,
+  "duplicateOf": null
 }
 ```
 
 `state` is one of `pending`, `ok`, `http-error`, `network-error`, `parse-error`, `aborted`.
 `source` is `fixtures`, `preset`, `custom`, or `other` for a URL outside the chosen base.
 `calledFrom` is read from the stack at call time and mapped through `moduleUrls`; it is `null` when unknown.
+`stale` (Phase 3) becomes true when the request settles after a newer request from the same `calledFrom` has already settled; `duplicateOf` (Phase 3) names the id of an identical method and URL from the same `calledFrom` that was still pending when this one started, else `null`.
+Both are `false` and `null` while `calledFrom` is `null`.
 
 A flow trace (Phase 2):
 
@@ -454,6 +459,7 @@ A flow trace (Phase 2):
 - `entries` are in call order; `args`, `previous`, and `next` use the console `args` serialization.
 - `rendered` lists the names of the components whose fiber performed work in the closing commit, in tree order; `commitSeq` is that commit's `seq`.
 - Nested labeled calls inside one event produce one trace with several entries, never nested traces.
+- Phase 3 adds two entry kinds: `{ "kind": "request", "time", "requestId", "method", "url", "calledIn" }` when the fetch shim is called while a trace is open, and `{ "kind": "response", "time", "requestId", "state", "status", "duration", "stale", "duplicateOf" }` as the first entry of a trace that a settling response opens with `event: null`; `calledIn` is the component rendering when the request was made, or `null`.
 
 ### 4.4 Messages from the parent to the iframe
 
@@ -465,6 +471,7 @@ Posted with `iframe.contentWindow.postMessage(message, "*")`, with `source: "cs3
 | `set-api` | `env`, `fixtureControls` | Update the base URL and fixture controls without re-running |
 | `inspector-highlight` | `componentId` or `null`; or `componentIds: [...]` (Phase 2) | Highlight the component's rects in the overlay; `componentIds` highlights several at once and an empty array clears, and a message carrying both honors `componentIds` |
 | `inspector-config` | `views: [...]` | Which views are open; the overlay draws only when `boundaries` or `flash` is open |
+| `navigate` | `delta` (-1 or 1) or `to` (a path) | Move the router's memory history, as the result pane's Back, Forward, and path field do (Phase 3) |
 
 ### 4.5 Run session hook
 
@@ -473,7 +480,7 @@ Posted with `iframe.contentWindow.postMessage(message, "*")`, with `source: "cs3
 ```js
 {
   iframeRef,          // attach to the result iframe
-  run(),              // builds and loads a new run
+  run({ preserveStorage } = {}),  // builds and loads a new run; preserveStorage keeps the iframe's localStorage (Phase 3), otherwise it is cleared first
   runChecks(),
   status,             // "idle" | "compiling" | "running" | "settled" | "compile-error"
   diagnostics,
@@ -484,6 +491,7 @@ Posted with `iframe.contentWindow.postMessage(message, "*")`, with `source: "cs3
   latestCommit,       // the last inspector commit or null
   networkRequests,    // [{...}] keyed by id, updated in place as states change
   flowTraces,         // array of flow traces for the current run, newest last (Phase 2)
+  location,           // the last location message or null (Phase 3)
   send(message),      // post a parent-to-iframe message with runId filled in
   runId
 }
@@ -594,3 +602,4 @@ A `local` step keeps its existing download, whose content is the step's `local` 
 - 2026-10-26: The inspector overlay lives inside the iframe; the iframe posts `inspector-select` when a label is clicked.
 - 2026-10-26: `env` carries `API_SOURCE` beside `API_BASE` (in `buildRun` and `set-api`) so the fetch shim can label a request's `source`; `NetworkPane` also receives `apiSource` and `presets`. Requested by the network stream.
 - 2026-10-26: Phase 2 contracts pinned: the `flow` message and trace record (4.3), `componentIds` on `inspector-highlight` (4.4), `flowTraces` on `useRunSession` (4.5), `flow` as an `inspector.views` value, the progress JSON shape (5.1), and the downloaded workspace layout (5.2). Phase 2 ownership is in `docs/PHASE2.md`.
+- 2026-10-26: Phase 3 contracts pinned: the `location` message and `navigate` message, the `request` and `response` flow entries, `stale` and `duplicateOf` on the network record, `preserveStorage` on `run()`, and `location` on `useRunSession`. The router runs on a memory history in the iframe through a `react-router` wrapper. Phase 3 ownership is in `docs/PHASE3.md`.
