@@ -6,7 +6,7 @@ export default async function check({ document, network, wait }) {
   const productRequests = () =>
     network.filter((request) => {
       try {
-        return new URL(request.url).pathname === "/products";
+        return new URL(request.url).pathname.endsWith("/products");
       } catch {
         return false;
       }

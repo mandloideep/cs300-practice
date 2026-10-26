@@ -73,7 +73,7 @@ export function useRunSession({ step, files, apiSource, fixtureControls }) {
       files: currentFiles,
       entry: currentStep.entry,
       runtimeBase: import.meta.env.BASE_URL + "runtime/",
-      env: { API_BASE: resolveApiBase(source, presets) },
+      env: { API_BASE: resolveApiBase(source, presets), API_SOURCE: source?.kind ?? "fixtures" },
       fixtures: currentStep.fixtures ?? null,
       fixtureControls: controls,
       check: currentStep.check ?? null,
@@ -187,7 +187,10 @@ export function useRunSession({ step, files, apiSource, fixtureControls }) {
       if (cancelled) return;
       send({
         type: "set-api",
-        env: { API_BASE: resolveApiBase(apiSource, presets) },
+        env: {
+          API_BASE: resolveApiBase(apiSource, presets),
+          API_SOURCE: apiSource?.kind ?? "fixtures",
+        },
         fixtureControls,
       });
     });
