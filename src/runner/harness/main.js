@@ -3,6 +3,7 @@
 // Playwright drives it through window.__harness (see tests/runner.spec.js).
 
 import { IFRAME_SANDBOX, buildRun } from "../index.js";
+import { isReactWorkspace } from "../useRunSession.js";
 
 const sources = import.meta.glob("/content/topics/*/*/**/*", {
   query: "?raw",
@@ -126,6 +127,10 @@ function logLine(className, text) {
 function describe(message) {
   const { type, source: _source, runId: _runId, ...rest } = message;
   if (type === "console") return `console.${rest.level}: ${rest.text}`;
+  if (type === "inspector") {
+    const names = rest.commit.components.map((c) => `${c.name}${c.rendered ? "*" : ""}`);
+    return `inspector #${rest.commit.seq}: ${names.join(", ") || "(no components)"}`;
+  }
   if (type === "check-results") {
     return `check-results:\n${rest.results.map((r) => `  ${r.pass ? "pass" : "FAIL"} ${r.id}: ${r.title}${r.pass ? "" : ` (${r.hint})`}`).join("\n")}`;
   }
@@ -250,6 +255,7 @@ function runStep(id, variant = "solution", options = {}) {
     check: step.check,
     fixtures: step.fixtures,
     env: step.api ? { API_BASE: FIXTURES_BASE } : {},
+    inspector: isReactWorkspace(files),
     ...options,
   });
 }
@@ -264,12 +270,14 @@ for (const topic of [...new Set(steps.map((step) => step.topic))]) {
   }
   elements.step.append(group);
 }
+elements.inspector.indeterminate = true;
 elements.step.value = steps.find((step) => step.mode === "edit")?.id ?? "";
 
 elements.form.addEventListener("submit", (event) => {
   event.preventDefault();
   const variant = new FormData(elements.form).get("variant");
-  runStep(elements.step.value, variant, { inspector: elements.inspector.checked });
+  const options = elements.inspector.indeterminate ? {} : { inspector: elements.inspector.checked };
+  runStep(elements.step.value, variant, options);
 });
 elements.runChecks.addEventListener("click", () => send({ type: "run-checks" }));
 elements.clear.addEventListener("click", () => elements.log.replaceChildren());

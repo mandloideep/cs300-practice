@@ -5,7 +5,16 @@ import reactHooks from "eslint-plugin-react-hooks";
 import jsxA11y from "eslint-plugin-jsx-a11y";
 
 export default [
-  { ignores: ["dist/", "dist-d2l/", "public/", "test-results/", "playwright-report/"] },
+  {
+    ignores: [
+      "dist/",
+      "dist-d2l/",
+      "public/content/",
+      "public/runtime/*.js",
+      "test-results/",
+      "playwright-report/",
+    ],
+  },
   js.configs.recommended,
   {
     rules: {
@@ -42,6 +51,15 @@ export default [
       ecmaVersion: "latest",
       sourceType: "module",
       globals: globals.node,
+    },
+  },
+  {
+    // Hand-written runtime wrappers loaded in the result iframe when the inspector is on.
+    files: ["public/runtime/wrap/**/*.js"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+      globals: globals.browser,
     },
   },
   {

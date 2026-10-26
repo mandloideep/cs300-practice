@@ -10,8 +10,7 @@ import {
   resolvePath,
 } from "./graph.js";
 
-// Output file under runtime/ for each bare specifier. The inspector stream may point react and
-// react/jsx-dev-runtime at wrapper modules under runtime/wrap/; this table is the place to do it.
+// Output file under runtime/ for each bare specifier.
 const RUNTIME_FILES = {
   react: "react.js",
   "react-dom": "react-dom.js",
@@ -21,10 +20,19 @@ const RUNTIME_FILES = {
   "react-router": "react-router.js",
 };
 
-export function createImportMap(runtimeBase) {
+// With the inspector on, react and react/jsx-dev-runtime point at wrappers that re-export the
+// real modules and label setters, function props, and JSX sources for the inspector.
+const INSPECTOR_FILES = {
+  ...RUNTIME_FILES,
+  react: "wrap/react.js",
+  "react/jsx-dev-runtime": "wrap/react-jsx-dev-runtime.js",
+};
+
+export function createImportMap(runtimeBase, { inspector = false } = {}) {
+  const files = inspector ? INSPECTOR_FILES : RUNTIME_FILES;
   return {
     imports: Object.fromEntries(
-      BARE_SPECIFIERS.map((specifier) => [specifier, runtimeBase + RUNTIME_FILES[specifier]]),
+      BARE_SPECIFIERS.map((specifier) => [specifier, runtimeBase + files[specifier]]),
     ),
   };
 }
