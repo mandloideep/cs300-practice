@@ -321,12 +321,13 @@ const run = buildRun({
 });
 ```
 
-`run` is `{ runId, srcdoc, diagnostics, moduleUrls, dispose }`.
+`run` is `{ runId, srcdoc, diagnostics, moduleUrls, declarations, dispose }`.
 
 - `runId` is a unique string carried by every message of the run.
 - `srcdoc` is the complete HTML document for the iframe, or `null` when `diagnostics` is non-empty.
 - `diagnostics` is an array of `{ file, line, column, message }` from compile or import resolution errors.
 - `moduleUrls` maps each workspace JavaScript path to the blob URL it was given, so that stack traces and inspector locations can be mapped back.
+- `declarations` maps each workspace JavaScript path to `{ [ComponentName]: line }` for every top-level `function Name` and `const Name =` the compile step found; the bridge receives it as `globalThis.__LAB__.declarations` so the inspector hook can fill `declaredAt`.
 - `dispose()` revokes the blob URLs.
 
 The iframe is created by the UI as `<iframe sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" srcdoc={srcdoc}>`.
@@ -354,6 +355,8 @@ The inspector stream may point `react` and `react/jsx-dev-runtime` at wrapper mo
 - When `entry` is `index.html`, the entry module script is omitted and workspace `<script src>` tags are rewritten to blob URLs in place instead of removed.
 - The bridge is assembled from `src/runner/bridge/core.js`, `src/runner/bridge/inspector-hook.js`, and `src/runner/bridge/fetch-shim.js`, each imported with Vite's `?raw` suffix and concatenated in that order; the second and third start as empty files that later streams fill.
 - The bridge runs before the import map and before React loads.
+- `core.js` defines one global the other bridge parts and the check runner use: `globalThis.__LAB__ = { runId, env, declarations, console: [], network: [], inspector: { commits: [], latest: null }, post(message) }`; `post` adds `source` and `runId` and calls `window.parent.postMessage`; `console` holds `{ level, text, time }`; the fetch shim pushes request records into `network` and the inspector hook pushes commits into `inspector.commits` and sets `latest`, so that `check.js` receives `__LAB__.console`, `__LAB__.network`, and `__LAB__.inspector.latest` without the parts knowing each other.
+- The runner stream verifies `buildRun` through a dev-only harness page at `src/runner/harness/index.html` (served by the Vite dev server, not part of the production build) and a Playwright spec `tests/runner.spec.js` with a `playwright.config.js` whose `webServer` starts `npm run dev`.
 
 ### 4.3 Messages from the iframe to the parent
 
@@ -484,7 +487,9 @@ Directory ownership:
 | `src/editor/` | Editor and layout |
 | `src/ui/` | Editor and layout |
 | `src/styles/` | Scaffold, then editor and layout |
-| `src/runner/` except the two bridge parts below | Runner |
+| `src/runner/` except `useRunSession.js` and the two bridge parts below | Runner |
+| `src/runner/useRunSession.js` | Editor and layout |
+| `src/styles/content.css` (styles for rendered step HTML, edit cards, and Shiki dual-theme colors) | Content pipeline; editor and layout imports it |
 | `src/runner/bridge/inspector-hook.js`, `src/inspector/`, `public/runtime/wrap/` | Inspector |
 | `src/runner/bridge/fetch-shim.js`, `src/network/` | API sources and network panel |
 | `src/progress/` | Editor and layout (minimal in Phase 1: completed steps and edited files in `localStorage`) |
@@ -522,3 +527,4 @@ The custom base URL is saved in `localStorage` under `cs300-lab:custom-base:<top
 - 2026-10-26: `import.meta.env` is rewritten to a bridge global rather than emulated per module.
 - 2026-10-26: Edit blocks are fenced code blocks with attributes in the info string rather than shortcodes.
 - 2026-10-26: Edit block semantics pinned (fence content minus final newline, exact anchor lines, first occurrence, `\n` for multi-line anchors) at the request of the topics-b author.
+- 2026-10-26: `useRunSession.js` belongs to the editor and layout stream; the runner delivers `buildRun`, the bridge parts, and a `__LAB__` global; `declarations` travel in the run result.
