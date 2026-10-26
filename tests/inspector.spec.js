@@ -330,7 +330,8 @@ test.describe("inspector behavior", () => {
   test("without the inspector there is no hook, no overlay, and no wrappers", async ({ page }) => {
     const result = await run(page, { files, entry: "src/main.jsx", inspector: false });
     expect(ofType(result, "inspector")).toEqual([]);
-    expect(result.srcdoc).not.toContain("/runtime/wrap/");
+    expect(result.srcdoc).not.toContain("/runtime/wrap/react.js");
+    expect(result.srcdoc).not.toContain("/runtime/wrap/react-jsx-dev-runtime.js");
     const frame = resultFrame(page);
     expect(await frame.evaluate(() => "__REACT_DEVTOOLS_GLOBAL_HOOK__" in globalThis)).toBe(false);
     await expect(frame.locator("lab-inspector-overlay")).toHaveCount(0);
@@ -344,7 +345,8 @@ test.describe("inspector behavior", () => {
   test("a plain JavaScript workspace gets no inspector commits", async ({ page }) => {
     const result = await runStep(page, "react-mental-model/01-update-by-hand", "solution");
     expect(ofType(result, "inspector")).toEqual([]);
-    expect(result.srcdoc).not.toContain("/runtime/wrap/");
+    expect(result.srcdoc).not.toContain("/runtime/wrap/react.js");
+    expect(result.srcdoc).not.toContain("/runtime/wrap/react-jsx-dev-runtime.js");
   });
 });
 

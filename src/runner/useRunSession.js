@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { buildRun } from "./index.js";
+import { buildRun, clearSandboxStorage } from "./index.js";
 import { loadIndex } from "../app/content.js";
 
 export const FIXTURES_BASE = "https://fixtures.local";
@@ -34,6 +34,7 @@ const EMPTY = {
   inspectorCommits: [],
   networkRequests: [],
   flowTraces: [],
+  location: null,
   runId: null,
 };
 
@@ -55,7 +56,9 @@ export function useRunSession({ step, files, apiSource, fixtureControls }) {
     target.postMessage({ ...message, source: "cs300-lab", runId: run.runId }, "*");
   }, []);
 
-  const run = useCallback(async () => {
+  // A run starts from empty workspace storage unless `preserveStorage` keeps what the previous
+  // run saved, as "Run again, keeping saved data" for a persistence step.
+  const run = useCallback(async ({ preserveStorage = false } = {}) => {
     const {
       step: currentStep,
       files: currentFiles,
@@ -92,6 +95,7 @@ export function useRunSession({ step, files, apiSource, fixtureControls }) {
       return;
     }
     setState({ ...EMPTY, status: "running", runId: built.runId });
+    if (!preserveStorage) clearSandboxStorage();
     if (iframeRef.current) iframeRef.current.srcdoc = built.srcdoc;
   }, []);
 
@@ -162,6 +166,17 @@ export function useRunSession({ step, files, apiSource, fixtureControls }) {
             };
           case "flow":
             return { ...previous, flowTraces: [...previous.flowTraces, message.trace] };
+          case "location":
+            return {
+              ...previous,
+              location: {
+                pathname: message.pathname,
+                search: message.search,
+                hash: message.hash,
+                index: message.index,
+                length: message.length,
+              },
+            };
           case "network": {
             const request = message.request;
             const known = previous.networkRequests.some((entry) => entry.id === request.id);
@@ -225,6 +240,7 @@ export function useRunSession({ step, files, apiSource, fixtureControls }) {
     latestCommit: state.inspectorCommits.at(-1) ?? null,
     networkRequests: state.networkRequests,
     flowTraces: state.flowTraces,
+    location: state.location,
     send,
     runId: state.runId,
   };

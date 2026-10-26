@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { jumpTarget } from "./jump.js";
+import RequestBadges, { badgeText, shortUrl, stateLabel } from "../network/requests.jsx";
 
 const HISTORY_LENGTH = 8;
 
@@ -24,20 +25,29 @@ export function traceStepCount(trace) {
 
 // Turns a trace into rows, each with the text to show and the components it involves, resolved
 // to instance ids through the latest commit (by name) and the closing commit (by render flag).
-export function traceRows(trace, latestCommit, closingCommit) {
+// `requests` maps request ids to network records, for the line and the badges of a request or
+// response entry.
+export function traceRows(trace, latestCommit, closingCommit, requests = new Map()) {
   const byName = new Map();
   for (const component of latestCommit?.components ?? []) {
     if (!byName.has(component.name)) byName.set(component.name, []);
     byName.get(component.name).push(component);
   }
   const instances = (...names) => names.filter(Boolean).flatMap((name) => byName.get(name) ?? []);
-  const row = (key, kind, components, content, text) => ({
+  const row = (key, kind, components, content, text, target) => ({
     key,
     kind,
     componentIds: [...new Set(components.map((component) => component.id))],
-    target: components[0] ? jumpTarget(components[0].declaredAt, components[0].usedAt) : null,
+    target:
+      target ?? (components[0] ? jumpTarget(components[0].declaredAt, components[0].usedAt) : null),
     content,
     text,
+  });
+  const requestTarget = (record) =>
+    record?.calledFrom ? { ...record.calledFrom, highlight: [record.calledFrom] } : null;
+  const flags = (record, entry) => ({
+    stale: record?.stale ?? entry.stale ?? false,
+    duplicateOf: record?.duplicateOf ?? entry.duplicateOf ?? null,
   });
 
   const rows = [];
@@ -101,6 +111,46 @@ export function traceRows(trace, latestCommit, closingCommit) {
           `${entry.hookName} ${verb} in ${entry.component} changed ${slot} from ${formatValue(entry.previous)} to ${formatValue(entry.next)}`,
         ),
       );
+    } else if (entry.kind === "request") {
+      const record = requests.get(entry.requestId);
+      const url = record ? shortUrl(record) : entry.url;
+      const marks = flags(record, entry);
+      rows.push(
+        row(
+          `entry-${index}`,
+          "request",
+          instances(entry.calledIn),
+          <>
+            fetch started: <code>{entry.method}</code> <code>{url}</code>
+            {entry.calledIn && (
+              <>
+                {" "}
+                in <code>{entry.calledIn}</code>
+              </>
+            )}{" "}
+            <RequestBadges {...marks} />
+          </>,
+          `fetch started: ${entry.method} ${url}${entry.calledIn ? ` in ${entry.calledIn}` : ""}${badgeText(marks)}`,
+          requestTarget(record),
+        ),
+      );
+    } else if (entry.kind === "response") {
+      const record = requests.get(entry.requestId);
+      const marks = flags(record, entry);
+      const what = record ? `${record.method} ${shortUrl(record)}` : `request ${entry.requestId}`;
+      const outcome = `${stateLabel(entry.state)}${entry.status ? ` ${entry.status}` : ""} in ${entry.duration} ms`;
+      rows.push(
+        row(
+          `entry-${index}`,
+          "response",
+          [],
+          <>
+            fetch settled: <code>{what}</code> {outcome} <RequestBadges {...marks} />
+          </>,
+          `fetch settled: ${what} ${outcome}${badgeText(marks)}`,
+          requestTarget(record),
+        ),
+      );
     }
   });
 
@@ -138,9 +188,9 @@ export function traceRows(trace, latestCommit, closingCommit) {
 }
 
 export function traceSummary(trace) {
-  const start = trace.event
-    ? `${trace.event.type ?? "event"} on ${trace.event.target ?? "the page"}`
-    : "effect or timer";
+  let start = "effect or timer";
+  if (trace.event) start = `${trace.event.type ?? "event"} on ${trace.event.target ?? "the page"}`;
+  else if (trace.entries[0]?.kind === "response") start = "a response settled";
   return `${start} · ${pluralize(traceStepCount(trace), "step")}`;
 }
 
@@ -148,6 +198,8 @@ const KIND_LABELS = {
   event: "Event",
   "prop-call": "Prop call",
   setter: "State",
+  request: "Request",
+  response: "Response",
   rendered: "Render",
 };
 
@@ -155,6 +207,7 @@ export default function FlowView({
   traces,
   inspectorCommits,
   latestCommit,
+  networkRequests = [],
   runId,
   onHighlight,
   onJumpToCode,
@@ -191,7 +244,12 @@ export default function FlowView({
     chosen.commitSeq == null
       ? null
       : (inspectorCommits.find((commit) => commit.seq === chosen.commitSeq) ?? null);
-  const rows = traceRows(chosen, latestCommit, closingCommit);
+  const rows = traceRows(
+    chosen,
+    latestCommit,
+    closingCommit,
+    new Map(networkRequests.map((request) => [request.id, request])),
+  );
   const history = traces.slice(-HISTORY_LENGTH).reverse();
 
   return (
