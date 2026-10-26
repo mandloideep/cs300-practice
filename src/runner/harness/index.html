@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Runner harness · CS300 Lab</title>
+    <link rel="stylesheet" href="./harness.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Runner harness</h1>
+      <p>
+        Development only. Builds a run for any step in <code>content/</code> and prints every bridge
+        message.
+      </p>
+    </header>
+    <form id="controls">
+      <label>
+        Step
+        <select id="step"></select>
+      </label>
+      <fieldset>
+        <legend>Files</legend>
+        <label><input type="radio" name="variant" value="workspace" checked /> Workspace</label>
+        <label><input type="radio" name="variant" value="solution" /> Solution</label>
+      </fieldset>
+      <label><input type="checkbox" id="inspector" /> Inspector</label>
+      <button type="submit">Run</button>
+      <button type="button" id="run-checks">Run checks</button>
+      <button type="button" id="clear">Clear log</button>
+    </form>
+    <main>
+      <section aria-labelledby="result-heading">
+        <h2 id="result-heading">Result</h2>
+        <div id="frame-slot"></div>
+      </section>
+      <section aria-labelledby="log-heading">
+        <h2 id="log-heading">Messages <span id="status" role="status"></span></h2>
+        <ol id="log"></ol>
+      </section>
+    </main>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

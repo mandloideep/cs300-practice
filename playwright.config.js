@@ -14,8 +14,9 @@ export default defineConfig({
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
-    command: `npx vite preview --port ${port} --strictPort`,
+    command: `npm run dev -- --port ${port} --strictPort`,
     url: `http://localhost:${port}/cs300-react-lab/`,
     reuseExistingServer: !process.env.CI,
+    timeout: 120_000,
   },
 });

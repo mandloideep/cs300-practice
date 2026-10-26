@@ -8,6 +8,11 @@ export default [
   { ignores: ["dist/", "dist-d2l/", "public/", "test-results/", "playwright-report/"] },
   js.configs.recommended,
   {
+    rules: {
+      "no-unused-vars": ["error", { ignoreRestSiblings: true, varsIgnorePattern: "^_" }],
+    },
+  },
+  {
     files: ["src/**/*.{js,jsx}"],
     ...react.configs.flat.recommended,
     ...react.configs.flat["jsx-runtime"],
@@ -37,6 +42,14 @@ export default [
       ecmaVersion: "latest",
       sourceType: "module",
       globals: globals.node,
+    },
+  },
+  {
+    // The bridge parts are concatenated into one classic script inside the result iframe.
+    files: ["src/runner/bridge/**/*.js"],
+    languageOptions: {
+      sourceType: "script",
+      globals: globals.browser,
     },
   },
 ];

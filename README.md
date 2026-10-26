@@ -45,7 +45,7 @@ npm run preview
 | `npm run lint` | Runs ESLint over `src`, `scripts`, and `tests` |
 | `npm run format` | Formats the code with Prettier |
 | `npm run format:check` | Checks the formatting with Prettier |
-| `npm test` | Runs the Playwright tests against a production build |
+| `npm test` | Runs the Playwright tests against the Vite dev server |
 | `npm run export:d2l` | Writes Brightspace page fragments for a path into `dist-d2l/` |
 
 Prettier does not touch Markdown or `content/`.
@@ -56,6 +56,8 @@ Markdown keeps one sentence per physical line, and the edit blocks in each `step
 - `src/app/` holds the routes, the site header, and the pages.
 - `src/styles/tokens.css` holds the design tokens, and `src/styles/global.css` holds the base styles.
 - `content/` holds the topics, paths, areas, and API presets as plain files.
+- `src/runner/` compiles a workspace with Sucrase, links its modules as blob URLs, and builds the document for the sandboxed result iframe, including the bridge script that reports console output, errors, and check results.
+- `src/runner/harness/index.html` is a development-only page that runs any step from `content/` and prints every bridge message; with `npm run dev` it is at `/cs300-react-lab/src/runner/harness/index.html`.
 - `public/runtime/` holds the vendored React runtime that the result iframe loads through an import map.
 - `scripts/` holds the content, runtime, and export build scripts.
 
