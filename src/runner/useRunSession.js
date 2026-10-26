@@ -33,6 +33,7 @@ const EMPTY = {
   checkResults: null,
   inspectorCommits: [],
   networkRequests: [],
+  flowTraces: [],
   runId: null,
 };
 
@@ -159,6 +160,8 @@ export function useRunSession({ step, files, apiSource, fixtureControls }) {
               ...previous,
               inspectorCommits: [...previous.inspectorCommits, message.commit],
             };
+          case "flow":
+            return { ...previous, flowTraces: [...previous.flowTraces, message.trace] };
           case "network": {
             const request = message.request;
             const known = previous.networkRequests.some((entry) => entry.id === request.id);
@@ -221,6 +224,7 @@ export function useRunSession({ step, files, apiSource, fixtureControls }) {
     inspectorCommits: state.inspectorCommits,
     latestCommit: state.inspectorCommits.at(-1) ?? null,
     networkRequests: state.networkRequests,
+    flowTraces: state.flowTraces,
     send,
     runId: state.runId,
   };

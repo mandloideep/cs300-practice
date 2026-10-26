@@ -4,8 +4,11 @@
 // work in this commit, the DOM it rendered, where it is declared, and the JSX line that used it.
 // Each commit is pushed to __LAB__.inspector.commits, stored as __LAB__.inspector.latest, and
 // posted to the parent. It also draws the overlay (boundary boxes, labels, re-render flashes)
-// in a fixed layer inside this document. See docs/CONTRACTS.md section 4.3 and docs/DESIGN.md
-// section 5.
+// in a fixed layer inside this document, and it records the flow trace: the runtime wrappers
+// report every call of a labeled handler, prop, or setter to __LAB__.flow, and each trace is
+// closed by the next commit (or one frame later when nothing committed), pushed to
+// __LAB__.inspector.traces, and posted as a `flow` message. See docs/CONTRACTS.md section 4.3
+// and docs/DESIGN.md section 5.
 //
 // The fiber fields read here (tag, type, child, sibling, return, memoizedProps, memoizedState,
 // stateNode, flags, alternate, _debugStack) are React internals; the runtime is pinned and the
@@ -98,8 +101,10 @@ function installInspector() {
   }
 
   // useState and useReducer hooks have a queue with a dispatch function; effects, refs, and
-  // memos do not. `hook` is the position in the component's hook list.
-  function stateOf(fiber) {
+  // memos do not. `hook` is the position in the component's hook list. The dispatch function
+  // is the one the wrapped useState returned to the component, so it is remembered here to map
+  // a setter call in the flow trace back to this instance and hook.
+  function stateOf(fiber, id) {
     if (fiber.tag === ClassComponent) {
       return fiber.memoizedState == null
         ? []
@@ -111,6 +116,7 @@ function installInspector() {
     while (hook && typeof hook === "object" && "next" in hook && index < 100) {
       if (hook.queue && typeof hook.queue.dispatch === "function") {
         state.push({ hook: index, value: lab.serialize(hook.memoizedState) });
+        setters.set(hook.queue.dispatch, { id, hook: index });
       }
       hook = hook.next;
       index += 1;
@@ -189,7 +195,7 @@ function installInspector() {
             name,
             parentId,
             props: lab.serialize(node.memoizedProps ?? {}),
-            state: stateOf(node),
+            state: stateOf(node, id),
             rendered: didRender(node, rootState.previous),
             rects: rectsOf(nodes),
             declaredAt: declaredAt(name, used),
@@ -223,6 +229,7 @@ function installInspector() {
       lab.inspector.latest = commit;
       lab.post({ type: "inspector", commit });
       overlay.update(commit);
+      flow.onCommit(commit);
     } catch (error) {
       lab.originalConsole.warn.call(
         console,
@@ -249,13 +256,181 @@ function installInspector() {
     setStrictMode() {},
   };
 
+  // Flow trace ---------------------------------------------------------------------------------
+
+  // Real dispatch function of each useState or useReducer hook -> { id, hook }, filled per commit.
+  const setters = new WeakMap();
+
+  // DOM events whose dispatch is remembered so a setter called from a plain addEventListener
+  // handler still reports the event it ran in, with no handler owner.
+  const NATIVE_EVENTS = [
+    "click",
+    "dblclick",
+    "input",
+    "change",
+    "submit",
+    "reset",
+    "keydown",
+    "keyup",
+    "pointerdown",
+    "pointerup",
+    "mousedown",
+    "mouseup",
+    "touchstart",
+    "touchend",
+    "focusin",
+    "focusout",
+  ];
+
+  function round(value) {
+    return Math.round(value * 10) / 10;
+  }
+
+  // Runs `callback` once after one animation frame, or after 250ms when frames do not run.
+  function afterFrame(callback) {
+    let done = false;
+    const once = () => {
+      if (done) return;
+      done = true;
+      callback();
+    };
+    requestAnimationFrame(() => setTimeout(once, 0));
+    setTimeout(once, 250);
+  }
+
+  function isEvent(value) {
+    if (value instanceof Event) return true;
+    return Boolean(value) && typeof value === "object" && value.nativeEvent instanceof Event;
+  }
+
+  function describeEvent(event, handlerOwner) {
+    const target = event.target;
+    return {
+      type: event.type ?? null,
+      target: target && typeof target === "object" ? lab.serialize(target) : null,
+      handlerOwner,
+    };
+  }
+
+  function serializeArgument(value) {
+    return isEvent(value) ? `[Event ${value.type}]` : lab.serialize(value);
+  }
+
+  lab.inspector.traces = [];
+
+  const flow = (() => {
+    let open = null;
+    let count = 0;
+    const handlers = [];
+    let native = null;
+
+    function start() {
+      count += 1;
+      const context = handlers.at(-1) ?? native;
+      const trace = {
+        id: `t${count}`,
+        seq: count,
+        startTime: round(performance.now()),
+        duration: 0,
+        event: context ? { ...context } : null,
+        entries: [],
+        rendered: [],
+        commitSeq: null,
+      };
+      open = trace;
+      afterFrame(() => {
+        if (open === trace) close([], null);
+      });
+      return trace;
+    }
+
+    function close(rendered, commitSeq) {
+      const trace = open;
+      open = null;
+      trace.rendered = rendered;
+      trace.commitSeq = commitSeq;
+      trace.duration = round(performance.now() - trace.startTime);
+      lab.inspector.traces.push(trace);
+      lab.post({ type: "flow", trace });
+    }
+
+    // Called by the wrappers before a labeled function runs. `original` is the function the
+    // wrapper stands for, `change` is { previous, next } for a setter and null otherwise.
+    function enter(owner, original, args, change) {
+      if (owner.kind === "handler") {
+        const event = args[0];
+        handlers.push(
+          isEvent(event)
+            ? describeEvent(event, owner.component)
+            : { type: null, target: null, handlerOwner: owner.component },
+        );
+        if (!open) start();
+        return true;
+      }
+      const trace = open ?? start();
+      const time = round(performance.now() - trace.startTime);
+      if (owner.kind === "prop") {
+        trace.entries.push({
+          kind: "prop-call",
+          time,
+          prop: owner.prop,
+          passedBy: owner.component,
+          calledIn: owner.to ?? null,
+          args: args.map(serializeArgument),
+        });
+      } else if (owner.kind === "setter") {
+        trace.entries.push({
+          kind: "setter",
+          time,
+          component: owner.component,
+          hook: setters.get(original)?.hook ?? null,
+          hookName: owner.hook,
+          previous: change ? lab.serialize(change.previous) : null,
+          next: change ? lab.serialize(change.next) : null,
+        });
+      }
+      return false;
+    }
+
+    function exit(isHandler) {
+      if (isHandler) handlers.pop();
+    }
+
+    function onCommit(commit) {
+      if (!open) return;
+      close(
+        commit.components.filter((component) => component.rendered).map((c) => c.name),
+        commit.seq,
+      );
+    }
+
+    // Dispatch is synchronous within its task, so a timer set at capture time clears the context
+    // after every listener, including ones added to window after this one, has run.
+    for (const type of NATIVE_EVENTS) {
+      window.addEventListener(
+        type,
+        (event) => {
+          const context = describeEvent(event, null);
+          native = context;
+          setTimeout(() => {
+            if (native === context) native = null;
+          }, 0);
+        },
+        true,
+      );
+    }
+
+    return { enter, exit, onCommit };
+  })();
+  lab.flow = flow;
+
   // Overlay ------------------------------------------------------------------------------------
 
   const overlayNodes = new Map();
 
   const overlay = (() => {
     let views = new Set(["boundaries", "flash", "tree"]);
-    let highlighted = null;
+    let highlighted = new Set();
     let commit = null;
     let frame = 0;
     const flashing = new Map();
@@ -323,7 +498,7 @@ function installInspector() {
       const placedLabels = [];
 
       for (const component of commit.components) {
-        const isHighlighted = component.id === highlighted;
+        const isHighlighted = highlighted.has(component.id);
         if (!showBoxes && !isHighlighted) continue;
         const rects = liveRects(component.id, component.rects);
         if (rects.length === 0) continue;
@@ -424,7 +599,10 @@ function installInspector() {
         views = new Set(message.views);
         schedule();
       } else if (message.type === "inspector-highlight") {
-        highlighted = message.componentId ?? null;
+        const ids = Array.isArray(message.componentIds)
+          ? message.componentIds
+          : [message.componentId].filter(Boolean);
+        highlighted = new Set(ids);
         schedule();
       }
     });
