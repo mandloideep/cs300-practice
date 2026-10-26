@@ -5,11 +5,41 @@ import path from "node:path";
 
 const topicsDir = path.join(import.meta.dirname, "..", "..", "content", "topics");
 
+const unquote = (value) => value?.replace(/^(["'])(.*)\1$/, "$2") ?? null;
+
+// "[a, b]" -> ["a", "b"]; anything else -> null.
+function list(value) {
+  if (!value || !/^\[.*\]$/.test(value)) return null;
+  return value
+    .slice(1, -1)
+    .split(",")
+    .map((item) => unquote(item.trim()))
+    .filter(Boolean);
+}
+
+// The small YAML subset step.md uses: top-level scalars and lists, plus one level of nesting
+// under `inspector` and `api`.
 function frontMatter(markdown) {
   const block = /^---\n([\s\S]*?)\n---/.exec(markdown)?.[1] ?? "";
   const field = (name) => new RegExp(`^${name}:\\s*(.+)$`, "m").exec(block)?.[1].trim() ?? null;
-  const unquote = (value) => value?.replace(/^(["'])(.*)\1$/, "$2") ?? null;
-  return { title: unquote(field("title")), mode: field("mode") };
+  const nested = (parent, name) =>
+    new RegExp(`^${parent}:\\n(?:[ \\t]+.+\\n?)*?[ \\t]+${name}:\\s*(.+)$`, "m")
+      .exec(block)?.[1]
+      .trim() ?? null;
+  return {
+    title: unquote(field("title")),
+    mode: field("mode"),
+    entry: field("entry"),
+    required: list(field("required")),
+    inspector: /^inspector:/m.test(block)
+      ? { views: list(nested("inspector", "views")), watch: list(nested("inspector", "watch")) }
+      : null,
+  };
+}
+
+// The ids of the results a check.js returns, read from its `id: "..."` lines.
+function checkIds(source) {
+  return [...new Set([...source.matchAll(/^\s*id:\s*"([\w-]+)"/gm)].map((match) => match[1]))];
 }
 
 // The check arguments a step's check.js destructures that are not delivered yet.
@@ -37,10 +67,17 @@ export function allSteps() {
         n: index + 1,
         ...meta,
         hasCheck: Boolean(check),
+        checkIds: check ? checkIds(check) : [],
         checkDependsOn: check ? checkDependencies(check) : [],
         hasLocal: existsSync(path.join(stepDir, "local")),
       });
     });
   }
   return steps;
+}
+
+export function stepById(id) {
+  const step = allSteps().find((candidate) => candidate.id === id);
+  if (!step) throw new Error(`No step ${id} under content/topics/`);
+  return step;
 }
