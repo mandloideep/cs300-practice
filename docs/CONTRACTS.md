@@ -313,7 +313,7 @@ const run = buildRun({
   files,            // { "index.html": "...", "src/main.jsx": "...", ... }
   entry,            // "src/main.jsx" or "index.html"
   runtimeBase,      // import.meta.env.BASE_URL + "runtime/"
-  env,              // { API_BASE: "https://..." }
+  env,              // { API_BASE: "https://...", API_SOURCE: "fixtures" | "preset" | "custom" }
   fixtures,         // { routes: [...], bodies: { "products.json": "..." } } or null
   fixtureControls,  // { latencyMs: 0, errorStatus: null, malformedBody: false, dropConnection: false }
   check,            // check.js source or null
@@ -504,7 +504,7 @@ The editor and layout stream creates `src/inspector/InspectorPane.jsx`, `src/net
 
 ```jsx
 <InspectorPane session={session} step={step} onJumpToCode={({ file, line }) => ...} />
-<NetworkPane session={session} onJumpToCode={({ file, line }) => ...} />
+<NetworkPane session={session} apiSource={apiSource} presets={presets} onJumpToCode={({ file, line }) => ...} />
 <ApiSourceSelector presets={presets} value={apiSource} onChange={setApiSource} fixturesAvailable={Boolean(step.fixtures)} fixtureControls={fixtureControls} onFixtureControlsChange={setFixtureControls} />
 ```
 
@@ -531,3 +531,4 @@ The custom base URL is saved in `localStorage` under `cs300-lab:custom-base:<top
 - 2026-10-26: Edit block semantics pinned (fence content minus final newline, exact anchor lines, first occurrence, `\n` for multi-line anchors) at the request of the topics-b author.
 - 2026-10-26: `useRunSession.js` belongs to the editor and layout stream; the runner delivers `buildRun`, the bridge parts, and a `__LAB__` global; `declarations` travel in the run result.
 - 2026-10-26: The inspector overlay lives inside the iframe; the iframe posts `inspector-select` when a label is clicked.
+- 2026-10-26: `env` carries `API_SOURCE` beside `API_BASE` (in `buildRun` and `set-api`) so the fetch shim can label a request's `source`; `NetworkPane` also receives `apiSource` and `presets`. Requested by the network stream.
