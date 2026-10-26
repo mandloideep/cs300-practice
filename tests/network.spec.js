@@ -336,3 +336,181 @@ test.describe("API source selector on the step page", () => {
     await expect(page.locator(".network-empty")).toContainText("Fixtures");
   });
 });
+
+// Stale and duplicate requests (Phase 3), marked on the record by the fetch shim and badged in
+// the network pane and the flow view.
+
+const PROGRESS_KEY = "cs300-lab:progress";
+
+const API = `export async function loadProducts(signal) {
+  const response = await fetch(import.meta.env.API_BASE + "/products?limit=8", { signal });
+  const data = await response.json();
+  return data.products;
+}
+`;
+
+const DUPLICATE_APP = `import { useEffect, useState } from "react";
+import { loadProducts } from "./api.js";
+
+export default function App() {
+  const [count, setCount] = useState(null);
+
+  useEffect(() => {
+    loadProducts().then((products) => setCount(products.length));
+  }, []);
+
+  return <p id="count">{count === null ? "Loading" : \`\${count} products\`}</p>;
+}
+`;
+
+const STALE_APP = `import { useState } from "react";
+import { loadProducts } from "./api.js";
+
+export default function App() {
+  const [count, setCount] = useState(null);
+
+  async function load() {
+    const products = await loadProducts();
+    setCount(products.length);
+  }
+
+  return (
+    <>
+      <button type="button" id="load" onClick={load}>
+        Load
+      </button>
+      <p id="count">{count === null ? "Nothing yet" : \`\${count} products\`}</p>
+    </>
+  );
+}
+`;
+
+// Opens the fetch step with `app` in place of its src/App.jsx and a finished src/api.js, as a
+// student's saved edits.
+async function openStepWith(page, app) {
+  await page.addInitScript(
+    ([key, value]) => {
+      if (!sessionStorage.getItem("cs300-test:seeded")) {
+        localStorage.setItem(key, JSON.stringify(value));
+        sessionStorage.setItem("cs300-test:seeded", "1");
+      }
+    },
+    [
+      PROGRESS_KEY,
+      {
+        version: 1,
+        completed: {},
+        files: { "lists-and-keys/5": { "src/App.jsx": app, "src/api.js": API } },
+      },
+    ],
+  );
+  await page.goto(STEP_PAGE);
+  await expect(page.locator(".pane--result .status-pill")).toHaveText("Ready", {
+    timeout: 15_000,
+  });
+  return page.frames().find((candidate) => candidate.url().startsWith("about:srcdoc"));
+}
+
+test.describe("stale and duplicate requests", () => {
+  test("an aborted first request under the development double effect is neither", async ({
+    page,
+  }) => {
+    await openHarness(page);
+    const result = await runStep(page);
+    const finals = requestsOf(result).map((updates) => updates.at(-1));
+    expect(finals.map((record) => [record.state, record.stale, record.duplicateOf])).toEqual([
+      ["aborted", false, null],
+      ["ok", false, null],
+    ]);
+    expect(
+      requestsOf(result)
+        .flat()
+        .every((record) => "stale" in record && "duplicateOf" in record),
+    ).toBe(true);
+  });
+
+  test("an effect without cleanup under Strict Mode shows a duplicate badge in the network pane", async ({
+    page,
+  }) => {
+    await openStepWith(page, DUPLICATE_APP);
+    const rows = page.locator(".network-row");
+    await expect(rows).toHaveCount(2);
+    await expect(rows.nth(0).locator(".state-badge--duplicate")).toHaveCount(0);
+    const badge = rows.nth(1).locator(".state-badge--duplicate");
+    await expect(badge).toHaveText(/^duplicate/);
+    await expect(badge).toHaveAttribute("title", /still pending/);
+    await expect(badge.locator(".visually-hidden")).toContainText("requested twice");
+    await expect(rows.nth(1)).toHaveAttribute("aria-label", /, ok, duplicate of r1,/);
+    await rows
+      .nth(1)
+      .getByRole("button", { name: /Details for/ })
+      .click();
+    const detail = page.locator(".network-detail-row");
+    await expect(detail).toContainText("Duplicate");
+    await expect(detail).toContainText("identical request from the same line (r1)");
+  });
+
+  test("a slow request that settles after a newer one shows a stale badge in both panes", async ({
+    page,
+  }) => {
+    const frame = await openStepWith(page, STALE_APP);
+    const result = page.frameLocator("iframe.result-frame");
+    const latency = page.getByLabel("Latency (ms)");
+
+    await latency.fill("400");
+    await expect
+      .poll(() => frame.evaluate(() => globalThis.__LAB__.fixtureControls.latencyMs))
+      .toBe(400);
+    await result.locator("#load").click();
+    await expect(page.locator(".network-row--pending")).toHaveCount(1);
+
+    await latency.fill("0");
+    await expect
+      .poll(() => frame.evaluate(() => globalThis.__LAB__.fixtureControls.latencyMs))
+      .toBe(0);
+    await result.locator("#load").click();
+
+    const rows = page.locator(".network-row");
+    await expect(rows).toHaveCount(2);
+    await expect(page.locator(".network-row--ok")).toHaveCount(2);
+    const badge = rows.nth(0).locator(".state-badge--stale");
+    await expect(badge).toHaveText(/^stale/);
+    await expect(badge).toHaveAttribute("title", /finished first/);
+    await expect(rows.nth(0)).toHaveAttribute("aria-label", /, ok, stale,/);
+    await expect(rows.nth(0).locator(".state-badge--duplicate")).toHaveCount(0);
+    // The second request asked for the same URL from the same line while the first was still
+    // pending, so it is a duplicate as well; only the first is stale.
+    await expect(rows.nth(1).locator(".state-badge--stale")).toHaveCount(0);
+    await expect(rows.nth(1).locator(".state-badge--duplicate")).toHaveText(/^duplicate/);
+    await expect(rows.nth(1)).toHaveAttribute("aria-label", /, ok, duplicate of r1,/);
+
+    await page.getByRole("button", { name: "Flow trace" }).click();
+    const timeline = page.locator(".flow-timeline");
+    await expect(timeline.locator(".flow-row--response")).toHaveCount(1);
+    await expect(timeline.locator(".flow-row--response .state-badge--stale")).toHaveText(/^stale/);
+    await expect(timeline.locator(".flow-row--response .flow-row__button")).toHaveAttribute(
+      "aria-label",
+      /^Response: fetch settled: GET \/products\?limit=8 ok 200 in \d+ ms, stale$/,
+    );
+    await timeline.locator(".flow-row--response .flow-row__button").click();
+    await expect(page.getByRole("tab", { name: "src/api.js" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    await expect(page.locator(".cm-activeLine")).toContainText("await fetch(");
+
+    await page.getByRole("button", { name: "Trace 2" }).click();
+    await expect(timeline.locator(".flow-row--request .flow-row__button")).toHaveAttribute(
+      "aria-label",
+      /^Request: fetch started: GET \/products\?limit=8, duplicate of r1$/,
+    );
+    await expect(timeline.locator(".flow-row--request .state-badge--duplicate")).toHaveText(
+      /^duplicate/,
+    );
+    await page.getByRole("button", { name: "Trace 1" }).click();
+    await expect(timeline.locator(".flow-row--request .flow-row__button")).toHaveAttribute(
+      "aria-label",
+      /^Request: fetch started: GET \/products\?limit=8, stale$/,
+    );
+  });
+});

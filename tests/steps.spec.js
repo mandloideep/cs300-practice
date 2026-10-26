@@ -10,13 +10,12 @@ const EXPECTED_CONSOLE_ERRORS = {
   "lists-and-keys/01-render-with-map": [/unique "key" prop/],
 };
 
-// The toggle label of each inspector view the pane renders. `flow` is pinned in CONTRACTS 4.3 and
-// arrives with the inspector stream of Phase 2; until its toggle exists, a step that opens on it
-// is checked for its other views only.
+// The toggle label of each inspector view the pane renders.
 const VIEW_LABELS = {
   boundaries: "Boundaries",
   flash: "Re-render flash",
   tree: "Tree and state",
+  flow: "Flow trace",
 };
 
 const steps = allSteps();
@@ -123,9 +122,7 @@ test.describe("the flow trace of a lifting-state interaction", () => {
       .filter((message) => message.type === "flow")
       .map((message) => message.trace);
 
-  // The bridge does not post `flow` messages yet: the trace is built on the inspector branch of
-  // Phase 2 (milestones 1 and 2). Drop the fixme once that branch is merged.
-  test.fixme("step 4 solution: a submit in the child form traces the event, onAdd, setItems, and the render set", async ({
+  test("step 4 solution: a submit in the child form traces the event, onAdd, setItems, and the render set", async ({
     page,
   }) => {
     const step = stepById("events-and-lifting-state/04-add-to-a-list-in-the-parent");

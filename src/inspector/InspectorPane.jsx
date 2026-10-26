@@ -1,10 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import FlowView from "./FlowView.jsx";
+import { jumpTarget } from "./jump.js";
+import LiveRegion from "../ui/LiveRegion.jsx";
 import "./inspector.css";
 
 const VIEWS = [
   { id: "boundaries", label: "Boundaries" },
   { id: "flash", label: "Re-render flash" },
   { id: "tree", label: "Tree and state" },
+  { id: "flow", label: "Flow trace" },
 ];
 const DEFAULT_VIEWS = ["boundaries", "flash", "tree"];
 
@@ -96,7 +100,7 @@ function ComponentRow({ component, previousById, selectedId, onHighlight, onJump
           onFocus={() => onHighlight(component.id)}
           onBlur={() => onHighlight(null)}
           onClick={() => {
-            const target = component.declaredAt ?? component.usedAt;
+            const target = jumpTarget(component.declaredAt, component.usedAt);
             if (target) onJumpToCode(target);
           }}
           aria-label={`${component.name}${declared ? `, declared at ${declared}` : ""}${component.rendered ? ", rendered in the latest commit" : ""}${noDom ? ", no DOM of its own" : ""}`}
@@ -149,14 +153,32 @@ function ComponentRow({ component, previousById, selectedId, onHighlight, onJump
   );
 }
 
-export default function InspectorPane({ session, step, onJumpToCode }) {
-  const { inspectorCommits, latestCommit, runId, status, send } = session;
+// `announce` is optional: when the step page passes its live-region function the pane shares
+// that region, and otherwise it renders a polite region of its own for the flow announcements.
+export default function InspectorPane({ session, step, onJumpToCode, announce }) {
+  const {
+    inspectorCommits,
+    latestCommit,
+    flowTraces = [],
+    networkRequests = [],
+    runId,
+    status,
+    send,
+  } = session;
   const [views, setViews] = useState(() => step.inspector?.views ?? DEFAULT_VIEWS);
   const [selected, setSelected] = useState({ runId: null, id: null });
+  const [ownMessage, setOwnMessage] = useState(null);
+  const ownCounter = useRef(0);
   const selectedId = selected.runId === runId ? selected.id : null;
   const paneRef = useRef(null);
   const jumpRef = useRef(onJumpToCode);
   const hasCommits = inspectorCommits.length > 0;
+
+  const ownAnnounce = useCallback((text) => {
+    ownCounter.current += 1;
+    setOwnMessage({ id: ownCounter.current, text });
+  }, []);
+  const announceTrace = announce ?? ownAnnounce;
 
   useEffect(() => {
     jumpRef.current = onJumpToCode;
@@ -172,7 +194,7 @@ export default function InspectorPane({ session, step, onJumpToCode }) {
       if (message?.source !== "cs300-lab" || message.type !== "inspector-select") return;
       if (!runId || message.runId !== runId) return;
       setSelected({ runId, id: message.componentId });
-      const target = message.usedAt ?? message.declaredAt;
+      const target = jumpTarget(message.usedAt, message.declaredAt);
       if (target) jumpRef.current(target);
     }
     window.addEventListener("message", onMessage);
@@ -205,8 +227,14 @@ export default function InspectorPane({ session, step, onJumpToCode }) {
     send({ type: "inspector-highlight", componentId });
   }
 
+  const highlightMany = useCallback(
+    (componentIds) => send({ type: "inspector-highlight", componentIds }),
+    [send],
+  );
+
   const rowProps = { previousById, selectedId, onHighlight: highlight, onJumpToCode };
   const showTree = views.includes("tree");
+  const showFlow = views.includes("flow");
 
   let empty = null;
   if (!hasCommits) {
@@ -259,13 +287,28 @@ export default function InspectorPane({ session, step, onJumpToCode }) {
 
       {empty ? (
         <p className="meta inspector-empty">{empty}</p>
-      ) : !showTree ? (
+      ) : !showTree && !showFlow ? (
         <p className="meta inspector-empty">
-          Turn on Tree and state to see each component with its props and state.
+          Turn on Tree and state to see each component with its props and state, or Flow trace to
+          follow what a click sets in motion.
         </p>
       ) : (
         <>
-          {pinned.length > 0 && (
+          {showFlow && (
+            <section className="inspector-flow" aria-label="Flow trace">
+              <FlowView
+                traces={flowTraces}
+                inspectorCommits={inspectorCommits}
+                latestCommit={latestCommit}
+                networkRequests={networkRequests}
+                runId={runId}
+                onHighlight={highlightMany}
+                onJumpToCode={onJumpToCode}
+                announce={announceTrace}
+              />
+            </section>
+          )}
+          {showTree && pinned.length > 0 && (
             <div className="inspector-pinned">
               <h3 className="inspector-subheading">Watching</h3>
               <ul className="inspector-tree inspector-tree--root">
@@ -279,18 +322,23 @@ export default function InspectorPane({ session, step, onJumpToCode }) {
               </ul>
             </div>
           )}
-          <h3 className="inspector-subheading">Component tree</h3>
-          <ul className="inspector-tree inspector-tree--root">
-            {tree.map((component) => (
-              <ComponentRow key={component.id} component={component} {...rowProps} />
-            ))}
-          </ul>
-          <p className="meta inspector-help">
-            Select a component to open its declaration. Click a label in the result to jump to the
-            JSX that used it.
-          </p>
+          {showTree && (
+            <>
+              <h3 className="inspector-subheading">Component tree</h3>
+              <ul className="inspector-tree inspector-tree--root">
+                {tree.map((component) => (
+                  <ComponentRow key={component.id} component={component} {...rowProps} />
+                ))}
+              </ul>
+              <p className="meta inspector-help">
+                Select a component to open its declaration. Click a label in the result to jump to
+                the JSX that used it.
+              </p>
+            </>
+          )}
         </>
       )}
+      {!announce && <LiveRegion message={ownMessage} />}
     </section>
   );
 }
