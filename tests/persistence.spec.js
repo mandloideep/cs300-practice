@@ -2,13 +2,15 @@
 // is about what a second run of the same workspace sees in localStorage, which the in-iframe
 // check.js of a step cannot observe: `run({ preserveStorage: true })` (CONTRACTS 4.5) keeps the
 // iframe's storage for the next run, and a plain `run()` clears it first.
+// The iframe's localStorage is a view scoped under SANDBOX_STORAGE_PREFIX (src/runner/index.js),
+// so the harness page reads and seeds the workspace's key through that prefix.
 
 import { expect, test } from "@playwright/test";
 import { openHarness, resultFrame, runStep } from "./support/harness.js";
 
 const READ_STEP = "persistence/02-read-it-back-on-load";
 const VERSIONED_STEP = "persistence/03-version-the-stored-shape";
-const KEY = "saved-for-later";
+const KEY = "cs300-lab:sandbox:saved-for-later";
 
 const problems = (result) =>
   result.messages
@@ -42,9 +44,10 @@ test.describe("saved products survive a reload of the iframe", () => {
     await expect(frame.locator(".lead")).toHaveText("1 of 6 products saved for later.");
   });
 
-  // The runner does not clear the iframe's storage yet: `preserveStorage` on run() is pinned in
-  // CONTRACTS 4.5 and lands with the Phase 3 runtime branch (PHASE3.md milestones 1 and 2).
-  // Drop the fixme once that branch is merged and the harness passes the flag through.
+  // The step page's run() clears the sandbox scope unless `preserveStorage` is true (CONTRACTS
+  // 4.5, useRunSession.js), but the harness run() in src/runner/harness/main.js neither clears it
+  // nor accepts the flag yet, so a plain harness run still sees the previous run's keys. Drop the
+  // fixme once the runtime stream gives the harness the same clearing and flag.
   test.fixme("step 2 solution: a plain run starts from empty storage", async ({ page }) => {
     await runStep(page, READ_STEP, "solution");
     await saveFirstProduct(page);

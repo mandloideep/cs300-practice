@@ -27,8 +27,8 @@ The notice can now tell the truth.
 ```
 
 Run the code and add a product.
-To see the stored string, open your browser's developer tools, choose the Application tab, open Local Storage, and pick this site's address: the key `products` holds the JSON of the list, including the product you added.
-The result page shares the browser's storage with the lab itself, so the key sits next to the lab's own `cs300-lab:` keys.
+To see the stored string, open your browser's developer tools, choose the Application tab, open Local Storage, and pick this site's address: the key `cs300-lab:sandbox:products` holds the JSON of the list, including the product you added.
+The result page shares the browser's storage with the lab itself, so the lab keeps your code's keys in a scope of their own with that prefix; your code sees the key as `products`, and in your own Vite project it would be stored as `products` too.
 
 Nothing reads the value back yet, so a fresh run still starts from the six built-in products.
 Reading it back on load is the subject of the persistence topic, and it takes one more idea, a lazy initial state, that we save for there.

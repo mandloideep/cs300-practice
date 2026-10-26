@@ -39,8 +39,8 @@ The fence starts with a blank line, so the effect sits on its own below the stat
 The effect also runs after the first render, which writes `[]` on load; that is harmless, and the next step makes it correct.
 
 Run the code and save a product.
-To see the stored string, open your browser's developer tools, choose the Application tab, open Local Storage, and pick this site's address: the key `saved-for-later` holds the ids.
-The result page shares storage with the lab itself, so the key sits next to the lab's own `cs300-lab:` keys.
+To see the stored string, open your browser's developer tools, choose the Application tab, open Local Storage, and pick this site's address: the key `cs300-lab:sandbox:saved-for-later` holds the ids.
+The result page shares storage with the lab itself, so the lab keeps your code's keys in a scope of their own with that prefix, and clears that scope before each run so that every step starts clean; your code sees the key as `saved-for-later`, and in your own Vite project it would be stored as `saved-for-later` too.
 
 **Check:** Run the code and save two products.
 The stored value under `saved-for-later` is a JSON array with their two ids.
