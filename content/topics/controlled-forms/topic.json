@@ -1,0 +1,10 @@
+{
+  "id": "controlled-forms",
+  "title": "Controlled forms",
+  "area": "react",
+  "summary": "Make React own what the shopper types by pairing value with onChange, validate as they type, keep several fields in one object, and submit from state. You will see the read-only input mistake and the mutation mistake, both as they look on the screen, and finish by walking the four questions of Thinking in React against the Week 10 product page.",
+  "prerequisites": ["events-and-lifting-state"],
+  "minutes": 60,
+  "updated": "2026-10-26",
+  "changeNote": "First version."
+}

@@ -18,10 +18,11 @@
     {
       "id": "week-11",
       "title": "State, events, and component communication",
-      "intro": "In Week 10 we built the product page: a list of cards rendered from data, split into components that receive props. It could show data but not respond to it, because nothing on the page could change. This week the page comes alive. You will handle a click with an event handler, give a component a value it owns with useState, and watch React re-render only the component whose state changed. Then you will meet the problem every real app runs into, two components that need the same value, and solve it the way React does: move the state up to the parent, pass the value down as a prop, and pass a function down so that a child can ask for a change. In Session 1 we draw that sequence on the board as event, callback prop, setter, and re-render; in these topics the inspector's flow view draws it for you from the clicks you make, so you can check your mental model against what React really did.",
+      "intro": "In Week 10 we built the product page: a list of cards rendered from data, split into components that receive props. It could show data but not respond to it, because nothing on the page could change. This week the page comes alive. You will handle a click with an event handler, give a component a value it owns with useState, and watch React re-render only the component whose state changed. Then you will meet the problem every real app runs into, two components that need the same value, and solve it the way React does: move the state up to the parent, pass the value down as a prop, and pass a function down so that a child can ask for a change. In Session 1 we draw that sequence on the board as event, callback prop, setter, and re-render; in these topics the inspector's flow view draws it for you from the clicks you make, so you can check your mental model against what React really did. In Session 2 the same rule reaches the form fields: React owns what the shopper types, validates it on every keystroke, and adds the new product to the list without changing the array it already holds, which is the one bug this week that produces no error anywhere.",
       "topics": [
         { "id": "state-usestate", "required": true },
-        { "id": "events-and-lifting-state", "required": true }
+        { "id": "events-and-lifting-state", "required": true },
+        { "id": "controlled-forms", "required": true }
       ],
       "localNotes": ["Everything this week runs in the browser. If you want to keep working on your own computer, download a step's workspace and run it with npm install and npm run dev, as you did in Vite project anatomy."]
     }
