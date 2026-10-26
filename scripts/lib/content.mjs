@@ -12,7 +12,7 @@ import { isDirectory, listDirectories, readJson, readTree } from "./files.mjs";
 import { createMarkdown, LANGUAGES } from "./render.mjs";
 
 export const MODES = ["edit", "read", "local"];
-export const VIEWS = ["boundaries", "flash", "tree", "network"];
+export const VIEWS = ["boundaries", "flash", "tree", "flow", "network"];
 const REACT_VIEWS = ["boundaries", "flash", "tree"];
 const STEP_DIR = /^(\d{2})-([a-z0-9]+(?:-[a-z0-9]+)*)$/;
 const EM_DASH = "—";

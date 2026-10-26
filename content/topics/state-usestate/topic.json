@@ -1,0 +1,10 @@
+{
+  "id": "state-usestate",
+  "title": "State and useState",
+  "area": "react",
+  "summary": "Give a component a value it can change with useState, and change it from a click handler. You will reproduce the most common event mistake, watch the re-render flash show exactly which component ran again, and keep several independent values in one component.",
+  "prerequisites": ["lists-and-keys"],
+  "minutes": 50,
+  "updated": "2026-10-26",
+  "changeNote": "First version."
+}

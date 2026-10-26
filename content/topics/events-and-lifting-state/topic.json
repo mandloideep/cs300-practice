@@ -1,0 +1,10 @@
+{
+  "id": "events-and-lifting-state",
+  "title": "Events and lifting state",
+  "area": "react",
+  "summary": "Move a value that two components need up to the parent that contains them, pass it down as a prop, and pass a function down so that a child can ask for a change. You will watch the inspector's flow view draw each click as event, callback prop, setter, and re-render, and add a product to a list in the parent from a child form.",
+  "prerequisites": ["state-usestate"],
+  "minutes": 60,
+  "updated": "2026-10-26",
+  "changeNote": "First version."
+}
