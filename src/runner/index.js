@@ -11,6 +11,29 @@ import { buildSrcdoc, createImportMap, escapeScriptText, inlineJson } from "./sr
 export const IFRAME_SANDBOX =
   "allow-scripts allow-same-origin allow-forms allow-modals allow-popups";
 
+// The result document shares this site's origin, so the bridge keeps the workspace's
+// localStorage and sessionStorage keys under this prefix, apart from the site's own.
+export const SANDBOX_STORAGE_PREFIX = "cs300-lab:sandbox:";
+
+// Removes every key the workspace saved, so the next run starts from empty storage.
+export function clearSandboxStorage() {
+  for (const name of ["localStorage", "sessionStorage"]) {
+    let storage = null;
+    try {
+      storage = window[name];
+    } catch {
+      continue;
+    }
+    if (!storage) continue;
+    const keys = [];
+    for (let i = 0; i < storage.length; i += 1) {
+      const key = storage.key(i);
+      if (key !== null && key.startsWith(SANDBOX_STORAGE_PREFIX)) keys.push(key);
+    }
+    for (const key of keys) storage.removeItem(key);
+  }
+}
+
 const BRIDGE_PARTS = [
   ["core.js", coreSource],
   ["inspector-hook.js", inspectorHookSource],
@@ -139,6 +162,7 @@ export function buildRun({
     checkUrl,
     inspector: Boolean(inspector),
     entryIsModule,
+    storagePrefix: SANDBOX_STORAGE_PREFIX,
   });
   const srcdoc = built.srcdoc.replace(placeholder, () => bridge);
 

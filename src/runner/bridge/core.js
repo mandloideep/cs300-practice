@@ -12,12 +12,101 @@
 //   serialize(value, depth)  plain-JSON form of a value, as for console args
 //   fileForUrl(url)          workspace path for a module blob URL, or null
 //   mapUrls(text)            text with every module blob URL replaced by its workspace path
+//   router                   { attach(controller), report(location) }; the react-router wrapper
+//                            reports each location, posted as a `location` message, and the
+//                            attached controller takes the parent's `navigate` messages
 // and globalThis.__LAB_ENV__, which compiled workspace code reads in place of import.meta.env.
+//
+// The document shares the site's origin, so window.localStorage and window.sessionStorage are
+// replaced with views that keep workspace keys under boot.storagePrefix: the student's code sees
+// only its own keys, cannot touch the site's progress, and a run starts from empty storage
+// unless the parent kept it (docs/CONTRACTS.md section 4.5).
 
 "use strict";
 
 const boot = globalThis.__LAB_BOOT__;
 delete globalThis.__LAB_BOOT__;
+
+// A Storage-like object over `backing` that sees only the keys under `prefix`, including the
+// property forms (storage.name, "name" in storage, Object.keys(storage)) the real one supports.
+function scopedStorage(backing, prefix) {
+  const keys = () => {
+    const list = [];
+    for (let i = 0; i < backing.length; i += 1) {
+      const key = backing.key(i);
+      if (key !== null && key.startsWith(prefix)) list.push(key.slice(prefix.length));
+    }
+    return list;
+  };
+  const storage = {
+    get length() {
+      return keys().length;
+    },
+    key(index) {
+      return keys()[Number(index)] ?? null;
+    },
+    getItem(key) {
+      return backing.getItem(prefix + String(key));
+    },
+    setItem(key, value) {
+      backing.setItem(prefix + String(key), String(value));
+    },
+    removeItem(key) {
+      backing.removeItem(prefix + String(key));
+    },
+    clear() {
+      for (const key of keys()) backing.removeItem(prefix + key);
+    },
+  };
+  return new Proxy(storage, {
+    get(target, property, receiver) {
+      if (typeof property === "symbol" || property in target) {
+        return Reflect.get(target, property, receiver);
+      }
+      return target.getItem(property) ?? undefined;
+    },
+    set(target, property, value) {
+      if (typeof property === "symbol") return false;
+      target.setItem(property, value);
+      return true;
+    },
+    has(target, property) {
+      if (typeof property === "symbol") return false;
+      return property in target || target.getItem(property) !== null;
+    },
+    deleteProperty(target, property) {
+      if (typeof property !== "symbol") target.removeItem(property);
+      return true;
+    },
+    ownKeys() {
+      return keys();
+    },
+    getOwnPropertyDescriptor(target, property) {
+      if (typeof property === "symbol") return undefined;
+      const value = target.getItem(property);
+      if (value === null) return undefined;
+      return { value, writable: true, enumerable: true, configurable: true };
+    },
+  });
+}
+
+if (boot.storagePrefix) {
+  for (const name of ["localStorage", "sessionStorage"]) {
+    let backing = null;
+    try {
+      backing = window[name];
+    } catch {
+      // Storage is blocked in this browser; the workspace sees the same failure it would in Vite.
+    }
+    if (!backing) continue;
+    Object.defineProperty(window, name, {
+      value: scopedStorage(backing, boot.storagePrefix),
+      writable: true,
+      configurable: true,
+      enumerable: true,
+    });
+  }
+}
 
 const LEVELS = ["log", "info", "warn", "error", "debug"];
 const MAX_ITEMS = 100;
@@ -178,6 +267,40 @@ function formatArgs(args) {
   return mapUrls(parts.join(" "));
 }
 
+// The router channel. The react-router wrapper attaches the controller of the router it mounted
+// (`navigate(delta | path)`) and reports each location; the same location twice in a row, as
+// when a development double effect replays the first report, is posted once.
+let routerController = null;
+let lastLocation = null;
+
+const router = {
+  attach(controller) {
+    routerController = controller;
+    return () => {
+      if (routerController === controller) routerController = null;
+    };
+  },
+  report(location) {
+    const next = {
+      pathname: String(location?.pathname ?? "/"),
+      search: String(location?.search ?? ""),
+      hash: String(location?.hash ?? ""),
+      index: Math.max(0, Math.trunc(Number(location?.index)) || 0),
+      length: Math.max(1, Math.trunc(Number(location?.length)) || 1),
+    };
+    if (
+      lastLocation &&
+      ["pathname", "search", "hash", "index", "length"].every(
+        (field) => lastLocation[field] === next[field],
+      )
+    ) {
+      return;
+    }
+    lastLocation = next;
+    post({ type: "location", ...next });
+  },
+};
+
 const lab = {
   runId: boot.runId,
   env,
@@ -194,6 +317,7 @@ const lab = {
   fileForUrl,
   mapUrls,
   originalConsole,
+  router,
 };
 globalThis.__LAB__ = lab;
 
@@ -340,6 +464,13 @@ window.addEventListener("message", (event) => {
   } else if (message.type === "set-api") {
     if (message.env) Object.assign(env, envWith({ ...env, ...message.env }));
     if (message.fixtureControls) lab.fixtureControls = { ...message.fixtureControls };
+  } else if (message.type === "navigate") {
+    if (!routerController) return;
+    if (typeof message.delta === "number" && message.delta !== 0) {
+      routerController.navigate(message.delta);
+    } else if (typeof message.to === "string") {
+      routerController.navigate(message.to);
+    }
   }
 });
 

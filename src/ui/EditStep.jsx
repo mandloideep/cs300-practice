@@ -249,7 +249,7 @@ export default function EditStep({ topic, step, presets, announce, explanation }
             />
           )}
         </section>
-        <ResultPane session={session} onJumpToCode={jumpToCode} />
+        <ResultPane session={session} onJumpToCode={jumpToCode} announce={announce} />
         <ConsolePane session={session} onJumpToCode={jumpToCode} files={files} />
         <InspectorPane
           session={session}

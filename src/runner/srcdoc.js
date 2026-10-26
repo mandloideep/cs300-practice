@@ -10,14 +10,16 @@ import {
   resolvePath,
 } from "./graph.js";
 
-// Output file under runtime/ for each bare specifier.
+// Output file under runtime/ for each bare specifier. react-router always points at the wrapper
+// that runs BrowserRouter and createBrowserRouter on a memory history, because the sandboxed
+// document has no URL to push; the wrapper re-exports everything else from the real module.
 const RUNTIME_FILES = {
   react: "react.js",
   "react-dom": "react-dom.js",
   "react-dom/client": "react-dom-client.js",
   "react/jsx-runtime": "react-jsx-runtime.js",
   "react/jsx-dev-runtime": "react-jsx-dev-runtime.js",
-  "react-router": "react-router.js",
+  "react-router": "wrap/react-router.js",
 };
 
 // With the inspector on, react and react/jsx-dev-runtime point at wrappers that re-export the
