@@ -1,0 +1,11 @@
+[
+  { "id": "html", "title": "HTML" },
+  { "id": "css", "title": "CSS" },
+  { "id": "javascript", "title": "JavaScript" },
+  { "id": "dom", "title": "DOM" },
+  { "id": "fetch", "title": "Fetch" },
+  { "id": "react", "title": "React" },
+  { "id": "routing", "title": "Routing" },
+  { "id": "tooling", "title": "Tooling" },
+  { "id": "enrichment", "title": "Enrichment" }
+]

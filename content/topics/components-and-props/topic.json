@@ -1,0 +1,10 @@
+{
+  "id": "components-and-props",
+  "title": "Components and props",
+  "area": "react",
+  "summary": "Turn repeated markup into components and pass each one the data it should show through props. You will set default values, see why props are read-only, wrap content with children, and map a small page into a component tree.",
+  "prerequisites": ["jsx-rules"],
+  "minutes": 50,
+  "updated": "2026-10-26",
+  "changeNote": "First version."
+}
