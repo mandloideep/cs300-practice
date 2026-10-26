@@ -1,0 +1,63 @@
+[
+  {
+    "id": "jsonplaceholder",
+    "title": "JSONPlaceholder",
+    "baseUrl": "https://jsonplaceholder.typicode.com",
+    "docsUrl": "https://jsonplaceholder.typicode.com/guide/",
+    "endpoints": [
+      { "path": "/posts", "description": "100 posts" },
+      { "path": "/users", "description": "10 users" },
+      { "path": "/todos", "description": "200 to-do items" }
+    ],
+    "responseShape": "A top-level array of objects; a post has userId, id, title, and body.",
+    "rateLimit": "None published; be polite. Writes are accepted and answered but never saved."
+  },
+  {
+    "id": "dummyjson",
+    "title": "DummyJSON",
+    "baseUrl": "https://dummyjson.com",
+    "docsUrl": "https://dummyjson.com/docs/products",
+    "endpoints": [
+      { "path": "/products", "description": "Products, 30 per page by default; ?limit=8 asks for eight" },
+      { "path": "/products/search", "description": "Products whose title matches ?q=phone" },
+      { "path": "/products/category/groceries", "description": "Products in one category" }
+    ],
+    "responseShape": "An object { products, total, skip, limit }; each product has id, title, description, category, price, rating, stock, and more.",
+    "rateLimit": "About 100 requests per window per address, reported in the x-ratelimit-limit and x-ratelimit-remaining response headers."
+  },
+  {
+    "id": "openlibrary",
+    "title": "Open Library search",
+    "baseUrl": "https://openlibrary.org",
+    "docsUrl": "https://openlibrary.org/dev/docs/api/search",
+    "endpoints": [
+      { "path": "/search.json", "description": "Books matching ?q=javascript; add &limit=10 and &fields=key,title,author_name,first_publish_year to keep responses small" }
+    ],
+    "responseShape": "An object { numFound, start, docs }; each doc has key, title, author_name (an array), and first_publish_year.",
+    "rateLimit": "About one request per second for anonymous clients; search can take several seconds, so expect a long pending state."
+  },
+  {
+    "id": "tvmaze",
+    "title": "TVMaze search",
+    "baseUrl": "https://api.tvmaze.com",
+    "docsUrl": "https://www.tvmaze.com/api",
+    "endpoints": [
+      { "path": "/search/shows", "description": "Shows matching ?q=office" },
+      { "path": "/shows/1", "description": "One show by id" }
+    ],
+    "responseShape": "Search answers a top-level array of { score, show }; a show has id, name, genres, premiered, rating.average, and image.",
+    "rateLimit": "At least 20 calls every 10 seconds per address; more than that may answer 429."
+  },
+  {
+    "id": "artic",
+    "title": "Art Institute of Chicago",
+    "baseUrl": "https://api.artic.edu/api/v1",
+    "docsUrl": "https://api.artic.edu/docs/",
+    "endpoints": [
+      { "path": "/artworks/search", "description": "Artworks matching ?q=cats; add &limit=10&fields=id,title,artist_display,image_id" },
+      { "path": "/artworks", "description": "Artworks, 12 per page by default" }
+    ],
+    "responseShape": "An object { pagination, data, info, config }; each item in data has id, title, artist_display, and image_id.",
+    "rateLimit": "60 requests per minute per address for anonymous clients."
+  }
+]
