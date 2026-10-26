@@ -221,7 +221,14 @@ export default function EditStep({ topic, step, presets, announce, explanation }
         <ConsolePane session={session} onJumpToCode={jumpToCode} files={files} />
         <CheckPanel step={step} session={session} />
         <InspectorPane session={session} step={step} onJumpToCode={jumpToCode} />
-        {(step.api || step.fixtures) && <NetworkPane session={session} onJumpToCode={jumpToCode} />}
+        {(step.api || step.fixtures) && (
+          <NetworkPane
+            session={session}
+            onJumpToCode={jumpToCode}
+            apiSource={apiSource}
+            presets={presets}
+          />
+        )}
       </div>
 
       <ConfirmDialog

@@ -26,8 +26,6 @@ export default function ApiSourceSelector({
 }) {
   const id = useId();
   const selected = encode(value);
-  const preset =
-    value?.kind === "preset" ? presets.find((candidate) => candidate.id === value.id) : null;
 
   function choose(event) {
     const next = event.target.value;
@@ -75,51 +73,6 @@ export default function ApiSourceSelector({
             requests from this site, or the browser refuses the response.
           </p>
         </div>
-      )}
-
-      {preset && (
-        <details className="api-source__card">
-          <summary>About {preset.title}</summary>
-          <dl>
-            <dt>Base URL</dt>
-            <dd>
-              <code>{preset.baseUrl}</code>
-            </dd>
-            {preset.endpoints?.length > 0 && (
-              <>
-                <dt>Endpoints</dt>
-                <dd>
-                  <ul>
-                    {preset.endpoints.map((endpoint) => (
-                      <li key={endpoint.path}>
-                        <code>{endpoint.path}</code> {endpoint.description}
-                      </li>
-                    ))}
-                  </ul>
-                </dd>
-              </>
-            )}
-            {preset.responseShape && (
-              <>
-                <dt>Response shape</dt>
-                <dd>{preset.responseShape}</dd>
-              </>
-            )}
-            {preset.rateLimit && (
-              <>
-                <dt>Rate limit</dt>
-                <dd>{preset.rateLimit}</dd>
-              </>
-            )}
-          </dl>
-          {preset.docsUrl && (
-            <p>
-              <a href={preset.docsUrl} target="_blank" rel="noreferrer">
-                {preset.title} documentation
-              </a>
-            </p>
-          )}
-        </details>
       )}
 
       {value?.kind === "fixtures" && fixturesAvailable && fixtureControls && (
