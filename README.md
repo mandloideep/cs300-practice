@@ -8,7 +8,7 @@ The site is deployed to GitHub Pages at <https://mandloideep.github.io/cs300-rea
 Everything runs in the visitor's browser: there is no server, no account, no database, and no analytics.
 
 The design of record is [docs/DESIGN.md](docs/DESIGN.md).
-The Phase 1 scope is in [docs/KICKOFF.md](docs/KICKOFF.md), and the interfaces shared by every part of the code are in [docs/CONTRACTS.md](docs/CONTRACTS.md).
+The Phase 1 scope is in [docs/KICKOFF.md](docs/KICKOFF.md), the Phase 2 plan is in [docs/PHASE2.md](docs/PHASE2.md), and the interfaces shared by every part of the code are in [docs/CONTRACTS.md](docs/CONTRACTS.md).
 
 ## Local setup
 
