@@ -131,6 +131,13 @@ Values may use single or double quotes.
 | `action` | `create`, `replace`, `insert-after`, `insert-before`, `append`, `delete` |
 | `anchor` | For `replace`, `insert-after`, `insert-before`, `delete`: the exact existing line or lines the edit is placed relative to |
 
+Edit block semantics, which the validator and the content build apply identically:
+
+- The code is the fence content with only its final newline removed, so a leading or trailing blank line in the fence is significant and is inserted verbatim.
+- `anchor` is one or more complete lines, matched exactly including indentation, at the first occurrence in the file as it stands after the earlier edit blocks of the same step; a multi-line anchor is written with literal `\n` between lines.
+- `insert-after` places the code on new lines after the last anchor line; `insert-before` places it before the first anchor line; `replace` replaces the anchor lines; `delete` removes them; `append` adds the code after the last line of the file; `create` writes a new file with the code as its content plus a final newline.
+- Files end with exactly one newline after every action.
+
 The content build renders an edit block as a card: file name, the placement sentence derived from `action` and `anchor`, and the highlighted code.
 Ordinary fenced blocks with only a language render as plain highlighted code.
 Collapsible review panels use the `<details><summary>` HTML elements directly in the Markdown.
@@ -514,3 +521,4 @@ The custom base URL is saved in `localStorage` under `cs300-lab:custom-base:<top
 - 2026-10-26: The result iframe uses `allow-same-origin` so that blob URLs made in the parent and the runtime modules load in development as well as on Pages.
 - 2026-10-26: `import.meta.env` is rewritten to a bridge global rather than emulated per module.
 - 2026-10-26: Edit blocks are fenced code blocks with attributes in the info string rather than shortcodes.
+- 2026-10-26: Edit block semantics pinned (fence content minus final newline, exact anchor lines, first occurrence, `\n` for multi-line anchors) at the request of the topics-b author.
