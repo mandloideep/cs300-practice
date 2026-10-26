@@ -13,7 +13,6 @@ import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirro
 import {
   HighlightStyle,
   bracketMatching,
-  foldGutter,
   foldKeymap,
   indentOnInput,
   syntaxHighlighting,
@@ -138,7 +137,6 @@ export function editableExtensions(path, { onRun }) {
   return [
     lineNumbers(),
     highlightActiveLineGutter(),
-    foldGutter(),
     highlightSpecialChars(),
     history(),
     drawSelection(),

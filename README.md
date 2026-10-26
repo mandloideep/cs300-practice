@@ -46,7 +46,7 @@ npm run preview
 | `npm run format` | Formats the code with Prettier |
 | `npm run format:check` | Checks the formatting with Prettier |
 | `npm test` | Runs the Playwright tests against the Vite dev server |
-| `npm run export:d2l` | Writes Brightspace page fragments for a path into `dist-d2l/` |
+| `npm run export:d2l -- <path-id>` | Writes a Brightspace page per unit of a path into `dist-d2l/` |
 
 Prettier does not touch Markdown or `content/`.
 Markdown keeps one sentence per physical line, and the edit blocks in each `step.md` must match their workspace files byte for byte.
@@ -246,6 +246,22 @@ It never copies topic content, so improving a topic improves every path that use
 Every topic id must exist under `content/topics/`, every `required` is `true` or `false`, and `localNotes` is a list of sentences.
 The unit page is `#/path/<path-id>/<unit-id>`, which is the link to post in D2L.
 Run `npm run validate` after editing.
+
+## Exporting a D2L page
+
+The export writes one Brightspace page per unit of a path, built from the compiled content rather than from the Markdown.
+
+```bash
+npm run build:content
+npm run export:d2l -- fall-2026
+```
+
+For each unit, `dist-d2l/<path-id>/<unit-id>.html` is a complete page in the CS300 Brightspace template, ready to upload to Content as an HTML file.
+`dist-d2l/<path-id>/<unit-id>.fragment.html` holds only the page content, for pasting into an existing D2L page that already uses the template.
+Each page has the unit intro, a link to the unit in the lab, the required topics with links to each topic, the optional topics, and the notes about work on your own computer.
+Links point at `https://mandloideep.github.io/cs300-react-lab/`.
+The template is copied into `scripts/export-d2l.mjs` from the Fall course repository's D2L build kit; update the copy there if the build kit's template changes.
+`dist-d2l/` is generated and not committed.
 
 ## Adding an API preset
 

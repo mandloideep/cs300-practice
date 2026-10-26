@@ -682,7 +682,10 @@ kbd {
 }
 
 .step-nav__mode {
-  margin-left: auto;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
 }
 
 /* Progress */
@@ -722,11 +725,5 @@ kbd {
 @media (max-width: 600px) {
   .pane {
     padding: var(--space-3);
-  }
-
-  .step-nav__mode {
-    margin-left: 0;
-    flex-basis: 100%;
-    padding-left: calc(1.75rem + var(--space-3));
   }
 }
