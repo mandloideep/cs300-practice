@@ -136,6 +136,12 @@
   outline-offset: var(--focus-ring-offset);
 }
 
+.network-none {
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+}
+
 .network-table td:last-child {
   text-align: right;
   white-space: nowrap;
@@ -250,5 +256,81 @@
 @container (max-width: 34rem) {
   .network-col-body {
     display: none;
+  }
+}
+
+@container (max-width: 26rem) {
+  .network-table,
+  .network-table tbody,
+  .network-detail-row,
+  .network-detail-row > td {
+    display: block;
+  }
+
+  .network-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .network-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: var(--space-1) var(--space-2);
+    padding: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .network-table .network-row > td {
+    padding: 0;
+    border: 0;
+  }
+
+  .network-method {
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  .network-url {
+    grid-row: 1;
+    grid-column: 2 / 4;
+    width: auto;
+    min-width: 0;
+  }
+
+  .network-table .network-toggle-cell {
+    grid-row: 1;
+    grid-column: 4;
+  }
+
+  .network-state {
+    grid-row: 2;
+    grid-column: 2;
+  }
+
+  .network-status {
+    grid-row: 2;
+    grid-column: 3;
+  }
+
+  .network-time {
+    grid-row: 2;
+    grid-column: 4;
+  }
+
+  .network-detail-row > td {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .network-detail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .network-detail dd + dt {
+    margin-top: var(--space-1);
   }
 }

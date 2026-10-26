@@ -275,17 +275,21 @@ export default function NetworkPane({ session, onJumpToCode, apiSource, presets 
                       <td className="network-url" title={request.url}>
                         {breakable(shortUrl(request))}
                       </td>
-                      <td>
+                      <td className="network-state">
                         <span className={`state-badge state-badge--${request.state}`}>
                           {STATE_LABELS[request.state] ?? request.state}
                         </span>
                       </td>
-                      <td className="network-number">{request.status ?? "-"}</td>
-                      <td className="network-number">{formatDuration(request.duration)}</td>
+                      <td className="network-number network-status">
+                        {request.status ?? <span className="network-none">no status</span>}
+                      </td>
+                      <td className="network-number network-time">
+                        {formatDuration(request.duration)}
+                      </td>
                       <td className="network-col-body">
                         <span className="network-preview">{request.bodyPreview ?? ""}</span>
                       </td>
-                      <td>
+                      <td className="network-toggle-cell">
                         <button
                           type="button"
                           className="network-toggle"
