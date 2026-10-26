@@ -347,7 +347,7 @@ Blob URLs are created in the parent document; `allow-same-origin` is required fo
 | `react-dom/client` | `runtime/react-dom-client.js` |
 | `react/jsx-runtime` | `runtime/react-jsx-runtime.js` |
 | `react/jsx-dev-runtime` | `runtime/react-jsx-dev-runtime.js` |
-| `react-router` | `runtime/react-router.js` |
+| `react-router` | `runtime/wrap/react-router.js`, always; the wrapper imports `runtime/react-router.js` and runs `BrowserRouter` and `createBrowserRouter` on a memory history (Phase 3) |
 
 The inspector stream may point `react` and `react/jsx-dev-runtime` at wrapper modules under `runtime/wrap/` that import the files above; the import map is the only place that changes.
 
@@ -604,3 +604,4 @@ A `local` step keeps its existing download, whose content is the step's `local` 
 - 2026-10-26: `env` carries `API_SOURCE` beside `API_BASE` (in `buildRun` and `set-api`) so the fetch shim can label a request's `source`; `NetworkPane` also receives `apiSource` and `presets`. Requested by the network stream.
 - 2026-10-26: Phase 2 contracts pinned: the `flow` message and trace record (4.3), `componentIds` on `inspector-highlight` (4.4), `flowTraces` on `useRunSession` (4.5), `flow` as an `inspector.views` value, the progress JSON shape (5.1), and the downloaded workspace layout (5.2). Phase 2 ownership is in `docs/PHASE2.md`.
 - 2026-10-26: Phase 3 contracts pinned: the `location` message and `navigate` message, the `request` and `response` flow entries, `stale` and `duplicateOf` on the network record, `preserveStorage` on `run()`, and `location` on `useRunSession`. The router runs on a memory history in the iframe through a `react-router` wrapper. Phase 3 ownership is in `docs/PHASE3.md`.
+- 2026-10-26: `react-router` always resolves to `runtime/wrap/react-router.js`, inspector on or off. The iframe's `localStorage` and `sessionStorage` are Proxy views scoped under `cs300-lab:sandbox:` so student code cannot touch the site's progress, and `run()` clears that scope before each run unless `preserveStorage: true`. Decided by the Phase 3 runtime stream.
