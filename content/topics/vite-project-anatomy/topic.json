@@ -1,0 +1,10 @@
+{
+  "id": "vite-project-anatomy",
+  "title": "Vite project anatomy",
+  "area": "react",
+  "summary": "We create a React project with Vite on your computer and follow how index.html, main.jsx, and App.jsx hand the page to each other. You will write a first component in its own file and build the project into the dist folder that a server can host.",
+  "prerequisites": ["react-mental-model"],
+  "minutes": 40,
+  "updated": "2026-10-26",
+  "changeNote": "First version."
+}
