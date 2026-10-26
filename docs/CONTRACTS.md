@@ -105,7 +105,7 @@ required: [renders-three-items]
 | `title` | yes | Shown in navigation and as the step heading |
 | `mode` | yes | `edit`, `read`, or `local` |
 | `entry` | edit only | Workspace path of the module the runner executes; `index.html` for a workspace with no module entry |
-| `inspector.views` | no | Inspector views that start open: any of `boundaries`, `flash`, `tree`, `network`; default `[boundaries, flash, tree]` for a React workspace and `[]` otherwise |
+| `inspector.views` | no | Inspector views that start open: any of `boundaries`, `flash`, `tree`, `flow`, `network`; default `[boundaries, flash, tree]` for a React workspace and `[]` otherwise |
 | `inspector.watch` | no | Component names the inspector pins at the top of the tree |
 | `api.default` | no | Present when the workspace fetches; `fixtures`, a preset id, or `custom`; the toolbar shows the API source selector only when this field is present |
 | `required` | no | Ids of checks that must pass for the step to count as complete; default is every check the step's `check.js` returns |
@@ -374,6 +374,7 @@ Every message is posted with `window.parent.postMessage(message, "*")` and has `
 | `inspector` | `commit` (below) | After each React commit |
 | `network` | `request` (below) | On each state change of a request |
 | `inspector-select` | `componentId`, `name`, `declaredAt`, `usedAt` | The student clicked a boundary label in the overlay |
+| `flow` | `trace` (below) | After each finished flow trace (Phase 2) |
 
 `args` are serialized to plain JSON: primitives as is, functions as `"[Function name]"`, DOM nodes as `"<tag#id.class>"`, objects and arrays to depth 3 with cycles cut as `"[Circular]"`, errors as `{ name, message, stack }`.
 `file` in `error` is the workspace path, mapped from the blob URL through `moduleUrls`.
@@ -430,6 +431,30 @@ A network request record:
 `source` is `fixtures`, `preset`, `custom`, or `other` for a URL outside the chosen base.
 `calledFrom` is read from the stack at call time and mapped through `moduleUrls`; it is `null` when unknown.
 
+A flow trace (Phase 2):
+
+```json
+{
+  "id": "t4",
+  "seq": 4,
+  "startTime": 1234.5,
+  "duration": 6.2,
+  "event": { "type": "click", "target": "<button.add>", "handlerOwner": "BookmarkForm" },
+  "entries": [
+    { "kind": "prop-call", "time": 0.1, "prop": "onAdd", "passedBy": "App", "calledIn": "BookmarkForm", "args": ["\"React docs\""] },
+    { "kind": "setter", "time": 0.3, "component": "App", "hook": 0, "hookName": "useState", "previous": "[Array(2)]", "next": "[Array(3)]" }
+  ],
+  "rendered": ["App", "BookmarkList"],
+  "commitSeq": 13
+}
+```
+
+- A trace starts when a labeled function (one carrying `__labOwner`) or a React event handler runs while no trace is open, and ends at the next inspector commit, or after one animation frame when nothing committed; then `rendered` is `[]` and `commitSeq` is `null`.
+- `event` is `null` when the trace started outside a DOM event, as in a setter called from an effect or a timer; `handlerOwner` is the component whose JSX attached the handler, or `null`.
+- `entries` are in call order; `args`, `previous`, and `next` use the console `args` serialization.
+- `rendered` lists the names of the components whose fiber performed work in the closing commit, in tree order; `commitSeq` is that commit's `seq`.
+- Nested labeled calls inside one event produce one trace with several entries, never nested traces.
+
 ### 4.4 Messages from the parent to the iframe
 
 Posted with `iframe.contentWindow.postMessage(message, "*")`, with `source: "cs300-lab"` and `runId`.
@@ -438,7 +463,7 @@ Posted with `iframe.contentWindow.postMessage(message, "*")`, with `source: "cs3
 | --- | --- | --- |
 | `run-checks` | | Run `check.js` and reply with `check-results` |
 | `set-api` | `env`, `fixtureControls` | Update the base URL and fixture controls without re-running |
-| `inspector-highlight` | `componentId` or `null` | Highlight the component's rects in the overlay |
+| `inspector-highlight` | `componentId` or `null`; or `componentIds: [...]` (Phase 2) | Highlight the component's rects in the overlay; `componentIds` highlights several at once and an empty array clears, and a message carrying both honors `componentIds` |
 | `inspector-config` | `views: [...]` | Which views are open; the overlay draws only when `boundaries` or `flash` is open |
 
 ### 4.5 Run session hook
@@ -458,6 +483,7 @@ Posted with `iframe.contentWindow.postMessage(message, "*")`, with `source: "cs3
   inspectorCommits,   // array of commits for the current run, newest last
   latestCommit,       // the last inspector commit or null
   networkRequests,    // [{...}] keyed by id, updated in place as states change
+  flowTraces,         // array of flow traces for the current run, newest last (Phase 2)
   send(message),      // post a parent-to-iframe message with runId filled in
   runId
 }
@@ -495,6 +521,8 @@ Directory ownership:
 | `src/runner/bridge/inspector-hook.js`, `src/inspector/`, `public/runtime/wrap/` | Inspector |
 | `src/runner/bridge/fetch-shim.js`, `src/network/` | API sources and network panel |
 | `src/progress/` | Editor and layout (minimal in Phase 1: completed steps and edited files in `localStorage`) |
+
+Phase 2 streams and their ownership are in `docs/PHASE2.md`; where the two tables differ, `docs/PHASE2.md` wins for Phase 2 work.
 | `scripts/build-content.mjs`, `scripts/validate-content.mjs`, `scripts/lib/` | Content pipeline |
 | `scripts/build-runtime.mjs`, `public/runtime/` | Runtime |
 | `scripts/export-d2l.mjs`, `tests/` | Tests, export, deploy |
@@ -514,6 +542,39 @@ The custom base URL is saved in `localStorage` under `cs300-lab:custom-base:<top
 
 `onJumpToCode` opens the named file tab and moves the editor cursor to the line.
 
+### 5.1 Progress JSON (Phase 2)
+
+The `localStorage` key `cs300-lab:progress` and the exported file share one shape:
+
+```json
+{
+  "version": 1,
+  "completed": { "lists-and-keys/2": "2026-10-26T18:00:00.000Z" },
+  "files": { "lists-and-keys/2": { "src/App.jsx": "..." } },
+  "pathId": "fall-2026",
+  "exportedAt": "2026-10-26T18:05:00.000Z"
+}
+```
+
+- `version` is an integer; `importProgress` accepts the current version and every lower one it can upgrade, and rejects a higher one with "This file was exported by a newer version of the lab."
+- `exportedAt` appears only in exported files and is dropped on import.
+- Import replaces the whole snapshot after the student confirms in a dialog; the dialog names how many completed steps the file holds.
+
+### 5.2 Downloaded workspace (Phase 2)
+
+"Download this workspace" on an `edit` step writes `<topic-id>-<n>.zip` with one top-level folder `<topic-id>-<n>/` containing:
+
+| Entry | Content |
+| --- | --- |
+| `package.json` | `name` is the folder name, `private: true`, `type: "module"`, scripts `dev`, `build`, `preview`, dependencies `react` and `react-dom` at the runtime's pinned versions, `react-router` when the workspace imports it, devDependencies `vite` and `@vitejs/plugin-react` at the versions in this repository's `package.json` |
+| `vite.config.js` | `defineConfig({ plugins: [react()] })` |
+| `index.html` | The workspace `index.html` when the workspace has one; otherwise a minimal page with `<div id="root"></div>` and `<script type="module" src="/<entry>"></script>` |
+| `README.md` | The topic title, step title, and the three commands to run |
+| workspace files | The student's edited files for the step when they exist, otherwise the starter, at their workspace paths |
+
+The ZIP never includes the vendored runtime, the wrappers, `check.js`, fixtures, or the solution.
+A `local` step keeps its existing download, whose content is the step's `local` files.
+
 ## 6. Session working rules
 
 - Work on your own branch in your own worktree; commit after each milestone with a clear message and no co-author line; push the branch with `git push -u origin <branch>` after every commit.
@@ -532,3 +593,4 @@ The custom base URL is saved in `localStorage` under `cs300-lab:custom-base:<top
 - 2026-10-26: `useRunSession.js` belongs to the editor and layout stream; the runner delivers `buildRun`, the bridge parts, and a `__LAB__` global; `declarations` travel in the run result.
 - 2026-10-26: The inspector overlay lives inside the iframe; the iframe posts `inspector-select` when a label is clicked.
 - 2026-10-26: `env` carries `API_SOURCE` beside `API_BASE` (in `buildRun` and `set-api`) so the fetch shim can label a request's `source`; `NetworkPane` also receives `apiSource` and `presets`. Requested by the network stream.
+- 2026-10-26: Phase 2 contracts pinned: the `flow` message and trace record (4.3), `componentIds` on `inspector-highlight` (4.4), `flowTraces` on `useRunSession` (4.5), `flow` as an `inspector.views` value, the progress JSON shape (5.1), and the downloaded workspace layout (5.2). Phase 2 ownership is in `docs/PHASE2.md`.
