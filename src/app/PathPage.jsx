@@ -4,10 +4,12 @@ import { loadIndex } from "./content.js";
 import { NotFoundNotice, contentFallback } from "./ContentState.jsx";
 import PageTitle from "./PageTitle.jsx";
 import { countLabel } from "./format.js";
+import { setChosenPath, stepKey, useProgress } from "../progress/store.js";
 
 export default function PathPage() {
   const { pathId } = useParams();
   const index = use(loadIndex());
+  const progress = useProgress();
   const fallback = contentFallback(index, { standalone: true });
   if (fallback) return fallback;
 
@@ -21,6 +23,7 @@ export default function PathPage() {
       </NotFoundNotice>
     );
   }
+  const following = progress.pathId === path.id;
 
   return (
     <>
@@ -28,19 +31,62 @@ export default function PathPage() {
       <div className="page-intro">
         <p className="eyebrow">Path</p>
         <h1>{path.title}</h1>
+        {following ? (
+          <p className="meta">You follow this path, so its weeks appear on the home page.</p>
+        ) : (
+          <button type="button" className="button" onClick={() => setChosenPath(path.id)}>
+            Follow {path.title}
+          </button>
+        )}
       </div>
-      <ol className="card-list">
-        {(path.units ?? []).map((unit) => (
+      <UnitList path={path} index={index.data} headingLevel={2} />
+    </>
+  );
+}
+
+export function unitProgress(unit, index, progress) {
+  const topics = new Map((index.topics ?? []).map((topic) => [topic.id, topic]));
+  let done = 0;
+  let total = 0;
+  for (const entry of unit.topics ?? []) {
+    if (!entry.required) continue;
+    const steps = topics.get(entry.id)?.steps ?? [];
+    total += steps.length;
+    done += steps.filter((step) => progress.completed[stepKey(entry.id, step.n)]).length;
+  }
+  return { done, total };
+}
+
+export function UnitList({ path, index, headingLevel = 2 }) {
+  const progress = useProgress();
+  const Heading = `h${headingLevel}`;
+
+  return (
+    <ol className="card-list">
+      {(path.units ?? []).map((unit) => {
+        const { done, total } = unitProgress(unit, index, progress);
+        return (
           <li key={unit.id}>
             <article className="card">
-              <h2>
+              <Heading>
                 <Link to={`/path/${path.id}/${unit.id}`}>{unit.title}</Link>
-              </h2>
+              </Heading>
               <p className="meta">{countLabel(unit.topics?.length ?? 0, "topic")}</p>
+              {total > 0 && (
+                <p
+                  className={
+                    done === total ? "meta progress-note is-complete" : "meta progress-note"
+                  }
+                >
+                  {done === total
+                    ? "✓ Every required step complete"
+                    : `${done} of ${total} required steps complete`}
+                </p>
+              )}
             </article>
           </li>
-        ))}
-      </ol>
-    </>
+        );
+      })}
+    </ol>
   );
 }
