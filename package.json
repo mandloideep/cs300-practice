@@ -19,7 +19,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "playwright test --pass-with-no-tests",
-    "export:d2l": "node scripts/export-d2l.mjs"
+    "export:d2l": "node scripts/export-d2l.mjs",
+    "verify:runtime": "node scripts/verify-runtime.mjs"
   },
   "dependencies": {
     "react": "19.2.8",

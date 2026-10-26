@@ -1,0 +1,30 @@
+{
+  "builtAt": "2026-10-26T18:18:41.851Z",
+  "nodeEnv": "development",
+  "packages": {
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-router": "8.3.0"
+  },
+  "bundler": {
+    "esbuild": "0.28.2"
+  },
+  "importMap": {
+    "react": "react.js",
+    "react-dom": "react-dom.js",
+    "react-dom/client": "react-dom-client.js",
+    "react/jsx-runtime": "react-jsx-runtime.js",
+    "react/jsx-dev-runtime": "react-jsx-dev-runtime.js",
+    "react-router": "react-router.js"
+  },
+  "files": [
+    "chunk-ILRFSJ7G.js",
+    "chunk-UVTDTBKH.js",
+    "react-dom-client.js",
+    "react-dom.js",
+    "react-jsx-dev-runtime.js",
+    "react-jsx-runtime.js",
+    "react-router.js",
+    "react.js"
+  ]
+}

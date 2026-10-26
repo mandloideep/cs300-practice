@@ -39,6 +39,8 @@ jobs:
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium
 
+      - run: npm run verify:runtime
+
       - run: npm test
 
       - name: Upload Playwright report
