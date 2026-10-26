@@ -1,8 +1,10 @@
 // Inspector tests: the hook's commits for every React step, the overlay inside the result iframe,
-// the runtime wrappers, and the inspector pane on the step page.
+// the runtime wrappers, the inspector pane on the step page, and the editor-to-result link.
 
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { expect, test } from "@playwright/test";
-import { editSteps, openHarness, resultFrame, run, runStep } from "./support/harness.js";
+import { editSteps, openHarness, resultFrame, run, runStep, topicsDir } from "./support/harness.js";
 
 const ofType = (result, type) => result.messages.filter((message) => message.type === type);
 const lastCommit = (result) => ofType(result, "inspector").at(-1)?.commit ?? null;
@@ -439,5 +441,106 @@ test.describe("inspector pane on the step page", () => {
     await timeline.getByRole("button").first().click();
     await expect(page.getByRole("tab", { name: "src/App.jsx", selected: true })).toBeVisible();
     await expect(page.locator(".cm-editor .cm-lineNumbers .cm-activeLineGutter")).toHaveText("12");
+  });
+});
+
+// Viewport center of `word` on the first editor line containing `lineText`, scrolled into view.
+function wordCenter(page, lineText, word) {
+  return page.evaluate(
+    ([lineText, word]) => {
+      const line = [...globalThis.document.querySelectorAll(".cm-line")].find((candidate) =>
+        candidate.textContent.includes(lineText),
+      );
+      if (!line) throw new Error(`No editor line contains ${lineText}`);
+      line.scrollIntoView({ block: "center" });
+      const walker = globalThis.document.createTreeWalker(line, globalThis.NodeFilter.SHOW_TEXT);
+      for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+        const index = node.data.indexOf(word);
+        if (index < 0) continue;
+        const range = globalThis.document.createRange();
+        range.setStart(node, index);
+        range.setEnd(node, index + word.length);
+        const box = range.getBoundingClientRect();
+        return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+      }
+      throw new Error(`The line ${lineText} does not contain ${word}`);
+    },
+    [lineText, word],
+  );
+}
+
+test.describe("editor-to-result link on the step page", () => {
+  const starterApp = readFileSync(
+    path.join(
+      topicsDir,
+      "react-mental-model",
+      "03-only-the-changed-part",
+      "workspace",
+      "src",
+      "App.jsx",
+    ),
+    "utf8",
+  );
+  const declaredLine = lineOf(starterApp, "function ReviewPanel");
+  const usedLine = lineOf(starterApp, "<ReviewPanel />");
+
+  test("the cursor or pointer on a component name highlights its boxes, and jumps flash lines", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.goto("#/topic/react-mental-model/3");
+    const pane = page.locator(".pane--inspector");
+    await expect(pane.getByText(/components? · commit/)).toBeVisible({ timeout: 15_000 });
+    const frame = page.frameLocator('iframe[title="Result of your code"]');
+    const overlay = frame.locator("lab-inspector-overlay");
+    await expect(overlay.locator(".box").first()).toBeAttached();
+    const highlighted = overlay.locator(".box.highlight");
+
+    const declaration = await wordCenter(page, "function ReviewPanel", "ReviewPanel");
+    await page.mouse.click(declaration.x, declaration.y);
+    await expect(highlighted).toHaveCount(1);
+    await expect(highlighted).toHaveAttribute("data-name", "ReviewPanel");
+
+    const tag = await wordCenter(page, "<Header />", "Header");
+    await page.mouse.move(tag.x, tag.y);
+    await expect(highlighted).toHaveAttribute("data-name", "Header");
+    await page.mouse.move(4, 4);
+    await expect(highlighted).toHaveAttribute("data-name", "ReviewPanel");
+
+    const plain = await wordCenter(page, "const total", "total");
+    await page.mouse.click(plain.x, plain.y);
+    await expect(highlighted).toHaveCount(0);
+    const use = await wordCenter(page, "<ReviewPanel />", "ReviewPanel");
+    await page.mouse.click(use.x, use.y);
+    await expect(highlighted).toHaveAttribute("data-name", "ReviewPanel");
+    await page.keyboard.press("Escape");
+    await page.keyboard.press("Tab");
+    await expect(page.locator(".cm-content")).not.toBeFocused();
+    await expect(highlighted).toHaveCount(0);
+
+    const flashed = page.locator(".cm-line.cm-lab-jump");
+    await overlay.locator(".label", { hasText: "ReviewPanel" }).click();
+    await expect(page.locator(".cm-activeLineGutter")).toHaveText(String(usedLine));
+    await expect(flashed).toHaveCount(2);
+    const sourceLines = starterApp.split("\n");
+    expect((await flashed.allTextContents()).map((text) => sourceLines.indexOf(text) + 1)).toEqual([
+      declaredLine,
+      usedLine,
+    ]);
+    await expect(flashed).toHaveCount(0, { timeout: 5_000 });
+
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    const tree = pane.getByRole("button", { name: "Tree and state" });
+    if ((await tree.getAttribute("aria-pressed")) !== "true") await tree.click();
+    await pane
+      .getByRole("button", { name: /^Header\b/ })
+      .first()
+      .click();
+    await expect(page.locator(".cm-activeLineGutter")).toHaveText(
+      String(lineOf(starterApp, "function Header")),
+    );
+    await expect(flashed).toHaveCount(0);
+    await page.waitForTimeout(300);
+    await expect(flashed).toHaveCount(0);
   });
 });

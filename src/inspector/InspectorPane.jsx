@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import FlowView from "./FlowView.jsx";
+import { jumpTarget } from "./jump.js";
 import LiveRegion from "../ui/LiveRegion.jsx";
 import "./inspector.css";
 
@@ -99,7 +100,7 @@ function ComponentRow({ component, previousById, selectedId, onHighlight, onJump
           onFocus={() => onHighlight(component.id)}
           onBlur={() => onHighlight(null)}
           onClick={() => {
-            const target = component.declaredAt ?? component.usedAt;
+            const target = jumpTarget(component.declaredAt, component.usedAt);
             if (target) onJumpToCode(target);
           }}
           aria-label={`${component.name}${declared ? `, declared at ${declared}` : ""}${component.rendered ? ", rendered in the latest commit" : ""}${noDom ? ", no DOM of its own" : ""}`}
@@ -185,7 +186,7 @@ export default function InspectorPane({ session, step, onJumpToCode, announce })
       if (message?.source !== "cs300-lab" || message.type !== "inspector-select") return;
       if (!runId || message.runId !== runId) return;
       setSelected({ runId, id: message.componentId });
-      const target = message.usedAt ?? message.declaredAt;
+      const target = jumpTarget(message.usedAt, message.declaredAt);
       if (target) jumpRef.current(target);
     }
     window.addEventListener("message", onMessage);

@@ -507,6 +507,7 @@ function installInspector() {
         for (const rect of rects) {
           const box = document.createElement("div");
           box.className = isHighlighted ? "box highlight" : "box";
+          box.dataset.name = component.name;
           box.style.setProperty("--hue", hue);
           place(box, rect);
           layer.append(box);

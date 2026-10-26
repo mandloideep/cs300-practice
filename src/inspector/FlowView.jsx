@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { jumpTarget } from "./jump.js";
 
 const HISTORY_LENGTH = 8;
 
@@ -34,7 +35,7 @@ export function traceRows(trace, latestCommit, closingCommit) {
     key,
     kind,
     componentIds: [...new Set(components.map((component) => component.id))],
-    target: components[0]?.declaredAt ?? components[0]?.usedAt ?? null,
+    target: components[0] ? jumpTarget(components[0].declaredAt, components[0].usedAt) : null,
     content,
     text,
   });

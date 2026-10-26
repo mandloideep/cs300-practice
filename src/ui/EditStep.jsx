@@ -215,6 +215,7 @@ export default function EditStep({ topic, step, presets, announce, explanation }
             onChange={onChange}
             onRun={requestRun}
             modifiedFiles={modifiedFiles}
+            session={session}
           />
         </section>
         <ResultPane session={session} onJumpToCode={jumpToCode} />

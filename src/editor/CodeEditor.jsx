@@ -2,12 +2,15 @@ import { useEffect, useImperativeHandle, useRef } from "react";
 import { EditorView } from "@codemirror/view";
 import { Annotation, EditorSelection, EditorState } from "@codemirror/state";
 import { editableExtensions, tabId } from "./setup.js";
+import { flashLines, refreshResultLink, resultLink } from "./resultLink.js";
 import FileTabs from "./FileTabs.jsx";
 
 const external = Annotation.define();
 
 // One EditorView for the workspace; each file keeps its own EditorState, so undo history and
-// cursor position survive switching tabs.
+// cursor position survive switching tabs. With a run `session`, the editor is linked to the
+// result: component names under the cursor or pointer highlight their boxes, and jumps flash
+// their lines.
 export default function CodeEditor({
   ref,
   files,
@@ -16,6 +19,7 @@ export default function CodeEditor({
   onChange,
   onRun,
   modifiedFiles,
+  session = null,
   idPrefix = "editor",
 }) {
   const hostRef = useRef(null);
@@ -23,16 +27,30 @@ export default function CodeEditor({
   const statesRef = useRef(new Map());
   const callbacks = useRef({ onChange, onRun });
   const activeRef = useRef(activeFile);
+  const link = useRef({ components: [], onHighlight: null });
+  const latestCommit = session?.latestCommit ?? null;
+  const send = session?.send ?? null;
 
   useEffect(() => {
     callbacks.current = { onChange, onRun };
   });
+
+  useEffect(() => {
+    link.current = {
+      components: latestCommit?.components ?? [],
+      onHighlight: send
+        ? (componentIds) => send({ type: "inspector-highlight", componentIds })
+        : null,
+    };
+    refreshResultLink(viewRef.current);
+  }, [latestCommit, send]);
 
   function createState(path, doc) {
     return EditorState.create({
       doc,
       extensions: [
         editableExtensions(path, { onRun: () => callbacks.current.onRun?.() }),
+        resultLink({ file: path, link }),
         EditorView.updateListener.of((update) => {
           if (!update.docChanged) return;
           if (update.transactions.some((tr) => tr.annotation(external))) return;
@@ -88,7 +106,10 @@ export default function CodeEditor({
     focus() {
       viewRef.current?.focus();
     },
-    jumpTo({ file, line }) {
+    // `highlight` optionally lists further { file, line } locations to flash along with the
+    // target; only the ones in the file the editor lands on are shown.
+    jumpTo({ file, line, highlight }) {
+      const landing = file && file in files ? file : activeRef.current;
       const apply = () => {
         const view = viewRef.current;
         if (!view) return;
@@ -99,6 +120,10 @@ export default function CodeEditor({
           effects: EditorView.scrollIntoView(target.from, { y: "center" }),
         });
         view.focus();
+        const lines = (highlight ?? [{ file: landing, line }])
+          .filter((location) => location && location.file === landing)
+          .map((location) => Number(location.line));
+        flashLines(view, lines.length > 0 ? lines : [target.number]);
       };
       if (file && file !== activeRef.current && file in files) {
         onActiveFileChange(file);
