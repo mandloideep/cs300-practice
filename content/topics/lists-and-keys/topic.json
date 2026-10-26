@@ -1,0 +1,10 @@
+{
+  "id": "lists-and-keys",
+  "title": "Lists and keys",
+  "area": "react",
+  "summary": "Render arrays of data with .map(), give every item a stable key, and show separate empty and error states. You will refactor a product page into ProductCard and ProductList and then load the products from an API you can switch between fixtures and a real server.",
+  "prerequisites": ["components-and-props"],
+  "minutes": 70,
+  "updated": "2026-10-26",
+  "changeNote": "First version."
+}
