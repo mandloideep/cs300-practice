@@ -15,7 +15,7 @@
     "build:content": "node scripts/build-content.mjs",
     "build:runtime": "node scripts/build-runtime.mjs",
     "validate": "node scripts/validate-content.mjs",
-    "lint": "eslint --no-error-on-unmatched-pattern src scripts tests",
+    "lint": "eslint --no-error-on-unmatched-pattern src scripts tests public/runtime/wrap",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "playwright test --pass-with-no-tests",

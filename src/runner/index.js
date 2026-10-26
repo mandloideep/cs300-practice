@@ -106,7 +106,7 @@ export function buildRun({
     loadScript: (path) => graph.load(path),
     extraStyles: graph.styles,
     bridge: placeholder,
-    importMap: createImportMap(absoluteUrl(runtimeBase)),
+    importMap: createImportMap(absoluteUrl(runtimeBase), { inspector: Boolean(inspector) }),
   });
   diagnostics.push(...built.diagnostics);
 

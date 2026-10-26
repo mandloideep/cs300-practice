@@ -1,0 +1,434 @@
+// Bridge part 2: the inspector hook. It runs after core.js and before React loads, installs the
+// global hook React DevTools uses, and on every React commit walks the fiber tree to describe the
+// function components that rendered: name, parent, props, useState values, whether each one did
+// work in this commit, the DOM it rendered, where it is declared, and the JSX line that used it.
+// Each commit is pushed to __LAB__.inspector.commits, stored as __LAB__.inspector.latest, and
+// posted to the parent. It also draws the overlay (boundary boxes, labels, re-render flashes)
+// in a fixed layer inside this document. See docs/CONTRACTS.md section 4.3 and docs/DESIGN.md
+// section 5.
+//
+// The fiber fields read here (tag, type, child, sibling, return, memoizedProps, memoizedState,
+// stateNode, flags, alternate, _debugStack) are React internals; the runtime is pinned and the
+// Playwright suite asserts this output for every React step, so an upgrade that changes them
+// fails the tests.
+
+"use strict";
+
+const lab = globalThis.__LAB__;
+
+if (lab?.inspectorEnabled && !globalThis.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
+  installInspector();
+}
+
+function installInspector() {
+  // Fiber tags from React 19.2 (ReactWorkTags).
+  const FunctionComponent = 0;
+  const ClassComponent = 1;
+  const HostComponent = 5;
+  const HostText = 6;
+  const ForwardRef = 11;
+  const SimpleMemoComponent = 15;
+  const OffscreenComponent = 22;
+  const HostHoistable = 26;
+  const HostSingleton = 27;
+  const PerformedWork = 1;
+
+  const COMPONENT_TAGS = new Set([
+    FunctionComponent,
+    ClassComponent,
+    ForwardRef,
+    SimpleMemoComponent,
+  ]);
+  const HOST_TAGS = new Set([HostComponent, HostText, HostSingleton]);
+
+  // Elements made by the jsx-dev-runtime wrapper: element._debugStack -> Sucrase's source.
+  const sources = new WeakMap();
+  lab.inspectorSources = sources;
+
+  const ids = new WeakMap();
+  let nextId = 1;
+  let seq = 0;
+  const roots = new Map();
+
+  function idFor(fiber) {
+    let id = ids.get(fiber) ?? (fiber.alternate && ids.get(fiber.alternate));
+    if (!id) id = `c${nextId++}`;
+    ids.set(fiber, id);
+    if (fiber.alternate) ids.set(fiber.alternate, id);
+    return id;
+  }
+
+  function componentName(fiber) {
+    const type = fiber.type;
+    if (typeof type === "function") return type.displayName || type.name || "Anonymous";
+    if (type && typeof type === "object") {
+      const inner = type.render ?? type.type;
+      return type.displayName || inner?.displayName || inner?.name || "Anonymous";
+    }
+    return "Anonymous";
+  }
+
+  // The first frame of a stack that points into a workspace module.
+  function workspaceFrame(stack) {
+    for (const match of String(stack ?? "").matchAll(/(blob:[^\s)]+?):(\d+):(\d+)/g)) {
+      const file = lab.fileForUrl(match[1]);
+      if (file && file !== "check.js") return { file, line: Number(match[2]) };
+    }
+    return null;
+  }
+
+  function usedAt(fiber) {
+    const debugStack = fiber._debugStack;
+    if (!debugStack) return null;
+    const source = sources.get(debugStack);
+    if (source?.fileName) return { file: source.fileName, line: source.lineNumber };
+    return workspaceFrame(debugStack.stack);
+  }
+
+  function declaredAt(name, used) {
+    const declarations = lab.declarations ?? {};
+    if (used && declarations[used.file]?.[name]) {
+      return { file: used.file, line: declarations[used.file][name] };
+    }
+    const files = Object.keys(declarations).filter((file) => declarations[file]?.[name]);
+    // Prefer a file named after the component, such as src/Card.jsx for Card.
+    const own = files.find((file) => file.replace(/^.*\/|\.\w+$/g, "") === name);
+    const file = own ?? files[0];
+    return file ? { file, line: declarations[file][name] } : null;
+  }
+
+  // useState and useReducer hooks have a queue with a dispatch function; effects, refs, and
+  // memos do not. `hook` is the position in the component's hook list.
+  function stateOf(fiber) {
+    if (fiber.tag === ClassComponent) {
+      return fiber.memoizedState == null
+        ? []
+        : [{ hook: 0, value: lab.serialize(fiber.memoizedState) }];
+    }
+    const state = [];
+    let hook = fiber.memoizedState;
+    let index = 0;
+    while (hook && typeof hook === "object" && "next" in hook && index < 100) {
+      if (hook.queue && typeof hook.queue.dispatch === "function") {
+        state.push({ hook: index, value: lab.serialize(hook.memoizedState) });
+      }
+      hook = hook.next;
+      index += 1;
+    }
+    return state;
+  }
+
+  // DOM nodes a component rendered: the host fibers below it, stopping at child components.
+  function hostNodes(fiber) {
+    const nodes = [];
+    const visit = (node) => {
+      for (let child = node.child; child; child = child.sibling) {
+        if (HOST_TAGS.has(child.tag)) {
+          if (child.stateNode) nodes.push(child.stateNode);
+        } else if (child.tag === HostHoistable || COMPONENT_TAGS.has(child.tag)) {
+          continue;
+        } else if (child.tag === OffscreenComponent && child.memoizedState !== null) {
+          continue;
+        } else {
+          visit(child);
+        }
+      }
+    };
+    visit(fiber);
+    return nodes;
+  }
+
+  function rectOf(node) {
+    let rect;
+    if (node.nodeType === Node.TEXT_NODE) {
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      rect = range.getBoundingClientRect();
+    } else if (node.getBoundingClientRect) {
+      rect = node.getBoundingClientRect();
+    } else {
+      return null;
+    }
+    if (rect.width === 0 && rect.height === 0) return null;
+    const round = (value) => Math.round(value * 10) / 10;
+    return {
+      x: round(rect.x),
+      y: round(rect.y),
+      width: round(rect.width),
+      height: round(rect.height),
+    };
+  }
+
+  function rectsOf(nodes) {
+    return nodes.map(rectOf).filter(Boolean);
+  }
+
+  // A fiber performed work in this commit when it is new, or when it is not the very object that
+  // was committed last time (React cloned it) and its PerformedWork flag is set.
+  function didRender(fiber, previous) {
+    if (!fiber.alternate) return true;
+    if (previous.has(fiber)) return false;
+    return (fiber.flags & PerformedWork) === PerformedWork;
+  }
+
+  function walkRoot(root, rootState) {
+    const components = [];
+    const seen = new WeakSet();
+    const visit = (fiber, parentId) => {
+      for (let node = fiber; node; node = node.sibling) {
+        seen.add(node);
+        let nextParent = parentId;
+        if (node.tag === OffscreenComponent && node.memoizedState !== null) continue;
+        if (COMPONENT_TAGS.has(node.tag)) {
+          const id = idFor(node);
+          const name = componentName(node);
+          const used = usedAt(node);
+          const nodes = hostNodes(node);
+          components.push({
+            id,
+            name,
+            parentId,
+            props: lab.serialize(node.memoizedProps ?? {}),
+            state: stateOf(node),
+            rendered: didRender(node, rootState.previous),
+            rects: rectsOf(nodes),
+            declaredAt: declaredAt(name, used),
+            usedAt: used,
+          });
+          overlayNodes.set(id, nodes);
+          nextParent = id;
+        }
+        if (node.child) visit(node.child, nextParent);
+      }
+    };
+    if (root.current?.child) visit(root.current.child, null);
+    rootState.previous = seen;
+    rootState.components = components;
+  }
+
+  function onCommitFiberRoot(_rendererId, root) {
+    try {
+      let rootState = roots.get(root);
+      if (!rootState) {
+        rootState = { previous: new WeakSet(), components: [] };
+        roots.set(root, rootState);
+      }
+      overlayNodes.clear();
+      walkRoot(root, rootState);
+      if (!root.current?.child) roots.delete(root);
+
+      const components = [...roots.values()].flatMap((state) => state.components);
+      const commit = { seq: ++seq, time: performance.now(), components };
+      lab.inspector.commits.push(commit);
+      lab.inspector.latest = commit;
+      lab.post({ type: "inspector", commit });
+      overlay.update(commit);
+    } catch (error) {
+      lab.originalConsole.warn.call(
+        console,
+        "The lab inspector could not read this commit.",
+        error,
+      );
+    }
+  }
+
+  const renderers = new Map();
+  globalThis.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
+    renderers,
+    supportsFiber: true,
+    isDisabled: false,
+    inject(internals) {
+      const id = renderers.size + 1;
+      renderers.set(id, internals);
+      return id;
+    },
+    onCommitFiberRoot,
+    onCommitFiberUnmount() {},
+    onPostCommitFiberRoot() {},
+    onScheduleFiberRoot() {},
+    setStrictMode() {},
+  };
+
+  // Overlay ------------------------------------------------------------------------------------
+
+  const overlayNodes = new Map();
+
+  const overlay = (() => {
+    let views = new Set(["boundaries", "flash", "tree"]);
+    let highlighted = null;
+    let commit = null;
+    let frame = 0;
+    const flashing = new Map();
+
+    const host = document.createElement("lab-inspector-overlay");
+    host.setAttribute("aria-hidden", "true");
+    host.style.cssText =
+      "all: initial !important; position: fixed !important; inset: 0 !important; z-index: 2147483647 !important; pointer-events: none !important; display: block !important;";
+    const shadow = host.attachShadow({ mode: "open" });
+    shadow.innerHTML = `<style>
+      :host { all: initial; }
+      .layer { position: fixed; inset: 0; pointer-events: none; font: 600 11px/1.3 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+      .box { position: fixed; box-sizing: border-box; border: 1.5px solid var(--hue); border-radius: 3px; background: color-mix(in srgb, var(--hue) 6%, transparent); }
+      .box.highlight { border-width: 3px; background: color-mix(in srgb, var(--hue) 22%, transparent); }
+      .label { position: fixed; box-sizing: border-box; max-width: 60vw; padding: 1px 6px; border: 0; border-radius: 3px; background: var(--hue); color: #fff; font: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: auto; cursor: pointer; text-shadow: 0 1px 1px rgb(0 0 0 / 0.35); }
+      .label:hover, .label:focus-visible { max-width: 90vw; z-index: 1; outline: 2px solid #fff; outline-offset: 0; }
+      .label .props { font-weight: 400; opacity: 0.92; }
+      .label:not(:hover):not(:focus-visible) .props { display: none; }
+      .flash { position: fixed; box-sizing: border-box; border: 2px solid #f5a623; border-radius: 3px; background: rgb(245 166 35 / 0.25); animation: pulse 700ms ease-out forwards; }
+      @keyframes pulse { 0% { opacity: 1; } 100% { opacity: 0; } }
+      @media (prefers-reduced-motion: reduce) {
+        .flash { animation: none; opacity: 0.85; background: transparent; border-style: dashed; }
+      }
+    </style><div class="layer"></div>`;
+    const layer = shadow.querySelector(".layer");
+
+    function attach() {
+      if (!host.isConnected) document.documentElement.append(host);
+    }
+
+    function hueFor(name) {
+      let hash = 0;
+      for (const char of name) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
+      return `hsl(${hash % 360} 70% 42%)`;
+    }
+
+    function summarize(props) {
+      const text = Object.entries(props ?? {})
+        .filter(([key]) => key !== "children")
+        .map(
+          ([key, value]) =>
+            `${key}: ${typeof value === "string" ? JSON.stringify(value) : (JSON.stringify(value) ?? "undefined")}`,
+        )
+        .join(", ");
+      return text.length > 90 ? `${text.slice(0, 89)}…` : text;
+    }
+
+    function liveRects(id, fallback) {
+      const nodes = overlayNodes.get(id);
+      return nodes ? rectsOf(nodes) : fallback;
+    }
+
+    function place(element, rect) {
+      element.style.left = `${rect.x}px`;
+      element.style.top = `${rect.y}px`;
+      element.style.width = `${rect.width}px`;
+      element.style.height = `${rect.height}px`;
+    }
+
+    function draw() {
+      frame = 0;
+      layer.replaceChildren();
+      if (!commit) return;
+      const showBoxes = views.has("boundaries");
+      const placedLabels = [];
+
+      for (const component of commit.components) {
+        const isHighlighted = component.id === highlighted;
+        if (!showBoxes && !isHighlighted) continue;
+        const rects = liveRects(component.id, component.rects);
+        if (rects.length === 0) continue;
+        const hue = hueFor(component.name);
+
+        for (const rect of rects) {
+          const box = document.createElement("div");
+          box.className = isHighlighted ? "box highlight" : "box";
+          box.style.setProperty("--hue", hue);
+          place(box, rect);
+          layer.append(box);
+        }
+
+        const label = document.createElement("button");
+        label.type = "button";
+        label.className = "label";
+        label.tabIndex = -1;
+        label.style.setProperty("--hue", hue);
+        label.textContent = component.name;
+        const summary = summarize(component.props);
+        if (summary) {
+          const props = document.createElement("span");
+          props.className = "props";
+          props.textContent = ` ${summary}`;
+          label.append(props);
+        }
+        label.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          lab.post({
+            type: "inspector-select",
+            componentId: component.id,
+            name: component.name,
+            declaredAt: component.declaredAt,
+            usedAt: component.usedAt,
+          });
+        });
+        layer.append(label);
+
+        const height = label.offsetHeight || 16;
+        const width = label.offsetWidth || 60;
+        let x = Math.max(0, rects[0].x);
+        let y = rects[0].y >= height ? rects[0].y - height : rects[0].y;
+        const overlaps = (a) =>
+          placedLabels.some(
+            (b) =>
+              a.x < b.x + b.width &&
+              b.x < a.x + a.width &&
+              a.y < b.y + b.height &&
+              b.y < a.y + a.height,
+          );
+        for (let tries = 0; tries < 12 && overlaps({ x, y, width, height }); tries += 1)
+          x += width + 2;
+        label.style.left = `${x}px`;
+        label.style.top = `${y}px`;
+        placedLabels.push({ x, y, width, height });
+      }
+
+      if (views.has("flash")) {
+        for (const [id, rects] of flashing) {
+          for (const rect of liveRects(id, rects)) {
+            const flash = document.createElement("div");
+            flash.className = "flash";
+            place(flash, rect);
+            layer.append(flash);
+          }
+        }
+      }
+    }
+
+    function schedule() {
+      if (!frame) frame = requestAnimationFrame(draw);
+    }
+
+    function update(next) {
+      commit = next;
+      attach();
+      for (const component of next.components) {
+        if (!component.rendered || component.rects.length === 0) continue;
+        flashing.set(component.id, component.rects);
+        setTimeout(() => {
+          if (flashing.get(component.id) === component.rects) {
+            flashing.delete(component.id);
+            schedule();
+          }
+        }, 700);
+      }
+      schedule();
+    }
+
+    addEventListener("scroll", schedule, { capture: true, passive: true });
+    addEventListener("resize", schedule);
+    addEventListener("message", (event) => {
+      const message = event.data;
+      if (event.source !== window.parent || message?.source !== "cs300-lab") return;
+      if (message.runId !== lab.runId) return;
+      if (message.type === "inspector-config" && Array.isArray(message.views)) {
+        views = new Set(message.views);
+        schedule();
+      } else if (message.type === "inspector-highlight") {
+        highlighted = message.componentId ?? null;
+        schedule();
+      }
+    });
+
+    return { update };
+  })();
+}

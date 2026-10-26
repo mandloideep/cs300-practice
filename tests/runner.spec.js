@@ -1,78 +1,8 @@
 // Runner tests. They drive the dev-only harness at src/runner/harness/index.html, which builds runs
 // with buildRun from src/runner/ and mounts them in the sandboxed result iframe.
 
-import { readFileSync, readdirSync, existsSync } from "node:fs";
-import path from "node:path";
 import { expect, test } from "@playwright/test";
-
-const HARNESS = "src/runner/harness/index.html";
-const topicsDir = path.join(import.meta.dirname, "..", "content", "topics");
-
-function frontMatter(markdown) {
-  const block = /^---\n([\s\S]*?)\n---/.exec(markdown)?.[1] ?? "";
-  const field = (name) => new RegExp(`^${name}:\\s*(.+)$`, "m").exec(block)?.[1].trim() ?? null;
-  const list = field("required");
-  return {
-    mode: field("mode"),
-    entry: field("entry"),
-    required: list
-      ? list
-          .replace(/^\[|\]$/g, "")
-          .split(",")
-          .map((id) => id.trim())
-          .filter(Boolean)
-      : null,
-  };
-}
-
-// Which of the check arguments the step's check.js destructures that this runner cannot fill yet.
-function checkDependencies(source) {
-  const parameters = /export default async function \w*\s*\(\s*\{([^}]*)\}/.exec(source)?.[1] ?? "";
-  return ["inspector", "network"].filter((name) => new RegExp(`\\b${name}\\b`).test(parameters));
-}
-
-function editSteps() {
-  const steps = [];
-  for (const topic of readdirSync(topicsDir).sort()) {
-    const topicDir = path.join(topicsDir, topic);
-    if (!existsSync(path.join(topicDir, "topic.json"))) continue;
-    for (const slug of readdirSync(topicDir).sort()) {
-      const stepFile = path.join(topicDir, slug, "step.md");
-      if (!existsSync(stepFile)) continue;
-      const meta = frontMatter(readFileSync(stepFile, "utf8"));
-      if (meta.mode !== "edit") continue;
-      const checkFile = path.join(topicDir, slug, "check.js");
-      const check = existsSync(checkFile) ? readFileSync(checkFile, "utf8") : null;
-      steps.push({
-        id: `${topic}/${slug}`,
-        ...meta,
-        hasCheck: Boolean(check),
-        checkDependsOn: check ? checkDependencies(check) : [],
-      });
-    }
-  }
-  return steps;
-}
-
-async function openHarness(page) {
-  await page.goto(HARNESS);
-  await page.waitForFunction(() => globalThis.__harness?.ready === true);
-}
-
-function runStep(page, id, variant) {
-  return page.evaluate(
-    ([stepId, which]) => globalThis.__harness.runStep(stepId, which),
-    [id, variant],
-  );
-}
-
-function run(page, options) {
-  return page.evaluate((runOptions) => globalThis.__harness.run(runOptions), options);
-}
-
-function resultFrame(page) {
-  return page.frames().find((frame) => frame.parentFrame() === page.mainFrame());
-}
+import { editSteps, openHarness, resultFrame, run, runStep } from "./support/harness.js";
 
 const ofType = (result, type) => result.messages.filter((message) => message.type === type);
 
@@ -115,10 +45,10 @@ test.describe("solution of every edit step", () => {
       const [checkResults] = ofType(result, "check-results");
       expect(checkResults, "check-results arrived").toBeTruthy();
 
-      if (step.checkDependsOn.length > 0) {
+      if (step.checkDependsOn.includes("network")) {
         test.info().annotations.push({
           type: "check not asserted",
-          description: `check.js reads ${step.checkDependsOn.join(" and ")}, which later streams fill`,
+          description: "check.js reads network, which the fetch shim fills",
         });
         return;
       }
