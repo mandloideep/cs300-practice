@@ -1,0 +1,10 @@
+{
+  "id": "jsx-rules",
+  "title": "JSX rules",
+  "area": "react",
+  "summary": "We learn the rules that make JSX different from HTML: expressions in braces, one root, attribute names such as className and htmlFor, closed tags, and conditional rendering. You will practice each rule on the Week 10 Session 1 example and finish by translating a semantic HTML card into JSX rendered from a data object.",
+  "prerequisites": ["vite-project-anatomy"],
+  "minutes": 45,
+  "updated": "2026-10-26",
+  "changeNote": "First version."
+}
