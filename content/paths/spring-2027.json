@@ -8,6 +8,10 @@
       "intro": "Everything we build this semester is a web page, so we start with the language of pages. This week you will type a document from its skeleton up: headings and paragraphs, lists, links and images with text alternatives, the landmarks that give a page its regions, a form whose fields have labels, and a table. Each step shows the page the browser draws from your markup and the tree it built from it, so you can see that HTML is structure, not appearance; the appearance comes next week.",
       "topics": [
         {
+          "id": "using-the-lab",
+          "required": true
+        },
+        {
           "id": "html-structure",
           "required": true
         }
