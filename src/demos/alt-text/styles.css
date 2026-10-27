@@ -1,0 +1,95 @@
+figure.demo-frame .alt-text__status {
+  margin-bottom: var(--space-3);
+}
+
+figure.demo-frame .alt-text__code {
+  margin-bottom: var(--space-3);
+}
+
+figure.demo-frame .alt-text__versions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  gap: var(--space-2);
+}
+
+figure.demo-frame .alt-text__version {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  outline: 2px solid transparent;
+  outline-offset: 1px;
+  transition: outline-color 200ms ease;
+}
+
+figure.demo-frame .alt-text__version.is-current {
+  outline-color: var(--color-accent);
+}
+
+figure.demo-frame .alt-text__view {
+  display: flex;
+  align-items: center;
+  min-height: 5.5rem;
+  padding: var(--space-2);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+}
+
+figure.demo-frame .alt-text__picture {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 6rem;
+  height: 4rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-soft);
+}
+
+figure.demo-frame .alt-text__dot {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+figure.demo-frame .alt-text__broken {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+figure.demo-frame .alt-text__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 2px;
+  background: var(--color-surface);
+  color: var(--color-danger);
+  font-size: var(--text-xs);
+  line-height: 1;
+}
+
+figure.demo-frame .alt-text__shown {
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .alt-text__nothing {
+  font-style: italic;
+}
+
+figure.demo-frame .alt-text__reader {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+}
+
+figure.demo-frame .alt-text__speech {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  overflow-wrap: anywhere;
+}

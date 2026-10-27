@@ -1,0 +1,77 @@
+figure.demo-frame .label-for__verdict {
+  margin-top: var(--space-2);
+}
+
+figure.demo-frame .label-for__form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+figure.demo-frame .label-for__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+figure.demo-frame .label-for__label {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text);
+  font: inherit;
+  font-weight: var(--weight-medium);
+  text-decoration: underline dotted var(--color-text-muted);
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+figure.demo-frame .label-for__label:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+figure.demo-frame .label-for__field {
+  display: flex;
+  align-items: center;
+  width: min(100%, 14rem);
+  height: 2.25rem;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  transition: outline-color 200ms ease;
+  outline: var(--focus-ring-width) solid transparent;
+  outline-offset: var(--focus-ring-offset);
+}
+
+figure.demo-frame .label-for__field.is-focused {
+  outline-color: var(--color-focus);
+}
+
+figure.demo-frame .label-for__caret {
+  width: 2px;
+  height: 1.2em;
+  background: var(--color-text);
+}
+
+figure.demo-frame .label-for__reader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-3);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border);
+}
+
+figure.demo-frame .label-for__speech {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .label-for__speech.is-missing {
+  color: var(--color-danger);
+}

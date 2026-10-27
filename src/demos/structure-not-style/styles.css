@@ -1,0 +1,101 @@
+figure.demo-frame .structure-not-style__css {
+  margin-top: var(--space-2);
+}
+
+figure.demo-frame .structure-not-style__page {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+figure.demo-frame .structure-not-style__page.is-defaults .structure-not-style__h1,
+figure.demo-frame .structure-not-style__page.is-stylesheet .structure-not-style__h1 {
+  display: block;
+  margin: 0.67em 0;
+  font-size: 2em;
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+}
+
+figure.demo-frame .structure-not-style__page.is-defaults .structure-not-style__p,
+figure.demo-frame .structure-not-style__page.is-stylesheet .structure-not-style__p {
+  display: block;
+  margin: 1em 0;
+}
+
+figure.demo-frame .structure-not-style__page.is-defaults .structure-not-style__h2,
+figure.demo-frame .structure-not-style__page.is-stylesheet .structure-not-style__h2 {
+  display: block;
+  margin: 0.83em 0;
+  font-size: 1.5em;
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+}
+
+figure.demo-frame .structure-not-style__page.is-defaults .structure-not-style__ul,
+figure.demo-frame .structure-not-style__page.is-stylesheet .structure-not-style__ul {
+  display: block;
+  margin: 1em 0;
+  padding-left: 2.5em;
+}
+
+figure.demo-frame .structure-not-style__page.is-defaults .structure-not-style__li {
+  display: list-item;
+  list-style-type: disc;
+}
+
+figure.demo-frame .structure-not-style__page.is-defaults .structure-not-style__a,
+figure.demo-frame .structure-not-style__page.is-stylesheet .structure-not-style__a {
+  color: var(--color-link);
+  text-decoration: underline;
+}
+
+figure.demo-frame .structure-not-style__page.is-stylesheet .structure-not-style__h1 {
+  border-bottom: 3px solid;
+}
+
+figure.demo-frame .structure-not-style__page.is-stylesheet .structure-not-style__a {
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .structure-not-style__page.is-stylesheet .structure-not-style__ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: 0;
+}
+
+figure.demo-frame .structure-not-style__page.is-stylesheet .structure-not-style__li {
+  display: block;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid;
+  border-radius: var(--space-4);
+}
+
+figure.demo-frame .structure-not-style__page > :first-child {
+  margin-top: 0;
+}
+
+figure.demo-frame .structure-not-style__page > :last-child {
+  margin-bottom: 0;
+}
+
+figure.demo-frame .structure-not-style__tree {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+figure.demo-frame .structure-not-style__tag {
+  display: inline-block;
+  padding: 0 var(--space-2);
+  border: 2px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+}

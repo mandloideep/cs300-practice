@@ -27,11 +27,11 @@ Each one takes its data from the fence body where that makes sense, so the same 
 
 | Id | Shows | Serves | Phase | Status |
 | --- | --- | --- | --- | --- |
-| `nesting-and-repair` | Markup typed with tags out of order and the tree the browser repairs it into | html-structure/the-document-skeleton | 6 | planned |
-| `landmarks-map` | A page with header, nav, main, aside, and footer regions lit one at a time, with the list a screen reader reads | html-structure/landmarks | 6 | planned |
-| `label-for` | A label and an input; clicking the label focuses the input only when `for` and `id` match, which the student toggles | html-structure/a-form-with-labels | 6 | planned |
-| `alt-text` | An image that fails to load, with and without `alt`, and what a screen reader says in each case | html-structure/links-and-images | 6 | planned |
-| `structure-not-style` | The same document with default styles, no styles, and a stylesheet, switched with one control | html-structure, css-layout | 6 | planned |
+| `nesting-and-repair` | Markup typed with tags out of order and the tree the browser repairs it into | html-structure/the-document-skeleton | 6 | built |
+| `landmarks-map` | A page with header, nav, main, aside, and footer regions lit one at a time, with the list a screen reader reads | html-structure/landmarks | 6 | built |
+| `label-for` | A label and an input; clicking the label focuses the input only when `for` and `id` match, which the student toggles | html-structure/a-form-with-labels | 6 | built |
+| `alt-text` | An image that fails to load, with and without `alt`, and what a screen reader says in each case | html-structure/links-and-images | 6 | built |
+| `structure-not-style` | The same document with default styles, no styles, and a stylesheet, switched with one control | html-structure, css-layout | 6 | built |
 
 ## CSS
 
