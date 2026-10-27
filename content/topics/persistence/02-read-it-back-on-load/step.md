@@ -32,7 +32,7 @@ Read it as a tiny function: fetch the string, and if there is one, parse it, oth
 The write effect does not change; it still runs after the first render and writes back what was just read, which is now the right value.
 
 Run the code and save two products.
-Then run the code again, keeping the result's storage, which is what a real page reload does.
+Then press **Run, keeping saved data**, which runs the code again without clearing the result's storage, the way a real page reload keeps it.
 The two products are still marked and the lead sentence still says `2 of 6`.
 In the inspector tree, `App` holds those two ids from the first commit on; nothing clicked them, the initializer read them.
 

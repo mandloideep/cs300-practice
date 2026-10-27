@@ -44,11 +44,9 @@ test.describe("saved products survive a reload of the iframe", () => {
     await expect(frame.locator(".lead")).toHaveText("1 of 6 products saved for later.");
   });
 
-  // The step page's run() clears the sandbox scope unless `preserveStorage` is true (CONTRACTS
-  // 4.5, useRunSession.js), but the harness run() in src/runner/harness/main.js neither clears it
-  // nor accepts the flag yet, so a plain harness run still sees the previous run's keys. Drop the
-  // fixme once the runtime stream gives the harness the same clearing and flag.
-  test.fixme("step 2 solution: a plain run starts from empty storage", async ({ page }) => {
+  // The step page's run() and the harness run() both clear the sandbox scope unless
+  // `preserveStorage` is true (CONTRACTS 4.5).
+  test("step 2 solution: a plain run starts from empty storage", async ({ page }) => {
     await runStep(page, READ_STEP, "solution");
     await saveFirstProduct(page);
 

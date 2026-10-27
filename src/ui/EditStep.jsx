@@ -83,7 +83,7 @@ export default function EditStep({ topic, step, presets, announce, explanation }
   const [activeFile, setActiveFile] = useState(() => initialActiveFile(step));
   const [apiSource, setApiSource] = useState(() => initialApiSource(step, topic.id));
   const [fixtureControls, setFixtureControls] = useState(DEFAULT_FIXTURE_CONTROLS);
-  const [runRequest, setRunRequest] = useState(1);
+  const [runRequest, setRunRequest] = useState({ count: 1, preserveStorage: false });
   const [dialog, setDialog] = useState(null);
   const editorRef = useRef(null);
   const session = useRunSession({ step, files, apiSource, fixtureControls });
@@ -94,11 +94,22 @@ export default function EditStep({ topic, step, presets, announce, explanation }
     [files, starter],
   );
 
-  const requestRun = useCallback(() => setRunRequest((count) => count + 1), []);
+  const requestRun = useCallback(
+    (preserveStorage = false) =>
+      setRunRequest((previous) => ({ count: previous.count + 1, preserveStorage })),
+    [],
+  );
 
   useEffect(() => {
-    if (runRequest > 0) run();
+    if (runRequest.count > 0) run({ preserveStorage: runRequest.preserveStorage });
   }, [runRequest, run]);
+
+  // A workspace that saves to storage gets a second Run that keeps what the last run saved, the
+  // way a real page reload does.
+  const usesStorage = useMemo(
+    () => Object.values(files).some((source) => /\b(localStorage|sessionStorage)\b/.test(source)),
+    [files],
+  );
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -193,7 +204,7 @@ export default function EditStep({ topic, step, presets, announce, explanation }
             activeFile={activeFile}
             onActiveFileChange={setActiveFile}
             onChange={onChange}
-            onRun={requestRun}
+            onRun={() => requestRun()}
             modifiedFiles={modifiedFiles}
             session={session}
           />
@@ -206,11 +217,21 @@ export default function EditStep({ topic, step, presets, announce, explanation }
             <button
               type="button"
               className="button button--primary"
-              onClick={requestRun}
+              onClick={() => requestRun()}
               disabled={running}
             >
               Run
             </button>
+            {usesStorage && (
+              <button
+                type="button"
+                className="button"
+                onClick={() => requestRun(true)}
+                disabled={running}
+              >
+                Run, keeping saved data
+              </button>
+            )}
             <button
               type="button"
               className="button"

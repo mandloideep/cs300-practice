@@ -2,7 +2,7 @@
 // run for its workspace or solution, mounts the result iframe, and prints every bridge message.
 // Playwright drives it through window.__harness (see tests/runner.spec.js).
 
-import { IFRAME_SANDBOX, buildRun } from "../index.js";
+import { IFRAME_SANDBOX, buildRun, clearSandboxStorage } from "../index.js";
 import { isReactWorkspace } from "../useRunSession.js";
 
 const sources = import.meta.glob("/content/topics/*/*/**/*", {
@@ -188,12 +188,14 @@ async function run({
   env = {},
   fixtureControls = DEFAULT_FIXTURE_CONTROLS,
   inspector = false,
+  preserveStorage = false,
   timeoutMs = 15_000,
   quietMs = 300,
 }) {
   current?.dispose();
   elements.slot.replaceChildren();
   elements.status.textContent = "running";
+  if (!preserveStorage) clearSandboxStorage();
 
   const built = buildRun({
     files,
