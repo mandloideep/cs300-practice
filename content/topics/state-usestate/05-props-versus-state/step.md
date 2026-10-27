@@ -4,7 +4,10 @@ mode: read
 ---
 
 This topic gave `ProductCard` two things it did not have in Week 10: a handler that runs when the shopper clicks, and values the card owns and can change.
-Before we move those values around between components in the next topic, here is the vocabulary in one place.
+Before we move those values around between components in the next topic, here is the vocabulary in one place, starting with one more thing the snapshot explains: three setter calls in one click.
+
+```demo name="setter-batching"
+```
 
 ## Props versus state
 
@@ -32,6 +35,17 @@ Calling a setter is the only way to change state, and it always does the same tw
 Because of step 2, the state variable is a `const`: each call of the component is a snapshot with its own value.
 `quantity = quantity + 1` would change a local variable that nobody looks at again, and React would never know; `setQuantity(quantity + 1)` is what asks for a new render.
 
+```predict
+A handler calls `setQuantity(quantity + 1)` three times in a row on a card that shows `In cart: 0`; what does the card show after one click?
+- `In cart: 3`
+= `In cart: 1`
+- `In cart: 0`, because the three calls cancel out
+```
+
+All three calls run inside one handler of one render, so all three read the same snapshot, `0`, and each asks for `0 + 1`.
+React collects the setter calls of one handler and renders once at the end, with `1`.
+The updater form, `setQuantity((q) => q + 1)`, hands React a function that receives the latest pending value instead, so three of those add three; this topic never needs it, but the explainer above shows both.
+
 ## The rules of hooks
 
 `useState` is a **hook**: a function whose name starts with `use` and that gives a component a React feature.
@@ -39,6 +53,10 @@ Hooks come with two rules that React enforces.
 
 1. Call hooks only at the top level of the component, never inside an `if`, a loop, or a nested function.
 2. Call hooks only inside a React component, or inside another hook.
+
+## Read more
+
+### Why the order matters
 
 Step 4 showed why the first rule exists.
 React keeps each component's state in slots, in the order the hook calls happen.
@@ -63,7 +81,7 @@ function ProductCard({ product }) {
 }
 ```
 
-## The three mistakes to look for first
+### The three mistakes to look for first
 
 When a click does nothing, check these in order; together they account for most of the questions we get in this session.
 
@@ -71,13 +89,21 @@ When a click does nothing, check these in order; together they account for most 
 2. `import { useState } from "react";` is missing from the first line, and the console says `useState is not defined`.
 3. The handler assigns to the state variable instead of calling the setter.
 
-## What comes next
+### What comes next
 
 Every piece of state in this topic lived in the component that used it, and that worked because `ProductCard` was the only component that needed its quantity.
 The next topic, [Events and lifting state](#/topic/events-and-lifting-state), starts with two components that need the same value, and moves the state up to the parent that contains them both.
 The inspector gains a **Flow** view there, which draws each click as a sequence: the event, the function the parent passed down, the setter, and the components that rendered.
 
+**If it breaks:** If the snapshot idea is still fuzzy, go back to Step 3, keep the `Rendering` log, and read the quantity in each console line while you click; every line is one call of the function with its own `const`.
+
 **Check:** Without looking back, say in one sentence each what `useState(0)` returns, what calling the setter does, and where in a component a hook may be called.
 If your three sentences mention a pair, a re-render, and the top level, you have what the next topic needs.
 
-**If it breaks:** If the snapshot idea is still fuzzy, go back to Step 3, keep the `Rendering` log, and read the quantity in each console line while you click; every line is one call of the function with its own `const`.
+```quiz
+`ProductList` passes `product` to `ProductCard`; how can `ProductCard` change the product's title?
+- By assigning a new value to `product.title`
+- By calling `setProduct` with the new title
+= It cannot: `product` is a prop, and only the parent that owns it can pass a different one
+> Props are read-only for the component that receives them; a value the card itself must change belongs in its own state, and a value the parent owns changes when the parent re-renders with new props.
+```

@@ -5,6 +5,28 @@
   "summary": "Give a component a value it can change with useState, and change it from a click handler. You will reproduce the most common event mistake, watch the re-render flash show exactly which component ran again, and keep several independent values in one component.",
   "prerequisites": ["lists-and-keys"],
   "minutes": 50,
-  "updated": "2026-10-26",
-  "changeNote": "First version."
+  "updated": "2026-10-27",
+  "changeNote": "Rewritten so each step opens with an explainer or a prediction, folds the background under Read more, and ends with a quiz.",
+  "links": [
+    {
+      "kind": "reading",
+      "title": "react.dev: Responding to events",
+      "url": "https://react.dev/learn/responding-to-events"
+    },
+    {
+      "kind": "reading",
+      "title": "react.dev: State, a component's memory",
+      "url": "https://react.dev/learn/state-a-components-memory"
+    },
+    {
+      "kind": "reading",
+      "title": "react.dev: State as a snapshot",
+      "url": "https://react.dev/learn/state-as-a-snapshot"
+    },
+    {
+      "kind": "reference",
+      "title": "react.dev: useState",
+      "url": "https://react.dev/reference/react/useState"
+    }
+  ]
 }
