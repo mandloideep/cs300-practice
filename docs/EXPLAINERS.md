@@ -117,10 +117,10 @@ Each one takes its data from the fence body where that makes sense, so the same 
 | `controlled-input` | The loop between an input's value and the state that owns it, with the keystroke that the state rejects | controlled-forms/a-controlled-input | 6 | built |
 | `effect-timeline` | Render, commit, effect, cleanup, and re-run laid on a timeline as dependencies change | effects/the-effect-runs-after-the-render, the-dependency-array, cleanup-with-a-timer | 6 | built |
 | `strict-mode-double` | A component rendered twice in development with the second render discarded | effects/strict-mode-and-computed-values | 6 | built |
-| `ref-vs-state` | A ref changed without a render beside state changed with one | refs-and-browser-apis/a-ref-that-does-not-re-render | 6 | planned |
-| `router-match` | A URL matched against routes top to bottom, with the parameters pulled out of the winning one | routing/two-pages-with-routes-and-link, a-detail-page-with-useparams | 6 | planned |
-| `url-as-state` | Search parameters and the UI that reads them, changed from either side | url-state/a-search-field-in-the-url | 6 | planned |
-| `custom-hook-extract` | Stateful code inside a component folded into a hook, with the same calls shown in both places | route-data-and-custom-hooks/custom-hooks-and-built-in-hooks | 6 | planned |
+| `ref-vs-state` | A ref changed without a render beside state changed with one | refs-and-browser-apis/a-ref-that-does-not-re-render | 6 | built |
+| `router-match` | A URL matched against routes top to bottom, with the parameters pulled out of the winning one | routing/two-pages-with-routes-and-link, a-detail-page-with-useparams | 6 | built |
+| `url-as-state` | Search parameters and the UI that reads them, changed from either side | url-state/a-search-field-in-the-url | 6 | built |
+| `custom-hook-extract` | Stateful code inside a component folded into a hook, with the same calls shown in both places | route-data-and-custom-hooks/custom-hooks-and-built-in-hooks | 6 | built |
 | `error-boundary` | A component that throws, the boundary that catches it, and the fallback that renders | *resilience-in-production* | 8 | planned |
 
 ## Tooling and libraries

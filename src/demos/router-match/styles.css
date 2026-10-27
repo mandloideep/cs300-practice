@@ -1,0 +1,104 @@
+figure.demo-frame .router-match {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+figure.demo-frame .router-match .demo-caption {
+  margin-top: 0;
+}
+
+figure.demo-frame .router-match__address {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-sunken);
+}
+
+figure.demo-frame .router-match__path.is-read {
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .router-match__extra.is-dropped {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+figure.demo-frame .router-match__segments {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+figure.demo-frame .router-match__segments li + li::before {
+  margin-right: var(--space-1);
+  color: var(--color-text-muted);
+  content: "/";
+}
+
+figure.demo-frame .router-match__routes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+figure.demo-frame .router-match__route {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-size: var(--text-sm);
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease;
+}
+
+figure.demo-frame .router-match__route.is-checking {
+  border-color: var(--color-accent);
+}
+
+figure.demo-frame .router-match__route.is-winner {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+figure.demo-frame .router-match__route.is-miss .router-match__pattern {
+  color: var(--color-text-muted);
+}
+
+figure.demo-frame .router-match__pattern {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-2);
+  min-width: 0;
+}
+
+figure.demo-frame .router-match__element {
+  color: var(--color-text-muted);
+}
+
+figure.demo-frame .router-match__status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+figure.demo-frame .router-match__status:empty {
+  display: none;
+}
+
+figure.demo-frame .router-match__result {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  font-size: var(--text-sm);
+}

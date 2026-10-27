@@ -1,0 +1,49 @@
+figure.demo-frame .custom-hook-extract__columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+  gap: var(--space-2);
+  align-items: start;
+}
+
+figure.demo-frame .custom-hook-extract__col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+figure.demo-frame .custom-hook-extract__col.is-empty {
+  border-style: dashed;
+}
+
+figure.demo-frame .custom-hook-extract__file {
+  margin: 0;
+  font-family: var(--font-mono);
+}
+
+figure.demo-frame .custom-hook-extract__calls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+}
+
+figure.demo-frame .custom-hook-extract__calls li + li::before {
+  margin-right: var(--space-2);
+  color: var(--color-text-muted);
+  content: "→";
+}
+
+figure.demo-frame .custom-hook-extract__renames {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-3);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .custom-hook-extract__renames li {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+}
