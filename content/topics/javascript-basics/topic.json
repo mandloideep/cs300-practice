@@ -5,6 +5,28 @@
   "summary": "Write JavaScript whose only output is the console: variables and types, string methods, operators and the coercion surprises, arrays and loops, map and filter, and objects. You will trace a loop past its last index, see why a string method leaves the original alone, and build the Week 6 roster dashboard from an array of objects.",
   "prerequisites": ["html-structure"],
   "minutes": 75,
-  "updated": "2026-10-26",
-  "changeNote": "First version."
+  "updated": "2026-10-27",
+  "changeNote": "Rewritten so each step opens with an explainer or a prediction, folds the background under Read more, and ends with a quiz.",
+  "links": [
+    {
+      "kind": "reading",
+      "title": "javascript.info: JavaScript Fundamentals",
+      "url": "https://javascript.info/first-steps"
+    },
+    {
+      "kind": "reading",
+      "title": "MDN: Grammar and types",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types"
+    },
+    {
+      "kind": "reference",
+      "title": "MDN: Array",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array"
+    },
+    {
+      "kind": "reference",
+      "title": "MDN: console",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/console"
+    }
+  ]
 }
