@@ -10,7 +10,7 @@ api:
 required: [one-request-state, one-branch-at-a-time, products-render]
 ---
 
-**We used this in:** [Lists and keys](#/topic/lists-and-keys), where the product page first loaded its data from an API, and the Effects topic, where we learned that `useEffect` runs after the render.
+**We used this in:** [Lists and keys](#/topic/lists-and-keys), where the product page first loaded its data from an API, and [Effects](#/topic/effects), where we learned that `useEffect` runs after the render.
 
 In Week 9 we drew the life of a request as four states: idle, loading, success, and error.
 A request is in exactly one of them at a time.

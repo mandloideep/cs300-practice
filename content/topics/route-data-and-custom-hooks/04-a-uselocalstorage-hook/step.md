@@ -10,7 +10,7 @@ api:
 required: [save-writes-local-storage, saved-survives-a-rerun]
 ---
 
-**We used this in:** the Persistence topic, where a value was read from `localStorage` in a lazy initial state and written back in an effect, and [Events and lifting state](#/topic/events-and-lifting-state), where the parent owned the list and the child asked for a change.
+**We used this in:** [Persistence](#/topic/persistence), where a value was read from `localStorage` in a lazy initial state and written back in an effect, and [Events and lifting state](#/topic/events-and-lifting-state), where the parent owned the list and the child asked for a change.
 
 We added a **Save for later** button to the detail page and a count on the home page.
 `App` owns the list of saved ids, as in Week 11, and passes it down with a handler.

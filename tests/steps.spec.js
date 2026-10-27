@@ -207,9 +207,7 @@ test.describe("routing solutions in the iframe", () => {
     await expect(frame.locator("main h1")).toHaveText("Welcome to the shop");
   });
 
-  // The bridge posts no `location` message yet: it is added by the Phase 3 runtime branch
-  // (public/runtime/wrap/react-router.js, PHASE3 milestone 1). Drop the fixme once it is merged.
-  test.fixme("routing step 1 solution: the Link click posts a location message for /products", async ({
+  test("routing step 1 solution: the Link click posts a location message for /products", async ({
     page,
   }) => {
     const step = stepById("routing/01-two-pages-with-routes-and-link");
@@ -223,7 +221,7 @@ test.describe("routing solutions in the iframe", () => {
   });
 
   // Same dependency on the runtime branch's `location` message.
-  test.fixme("url-state step 2 solution: the search and the category are written to the location", async ({
+  test("url-state step 2 solution: the search and the category are written to the location", async ({
     page,
   }) => {
     const step = stepById("url-state/02-a-category-filter-that-survives-back");
