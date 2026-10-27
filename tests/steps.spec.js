@@ -97,19 +97,28 @@ test.describe("the inspector opens on the views the step names", () => {
     test(step.id, async ({ page }) => {
       await openStep(page, step);
       const pane = page.locator(".pane--inspector");
+      const toggleGroup = pane.getByRole("group", { name: "Inspector views" });
+      const opensDom = step.inspector.views.includes("dom");
       if (step.usesReact) {
         await expect(pane.getByText(/components? · commit/)).toBeVisible({ timeout: 15_000 });
       } else {
-        // A vanilla workspace renders no React components, so once the run settles the pane
-        // says so instead of showing a commit; its view toggles still follow the front matter.
+        // A vanilla workspace shows only the DOM toggle; its meta counts elements once a
+        // snapshot arrived, which happens only while the DOM view is open.
         await expect(page.locator(".pane--result .status-pill")).toHaveText("Ready", {
           timeout: 15_000,
         });
-        await expect(pane.getByText("No components yet")).toBeVisible();
-        await expect(pane.getByText(/No React components rendered/)).toBeVisible();
+        await expect(
+          pane.getByText(opensDom ? /elements? · snapshot/ : "No elements yet"),
+        ).toBeVisible();
+        for (const label of Object.values(VIEW_LABELS)) {
+          await expect(toggleGroup.getByRole("button", { name: label, exact: true })).toHaveCount(
+            0,
+          );
+        }
       }
-      for (const [view, label] of Object.entries(VIEW_LABELS)) {
-        await expect(pane.getByRole("button", { name: label })).toHaveAttribute(
+      const toggles = step.usesReact ? { ...VIEW_LABELS, dom: "DOM" } : { dom: "DOM" };
+      for (const [view, label] of Object.entries(toggles)) {
+        await expect(toggleGroup.getByRole("button", { name: label, exact: true })).toHaveAttribute(
           "aria-pressed",
           String(step.inspector.views.includes(view)),
         );
