@@ -238,6 +238,16 @@ npm run validate
 ```
 
 The validator names the file and the rule for every problem, and prints a unified diff when the edit blocks do not reproduce the solution.
+Besides the format rules above, it holds `content/` to these style rules, and each message names the file and the line:
+
+- Every `.md` file outside `local/` keeps one sentence per physical line.
+  The check is a heuristic: a line of prose with a sentence end followed by a space and a capital letter, read outside code fences, front matter, tables, inline code, link text, and HTML tags and after any list, heading, or blockquote marker.
+  Rephrase a line that trips it on an abbreviation.
+- No file under `content/` contains the em dash character.
+- No file under `workspace/`, `solution/`, or `local/` has a line that starts a comment with `//`, `/*`, or `<!--`; a `#` in CSS is a color or a selector and is fine.
+- `topic.json` has `updated` as a date and `changeNote` as a sentence.
+- Every topic is in a unit of at least one path under `content/paths/`.
+
 `npm run build:content` runs the same checks and then writes `public/content/`.
 Finally, run `npm run dev` and walk the new topic in the browser.
 

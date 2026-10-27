@@ -10,12 +10,12 @@ import { unifiedDiff } from "./diff.mjs";
 import { ACTIONS, ANCHORED_ACTIONS, applyEdits, editsFromTokens, parseInfo } from "./edits.mjs";
 import { isDirectory, listDirectories, readJson, readTree } from "./files.mjs";
 import { createMarkdown, LANGUAGES } from "./render.mjs";
+import { rulesFor } from "./style.mjs";
 
 export const MODES = ["edit", "read", "local"];
 export const VIEWS = ["boundaries", "flash", "tree", "flow", "network"];
 const REACT_VIEWS = ["boundaries", "flash", "tree"];
 const STEP_DIR = /^(\d{2})-([a-z0-9]+(?:-[a-z0-9]+)*)$/;
-const EM_DASH = "—";
 const markdown = createMarkdown();
 
 class Problems {
@@ -53,12 +53,15 @@ function isReactWorkspace(files) {
   );
 }
 
-function checkMarkdownText(text, file, problems) {
-  const lines = text.split("\n");
-  lines.forEach((line, index) => {
-    if (line.includes(EM_DASH))
-      problems.add(file, `line ${index + 1} contains the em dash character`);
-  });
+// The style rules of style.mjs over every file under content/.
+function checkStyle(contentDir, problems) {
+  for (const [file, text] of Object.entries(readTree(contentDir) ?? {})) {
+    for (const rule of rulesFor(file)) {
+      for (const { line, reason } of rule(text)) {
+        problems.add(path.join(contentDir, file), `line ${line} ${reason}`);
+      }
+    }
+  }
 }
 
 function checkCompiles(files, base, label, problems) {
@@ -127,7 +130,6 @@ function loadStep(topicDir, dirName, index, context, problems) {
     problems.add(stepFile, "file is missing");
     return null;
   }
-  checkMarkdownText(raw, stepFile, problems);
 
   let front;
   let body;
@@ -361,6 +363,12 @@ function loadTopic(topicsDir, id, context, problems) {
   if (meta.updated !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(meta.updated)) {
     problems.add(topicFile, "updated must be a date written as YYYY-MM-DD");
   }
+  if (
+    meta.changeNote !== undefined &&
+    (typeof meta.changeNote !== "string" || meta.changeNote.trim() === "")
+  ) {
+    problems.add(topicFile, "changeNote must be a sentence that says what changed");
+  }
 
   const dirs = listDirectories(topicDir);
   if (dirs.length === 0) problems.add(topicDir, "topic has no step directories");
@@ -462,15 +470,7 @@ export function loadContent(contentDir) {
   const presetsFile = path.join(contentDir, "api-presets.json");
   const presets = loadList(presetsFile, problems, "presets");
   checkPresets(presets, presetsFile, problems);
-
-  for (const file of Object.keys(readTree(contentDir) ?? {})) {
-    if (!file.endsWith(".md") || file.endsWith("/step.md")) continue;
-    checkMarkdownText(
-      readFileSync(path.join(contentDir, file), "utf8"),
-      path.join(contentDir, file),
-      problems,
-    );
-  }
+  checkStyle(contentDir, problems);
 
   const topicsDir = path.join(contentDir, "topics");
   const topicIds = listDirectories(topicsDir);
@@ -481,6 +481,18 @@ export function loadContent(contentDir) {
   };
   const topics = topicIds.map((id) => loadTopic(topicsDir, id, context, problems)).filter(Boolean);
   const paths = loadPaths(path.join(contentDir, "paths"), topicIds, problems);
+
+  const reachable = new Set(
+    paths.flatMap((item) => item.units.flatMap((unit) => unit.topics.map((topic) => topic.id))),
+  );
+  for (const id of topicIds) {
+    if (!reachable.has(id)) {
+      problems.add(
+        path.join(topicsDir, id, "topic.json"),
+        "topic is in no unit of any path under content/paths/, so students cannot reach it",
+      );
+    }
+  }
 
   return { content: { areas, presets, topics, paths }, problems: problems.list };
 }
