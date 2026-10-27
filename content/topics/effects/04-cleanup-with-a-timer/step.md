@@ -9,11 +9,21 @@ required: [notice-clears, timer-cleaned-up]
 ---
 
 The `Saved at` notice stays on the page forever, which makes it easy to ignore.
-It should disappear two seconds after it appears, the way a toast message does.
-That means a timer, and a timer is a side effect with a second half: something you start must also be stopped.
+It should disappear two seconds after it appears, the way a toast message does, so this step starts a timer in an effect and then stops it in a cleanup.
+Watch what happens to the notice when you add two products within two seconds of each other, before the cleanup and after it.
+
+```demo name="effect-timeline"
+```
 
 Add a second effect under the first one.
 The fence starts with a blank line, so the new effect sits below the closing line of the old one.
+
+```predict
+After you add this effect and run, you add two products one second apart; when does the notice disappear?
+= About one second after the second add, when the first timer fires
+- Two seconds after the second add
+- Never, because a second timer is still waiting
+```
 
 ```jsx file="src/App.jsx" action="insert-after" anchor="  }, [items]);"
 
@@ -23,15 +33,12 @@ The fence starts with a blank line, so the new effect sits below the closing lin
   }, [savedAt]);
 ```
 
-This effect depends on `savedAt`.
-When the notice is cleared, `savedAt` is `null`, and the effect returns at once because there is nothing to time.
-When a save sets a new date, the effect starts a two-second timer, and when the timer fires it sets `savedAt` back to `null`, which hides the notice.
+When a save sets a new date, this effect starts a two-second timer, and when the timer fires it sets `savedAt` back to `null`, which hides the notice.
 
 Run the code and add a product.
 The notice appears and goes away two seconds later.
 Now add two products within two seconds of each other.
 The second notice disappears early, because the first timer was still running and it cleared whatever notice was on the page when it fired.
-Every save started a timer, and nothing ever stopped one.
 
 An effect can return a **cleanup function**, and React calls it before the effect runs again and when the component goes away.
 Return one that stops the timer.
@@ -40,26 +47,43 @@ Return one that stops the timer.
     return () => clearTimeout(timer);
 ```
 
+Open the **Flow** view and add one product.
+After the submit trace and the effect trace from Step 2 comes a third trace, two seconds later, with no event at its top: `setSavedAt` called from the timer, and a render of `App` that removes the notice.
+
+## Read more
+
+A timer is a side effect with a second half: something you start must also be stopped.
+
+This effect depends on `savedAt`.
+When the notice is cleared, `savedAt` is `null`, and the effect returns at once because there is nothing to time.
+Before the cleanup, every save started a timer, and nothing ever stopped one.
+
 Read the sequence for two quick saves.
 The first save sets `savedAt`, the effect runs and starts timer A.
 The second save sets `savedAt` again; before running the effect for the new value, React calls the cleanup from the previous run, which clears timer A, and then the effect starts timer B.
 Only the latest timer is ever alive, so the notice always gets its full two seconds.
 
-Open the **Flow** view and add one product.
-After the submit trace and the effect trace from Step 2 comes a third trace, two seconds later, with no event at its top: `setSavedAt` called from the timer, and a render of `App` that removes the notice.
-That is what a cleanup protects, a setter that fires later, from a render that has already moved on.
+The third trace in the Flow view is what a cleanup protects, a setter that fires later, from a render that has already moved on.
 
 The same shape covers every effect that starts something: `setInterval` and `clearInterval`, `addEventListener` and `removeEventListener`, and the `AbortController` whose `abort` we called in Week 10's fetch step.
 Start it in the effect, stop it in the cleanup.
+
+**If it breaks:** If the notice never disappears, the timer is not started, or the setter inside it is called with something other than `null`.
+If the notice disappears early after two quick saves, the effect does not return a cleanup, or the cleanup clears a different variable than the one the timer was stored in.
+If the console says `savedAt is not defined` inside the effect, the effect is outside `App`.
 
 **Check:** Run the code and add a product.
 The notice shows for two seconds and disappears.
 Add two products one second apart: the notice stays until two seconds after the second one.
 Press **Run checks** to confirm; the checks add two products a second apart and watch the notice, so they take about four seconds.
 
-**If it breaks:** If the notice never disappears, the timer is not started, or the setter inside it is called with something other than `null`.
-If the notice disappears early after two quick saves, the effect does not return a cleanup, or the cleanup clears a different variable than the one the timer was stored in.
-If the console says `savedAt is not defined` inside the effect, the effect is outside `App`.
+```quiz
+When does React call the function an effect returns?
+= Before the effect runs again, and when the component goes away
+- Right after the effect runs, before the timer can fire
+- Only when the browser tab is closed
+> That timing is what makes two quick saves safe: the second save's effect is preceded by the first run's cleanup, so timer A is cleared before timer B starts.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>

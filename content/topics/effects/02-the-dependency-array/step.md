@@ -10,8 +10,11 @@ required: [notice-updates-on-add, notice-ignores-filter, no-runaway-loop]
 
 The effect from Step 1 runs after every render of `App`, including the renders where nothing it cares about changed, such as a category click.
 `useEffect` takes a second argument, the **dependency array**, that says which values the effect depends on, and React runs the effect only after a render in which one of them changed.
+This step turns the log into a notice that says when the list last changed; watch its time after an add and after a category click.
 
-This step turns the log into something the shopper can see: a notice that says when the list last changed.
+```demo name="effect-timeline"
+```
+
 Add the state under the other two.
 
 ```jsx file="src/App.jsx" action="insert-after" anchor="  const [items, setItems] = useState(products);"
@@ -28,6 +31,13 @@ Now replace the log with a setter, and type the dependency array as `[]` first, 
 
 Show the notice under the lead sentence.
 
+```predict
+With the array as `[]`, you run, wait a few seconds, and add a product; what does the notice do?
+- It changes to the time of the add
+= It keeps the time the page loaded
+- It disappears, because the list changed
+```
+
 ```jsx file="src/App.jsx" action="insert-after" anchor='      <p className="lead">{items.length} products in stock. Choose a category to narrow the list.</p>'
       {savedAt && <p className="notice" role="status">List changed at {savedAt.toLocaleTimeString()}</p>}
 ```
@@ -36,7 +46,6 @@ Run the code.
 The notice appears with the time the page loaded.
 Wait a few seconds, add a product, and look at the notice: the time did not move.
 An empty array tells React that the effect depends on nothing, so it runs after the first render and never again.
-The list changed and the notice is wrong, with no error anywhere.
 
 The effect should run when `items` changes, so say so.
 
@@ -46,11 +55,17 @@ The effect should run when `items` changes, so say so.
 
 Run again and add a product: the time updates.
 Press a category: the time stays, because `category` is not in the array and `items` is the same array as before.
-React compares each dependency with its value from the previous render using `Object.is`, the same comparison a setter uses, which is one more reason that `[...items, product]` matters: a pushed-into array would be the same array, and the effect would not run.
 
 Open the **Flow** view and add a product.
 The first trace is the submit: `onAdd`, `setItems`, and a render of `App` and its children.
 The second trace has no event at its top, because it started in the effect: `setSavedAt` ran after the render, and React rendered `App` again to show the new time.
+
+## Read more
+
+With `[]`, the list changed and the notice was wrong, with no error anywhere; a wrong dependency array fails silently.
+
+React compares each dependency with its value from the previous render using `Object.is`, the same comparison a setter uses, which is one more reason that `[...items, product]` matters: a pushed-into array would be the same array, and the effect would not run.
+
 An effect that sets state always costs a second render, which is fine here and is why the array must be right.
 
 There are three ways to write the second argument.
@@ -66,14 +81,23 @@ With no array, the effect runs after every render, it calls `setSavedAt` with a 
 React logs `Maximum update depth exceeded` and keeps going, and the lab would slow to a crawl.
 The check reads the console for that message, and the last step of this topic shows what the loop looks like so that you recognize it when it happens to you.
 
+**If it breaks:** If the notice never changes after an add, the array is still `[]`, or it names something other than `items`.
+If the notice changes when you press a category, the array is missing or includes `category`.
+If the console fills with `Maximum update depth exceeded`, the array is missing; press **Run** again as soon as you have added it, which throws the runaway run away.
+
 **Check:** Run the code.
 The notice shows the load time.
 Wait until the clock has moved on, add a product, and the notice shows the new time; press a category, and it does not change.
 Press **Run checks** to confirm.
 
-**If it breaks:** If the notice never changes after an add, the array is still `[]`, or it names something other than `items`.
-If the notice changes when you press a category, the array is missing or includes `category`.
-If the console fills with `Maximum update depth exceeded`, the array is missing; press **Run** again as soon as you have added it, which throws the runaway run away.
+```quiz
+Which second argument makes the notice update after an add but not after a category click?
+- `[]`
+= `[items]`
+- `[items, category]`
+- No second argument
+> The effect runs only after a render in which a listed value changed; a category click changes `category` but leaves `items` the same array, so `[items]` skips it, while `[]` never runs again and no array runs every time.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>
