@@ -1,8 +1,9 @@
 // The interactive-first explanation of docs/CONTRACTS.md section 7: predict and quiz blocks and
 // their progress records, the Read more section and the "Keep explanations open" preference, the
 // links under the step title and on the unit page, and closed units on the path and unit pages.
-// The content of these topics belongs to the content streams, so each test serves the compiled
-// shape the build writes for these fences through a route.
+// The content of these topics belongs to the content streams, so each test serves fixture HTML in
+// the compiled shape the build writes for these fences through a route, and depends on no step's
+// real text.
 
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
@@ -57,13 +58,15 @@ async function serveQuizTopic(page) {
     const topic = await response.json();
     topic.links = TOPIC_LINKS;
     for (const step of topic.steps) {
-      step.links ??= null;
-      step.questions ??= [];
+      step.links = null;
+      step.questions = [];
+      step.html = "<p>A fixture step.</p>\n";
     }
     const step = topic.steps[3];
     step.links = STEP_LINKS;
     step.questions = [QUIZ];
     step.html = "<p>Lead paragraph.</p>\n" + placeholder(QUIZ) + READ_MORE;
+    topic.steps[2].title = "Fixture step three";
     topic.steps[2].html = "<p>Another step.</p>\n" + READ_MORE;
     await route.fulfill({ response, json: topic });
   });
@@ -75,7 +78,7 @@ async function servePredictTopic(page) {
     const topic = await response.json();
     const step = topic.steps[0];
     step.questions = [PREDICT];
-    step.html = "<p>Lead paragraph.</p>\n" + placeholder(PREDICT) + step.html;
+    step.html = "<p>Lead paragraph.</p>\n" + placeholder(PREDICT);
     await route.fulfill({ response, json: topic });
   });
 }
@@ -182,15 +185,14 @@ test.describe("Read more and the Keep explanations open preference", () => {
       .getByRole("link", { name: /Step 3/ })
       .first()
       .click();
-    await expect(page.locator("#step-heading")).toHaveText(
-      "Change the value, watch only that part update",
-    );
+    await expect(page.locator("#step-heading")).toHaveText("Fixture step three");
     await expect(page.locator("details.read-more")).toHaveAttribute("open", "");
     await page.getByRole("checkbox", { name: "Keep explanations open" }).uncheck();
     await expect(page.locator("details.read-more")).not.toHaveAttribute("open");
   });
 
   test("a step without Read more has no preference control", async ({ page }) => {
+    await serveQuizTopic(page);
     await page.goto("#/topic/react-mental-model/1");
     await expect(page.locator("#step-heading")).toBeVisible({ timeout: 15_000 });
     await expect(page.getByRole("checkbox", { name: "Keep explanations open" })).toHaveCount(0);
