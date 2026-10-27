@@ -12,6 +12,14 @@ required: [address-shown-on-the-page, copy-reports-back]
 
 The point of putting the search in the address is that the address can be sent to someone.
 A shopper should not have to find the address bar to do that, so the page shows the current address and offers to copy it.
+Watch the share line under the controls follow the address as you choose and type.
+
+```predict
+After this step, you choose Beauty and then type `red`; what does the share line read?
+= `/products?category=beauty&q=red`
+- `/products?q=red&category=beauty`
+- `/products`, because `useLocation` reads only the path
+```
 
 ## Read the current address
 
@@ -31,8 +39,7 @@ import { BrowserRouter, Link, NavLink, Route, Routes, useLocation, useParams, us
   const [copied, setCopied] = useState("");
 ```
 
-`shareable` is `/products?category=fragrances&q=coco` when both filters are set and `/products` when neither is, because `search` is an empty string then.
-`copied` is ordinary state: whether the copy succeeded is not something to bookmark, so it stays in `useState`, which is the other half of the Week 13 rule.
+`shareable` is the path plus the query string, and `copied` is ordinary state that says whether the copy worked.
 
 ## Write it to the clipboard
 
@@ -48,9 +55,7 @@ Add the handler under `handleCategory`.
   }
 ```
 
-`navigator.clipboard.writeText` returns a promise, because the browser may ask the user first, and it rejects when the page is not allowed to write the clipboard.
-Both outcomes set a message, so the shopper always learns what happened.
-In a Vite project you would copy `window.location.origin + shareable` to get a full link; the lab's result runs in a frame with no address of its own, so here we copy the part that carries the state.
+`navigator.clipboard.writeText` returns a promise, and both outcomes set a message, so the shopper always learns what happened.
 
 ## Show it
 
@@ -62,15 +67,32 @@ In a Vite project you would copy `window.location.origin + shareable` to get a f
       {copied && <p role="status" className="message">{copied}</p>}
 ```
 
+## Read more
+
+`shareable` is `/products?category=fragrances&q=coco` when both filters are set and `/products` when neither is, because `search` is an empty string then.
+The parameters appear in the order they were first set: a category chosen before typing comes first.
+`copied` is ordinary state: whether the copy succeeded is not something to bookmark, so it stays in `useState`, which is the other half of the Week 13 rule.
+
+`writeText` returns a promise because the browser may ask the user first, and it rejects when the page is not allowed to write the clipboard.
+In a Vite project you would copy `window.location.origin + shareable` to get a full link; the lab's result runs in a frame with no address of its own, so here we copy the part that carries the state.
+
+**If it breaks:** If the page shows `undefined` in the share line, `shareable` reads properties that `useLocation` does not have; they are `pathname` and `search`.
+If the console says `useLocation is not defined`, the import at the top does not include it.
+If pressing the button does nothing at all, neither callback sets `copied`; the status message is how the button reports back.
+
 **Check:** Run the code, press **Products**, choose **Beauty**, and type `red`.
 The line under the controls reads `/products?category=beauty&q=red`, the same text as the address bar, and it changes with every keystroke.
 Press **Copy link** and paste into the search box of another tab or a text editor: the address arrives.
 Open the **Network** view: typing and choosing sent no requests, because the filters run on the list that was loaded once; only the address changed.
 Press **Run checks**.
 
-**If it breaks:** If the page shows `undefined` in the share line, `shareable` reads properties that `useLocation` does not have; they are `pathname` and `search`.
-If the console says `useLocation is not defined`, the import at the top does not include it.
-If pressing the button does nothing at all, neither callback sets `copied`; the status message is how the button reports back.
+```quiz
+Why does `copied` stay in `useState` instead of going into the address?
+- The address cannot hold a value with spaces in it
+- A value in the address would send a request on every change
+= Whether the copy worked is not something a shopper would bookmark or share
+> The Week 13 rule cuts both ways: what a shopper should be able to bookmark, share, or press Back through goes in the address, and everything else stays in state.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>

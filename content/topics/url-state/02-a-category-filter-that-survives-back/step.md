@@ -13,6 +13,13 @@ required: [category-filters-the-list, filters-combine]
 A second value goes into the address the same way, and it shows the one thing `setSearchParams` does that `useState` never did: it writes history.
 A category is chosen once, not typed letter by letter, so each choice gets its own entry, and Back returns to the previous one.
 
+```predict
+After this step, you choose Beauty, then Fragrances, then press Back in the address bar; what does the page show?
+= Beauty in the select and the five beauty products
+- Fragrances still, because the select keeps its own value
+- All in the select, because Back clears every parameter at once
+```
+
 ## Read the category
 
 ```jsx file="src/App.jsx" action="insert-after" anchor='  const query = searchParams.get("q") ?? "";'
@@ -44,7 +51,7 @@ Copy the current parameters, change one, and write the copy back.
     setSearchParams(next, { replace: true });
 ```
 
-`new URLSearchParams(searchParams)` makes a copy, because the one from the hook belongs to the router and is not ours to change, the same rule as for state and props.
+`new URLSearchParams(searchParams)` makes a copy, because the one from the hook belongs to the router and is not ours to change.
 
 Add the handler for the category under `handleSearch`, without `replace`.
 
@@ -62,8 +69,7 @@ Add the handler for the category under `handleSearch`, without `replace`.
   }
 ```
 
-The default is to push a new history entry, which is what we want for a deliberate choice: Beauty, then Fragrances, then Back, and the shopper is on Beauty again.
-Typing keeps `replace`, so the letters of one search stay one entry.
+The default is to push a new history entry, which is what we want for a deliberate choice.
 
 ## The select
 
@@ -80,17 +86,32 @@ Typing keeps `replace`, so the letters of one search stay one entry.
 
 The select is controlled by `category`, which comes from the address, exactly as the search box is controlled by `query`.
 
-**Check:** Run the code and press **Products**.
-Choose **Fragrances**: the address bar shows `/products?category=fragrances` and three products remain.
-Type `coco`: the address becomes `/products?category=fragrances&q=coco` and one product remains; the category survived the typing.
-Press **Back** in the address bar: the query goes and the three fragrances return, one entry for the whole word.
-Press **Back** again: the category goes too.
-In a Vite project, reloading the page keeps the address and so keeps both filters; in the lab, pressing **Run** starts a fresh history, so use Back and the address bar to see it.
-Press **Run checks**.
+## Read more
+
+Copying the parameters before changing one is the same rule as for state and props: a value React or the router handed you is read, never changed in place.
+
+A pushed entry is what makes Back useful for a choice: Beauty, then Fragrances, then Back, and the shopper is on Beauty again.
+Typing keeps `replace`, so the letters of one search stay one entry.
 
 **If it breaks:** If choosing a category clears the search, or typing clears the category, a handler still passes a plain object to `setSearchParams`; both should copy `searchParams` first.
 If the select snaps back to All, its `value` is not `category`, or the handler writes a different key than `get("category")` reads.
 If choosing All leaves `?category=all` in the address, the handler sets the key instead of deleting it; an address with no category parameter means all.
+
+**Check:** Run the code and press **Products**.
+Choose **Fragrances**: the address bar shows `/products?category=fragrances` and three products remain.
+Type `coco`: the address becomes `/products?category=fragrances&q=coco` and one product remains; the category survived the typing.
+Press **Back** in the address bar: both filters go at once and every product returns, because each keystroke replaced the entry that choosing Fragrances pushed, so the category and the whole search share one entry.
+Press **Forward**: Fragrances and `coco` come back together.
+In a Vite project, reloading the page keeps the address and so keeps both filters; in the lab, pressing **Run** starts a fresh history, so use Back and the address bar to see it.
+Press **Run checks**.
+
+```quiz
+Why does `handleSearch` copy `searchParams` into a new `URLSearchParams` before it sets `q`?
+= A plain object replaces every parameter, so the category would be dropped
+- `setSearchParams` accepts only a `URLSearchParams`, never a plain object
+- The copy keeps the keystroke out of the history
+> Step 1 passed `{ q: value }`, which was fine with one parameter; with two, the copy keeps the category and changes only `q`, and `replace` is what keeps keystrokes out of the history.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>
