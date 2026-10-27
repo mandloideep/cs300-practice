@@ -1,0 +1,86 @@
+figure.demo-frame .fetch-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+figure.demo-frame .fetch-timeline .demo-choice,
+figure.demo-frame .fetch-timeline .demo-caption {
+  margin: 0;
+}
+
+figure.demo-frame .fetch-timeline__states {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+}
+
+figure.demo-frame .fetch-timeline__states li + li::before {
+  margin-right: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  content: "→";
+}
+
+figure.demo-frame .fetch-timeline__states li:last-child::before {
+  content: "or";
+}
+
+figure.demo-frame .fetch-timeline__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  gap: var(--space-2);
+}
+
+figure.demo-frame .fetch-timeline__request {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  margin-bottom: var(--space-1);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .fetch-timeline__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .fetch-timeline__fields > div {
+  display: flex;
+  gap: var(--space-2);
+}
+
+figure.demo-frame .fetch-timeline__fields dt {
+  min-width: 4ch;
+  color: var(--color-text-muted);
+}
+
+figure.demo-frame .fetch-timeline__fields dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+figure.demo-frame .fetch-timeline__failed,
+figure.demo-frame .fetch-timeline__status.is-error {
+  color: var(--color-danger);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .fetch-timeline__status {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+
+figure.demo-frame .fetch-timeline__products {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+}

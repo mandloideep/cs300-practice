@@ -1,0 +1,55 @@
+figure.demo-frame .async-await-unroll {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+figure.demo-frame .async-await-unroll .demo-caption {
+  margin: 0;
+}
+
+figure.demo-frame .async-await-unroll .demo-row > * {
+  flex-basis: 26rem;
+}
+
+figure.demo-frame .async-await-unroll__side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+figure.demo-frame .async-await-unroll__status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .async-await-unroll__name {
+  font-family: var(--font-mono);
+}
+
+figure.demo-frame .async-await-unroll__values {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .async-await-unroll__values > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+}
+
+figure.demo-frame .async-await-unroll__values dt {
+  min-width: 5rem;
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .async-await-unroll__values dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}

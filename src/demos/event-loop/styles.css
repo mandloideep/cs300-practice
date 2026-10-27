@@ -1,0 +1,51 @@
+figure.demo-frame .event-loop {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+figure.demo-frame .event-loop__grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+figure.demo-frame .event-loop__queues {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+figure.demo-frame .event-loop__queues > * {
+  flex: 1 1 8.5rem;
+}
+
+figure.demo-frame .event-loop__items,
+figure.demo-frame .event-loop__stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+}
+
+figure.demo-frame .event-loop__stack {
+  align-items: stretch;
+  max-width: 18rem;
+}
+
+figure.demo-frame .event-loop__frame {
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .event-loop__time {
+  margin: 0;
+}
+
+figure.demo-frame .event-loop .demo-caption {
+  margin-top: 0;
+}
+
+figure.demo-frame .event-loop__items .demo-chip {
+  border-radius: var(--radius-sm);
+}

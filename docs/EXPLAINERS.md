@@ -82,10 +82,10 @@ Each one takes its data from the fence body where that makes sense, so the same 
 | --- | --- | --- | --- | --- |
 | `error-propagation` | A `throw` unwinding frames until a `catch` takes it, and what happens when none does | *errors-and-debugging* | 6 | built |
 | `error-decoder` | The common messages, `x is not defined`, `cannot read properties of undefined`, `x is not a function`, each with the line that causes it | *errors-and-debugging*, *using-the-lab* | 6 | built |
-| `event-loop` | The call stack, the timer and event queues, and the order in which plain code, `setTimeout`, a click, and a promise reaction run | *async-and-the-event-loop*, fetch-basics/synchronous-and-asynchronous | 6 | planned |
-| `promise-states` | A promise moving from pending to fulfilled or rejected, with `then`, `catch`, and `finally` attached and fired | *async-and-the-event-loop*, fetch-basics/promises-then-async-and-await | 6 | planned |
-| `async-await-unroll` | An `async` function and its `then` chain side by side, advanced one `await` at a time | *async-and-the-event-loop*, fetch-basics/promises-then-async-and-await | 6 | planned |
-| `fetch-timeline` | A request leaving, the wait, the response arriving, `json()` parsing it, and the four request states along the way | fetch-basics/fetch-and-json, four-request-states, fetching-and-request-states/one-status-value | 6 | planned |
+| `event-loop` | The call stack, the timer and event queues, and the order in which plain code, `setTimeout`, a click, and a promise reaction run | *async-and-the-event-loop*, fetch-basics/synchronous-and-asynchronous | 6 | built |
+| `promise-states` | A promise moving from pending to fulfilled or rejected, with `then`, `catch`, and `finally` attached and fired | *async-and-the-event-loop*, fetch-basics/promises-then-async-and-await | 6 | built |
+| `async-await-unroll` | An `async` function and its `then` chain side by side, advanced one `await` at a time | *async-and-the-event-loop*, fetch-basics/promises-then-async-and-await | 6 | built |
+| `fetch-timeline` | A request leaving, the wait, the response arriving, `json()` parsing it, and the four request states along the way | fetch-basics/fetch-and-json, four-request-states, fetching-and-request-states/one-status-value | 6 | built |
 | `stale-response` | Two requests racing, the first answered last, and the flag that ignores it | fetching-and-request-states/ignore-a-stale-response | 6 | planned |
 | `abort-controller` | A request in flight cancelled by its controller and the rejection that follows | fetching-and-request-states/abort-the-request | 6 | planned |
 | `module-graph` | Files that import each other drawn as a graph, with an export followed to every import | *modules-and-imports*, *tooling-from-scratch* | 6 | planned |
