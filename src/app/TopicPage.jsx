@@ -10,7 +10,7 @@ import StepNav from "../ui/StepNav.jsx";
 import LiveRegion from "../ui/LiveRegion.jsx";
 import { LocalDownload, MarkDone } from "../ui/StepActions.jsx";
 import TopicProgress from "../progress/TopicProgress.jsx";
-import { useProgress } from "../progress/store.js";
+import { quizScore, useProgress } from "../progress/store.js";
 
 export default function TopicPage() {
   const { id, n = "1" } = useParams();
@@ -71,6 +71,7 @@ function TopicContent({ id, n, index }) {
           </p>
         )}
         <TopicProgress topic={topic} progress={progress} showEmpty />
+        <QuizScore topic={topic} progress={progress} />
       </header>
       {step ? (
         <StepView
@@ -108,7 +109,7 @@ function StepView({ topic, step, presets }) {
           step={step}
           presets={presets}
           announce={announce}
-          explanation={<StepExplanation step={step} stepCount={stepCount} />}
+          explanation={<StepExplanation topic={topic} step={step} stepCount={stepCount} />}
         />
         <LiveRegion message={message} />
       </>
@@ -117,11 +118,22 @@ function StepView({ topic, step, presets }) {
 
   return (
     <div className="step-layout step-layout--single">
-      <StepExplanation step={step} stepCount={stepCount}>
+      <StepExplanation topic={topic} step={step} stepCount={stepCount}>
         {step.mode === "local" && <LocalDownload topic={topic} step={step} announce={announce} />}
         <MarkDone topic={topic} step={step} announce={announce} />
       </StepExplanation>
       <LiveRegion message={message} />
     </div>
+  );
+}
+
+function QuizScore({ topic, progress }) {
+  const { total, answered, right } = quizScore(progress, topic);
+  if (total === 0) return null;
+  return (
+    <p className="meta quiz-score">
+      Quizzes: {answered} of {total} answered
+      {answered > 0 && `, ${right} right`}
+    </p>
   );
 }
