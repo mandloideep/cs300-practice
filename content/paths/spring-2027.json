@@ -64,6 +64,10 @@
         {
           "id": "objects-and-references",
           "required": true
+        },
+        {
+          "id": "arrays-in-depth",
+          "required": true
         }
       ],
       "localNotes": []
