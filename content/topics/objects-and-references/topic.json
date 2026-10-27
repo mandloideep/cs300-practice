@@ -1,0 +1,10 @@
+{
+  "id": "objects-and-references",
+  "title": "Objects and references",
+  "area": "javascript",
+  "summary": "See why copying an object copies an arrow to it, compare objects, copy them with spread, walk nested data safely with optional chaining, send them through JSON, and call methods that use this. You will finish able to say, for any line, whether it changed an object or made a new one.",
+  "prerequisites": ["scope-and-closures"],
+  "minutes": 60,
+  "updated": "2026-10-27",
+  "changeNote": "First version."
+}

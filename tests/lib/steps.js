@@ -76,6 +76,14 @@ function usesReact(stepDir) {
   return solutionImports(stepDir, /\bfrom\s+["']react(?:\/[\w-]+)?["']/);
 }
 
+// The longest fixture delay of a step, in milliseconds; 0 when its routes set none.
+function fixtureDelay(stepDir) {
+  const routesFile = path.join(stepDir, "fixtures", "routes.json");
+  if (!existsSync(routesFile)) return 0;
+  const { routes = [] } = JSON.parse(readFileSync(routesFile, "utf8"));
+  return Math.max(0, ...routes.map((route) => Number(route.delay) || 0));
+}
+
 export function allSteps() {
   const steps = [];
   for (const topic of readdirSync(topicsDir).sort()) {
@@ -100,6 +108,7 @@ export function allSteps() {
         hasLocal: existsSync(path.join(stepDir, "local")),
         usesRouter: usesRouter(stepDir),
         usesReact: usesReact(stepDir),
+        fixtureDelay: fixtureDelay(stepDir),
       });
     });
   }
