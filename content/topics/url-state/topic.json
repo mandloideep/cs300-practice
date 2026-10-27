@@ -1,0 +1,10 @@
+{
+  "id": "url-state",
+  "title": "URL state",
+  "area": "routing",
+  "summary": "Move a search and a category filter out of useState and into the address with useSearchParams, so that a shopper can bookmark a search, share it, and press Back through it. You will show the shareable address on the page with a copy button and then walk the whole shop from the address bar as an integration check.",
+  "prerequisites": ["route-data-and-custom-hooks"],
+  "minutes": 45,
+  "updated": "2026-10-26",
+  "changeNote": "First version."
+}

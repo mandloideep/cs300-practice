@@ -24,6 +24,26 @@
         { "id": "events-and-lifting-state", "required": true }
       ],
       "localNotes": ["Everything this week runs in the browser. If you want to keep working on your own computer, download a step's workspace and run it with npm install and npm run dev, as you did in Vite project anatomy."]
+    },
+    {
+      "id": "week-12",
+      "title": "Effects, fetching, persistence, and routing",
+      "intro": "In Week 11 every change on the page came from a click: an event, a setter, a re-render. This week the page starts talking to things outside React, and the two core topics are Effects and Refs and browser APIs. An effect is how a component synchronizes with something that is not a prop or state, such as the document title, a timer, a browser event, or a server, and cleans up after itself; a ref is how it reaches a DOM element or keeps a value across renders without re-rendering. The three follow-through topics apply effects to the three jobs every app has: Persistence keeps a value in localStorage across reloads, Fetching and request states loads data with one status value, cleans up a request that is no longer wanted, and shows you a stale response and a duplicate request in the network pane before fixing them, and Routing turns one page into several with React Router. Work through the first two before the rest, and keep the inspector's network view open on every fetching step.",
+      "topics": [
+        { "id": "fetching-and-request-states", "required": true },
+        { "id": "routing", "required": true }
+      ],
+      "localNotes": ["Every fetching step also runs against a real server: choose the DummyJSON preset or type your own server's base URL in the API source selector. A routing step's downloaded workspace keeps the real react-router from npm, so npm install and npm run dev give you the browser's own address bar for the walk in the last topic."]
+    },
+    {
+      "id": "week-13",
+      "title": "Route data, custom hooks, and URL state",
+      "intro": "Week 12 gave the shop its pages and its requests. This week they meet: each route owns the request for its own data, keyed on the id that useParams reads from the address, and the request logic lives in a custom hook that every page shares. In Route data and custom hooks you reuse useFetch on a list page and a detail page, tell a product the server no longer has from a request that failed, write a useLocalStorage hook that remembers saved products, and read how custom hooks relate to useState and useEffect. In URL state you move a search and a category filter into the address with useSearchParams, so that a shopper can bookmark, share, and press Back through them, show the shareable address with a copy button, and then walk the whole app from the address bar the way the Week 13 integration check asks: direct load, refresh, Back, Forward, and a bad id.",
+      "topics": [
+        { "id": "route-data-and-custom-hooks", "required": true },
+        { "id": "url-state", "required": true }
+      ],
+      "localNotes": ["The integration walk in the last step is meant for your own browser: download the URL state workspace, run npm install and npm run dev, and type each address into the address bar, including a refresh on a product page."]
     }
   ]
 }
