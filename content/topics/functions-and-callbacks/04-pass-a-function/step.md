@@ -5,14 +5,17 @@ entry: index.html
 required: [passing-and-honors, inline-callback-called-per-score, filter-agrees]
 ---
 
+**We used this in:** [JavaScript basics](#/topic/javascript-basics) passed callbacks to `map`, `filter`, and `forEach`; here you write the function on the other side, the one that receives the callback.
+
 Step 3 showed that a function is a value, and a value can be an argument.
 This step writes `countWhere`, a function that counts the scores in a list that pass a test, where the test is a function you hand it.
 A function passed to another function so that the other one can call it is a **callback**, and the thing to watch is who calls it: not you, but the function you handed it to.
 
-**We used this in:** [JavaScript basics](#/topic/javascript-basics) passed callbacks to `map`, `filter`, and `forEach`; here you write the function on the other side, the one that receives the callback.
-
 Press **Run** and the console shows the five scores.
 `isPassing` and `isHonors` are already declared: each takes one score and returns `true` or `false`.
+
+```demo name="callback"
+```
 
 Write the function that takes a test as its second parameter.
 
@@ -32,7 +35,12 @@ function countWhere(list, test) {
 `test` is an ordinary parameter, and inside the loop it is called like any function: `test(item)`.
 `countWhere` does not know what the test checks; it only knows that it can call it with an item and get back `true` or `false`.
 
-Predict before you run: after the next edit, does the console show `Passing: 4`, `Passing: 0`, or `TypeError: test is not a function`?
+```predict
+After the next edit, what does the first new line of the console show?
+- `Passing: 0`
+= `Passing: 4`
+- `TypeError: test is not a function`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -71,6 +79,8 @@ console.log("Passing with filter:", scores.filter(isPassing).length);
 `filter` is a function on every array that takes a callback the same way `countWhere` does, calls it with each item, and keeps the items for which it returned `true`.
 `Passing with filter: 4` agrees with `countWhere`, because both run the same test.
 
+## Read more
+
 A function that takes another function as an argument is called a **higher-order function**, and `countWhere`, `map`, `filter`, and `forEach` are all examples.
 The split is useful: the higher-order function owns the loop, and the callback owns the decision, so one loop serves every test you will ever write.
 The browser uses the same split on a larger scale: in the DOM topic you hand a function to `addEventListener`, and the browser calls it every time the user clicks, the way `countWhere` called the test for every score.
@@ -88,6 +98,21 @@ If the console shows `TypeError: test is not a function` for the `belowEighty` l
 **Check:** Run the code.
 The console shows `Passing: 4`, `Honors: 1`, the five `countWhere asked about` lines, `Below 80: 3`, and `Passing with filter: 4`.
 Press **Run checks** to confirm.
+
+```quiz
+In `countWhere(scores, isHonors)`, who calls `isHonors`?
+- You, on that line
+= `countWhere`, once per score
+- The browser, after the file finishes
+> You hand the function over; the function you handed it to decides when to call it and with which argument.
+```
+
+```quiz
+What does `scores.filter(isPassing)` hand to `filter`?
+= The function `isPassing` itself
+- The result of calling `isPassing`
+> There are no parentheses after `isPassing`, so nothing is called on that line; `filter` calls it for each score.
+```
 
 <details>
 <summary>src/main.js after this step</summary>
