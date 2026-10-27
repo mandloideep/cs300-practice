@@ -267,12 +267,19 @@ function seedFiles(page) {
   );
 }
 
+// The step opens with the boundaries on, and the labels for the router and its links sit over the
+// nav at the top of the result, where a click meant for a link lands on a label instead on Linux
+// fonts, so the step is opened with the boxes off.
 async function openRoutingStep(page) {
   await seedFiles(page);
   await page.goto(`#/topic/${STEP.topic}/${STEP.n}`);
   await expect(page.locator(".pane--result .status-pill")).toHaveText("Ready", {
     timeout: 15_000,
   });
+  const boundaries = page.locator(".pane--inspector").getByRole("button", { name: "Boundaries" });
+  await expect(boundaries).toHaveAttribute("aria-pressed", "true");
+  await boundaries.click();
+  await expect(boundaries).toHaveAttribute("aria-pressed", "false");
 }
 
 test.describe("address bar on the step page", () => {

@@ -228,7 +228,7 @@ Nothing in the site proxies, caches, or logs requests outside the student's brow
 | Runtime | Vendored ES module development builds of React, React DOM, the JSX dev runtime, and React Router; import map in the iframe |
 | Content build | Node script: Markdown with front matter, Shiki or a lightweight highlighter, JSON output |
 | Verification | Node script validates content; Playwright runs every step's solution in a headless browser and asserts its checks pass |
-| Deploy | GitHub Actions on push to `main`: build, validate, test, publish to Pages |
+| Deploy | GitHub Actions: a check on every push, and a manual run that builds, tests in shards, and publishes to Pages |
 | Code style | No explanatory comments in demo or workspace code; explanation lives in `step.md` |
 
 ## 10. Repository layout

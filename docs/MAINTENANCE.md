@@ -38,7 +38,7 @@ The design of record is [DESIGN.md](DESIGN.md), the shared interfaces are in [CO
 ## Every few months
 
 - Run `npm ci && npm run build && npm test` on a clean checkout; the Playwright suite runs every step's solution and the accessibility checks.
-- Check the workflow at GitHub Actions; the deploy job needs GitHub Pages enabled with the source set to GitHub Actions.
+- Start the `Test and deploy` workflow at GitHub Actions; the deploy job needs GitHub Pages enabled with the source set to GitHub Actions.
 - Run `npm outdated` and update devDependencies in a single commit, keeping `react`, `react-dom`, and `react-router` on the pinned versions unless the runtime is being upgraded.
 
 ## Known limits

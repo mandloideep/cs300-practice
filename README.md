@@ -73,9 +73,18 @@ Routes use hash routing so that deep links work on GitHub Pages: `#/`, `#/topics
 
 ## Deployment
 
-The workflow in `.github/workflows/deploy.yml` runs on every pull request and on every push to `main`.
-It installs with `npm ci`, then runs lint, the format check, content validation, the build, the runtime check, and the Playwright tests.
-On `main` it also publishes `dist/` to GitHub Pages.
+Two workflows live in `.github/workflows/`.
+
+`check.yml` runs on every pull request and on every push to `main`.
+It installs with `npm ci`, then runs lint, the format check, content validation, the build, and the script tests.
+It needs no browser and finishes in under a minute.
+
+`deploy.yml` runs only when it is started by hand, from the Actions tab or with `gh workflow run deploy.yml`.
+Its build job repeats the checks and uploads `dist/` as the Pages artifact.
+Its test job restores the cached Chromium build, runs the runtime check, and runs the Playwright suite in three parallel shards.
+Its deploy job publishes the artifact to GitHub Pages once the build and every shard are green.
+The run takes two inputs, both on by default: `tests` skips the suite when off, and `deploy` skips publishing when off.
+Start it at the end of a phase or at any milestone worth publishing.
 
 ## Adding a topic
 

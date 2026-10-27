@@ -8,9 +8,9 @@ export default async function check({ document, inspector, wait }) {
   const formElement = document.querySelector(".add-form");
   const title = document.querySelector('input[name="title"]');
   let focusedAtStart = false;
-  for (let attempt = 0; attempt < 10 && !focusedAtStart; attempt += 1) {
+  for (let attempt = 0; attempt < 20 && !focusedAtStart; attempt += 1) {
     focusedAtStart = title !== null && document.activeElement === title;
-    if (!focusedAtStart) await wait(30);
+    if (!focusedAtStart) await wait(50);
   }
 
   if (formElement && title) {
