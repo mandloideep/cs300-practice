@@ -5,7 +5,10 @@
 import { IFRAME_SANDBOX, buildRun, clearSandboxStorage } from "../index.js";
 import { isReactWorkspace } from "../useRunSession.js";
 
+// exhaustive: a workspace may hold a node_modules folder of its own (tooling-from-scratch), which
+// Vite's glob skips by default.
 const sources = import.meta.glob("/content/topics/*/*/**/*", {
+  exhaustive: true,
   query: "?raw",
   import: "default",
   eager: true,

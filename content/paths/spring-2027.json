@@ -5,8 +5,13 @@
     {
       "id": "week-03",
       "title": "HTML: the document, text, links, images, landmarks, forms, and tables",
-      "intro": "Everything we build this semester is a web page, so we start with the language of pages. This week you will type a document from its skeleton up: headings and paragraphs, lists, links and images with text alternatives, the landmarks that give a page its regions, a form whose fields have labels, and a table. Each step shows the page the browser draws from your markup and the tree it built from it, so you can see that HTML is structure, not appearance; the appearance comes next week.",
+      "opens": "2027-01-25",
+      "intro": "Start with Using the lab, a fifteen-minute tour of the lab itself: what each pane of a step page is for, how to type an edit and read the console, and how a check tells you a step is done. Everything we build this semester is a web page, so then we start with the language of pages. This week you will type a document from its skeleton up: headings and paragraphs, lists, links and images with text alternatives, the landmarks that give a page its regions, a form whose fields have labels, and a table. Each step shows the page the browser draws from your markup and the tree it built from it, so you can see that HTML is structure, not appearance; the appearance comes next week.",
       "topics": [
+        {
+          "id": "using-the-lab",
+          "required": true
+        },
         {
           "id": "html-structure",
           "required": true
@@ -19,6 +24,7 @@
     {
       "id": "week-04",
       "title": "CSS: selectors, the cascade, the box model, and Flexbox",
+      "opens": "2027-02-01",
       "intro": "In Week 3 we wrote the structure of a page and left it in the browser's default look. This week you will style it. You will select elements by tag, class, and id, watch the cascade decide between two rules that disagree, measure the box model with and without box-sizing, and lay out a row of cards with Flexbox, reading the main axis and the cross axis off the result. Every step edits a stylesheet linked from the page, the way a real project does.",
       "topics": [
         {
@@ -31,7 +37,8 @@
     {
       "id": "week-05",
       "title": "Grid, responsive layout, and the first JavaScript",
-      "intro": "The page from Week 4 has a layout; this week it gets one that adapts, and then it gets a script. You will build a page layout with Grid, add a breakpoint and check it at a narrow width, and then open the console pane and meet JavaScript: variables and types, strings, operators and the coercion surprises they hide, and your first functions. Every value you print this week becomes something you put on the page in Week 6.",
+      "opens": "2027-02-08",
+      "intro": "The page from Week 4 has a layout; this week it gets one that adapts, and then it gets a script. You will build a page layout with Grid, add a breakpoint and check it at a narrow width, and then open the console pane and meet JavaScript: variables and types, strings, operators and the coercion surprises they hide, and your first functions. Functions and callbacks then takes functions further: a function is a value you can hand to another function, which calls it for you, now or later, and that one idea is behind every click handler you will write this semester. Every value you print this week becomes something you put on the page in Week 6.",
       "topics": [
         {
           "id": "css-layout",
@@ -40,6 +47,10 @@
         {
           "id": "javascript-basics",
           "required": true
+        },
+        {
+          "id": "functions-and-callbacks",
+          "required": true
         }
       ],
       "localNotes": []
@@ -47,10 +58,23 @@
     {
       "id": "week-06",
       "title": "Arrays, objects, the DOM, and events",
-      "intro": "In Week 5 our scripts printed values to the console. This week they reach the page. In Session 1 you will loop over arrays, transform them with map and filter, and group related values into objects. In Session 2 you will select elements from the page, change their text and classes, create and remove elements from data, and respond to a click, including the one mistake nearly everyone makes with addEventListener. By the end, a button on the page changes what the page shows, and you can explain the order in which your code ran.",
+      "opens": "2027-02-15",
+      "intro": "In Week 5 our scripts printed values to the console. This week they reach the page. In Session 1 you will loop over arrays, transform them with map and filter, and group related values into objects. Three short topics then go one level deeper: Scope and closures shows where a variable can be seen and why a function remembers the variables around it, Objects and references shows why copying an object does not copy it, and Arrays in depth sorts the array methods into the ones that change an array and the ones that return a new one. In Session 2 you will select elements from the page, change their text and classes, create and remove elements from data, and respond to a click, including the one mistake nearly everyone makes with addEventListener. By the end, a button on the page changes what the page shows, and you can explain the order in which your code ran.",
       "topics": [
         {
           "id": "javascript-basics",
+          "required": true
+        },
+        {
+          "id": "scope-and-closures",
+          "required": true
+        },
+        {
+          "id": "objects-and-references",
+          "required": true
+        },
+        {
+          "id": "arrays-in-depth",
           "required": true
         },
         {
@@ -63,14 +87,23 @@
     {
       "id": "week-07",
       "title": "Delegation, data attributes, storage, and asynchronous JavaScript",
-      "intro": "Week 6 ended with a page that responds to clicks on elements that were there from the start. This week the page handles elements it creates later, remembers its data across a reload, and waits for things it does not have yet. In Session 1 you will handle a whole list with one listener, carry an id on each element with a data attribute, and keep the list in localStorage with the safe load pattern. In Session 2 you will trace synchronous and asynchronous code, wait for a promise with then and then with async and await, and make your first fetch for JSON, checking the response before you read it. Finish the DOM and events topic first; the fetch topic continues it.",
+      "opens": "2027-02-22",
+      "intro": "Week 6 ended with a page that responds to clicks on elements that were there from the start. This week the page handles elements it creates later, remembers its data across a reload, and waits for things it does not have yet. In Session 1 you will handle a whole list with one listener, carry an id on each element with a data attribute, and keep the list in localStorage with the safe load pattern. Before Session 2, Errors and debugging teaches you to read a stack trace, catch what can go wrong, and stop the browser on a line with DevTools. In Session 2 you will trace synchronous and asynchronous code, wait for a promise with then and then with async and await, and make your first fetch for JSON, checking the response before you read it. Finish the DOM and events topic first; the fetch topic continues it. Then Async and the event loop goes one level deeper with timers and promises you make yourself: the call stack, the queues, and puzzles about the order in which code that waits really runs.",
       "topics": [
         {
           "id": "dom-events",
           "required": true
         },
         {
+          "id": "errors-and-debugging",
+          "required": true
+        },
+        {
           "id": "fetch-basics",
+          "required": true
+        },
+        {
+          "id": "async-and-the-event-loop",
           "required": true
         }
       ],
@@ -81,8 +114,13 @@
     {
       "id": "week-08",
       "title": "CourseHub: application architecture",
-      "intro": "Everything from Weeks 3 to 7 comes together in one application. This week you will build CourseHub, the book search with bookmarks, as a sequence of small typed edits: components that return markup, a search form, bookmark buttons handled by one listener, storage that survives a reload and refuses bad data, a real request with every outcome shown on the page, and then the reorganization that Session 1 described, one state object that the whole page is rendered from. The last step reads the finished file by responsibility and sets it beside the React version of the same ideas, which is where Week 10 begins.",
+      "opens": "2027-03-01",
+      "intro": "Everything from Weeks 3 to 7 comes together in one application. Start with Modules and imports, which splits one script into files that export and import what they share, because CourseHub is organized the same way. This week you will build CourseHub, the book search with bookmarks, as a sequence of small typed edits: components that return markup, a search form, bookmark buttons handled by one listener, storage that survives a reload and refuses bad data, a real request with every outcome shown on the page, and then the reorganization that Session 1 described, one state object that the whole page is rendered from. The last step reads the finished file by responsibility and sets it beside the React version of the same ideas, which is where Week 10 begins.",
       "topics": [
+        {
+          "id": "modules-and-imports",
+          "required": true
+        },
         {
           "id": "app-architecture",
           "required": true
@@ -95,15 +133,129 @@
     {
       "id": "week-09",
       "title": "Fetch, request states, and verification",
-      "intro": "In Week 7 we made a request and read its JSON. This week the request becomes a feature a user can trust. You will show the four states every request has, loading, success, empty, and error, build a search URL from what the user typed with encodeURIComponent, and cause every failure on purpose with the fixture controls: an HTTP error, a body that is not JSON, and a dropped connection, with a sentence for each. You will also refuse a second request while one is pending, which is the first of the stale-result bugs the React weeks grade. Run every fetching step on fixtures, on a real preset, and on a custom base, and read the network pane each time.",
+      "opens": "2027-03-08",
+      "intro": "In Week 7 we made a request and read its JSON. This week the request becomes a feature a user can trust. You will show the four states every request has, loading, success, empty, and error, build a search URL from what the user typed with encodeURIComponent, and cause every failure on purpose with the fixture controls: an HTTP error, a body that is not JSON, and a dropped connection, with a sentence for each. You will also refuse a second request while one is pending, which is the first of the stale-result bugs the React weeks grade. Run every fetching step on fixtures, on a real preset, and on a custom base, and read the network pane each time. Then, before React arrives next week, Tooling from scratch introduces the tools a React project runs on, Node, npm, package.json, node_modules and the lockfile, and the bundler inside Vite, and ends with a project you install, run, and build on your own computer.",
       "topics": [
         {
           "id": "fetch-basics",
           "required": true
+        },
+        {
+          "id": "tooling-from-scratch",
+          "required": true
         }
       ],
       "localNotes": [
-        "Choose a public API for your own search project this week and confirm with the Custom base URL entry that it answers requests from the browser; a server that refuses shows a CORS message in the console, which is a server setting rather than a bug in your code."
+        "Choose a public API for your own search project this week and confirm with the Custom base URL entry that it answers requests from the browser; a server that refuses shows a CORS message in the console, which is a server setting rather than a bug in your code.",
+        "The last step of Tooling from scratch runs on your own computer: install Node 24 if you do not have it, then npm install, npm run dev, and npm run build in the downloaded project."
+      ]
+    },
+    {
+      "id": "week-10",
+      "title": "React, Vite, JSX, components, props, and lists",
+      "opens": "2027-03-15",
+      "intro": "In Week 8 we built CourseHub by hand: we wrote the HTML, styled it, and then kept the page in step with our data by finding elements, building strings of markup, and replacing what was on the screen every time something changed. This week you will build the same kind of page with React. You will describe what the page should look like for the data you have, and React will update the DOM for you. You will see how a Vite project is put together, write JSX, split a page into components that receive props, and render lists of data with stable keys, then load that data from a real API. Each topic runs in the browser, so you can edit the code, run it, watch the inspector draw your components, and check your work as you go. If you want to know why React works the way it does, the optional topic Why React behaves this way pairs six React surprises with the JavaScript ideas from Weeks 5 to 8 that explain them; take each of its steps once you have done the React topic it names, this week or later.",
+      "topics": [
+        {
+          "id": "react-mental-model",
+          "required": true
+        },
+        {
+          "id": "vite-project-anatomy",
+          "required": true
+        },
+        {
+          "id": "jsx-rules",
+          "required": true
+        },
+        {
+          "id": "components-and-props",
+          "required": true
+        },
+        {
+          "id": "lists-and-keys",
+          "required": true
+        },
+        {
+          "id": "why-react-behaves-this-way",
+          "required": false
+        }
+      ],
+      "localNotes": [
+        "The Vite scaffold and build steps run on your own computer: you create the project with npm and run npm run build in your own terminal, and the lab shows the exact commands and the output to expect."
+      ]
+    },
+    {
+      "id": "week-11",
+      "title": "State, events, and component communication",
+      "opens": "2027-03-22",
+      "intro": "In Week 10 we built the product page: a list of cards rendered from data, split into components that receive props. It could show data but not respond to it, because nothing on the page could change. This week the page comes alive. You will handle a click with an event handler, give a component a value it owns with useState, and watch React re-render only the component whose state changed. Then you will meet the problem every real app runs into, two components that need the same value, and solve it the way React does: move the state up to the parent, pass the value down as a prop, and pass a function down so that a child can ask for a change. In Session 1 we draw that sequence on the board as event, callback prop, setter, and re-render; in these topics the inspector's flow view draws it for you from the clicks you make, so you can check your mental model against what React really did. In Session 2 the same rule reaches the form fields: React owns what the shopper types, validates it on every keystroke, and adds the new product to the list without changing the array it already holds, which is the one bug this week that produces no error anywhere.",
+      "topics": [
+        {
+          "id": "state-usestate",
+          "required": true
+        },
+        {
+          "id": "events-and-lifting-state",
+          "required": true
+        },
+        {
+          "id": "controlled-forms",
+          "required": true
+        }
+      ],
+      "localNotes": [
+        "Everything this week runs in the browser. If you want to keep working on your own computer, download a step's workspace and run it with npm install and npm run dev, as you did in Vite project anatomy."
+      ]
+    },
+    {
+      "id": "week-12",
+      "title": "Effects, fetching, persistence, and routing",
+      "opens": "2027-03-29",
+      "intro": "In Week 11 every change on the page came from a click: an event, a setter, a re-render. This week the page starts talking to things outside React, and the two core topics are Effects and Refs and browser APIs. An effect is how a component synchronizes with something that is not a prop or state, such as the document title, a timer, a browser event, or a server, and cleans up after itself; a ref is how it reaches a DOM element or keeps a value across renders without re-rendering. The three follow-through topics apply effects to the three jobs every app has: Persistence keeps a value in localStorage across reloads, Fetching and request states loads data with one status value, cleans up a request that is no longer wanted, and shows you a stale response and a duplicate request in the network pane before fixing them, and Routing turns one page into several with React Router. Work through the first two before the rest, and keep the inspector's network view open on every fetching step.",
+      "topics": [
+        {
+          "id": "effects",
+          "required": true
+        },
+        {
+          "id": "refs-and-browser-apis",
+          "required": true
+        },
+        {
+          "id": "persistence",
+          "required": true
+        },
+        {
+          "id": "fetching-and-request-states",
+          "required": true
+        },
+        {
+          "id": "routing",
+          "required": true
+        }
+      ],
+      "localNotes": [
+        "Every fetching step also runs against a real server: choose the DummyJSON preset or type your own server's base URL in the API source selector. A routing step's downloaded workspace keeps the real react-router from npm, so npm install and npm run dev give you the browser's own address bar for the walk in the last topic."
+      ]
+    },
+    {
+      "id": "week-13",
+      "title": "Route data, custom hooks, and URL state",
+      "opens": "2027-04-05",
+      "intro": "Week 12 gave the shop its pages and its requests. This week they meet: each route owns the request for its own data, keyed on the id that useParams reads from the address, and the request logic lives in a custom hook that every page shares. In Route data and custom hooks you reuse useFetch on a list page and a detail page, tell a product the server no longer has from a request that failed, write a useLocalStorage hook that remembers saved products, and read how custom hooks relate to useState and useEffect. In URL state you move a search and a category filter into the address with useSearchParams, so that a shopper can bookmark, share, and press Back through them, show the shareable address with a copy button, and then walk the whole app from the address bar the way the Week 13 integration check asks: direct load, refresh, Back, Forward, and a bad id.",
+      "topics": [
+        {
+          "id": "route-data-and-custom-hooks",
+          "required": true
+        },
+        {
+          "id": "url-state",
+          "required": true
+        }
+      ],
+      "localNotes": [
+        "The integration walk in the last step is meant for your own browser: download the URL state workspace, run npm install and npm run dev, and type each address into the address bar, including a refresh on a product page."
       ]
     }
   ]

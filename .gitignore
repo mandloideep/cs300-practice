@@ -1,4 +1,5 @@
 node_modules/
+!content/topics/**/node_modules/
 dist/
 dist-d2l/
 public/content/

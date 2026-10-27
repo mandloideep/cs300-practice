@@ -1,0 +1,10 @@
+{
+  "id": "why-react-behaves-this-way",
+  "title": "Why React behaves this way",
+  "area": "react",
+  "summary": "Six React surprises, each explained by a JavaScript idea from the first half of the semester: callbacks, closures, map, the event loop, modules, and identity. Each step names the JavaScript topic and the React topic it joins, so take it once you have done both.",
+  "prerequisites": ["modules-and-imports", "react-mental-model"],
+  "minutes": 50,
+  "updated": "2026-10-27",
+  "changeNote": "First version."
+}
