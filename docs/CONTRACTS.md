@@ -618,6 +618,107 @@ A vanilla workspace (entry `index.html`, no React import) downloads as the works
 - Never modify the Fall content repository under `cs-300-content`.
 - End with a report: what was built, what was verified and how, decisions made, and anything left open.
 
+## 7. Phase 6 contracts
+
+Phase 6 is planned in `docs/PHASE6.md`, with its explainer inventory in `docs/EXPLAINERS.md` and its topic map in `docs/CURRICULUM.md`; ownership per stream is the table in `docs/PHASE6.md`.
+These contracts are pinned before any Phase 6 stream starts and change only through the orchestrator.
+
+### 7.1 The `demo` fence and the explainer registry
+
+An explainer is placed in `step.md` with a fenced block whose info string is `demo name="<id>"`.
+The body is empty or one JSON object, the explainer's props; the validator parses it and rejects a body that is not a JSON object.
+`<id>` must be an id listed in `src/demos/registry.json`, an array of `{ "id", "title", "description" }` that the validator and the content build read and that `docs/EXPLAINERS.md` mirrors.
+
+The content build compiles the fence to a placeholder with a text fallback:
+
+```html
+<div class="demo" data-demo="event-loop" data-props="{&quot;timers&quot;:2}">
+  <p class="demo-fallback">Event loop: the call stack, the timer and event queues, and the order in which code runs.</p>
+</div>
+```
+
+The compiled step gains `"demos": ["event-loop"]`, the ids in body order, `[]` when none.
+`src/ui/StepExplanation.jsx` finds every `[data-demo]` after the HTML renders and mounts the registered component into it with a portal, replacing the fallback.
+
+Every explainer lives in `src/demos/<id>/index.jsx` and exports:
+
+```js
+export const id = "event-loop";
+export function stepCount(props) { return 7; }
+export default function EventLoop({ props, step, reducedMotion }) { ... }
+```
+
+The shared frame in `src/demos/DemoFrame.jsx` owns the title, the description, the Play, Pause, Step, and Reset buttons, the timer that advances `step` while playing, and `aria-describedby` from the description; the explainer only draws the state for `step`, from `0` to `stepCount(props) - 1`.
+The frame never autoplays, stops at the last step, and under `prefers-reduced-motion` starts at the last step with Step and Reset still working.
+Explainers draw with the tokens in `src/styles/tokens.css` only and fit a 320 pixel wide column.
+`tests/demos.spec.js` mounts every registered explainer on a fixture page, steps from the first to the last state, and runs axe with motion allowed and reduced.
+
+### 7.2 The `predict` and `quiz` fences
+
+A `predict` fence asks what the console or the page will show; a `quiz` fence asks a question with an explanation.
+Both have the same body: a question line, then two to four option lines, each starting with `- ` except exactly one that starts with `= ` and is the answer; a `quiz` may end with one or more lines starting with `> `, the explanation.
+An optional `id="<slug>"` attribute names the block; the default is `predict-<k>` or `quiz-<k>` with `k` counting from 1 in body order.
+
+````markdown
+```predict
+What does the console show after one click?
+- Added to the cart: Essence Mascara
+- Nothing until the second click
+= Six messages before any click
+```
+````
+
+The content build compiles each to `<div class="predict" data-predict="<id>"></div>` with a fallback that lists the question and the options without the answer, and the compiled step gains `"questions": [{ "id", "kind", "question", "options", "answer", "explanation" }]`, where `answer` is the index into `options` and `explanation` is `null` for a predict.
+The step page renders the options as a radio group.
+A `predict` keeps the pick and reveals the answer when the next run of this step reaches `ready`; a `quiz` reveals on pick.
+The topic page shows the quiz score for the topic as answered over total.
+
+### 7.3 The "Read more" section
+
+A level-two heading whose text is exactly `Read more` starts the folded part of a step.
+The content build wraps everything from that heading to the line before the `**Check:**` paragraph in `<details class="read-more"><summary>Read more</summary>...</details>`, dropping the heading.
+When a step has `## Read more`, the validator requires a `**Check:**` paragraph after it and allows at most one such heading; the `**If it breaks:**` paragraph belongs inside the folded part, before `**Check:**`.
+A step without the heading validates as today, so the retrofit can land topic by topic.
+The step page opens every `details.read-more` when `preferences.explanationsOpen` is true in progress; a control under the step title toggles that preference.
+
+### 7.4 The `links` field
+
+`topic.json` and step front matter may carry `links`, an array of `{ "kind", "title", "url" }` where `kind` is `lecture`, `reading`, or `reference`, `title` is a sentence fragment, and `url` starts with `https://`.
+The compiled topic carries `links` and each compiled step carries `links`, `null` when absent.
+The step page lists a step's links under the title, with the kind as the label, after the topic's links; the unit page lists each topic's `lecture` links; `scripts/export-d2l.mjs` prints the `lecture` links of each topic in the unit.
+
+### 7.5 Releases
+
+A path file may carry `"active": false`; the default is `true`.
+A unit may carry `"opens": "YYYY-MM-DD"`; a unit without it is open.
+`scripts/build-content.mjs` takes `--all` and reads `LAB_BUILD_DATE`, a `YYYY-MM-DD` date that defaults to today in UTC.
+Without `--all`, a unit whose `opens` is after the build date is compiled as `{ "id", "title", "opens", "closed": true }` and nothing else, and a topic that appears in no open unit of any active path is left out of `index.json` and has no topic file written.
+With `--all`, every unit is compiled in full with `"closed": false` and `opens` passed through, and every topic is written.
+The `dev`, `validate`, and `test` scripts pass `--all`; `build` does not.
+The unit page shows a closed unit's title and date with no links; the path page lists closed units after the open ones.
+`deploy.yml` adds `schedule: [{ cron: "0 12 * * 1" }]`, Monday at 12:00 UTC, and the scheduled run behaves as a manual run with both inputs on.
+
+### 7.6 Onboarding
+
+The step-page tour is `src/ui/Tour.jsx`, five dialogs built on `src/ui/Dialog.jsx` that focus the explanation, the editor, Run, the result, and the console and check panel in that order, with Next, Back, and Skip.
+It opens once per browser, on the first step page visited while `tour.stepPage` is null in progress, and from a `Tour` button in the site header on step pages; finishing or skipping stores the date.
+The home page shows a card that links to `#/topic/using-the-lab` until every step of that topic is complete or `tour.homeCard` holds a dismissal date.
+
+### 7.7 Progress JSON version 2
+
+Version 2 adds three fields to the shape in 5.1, each present and empty on upgrade from version 1:
+
+```json
+{
+  "version": 2,
+  "answers": { "state-usestate/1/predict-1": { "pick": 2, "revealedAt": "2027-02-01T18:00:00.000Z" } },
+  "preferences": { "explanationsOpen": false },
+  "tour": { "stepPage": null, "homeCard": null }
+}
+```
+
+`revealedAt` is `null` until a predict is revealed by a run or a quiz by a pick.
+
 ## Decisions log
 
 - 2026-10-26: Generated content lives in `public/content/` and is gitignored; `public/runtime/` is committed.
@@ -633,3 +734,4 @@ A vanilla workspace (entry `index.html`, no React import) downloads as the works
 - 2026-10-26: `react-router` always resolves to `runtime/wrap/react-router.js`, inspector on or off. The iframe's `localStorage` and `sessionStorage` are Proxy views scoped under `cs300-lab:sandbox:` so student code cannot touch the site's progress, and `run()` clears that scope before each run unless `preserveStorage: true`. Decided by the Phase 3 runtime stream.
 - 2026-10-26: Phase 4 contracts pinned: the `dom` snapshot message, `dom-highlight` and `resize` parent messages, `dom` as an `inspector.views` value and the default for a vanilla workspace, and the vanilla download layout. The DOM view is the vanilla counterpart of boundaries and flash. Phase 4 ownership is in `docs/PHASE4.md`.
 - 2026-10-26: The bridge has a fourth part, `src/runner/bridge/dom.js`, concatenated after `fetch-shim.js`; it owns the `dom` snapshots and `dom-highlight`, and the overlay host is shared with the inspector hook. A content build defaults `inspector.views` to `[dom]` for a vanilla step. Decided by the Phase 4 runtime stream.
+- 2026-10-27: Phase 6 contracts pinned in section 7: the `demo` fence and registry, the `predict` and `quiz` fences, the "Read more" section, the `links` field, the release fields and `--all`, the tour, and progress JSON version 2. Phase 6 ownership is in `docs/PHASE6.md`.
