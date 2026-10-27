@@ -8,14 +8,18 @@ inspector:
 required: [header-and-footer, tree-matches-map, landmarks-in-order]
 ---
 
-Before writing a larger page, React developers sketch it as boxes and give each box a name.
-The process from our Week 10 reading:
+Before writing a larger page, React developers sketch it as boxes and give each box a name, and nesting the boxes gives the component tree.
+This step adds a site header and a footer around the catalog, each in its own file, until the inspector's tree matches the map below.
+Watch the Tree view: a file on its own adds nothing until `App` imports it and uses its tag.
 
-1. Sketch the page and draw a box around every distinct part.
-2. A part that repeats, such as a card, becomes a reusable component.
-3. A part with its own job, such as a header or a footer, becomes its own component.
-4. Nesting the boxes gives the component tree.
+```predict
+`src/SiteHeader.jsx` and `src/SiteFooter.jsx` already exist; when you run the starter, does the Tree view list `SiteHeader` and `SiteFooter`?
+- Yes, because every file in `src/` is part of the page
+= No, because `App` does not import or use them yet
+- Only `SiteHeader`, because it comes first in the file list
+```
 
+Press **Run** and open the inspector's Tree view before you change anything.
 Our catalog page needs a site header and a footer around what we already have.
 Here is the map we are building, with `App` at the root:
 
@@ -32,7 +36,6 @@ App
 Read it top to bottom as "App contains a SiteHeader, then the main region, then a SiteFooter".
 Lines marked HTML are elements, not components, so the inspector does not show them as boxes.
 
-The header and footer each get their own file, the way a real Vite project keeps one component per file.
 We created the two files for you, each holding a one-line placeholder component that draws nothing.
 Open the `src/SiteHeader.jsx` tab and replace the placeholder with the header.
 
@@ -47,7 +50,6 @@ export default function SiteHeader({ siteName }) {
 }
 ```
 
-`export default` makes the function the one thing this file offers to other files, exactly like the modules we wrote in Week 8.
 The header takes the site name as a prop, so the same header could serve another department's catalog.
 
 Open the `src/SiteFooter.jsx` tab and replace its placeholder with the footer.
@@ -73,7 +75,6 @@ function Card({ children }) {
 ```
 
 A default export is imported without braces, and we can choose the local name.
-The path starts with `./` because the file sits in the same folder, and it includes the extension, which the lab requires.
 
 Place the header before the main region.
 
@@ -88,12 +89,21 @@ Place the footer after it.
 ```
 
 `App` now reads like the table of contents of the page: header, main content, footer.
-Each piece can change on its own; editing `SiteFooter` cannot break a `CourseCard`.
 
-**Check:** Run the code.
-The page has a header with the site name at the top and a footer at the bottom.
-Open the inspector's Tree view and compare it with the map above: `SiteHeader`, four `CourseCard` components each with a `Card` inside, the advising `Card`, and `SiteFooter`, all inside `App`.
-Turn on Boundaries and click the footer's box; the editor opens `src/SiteFooter.jsx`.
+## Read more
+
+The process from our Week 10 reading:
+
+1. Sketch the page and draw a box around every distinct part.
+2. A part that repeats, such as a card, becomes a reusable component.
+3. A part with its own job, such as a header or a footer, becomes its own component.
+4. Nesting the boxes gives the component tree.
+
+The header and footer each get their own file, the way a real Vite project keeps one component per file.
+`export default` makes the function the one thing this file offers to other files, exactly like the modules we wrote in Week 8.
+The import path starts with `./` because the file sits in the same folder, and it includes the extension, which the lab requires.
+
+Each piece can change on its own; editing `SiteFooter` cannot break a `CourseCard`.
 
 To practice the habit, move `Card` and `CourseCard` into files of their own in the same way and run again.
 The page and the tree should not change at all; only the file tabs do.
@@ -101,6 +111,19 @@ The page and the tree should not change at all; only the file tabs do.
 **If it breaks:** A diagnostic that says a file cannot be found means the import path and the file name differ; names are case sensitive, so `./siteHeader.jsx` does not find `SiteHeader.jsx`.
 If the console says `does not provide an export named 'default'`, the new file is missing `export default` before `function`.
 If the header shows no site name, the `siteName` attribute in `App` and the destructured name in `SiteHeader` differ.
+
+**Check:** Run the code.
+The page has a header with the site name at the top and a footer at the bottom.
+Open the inspector's Tree view and compare it with the map above: `SiteHeader`, four `CourseCard` components each with a `Card` inside, the advising `Card`, and `SiteFooter`, all inside `App`.
+Turn on Boundaries and click the footer's box; the editor opens `src/SiteFooter.jsx`.
+
+```quiz
+Which line imports the component that `SiteHeader.jsx` exports with `export default`?
+= `import SiteHeader from "./SiteHeader.jsx";`
+- `import { SiteHeader } from "./SiteHeader.jsx";`
+- `import SiteHeader from "SiteHeader";`
+> A default export is imported without braces under a name you choose, and a file of your own is found by a path that starts with `./`; braces ask for a named export, which this file does not have.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>

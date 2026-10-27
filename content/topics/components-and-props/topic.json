@@ -5,6 +5,28 @@
   "summary": "Turn repeated markup into components and pass each one the data it should show through props. You will set default values, see why props are read-only, wrap content with children, and map a small page into a component tree.",
   "prerequisites": ["jsx-rules"],
   "minutes": 50,
-  "updated": "2026-10-26",
-  "changeNote": "First version."
+  "updated": "2026-10-27",
+  "changeNote": "Rewritten so each step opens with an explainer or a prediction, folds the background under Read more, and ends with a quiz.",
+  "links": [
+    {
+      "kind": "reading",
+      "title": "react.dev: Your first component",
+      "url": "https://react.dev/learn/your-first-component"
+    },
+    {
+      "kind": "reading",
+      "title": "react.dev: Passing props to a component",
+      "url": "https://react.dev/learn/passing-props-to-a-component"
+    },
+    {
+      "kind": "reading",
+      "title": "react.dev: Importing and exporting components",
+      "url": "https://react.dev/learn/importing-and-exporting-components"
+    },
+    {
+      "kind": "reference",
+      "title": "MDN: Destructuring",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring"
+    }
+  ]
 }
