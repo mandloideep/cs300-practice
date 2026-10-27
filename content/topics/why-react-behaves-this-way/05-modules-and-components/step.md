@@ -14,6 +14,9 @@ This step moves `ProductCard` out of `App.jsx` into its own file and counts how 
 A component file is an ordinary JavaScript module, so everything the modules topic showed still holds: an `export default`, an `import` with a relative path that includes the extension, and a file that runs once however often it is used.
 Watch the console for the line each file prints when it runs, and compare it with the number of cards on the page.
 
+```demo name="module-graph"
+```
+
 The workspace is the cart from the first step of this topic, and it has a new, nearly empty file, `src/ProductCard.jsx`, which holds only `export {};`, a module that exports nothing.
 Press **Run**: three cards, and one console line, `Added to the cart: 1 x Essence Mascara Lash Princess`, from the checks pressing **Add one** on the first card.
 
@@ -62,12 +65,19 @@ console.log("App.jsx ran");
 
 ```
 
-Predict before you run: the page draws three cards, twice each in Strict Mode, so how many times does the console show `ProductCard.jsx ran`, once, three times, or six times?
-And which line comes first, `ProductCard.jsx ran` or `App.jsx ran`?
+```predict
+The page draws three cards, twice each in Strict Mode; how many times does the console show `ProductCard.jsx ran`?
+- Six times
+- Three times
+= Once
+```
+
 Run it.
 `ProductCard.jsx ran` appears once, above `App.jsx ran`.
 
-## Why React works this way
+## Read more
+
+### Why React works this way
 
 Two different things run here, at two different times.
 The **module** runs once, when the browser first loads it, and that is when its top-level lines, the `console.log` and the `function` declaration, run.
@@ -84,6 +94,14 @@ If `ProductCard.jsx ran` appears more than once, the `console.log` went inside t
 
 **Check:** Run the code.
 Three cards render, the console shows `ProductCard.jsx ran` once and then `App.jsx ran`, and **Add one** still adds to the cart.
+
+```quiz
+Where does a line at the top level of `ProductCard.jsx`, outside the component, run?
+= Once, when the module first loads
+- Once for every card React draws
+- Every time any state in the app changes
+> The module runs once; React calls the exported component function once per card per render, and only code inside that function runs again.
+```
 
 <details>
 <summary>src/ProductCard.jsx after this step</summary>

@@ -14,12 +14,21 @@ This step starts with a bug that every React class meets in its first week, and 
 `onClick` wants a function, the way `addEventListener` and `runTwice` did, and React calls that function later, when the button is clicked.
 Watch the console before you click anything.
 
+```demo name="callback"
+```
+
+```predict
+Before anyone clicks, what does the console show for the starter?
+- Nothing, until a button is clicked
+- Three lines, one for each product
+= Six lines, two for each product
+```
+
 Press **Run**, and read the console before touching the page.
 It already shows six lines, two for each product, `Added to the cart: Essence Mascara Lash Princess` and so on, and nobody has clicked.
 Click **Add to cart** on any card: nothing more is printed.
 
-Predict before you read the explanation: is the bug in `handleAdd`, in the parentheses after `handleAdd` on the button, or in `products.map`?
-It is the parentheses.
+The bug is not in `handleAdd` and not in `products.map`; it is the parentheses.
 `onClick={handleAdd()}` runs `handleAdd` right now, while React draws the card, and hands `onClick` whatever it returned, which is `undefined`, so the button has no handler at all.
 That is the parentheses mistake from [Functions and callbacks](#/topic/functions-and-callbacks/5), with React's `onClick` in place of `runTwice`.
 Each line appears twice because the step runs React in Strict Mode, which draws every component two times in development to bring out exactly this kind of code that does something while drawing.
@@ -57,7 +66,9 @@ Run it, and click **Add three** on the apple card: `Added to the cart: 3 x Apple
 Read `() => handleAdd(3)` as "a function that, when called, calls `handleAdd` with 3".
 React stores that function and calls it on the click, and only then does `handleAdd(3)` run.
 
-## Why React works this way
+## Read more
+
+### Why React works this way
 
 A component is a function that React calls every time it draws the card, and everything inside its `return` runs during that call.
 So anything written as a call inside the JSX, `handleAdd()` included, runs while drawing, once per card and twice in Strict Mode.
@@ -74,6 +85,14 @@ If the result says `Too many re-renders`, a handler written with parentheses cal
 **Check:** Run the code.
 The console stays empty until a click, every card has **Add one** and **Add three**, and each click prints its own quantity and product.
 The checks press **Add one** on the first card and **Add three** on the second, so those two lines are already in the console when you look.
+
+```quiz
+Which `onClick` passes the number 2 to `handleAdd` when the button is clicked, and not before?
+- `onClick={handleAdd(2)}`
+= `onClick={() => handleAdd(2)}`
+- `onClick={handleAdd, 2}`
+> The arrow is a new function that makes the call later; with parentheses alone, `handleAdd(2)` runs while React draws the card.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>

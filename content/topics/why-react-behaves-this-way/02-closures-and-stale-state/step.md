@@ -14,17 +14,25 @@ This step has two buttons that each seem to misread the quantity, and one idea t
 Fix them, and you will know why `quantity` inside a handler never changes while the handler runs.
 Watch the number on the page and the line the timer prints.
 
+```demo name="closure"
+```
+
 Press **Run**.
 The quantity starts at `0`, and the checks press each button once to test it, so by the time you look the page reads `Apples in the cart: 2` and the console has one `Quantity a moment later:` line.
 The numbers below continue from there.
 
-Click **Add three** once.
-Predict before you click: does the number go up by three, by one, or not at all?
-It goes up by one, though `addThree` calls the setter three times.
+```predict
+You click **Add three** once; what happens to the number?
+- It goes up by three
+= It goes up by one
+- It does not change
+```
+
+Run the code again so that the answer can be revealed, click **Add three**, and watch: the number goes up by one, though `addThree` calls the setter three times.
 
 Read the handler as JavaScript.
-This render's `quantity` is a `const` that holds, say, `0`, and `addThree` is a closure over it, so each of the three lines computes `0 + 1` and asks React for `1`.
-Three requests for `1` give `1`.
+This render's `quantity` is a `const` that holds `2`, and `addThree` is a closure over it, so each of the three lines computes `2 + 1` and asks React for `3`.
+Three requests for `3` give `3`.
 Nothing inside the handler can change `quantity`, because it belongs to this call of `App`; the new value arrives in the next call, the next render.
 
 The setter has a second form for this case: pass it a function, and React calls that function with the latest value, in order.
@@ -41,13 +49,25 @@ Run it and click **Add three**: up by three.
 ## A timer that remembers the wrong render
 
 **Add one and report** adds one and, a moment later, prints the quantity.
+
+```predict
+After **Add one and report**, what does the timer print?
+- The number now on the page
+- `undefined`
+= The number from before the click
+```
+
 Click it.
-Predict before you read the console: does it print the number now on the page, the number from before the click, or `undefined`?
 It prints the number from before the click: the page reads `4` and the console says `Quantity a moment later: 3`.
 
 The arrow passed to `setTimeout` is a closure too, created during the click, inside the render where `quantity` was `3`.
 When it runs, React has already drawn the next render with `4`, but this arrow still belongs to the old one, and the old `quantity` is `3` forever.
 This is called a **stale closure**, and it is the same thing the loop-variable classic showed in [Scope and closures](#/topic/scope-and-closures/6): a function reads the variable it closed over, not the one you meant.
+
+Step through the picture below to see each render keep its own `quantity`, and the timer keep the render it was made in.
+
+```demo name="state-snapshot"
+```
 
 When the handler itself needs the next value, compute it once and use that name for both.
 
@@ -63,7 +83,9 @@ When the handler itself needs the next value, compute it once and use that name 
 
 Run it and click **Add one and report**: the timer prints the same number the page shows.
 
-## Why React works this way
+## Read more
+
+### Why React works this way
 
 React calls `App` again for every render, so each render has its own `quantity`, its own `addThree`, and its own `addOneAndReport`, the way each call of a counter factory in [Scope and closures](#/topic/scope-and-closures/5) made its own `count`.
 That is what makes a render a snapshot: the JSX, the handlers, and any timer started from them all see one consistent set of values, even while the next render is being prepared.
@@ -75,6 +97,14 @@ If the result says `next is not defined`, the `const next` line went below the l
 
 **Check:** Run the code.
 **Add three** adds three, **Add one and report** adds one, and the line the timer prints matches the number on the page.
+
+```quiz
+Inside a click handler, `quantity` is 5 and the handler calls `setQuantity(quantity + 1)` twice; what is the next quantity?
+- 7
+= 6
+- 5
+> Both calls read this render's `quantity`, which stays 5 for the whole handler, so both ask for 6; the function form `(q) => q + 1` would give 7.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>

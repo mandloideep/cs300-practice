@@ -14,6 +14,9 @@ This step prints what the page shows at three moments of one click: in the handl
 The answers show when React actually redraws, and why two setters in one handler cost one render.
 Watch the order of the three lines in the console.
 
+```demo name="event-loop"
+```
+
 Press **Run**.
 The page starts at `Bottles of cooking oil: 0, $0.00`, and the checks press **Add a bottle** once, so it reads `Bottles of cooking oil: 1, $4.99` when you look and the console has `In the handler, count is 0`.
 The handler calls two setters, `setCount` and `setTotal`, and then logs `count`, which is still this render's `0`, for the reason the closures step gave.
@@ -26,7 +29,13 @@ Now ask the page itself what it shows, inside the handler, right after the sette
 
 Reading the page with `document.querySelector` is not how a React component normally works, and you will not do it in your own components; here it is a measuring tool, the way a `console.log` is.
 
-Predict before you run: does this line print the old number of bottles or the new one?
+```predict
+What does the new line inside the handler print after one click?
+= The old number of bottles
+- The new number of bottles
+- An empty string, because the page is being redrawn
+```
+
 Run it and click **Add a bottle**.
 It prints the old number: the setters have been called, and the page has not changed yet.
 
@@ -42,12 +51,17 @@ Run it and click.
 The handler's two lines show the old number, and the timer's line, a moment later, shows the new one.
 In the inspector, the header counts commits: each click adds exactly one, although the handler called two setters.
 
-## Why React works this way
+## Read more
+
+### Why React works this way
 
 A click is an event, and its handler is a callback that runs to the end before anything else on the page happens, the same rule as any other code on the call stack in [Async and the event loop](#/topic/async-and-the-event-loop/1).
 A setter does not draw; it records the new value and asks React to render soon.
 When the handler returns, React takes every update the handler asked for, `count` and `total` together, renders `App` once with both, and updates the page.
 Only then does the event loop get to the timer, which is why its callback sees the new page even with a delay of `0`.
+
+```demo name="setter-batching"
+```
 
 Gathering every update from one event into one render is called **batching**.
 It means the page never shows a half-finished state, with a new count beside an old total, and it means three setters cost one render instead of three.
@@ -59,6 +73,14 @@ If no timer line appears, the `setTimeout` call is missing its closing `}, 0);`.
 
 **Check:** Run the code and click **Add a bottle**.
 The console shows the old count twice from inside the handler and then the new count from the timer, and the inspector counts one commit for the click.
+
+```quiz
+A click handler calls three setters; how many times does React render the component for that click?
+- Three times, once per setter
+= Once, after the handler returns
+- Once per setter, but only the last render is shown
+> React batches every update from one event and renders once with all of them, which is why the page never shows a half-updated state.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>
