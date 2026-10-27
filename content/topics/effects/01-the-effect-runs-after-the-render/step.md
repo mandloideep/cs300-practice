@@ -10,9 +10,11 @@ required: [effect-logs-after-render, count-matches-screen]
 
 **We used this in:** [Controlled forms](#/topic/controlled-forms) finished the product page with a form that adds to the list; this topic starts from that page.
 
-Everything a component has done so far happens inside React: state in, JSX out.
-Sometimes a component has to reach outside, to the console, to `localStorage`, to a timer, or to the browser window, and the question is always when.
-The answer is **after the render**, and this step lets you see why it cannot be during.
+Sometimes a component has to reach outside React, to the console, to `localStorage`, to a timer, or to the browser window, and the question is always when.
+This step logs how many cards are on the page, first from the body of `App` and then from an effect, and you compare each number with the cards in the result.
+
+```demo name="effect-timeline"
+```
 
 Suppose we want to log how many cards are on the page each time it changes.
 Import `useEffect` next to `useState`, because we will need it in a moment.
@@ -24,6 +26,13 @@ import { useEffect, useState } from "react";
 Now try the obvious thing: count the cards in the body of `App`, under the state.
 The fence starts with a blank line, so the log sits on its own below the state lines.
 
+```predict
+After you add this log and run, how many cards does the first `Rendering` line say the page shows?
+= 0
+- 6
+- 7
+```
+
 ```jsx file="src/App.jsx" action="insert-after" anchor="  const [items, setItems] = useState(products);"
 
   console.log("Rendering: the page shows", document.querySelectorAll(".product").length, "cards");
@@ -32,8 +41,7 @@ The fence starts with a blank line, so the log sits on its own below the state l
 Run the code with **Boundaries** and **Re-render flash** open.
 The console says the page shows `0` cards, twice under Strict Mode, while six cards are right there in the result.
 Add a product: `App` flashes, a seventh card appears, and the console says `6`.
-The count is always one step behind, because the body of `App` runs while React is still working out what the page should look like.
-When the line runs, React has not touched the DOM yet; the cards it describes do not exist until the function has returned and React has committed the result.
+The count is always one step behind.
 
 That is what `useEffect` is for.
 Replace the log with an effect.
@@ -45,21 +53,38 @@ Replace the log with an effect.
 ```
 
 `useEffect` takes a function and asks React to run it after the component has rendered and the page has been updated.
-It is a hook, like `useState`, so the same rules apply: call it at the top level of the component, in the same order every time.
 
 Run the code again.
 The console now says `6` on load, and `7` after you add a product.
 Watch the order of things on a click: the flash marks the render, the new card is on the page, and only then does the effect run and count it.
+
+## Read more
+
+Everything a component has done so far happens inside React: state in, JSX out.
+When it has to reach outside, the answer to "when" is **after the render**, and the first log showed why it cannot be during.
+
+The count in the body was behind because the body of `App` runs while React is still working out what the page should look like.
+When the line runs, React has not touched the DOM yet; the cards it describes do not exist until the function has returned and React has committed the result.
+
+`useEffect` is a hook, like `useState`, so the same rules apply: call it at the top level of the component, in the same order every time.
 React draws first and runs your effect after, every time.
+
+**If it breaks:** If the console says `useEffect is not defined`, the import on the first line still names only `useState`.
+If the number in the log is one step behind the screen, the log is still in the body of `App` rather than inside the effect.
+If no line appears after a click, the effect has a second argument; leave it out for now, because the next step is about that argument.
 
 **Check:** Run the code and press **Beauty**.
 The flash shows `App` and the list rendering, two cards remain, and the console gets one `After render` line that says `2`.
 Press **All**, and the line says `6`.
 Press **Run checks** to confirm; the checks click a category and compare the number in the newest log line with the cards on the screen.
 
-**If it breaks:** If the console says `useEffect is not defined`, the import on the first line still names only `useState`.
-If the number in the log is one step behind the screen, the log is still in the body of `App` rather than inside the effect.
-If no line appears after a click, the effect has a second argument; leave it out for now, because the next step is about that argument.
+```quiz
+With no second argument, when does this step's effect run?
+= After every render of `App`, including the one a category click causes
+- Once, after the first render, and never again
+- Before each render, so that the count is ready in time
+> An effect with no dependency array runs after every commit, which is why pressing **Beauty** logs a fresh `After render` line; the next step adds the array that narrows it down.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>

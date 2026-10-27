@@ -9,7 +9,17 @@ required: [save-on-change, warning-hidden-after-save, load-on-start]
 
 **We used this in:** [DOM and events](#/topic/dom-events) saved a list with `localStorage` and loaded it back with the safe pattern.
 
-Run the code, save a book, and press **Run** again: the bookmark is gone, because it lived in a variable.
+Saved books live in a variable right now, so every new run forgets them.
+This step saves the array to `localStorage` as JSON, then makes loading and saving survive storage that is edited, blocked, or full.
+
+```predict
+Before any edit, you save a book and press Run again: what does that card's button read?
+= `Bookmark`, because the saved list lived in a variable
+- `Saved - remove`, because the browser remembers the page
+- Nothing, because the script stops with an error
+```
+
+Run the code, save a book, and press **Run** again to see the bookmark disappear.
 `localStorage` keeps a string for this page until it is removed, so we convert the array to JSON on save and back on load.
 Put the two storage functions right after the element selections.
 
@@ -25,7 +35,6 @@ function saveBookmarks(books) {
 }
 ```
 
-`getItem` returns `null` on the first visit, so `loadBookmarks` returns an empty array in that case rather than parsing `null`.
 Start from whatever was saved last time instead of an empty array.
 
 ```js file="app.js" action="replace" anchor="let bookmarks = [];"
@@ -41,10 +50,8 @@ And save after every change.
 Run the code, save a book, and press **Run, keeping saved data**, which runs the code again without clearing the result's storage, the way a real reload keeps it.
 The same button is still pressed.
 
-Now the part Week 7 warned about.
-Anyone can edit the stored text, a privacy mode can block storage entirely, and a full disk can refuse a save.
-The application should keep working in every one of those cases and tell the person what happened.
-First, give the page a place for that message.
+Now make the storage safe: anyone can edit the stored text, a privacy mode can block storage entirely, and a full disk can refuse a save.
+First, give the page a place for a warning.
 
 ```html file="index.html" action="insert-after" anchor="      </form>"
       <p id="storage-warning" class="warning" role="status" hidden></p>
@@ -90,19 +97,36 @@ function saveBookmarks(books) {
 }
 ```
 
+Every failure lands in `catch`, which records the problem in the console and shows a warning instead of crashing.
+
+## Read more
+
+`getItem` returns `null` on the first visit, so `loadBookmarks` returns an empty array in that case rather than parsing `null`.
+
+The safe versions are the part Week 7 warned about.
+The application should keep working in every one of those cases and tell the person what happened.
+
 `validBooks` checks that the parsed value is an array of complete books with unique ids; `every` returns `false` as soon as one item fails.
-`JSON.parse` throws on text that is not JSON, and a blocked storage throws on `getItem`, so both paths land in `catch`, which records the problem in the console and shows a warning instead of crashing.
+`JSON.parse` throws on text that is not JSON, and a blocked storage throws on `getItem`, so both paths land in the same `catch`.
 The `hidden` attribute on the warning paragraph is removed only when there is text to show.
 A successful save clears the warning.
+
+**If it breaks:** If bookmarks vanish after a kept run, `saveBookmarks` is not called in the click handler, or the two functions spell the key differently.
+If the console says `Cannot set properties of null (setting 'textContent')`, the warning paragraph is missing from `index.html` or its id differs.
+If the warning never clears, `showStorageWarning("")` is missing from the successful save.
 
 **Check:** Run the code, save a book, and press **Run, keeping saved data**; the book is still saved and no warning shows.
 Press **Run** and the bookmark is gone, because a plain run clears the result's storage.
 Press **Run checks**; the checks save a book, read the stored JSON, and remove it again.
 The lab's own test also seeds broken text into the storage and confirms the warning appears while the page keeps working.
 
-**If it breaks:** If bookmarks vanish after a kept run, `saveBookmarks` is not called in the click handler, or the two functions spell the key differently.
-If the console says `Cannot set properties of null (setting 'textContent')`, the warning paragraph is missing from `index.html` or its id differs.
-If the warning never clears, `showStorageWarning("")` is missing from the successful save.
+```quiz
+The stored text is `{not json` when the page loads; what happens?
+- The script stops with a `SyntaxError` and no cards appear
+= The storage warning shows and the page starts with no saved books
+- Every card loads as saved
+> `JSON.parse` throws on text that is not JSON; the `catch` in `loadBookmarks` logs it with `console.warn`, shows the warning, and returns `[]`, so the page keeps working.
+```
 
 <details>
 <summary>app.js after this step</summary>

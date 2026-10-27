@@ -9,8 +9,13 @@ required: [every-card-has-a-button, click-toggles-saved, focus-stays-on-the-card
 
 **We used this in:** [DOM and events](#/topic/dom-events) carried an id on each element with a data attribute and handled every button with one delegated listener.
 
-A card needs to show whether its book is saved.
-That is a second piece of data for the component, so the component gets a second parameter; Session 1 called these parameters **props**.
+A card needs to show whether its book is saved, and one click listener on `main` toggles it for every card.
+Watch how the list of saved books changes: every click builds a new array instead of changing the old one.
+
+```demo name="mutation-vs-copy"
+```
+
+Saved or not is a second piece of data for the component, so the component gets a second parameter; Session 1 called these parameters **props**.
 First, give the script a place to keep saved books and a record of what is on screen.
 
 ```js file="app.js" action="insert-after" anchor="];"
@@ -30,9 +35,7 @@ function bookCard(book, saved, number) {
       aria-pressed="${saved}"><span>${saved ? "Saved - remove" : "Bookmark"}</span></button>
 ```
 
-`type="button"` stops the button from submitting the form it might sit near.
 `data-action` names what the button does and `data-id` carries the book's identity, so one click handler can tell the buttons apart.
-`aria-pressed` tells assistive technology this is a toggle and whether it is on, and the stylesheet styles the pressed state.
 
 Work out the flag for each book in the list.
 
@@ -49,8 +52,14 @@ The handler needs to know which books are currently on screen, so remember them 
   results.innerHTML = bookList(books);
 ```
 
-The bookmark buttons are created by `renderBooks`, so they did not exist when the script started, and any listener attached to them would be lost on the next render.
-Instead, one listener on the permanent `main` element handles every bookmark click, now and later.
+The bookmark buttons are created by `renderBooks`, so one listener on the permanent `main` element handles every bookmark click, now and later.
+
+```predict
+After this edit, you run and click Bookmark on the second card: what happens?
+- Nothing, because the button did not exist when the listener was added
+= That card's button changes to `Saved - remove` with the pale pressed style
+- Every card's button changes to `Saved - remove`
+```
 
 ```js file="app.js" action="append"
 
@@ -68,20 +77,35 @@ app.addEventListener("click", function (event) {
 });
 ```
 
+If the book is already saved, `filter` builds a new array without it; otherwise the spread operator builds a new array with it added.
+
+## Read more
+
+`type="button"` stops the button from submitting the form it might sit near.
+`aria-pressed` tells assistive technology this is a toggle and whether it is on, and the stylesheet styles the pressed state.
+
+The bookmark buttons did not exist when the script started, and any listener attached to them would be lost on the next render, which is why the listener sits on `main` instead.
 A click on the span inside the button starts at the span, so `closest` walks up to the nearest bookmark button; clicks anywhere else return early.
 `dataset.id` reads the `data-id` attribute, and `find` locates the matching book object.
-If the book is already saved, `filter` builds a new array without it; otherwise the spread operator builds a new array with it added.
 We never push into the old array, so every change is a fresh array we can save and compare.
 Re-rendering replaces the clicked button, so the last two lines move keyboard focus to its replacement.
+
+**If it breaks:** If every button reads `undefined`, the order of the parameters in `bookCard` and in the call do not match.
+If clicks do nothing, compare the selector string with the `data-action` value in `bookCard`.
+If the page reloads when a button is clicked, `type="button"` is missing from the markup.
 
 **Check:** Run the code and click **Bookmark** on a card; it changes to **Saved - remove** with the pale pressed style.
 Click again and it returns to **Bookmark**.
 Press Tab to a button and press Enter; focus stays on that card's button after the change.
 Press **Run checks**; the checks click a button and put it back.
 
-**If it breaks:** If every button reads `undefined`, the order of the parameters in `bookCard` and in the call do not match.
-If clicks do nothing, compare the selector string with the `data-action` value in `bookCard`.
-If the page reloads when a button is clicked, `type="button"` is missing from the markup.
+```quiz
+Why does the handler write `[...bookmarks, book]` instead of `bookmarks.push(book)`?
+- Both do the same thing; the spread is only shorter
+= The spread builds a new array, so every change is a fresh value to save and compare
+- `push` would also remove the book when it is already saved
+> `push` changes the array in place, so the value before the click and the value after it are the same array; the spread copies the old items into a new array with the book added, the habit React's state depends on.
+```
 
 <details>
 <summary>app.js after this step</summary>

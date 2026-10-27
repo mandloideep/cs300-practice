@@ -5,6 +5,10 @@ mode: read
 
 This topic used two hooks we wrote, `useFetch` and `useLocalStorage`, beside the ones React ships.
 Here is how they relate, so that you can decide when to write the next one.
+Watch where the state ends up when stateful code moves out of a component and into a hook.
+
+```demo name="custom-hook-extract"
+```
 
 ## A custom hook is a function that calls hooks
 
@@ -19,11 +23,20 @@ Nothing about them is special to React except the name, which starts with `use` 
 | Who owns the state | The component that called it | The component that called the custom hook |
 | Can it call other hooks | No, they are the bottom | Yes, that is its whole job |
 
+```predict
+Two components each call `useFetch(productsUrl())`; how many requests and states are there?
+- One request, whose state both components share
+= Two requests, each with its own state in the component that called the hook
+- One request, and the second call reads the first call's data
+```
+
 The third row is the one the inspector showed you.
 `ProductsPage` listed two state values after one call to `useFetch`, because the hook's `useState` calls ran as part of `ProductsPage`'s render.
 A custom hook has no state of its own, and two components that call `useFetch` get two separate requests with two separate states, the way two `ProductCard`s each had their own quantity in Week 11.
 
-## The rules still apply inside
+## Read more
+
+### The rules still apply inside
 
 A custom hook calls hooks, so the rules of hooks from Week 11 hold for it and for its callers.
 
@@ -33,7 +46,7 @@ A custom hook calls hooks, so the rules of hooks from Week 11 hold for it and fo
 
 `useFetch` calls `useState` twice and `useEffect` once, in that order, every time; that is why React can match each call with the value it kept from the last render.
 
-## When to extract one
+### When to extract one
 
 Write a custom hook when the same stateful pattern appears in a second component.
 Not for a single call, and not to hide a one-line `useState`.
@@ -44,13 +57,13 @@ Not for a single call, and not to hide a one-line `useState`.
 
 The test is the same as for a component: if you would copy and paste the lines, extract them.
 
-## What stays in the component
+### What stays in the component
 
 The hook returns values and functions; the component decides what to draw.
 `useFetch` never renders a spinner and never knows what a product is, which is why the list page and the detail page could share it while drawing different things.
 Keep the hook ignorant of the page and the page ignorant of the mechanism, and each one stays small enough to read.
 
-## Where the state lives now
+### Where the state lives now
 
 | Value | Lives in | Because |
 | --- | --- | --- |
@@ -62,7 +75,15 @@ Keep the hook ignorant of the page and the page ignorant of the mechanism, and e
 That last row is the bridge to the next topic.
 The address already holds which page is open and which product; it can hold a search and a filter too, and then a shopper can bookmark them, share them, and press Back through them.
 
+**If it breaks:** If the ownership question is hard, open Step 4, select `App` in **Tree and state**, and then imagine the call moved into `ProductPage`; the state would move with it, and the home page would lose the count.
+
 **Check:** Without looking at the files, write `useLocalStorage` from memory on paper: its parameters, its two hook calls, and what it returns.
 Then say which component would own the state if `ProductPage` called it directly.
 
-**If it breaks:** If the ownership question is hard, open Step 4, select `App` in **Tree and state**, and then imagine the call moved into `ProductPage`; the state would move with it, and the home page would lose the count.
+```quiz
+Where may a component call `useFetch`?
+- Inside an `if`, only when the page needs data
+- Inside a click handler, so that the request waits for the click
+= At the top level of the component, before any early return
+> A custom hook calls hooks, so it follows their rules: the same calls in the same order on every render, which only the top level guarantees.
+```

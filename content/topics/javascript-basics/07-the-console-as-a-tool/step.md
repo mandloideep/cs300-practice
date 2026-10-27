@@ -4,7 +4,14 @@ mode: read
 ---
 
 Every step in this topic read its result in the console, and so will most of the debugging you do from here on.
-This page collects what the console can tell you and how to ask.
+This page collects what the console can tell you and how to ask: how values print, what the levels mean, and how to read an error.
+
+```predict
+What does `console.log("names:", ["Ada", "Lin"])` show in the lab's console pane?
+- `names: Ada,Lin`
+- `names: [Ada, Lin]`
+= `names: ["Ada","Lin"]`
+```
 
 ## Printing values
 
@@ -13,6 +20,7 @@ Label everything: `console.log("score:", score)` tells you which value you are l
 
 A string prints as its text, a number as digits, `true`, `false`, `null`, and `undefined` as those words.
 An array prints in brackets and an object with its keys, so `console.log("student:", student)` shows the whole object at once, which is faster than logging each property.
+In the lab's pane a string inside an array or an object keeps its quotes, which is how you tell `["5"]` from `[5]`.
 
 `console.table(roster)` prints an array of objects as a table with one row per object and one column per key; in the browser's own console it is the quickest way to read a list.
 
@@ -44,7 +52,9 @@ The type narrows the cause.
 The message names the value or the operation.
 The location is the file and line, and the lab's console links it to the editor; fix the first error in the list, because one broken line often causes the ones below it.
 
-## Looking without an error
+## Read more
+
+### Looking without an error
 
 When the output is wrong but nothing is red, the bug is in a value, and the console is how you look at values.
 Put a `console.log` with a label before the line you suspect, run, and compare what printed with what you expected.
@@ -53,7 +63,7 @@ This is the trace from Step 4, done with the console instead of a table.
 
 `typeof` belongs in these logs: `console.log("score:", score, typeof score)` catches the string that should have been a number, which is the most common cause of a wrong result that raised no error.
 
-## The browser's console and the lab's
+### The browser's console and the lab's
 
 The lab's console pane shows everything your code logs while it runs in the result pane, with errors mapped to lines in the editor.
 Your browser has the same console for every page: press F12 and open the **Console** tab.
@@ -64,12 +74,20 @@ Clear the console before a run so that old lines do not mix with new ones; the l
 Read errors from the top.
 And delete the logs you added once the bug is gone, or your console fills with noise that hides the next one.
 
-## What comes next
+### What comes next
 
 Everything so far printed to the console because the page had nothing to show.
 The DOM topic connects this JavaScript to the page from the HTML topic: finding elements, changing their text, and responding to clicks, with the same console beside you.
 
+**If it breaks:** If the browser console shows errors you did not cause, they belong to the page, not to you; filter the console to your own messages or clear it and run your line again.
+
 **Check:** Open the browser's own console on this page with F12 and type `[1, 2, 3].map((n) => n * 10)`.
 It prints `[10, 20, 30]`, and you have run JavaScript on a page that was not yours.
 
-**If it breaks:** If the browser console shows errors you did not cause, they belong to the page, not to you; filter the console to your own messages or clear it and run your line again.
+```quiz
+The console shows `TypeError: Cannot read properties of undefined`; what usually caused it?
+- A name is misspelled
+= A dot was used on a value that is `undefined`, such as an index past the end of an array
+- A `const` was reassigned
+> A misspelled name is a `ReferenceError` and a reassigned `const` is `Assignment to constant variable`; reading a property of `undefined` is the error the index past the end causes a few lines later.
+```

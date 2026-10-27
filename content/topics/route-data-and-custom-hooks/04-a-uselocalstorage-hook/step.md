@@ -12,14 +12,20 @@ required: [save-writes-local-storage, saved-survives-a-rerun]
 
 **We used this in:** [Persistence](#/topic/persistence), where a value was read from `localStorage` in a lazy initial state and written back in an effect, and [Events and lifting state](#/topic/events-and-lifting-state), where the parent owned the list and the child asked for a change.
 
+This step writes `useLocalStorage`, a custom hook that looks like `useState` from the outside and remembers its value across runs.
+Watch **Tree and state**: the state the hook declares is listed under the component that calls it.
+
+```predict
+Run the starter, save a product, then press Run again and go Home; what does the saved count say?
+= Zero, because a new run starts the state over
+- One, because the saved list stays in the component
+- Nothing, because the home page loses its count after a run
+```
+
 We added a **Save for later** button to the detail page and a count on the home page.
 `App` owns the list of saved ids, as in Week 11, and passes it down with a handler.
 Run the starter, open a product, press **Save for later**, and go **Home**: one saved product.
-Now press **Run** again: zero.
-State lives in memory, and a re-run, like a reload in Vite, starts from nothing.
-
-Persistence showed the fix: read `localStorage` when the state is created, and write it whenever the state changes.
-That is two hooks and a key, used the same way in every component that wants to remember something, which is exactly the shape a custom hook takes.
+Now press **Run** again and go **Home**.
 
 ## Write the hook
 
@@ -43,10 +49,7 @@ export function useLocalStorage(key, initialValue) {
 }
 ```
 
-The function passed to `useState` runs once, on the first render, so the storage is read once and not on every render.
-`getItem` returns `null` when the key has never been written, and the stored text is parsed back into the array it came from.
-The effect writes the value whenever it changes, so the caller never calls `setItem`.
-The hook returns a pair, `[value, setValue]`, so that a component can swap `useState` for `useLocalStorage` by changing one word and adding a key.
+The state starts from what storage holds, the effect writes it back whenever it changes, and the hook returns the same pair `useState` does.
 
 ## Use it in App
 
@@ -62,7 +65,27 @@ import { useLocalStorage } from "./useLocalStorage.js";
 ```
 
 `handleToggleSave` and the props are untouched.
+
+## Read more
+
+The re-run of the starter shows zero saved products.
+State lives in memory, and a re-run, like a reload in Vite, starts from nothing.
+
+Persistence showed the fix: read `localStorage` when the state is created, and write it whenever the state changes.
+That is two hooks and a key, used the same way in every component that wants to remember something, which is exactly the shape a custom hook takes.
+
+### How the hook works
+
+The function passed to `useState` runs once, on the first render, so the storage is read once and not on every render.
+`getItem` returns `null` when the key has never been written, and the stored text is parsed back into the array it came from.
+The effect writes the value whenever it changes, so the caller never calls `setItem`.
+The hook returns a pair, `[value, setValue]`, so that a component can swap `useState` for `useLocalStorage` by changing one word and adding a key.
+
 `App` does not know the value is persisted, the same way `ProductsPage` does not know how `useFetch` cancels a request.
+
+**If it breaks:** If the console says `JSON.parse: unexpected character`, something else wrote a plain string under the same key; change the key or clear the browser's storage for this site.
+If saving works but a re-run forgets it, the effect is missing or its dependency array leaves out `value`.
+If the page is blank and the console says `useState is not defined`, the hook file does not import it from `react`.
 
 **Check:** Run the code, open a product, and press **Save for later**.
 The button changes to **Remove from saved**.
@@ -70,9 +93,13 @@ Press **Run** again, open the same product: still saved, and the home page count
 Open **Tree and state** and select `App`: it has one state value, the array the hook keeps, listed under `App` because `App` called the hook.
 Press **Run checks**, then remove the product from saved so that the next step starts clean.
 
-**If it breaks:** If the console says `JSON.parse: unexpected character`, something else wrote a plain string under the same key; change the key or clear the browser's storage for this site.
-If saving works but a re-run forgets it, the effect is missing or its dependency array leaves out `value`.
-If the page is blank and the console says `useState is not defined`, the hook file does not import it from `react`.
+```quiz
+Why does the hook pass a function to `useState` instead of the stored value itself?
+= So that storage is read when the state is created, and not on every render
+- Because `useState` accepts only a function as its initial value
+- So that the effect can call that function later to write the value
+> React calls an initializer function only when it creates the state, so `getItem` and `JSON.parse` do not run again on later renders.
+```
 
 <details>
 <summary>src/useLocalStorage.js after this step</summary>

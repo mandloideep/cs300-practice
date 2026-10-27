@@ -7,16 +7,14 @@ inspector:
 required: [four-landmarks, three-sections, no-wrapper-divs]
 ---
 
-The page has grown, so someone grouped its parts with `<div>` elements: a top block, a content block with three groups inside, and a bottom block.
-Press **Run** and open the inspector's **DOM** view.
-It draws the tree of elements the browser built from the file, and every branch reads `div`.
-A screen reader sees the same thing: boxes with no names, so it cannot offer "skip to the main content" or "go to the navigation".
+The page has grown, and someone grouped its parts with `<div>` elements, so every branch of its tree reads `div`.
+This step swaps each `<div>` for the landmark that says what it is, and the inspector's **DOM** view shows the tree gaining names.
+Press **Run** and open the DOM view before the first edit, so you can watch it change.
 
-`<div>` is a generic block container with no meaning of its own.
-HTML5 added **landmark** elements that mean something: `<header>`, `<nav>`, `<main>`, `<section>`, `<article>`, `<aside>`, and `<footer>`.
-They look exactly like `<div>` until a stylesheet says otherwise, so the only reason to use them is that they describe the page, which is the whole job of HTML.
-This step swaps each `<div>` for the landmark that says what it is, and the DOM view shows the tree gaining names.
+```demo name="landmarks-map"
+```
 
+A screen reader sees the same tree you see in the DOM view: boxes with no names, so it cannot offer "skip to the main content" or "go to the navigation".
 Start at the top.
 The first block introduces the page, so it is a `<header>`.
 
@@ -33,6 +31,13 @@ The group of links inside it is the page's navigation.
 Opening tags changed, so their closing tags change too, or the tree the browser builds will not match the file.
 The two closing `</div>` lines that end the links and the top block become `</nav>` and `</header>`, and the block that follows is the page's main content.
 
+```predict
+After this edit, run the page: what changes in the result?
+- Nothing, because a landmark looks exactly like a div
+= The top gains a border and its links spread out
+- The page goes blank until the footer is changed too
+```
+
 ```html file="index.html" action="replace" anchor='      </div>\n    </div>\n    <div class="content">'
       </nav>
     </header>
@@ -40,8 +45,7 @@ The two closing `</div>` lines that end the links and the top block become `</na
 ```
 
 Run the page.
-The stylesheet already has rules for `header` and `nav`, so the top of the page gains a border and the links spread out; the rules did nothing while there were no such elements.
-In the DOM view the tree now reads `header`, `nav`, and `main`.
+The stylesheet already had rules for `header` and `nav`; they did nothing while there were no such elements, and the DOM view now reads `header`, `nav`, and `main`.
 
 Inside the main content, each group has a heading and the content that belongs to it, which is what `<section>` is for.
 Change the three groups one at a time.
@@ -60,7 +64,7 @@ Change the three groups one at a time.
       <section id="sessions">
 ```
 
-The `id` attributes stay where they were: the jump links in the navigation point at them, and an id works on any element.
+The `id` attributes stay where they were, because the jump links in the navigation point at them.
 Now close the last section and the main content, and name the bottom block.
 
 ```html file="index.html" action="replace" anchor='      </div>\n    </div>\n    <div class="bottom">'
@@ -74,16 +78,33 @@ Now close the last section and the main content, and name the bottom block.
   </body>
 ```
 
-A page has exactly one `<main>`, because it is the one part a reader came for; `<header>` and `<footer>` can appear once for the page and again inside an `<article>` or `<section>` that has its own.
 Hover a row in the DOM view and the result pane outlines that element, so you can match each branch of the tree with the box it draws.
+
+## Read more
+
+`<div>` is a generic block container with no meaning of its own.
+HTML5 added **landmark** elements that mean something: `<header>`, `<nav>`, `<main>`, `<section>`, `<article>`, `<aside>`, and `<footer>`.
+They look exactly like `<div>` until a stylesheet says otherwise, so the only reason to use them is that they describe the page, which is the whole job of HTML.
+
+An `id` works on any element, which is why the jump links keep working when a `<div id="about">` becomes a `<section id="about">`.
+
+A page has exactly one `<main>`, because it is the one part a reader came for; `<header>` and `<footer>` can appear once for the page and again inside an `<article>` or `<section>` that has its own.
+
+**If it breaks:** If the result pane shows the page but the tree in the DOM view nests the footer inside the main content, a closing tag was changed to the wrong name; the browser closes elements for you when it has to, and it guesses badly.
+If a jump link stops working, an `id` was lost while changing a tag.
+If the check still finds a `div`, search the file for `div` and replace the pair it belongs to.
 
 **Check:** Run the page.
 It looks the same as before except for the header and footer borders, and the DOM view shows `header`, `nav`, `main` with three `section` branches, and `footer`, with no `div` anywhere.
 Press **Run checks** to confirm.
 
-**If it breaks:** If the result pane shows the page but the tree in the DOM view nests the footer inside the main content, a closing tag was changed to the wrong name; the browser closes elements for you when it has to, and it guesses badly.
-If a jump link stops working, an `id` was lost while changing a tag.
-If the check still finds a `div`, search the file for `div` and replace the pair it belongs to.
+```quiz
+How many `<main>` elements does one page have?
+- One inside every `<section>`
+= Exactly one, for the part a reader came for
+- As many as the page has headings
+> `<main>` marks the one region a screen reader offers to skip to, so a page has exactly one; `<header>` and `<footer>` are the landmarks that may repeat inside a section or an article.
+```
 
 <details>
 <summary>index.html after this step</summary>

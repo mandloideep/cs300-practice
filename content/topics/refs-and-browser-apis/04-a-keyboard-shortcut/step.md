@@ -10,6 +10,14 @@ required: [slash-focuses-title, slash-ignored-in-fields]
 
 Many sites let you press `/` to jump to their search box, wherever you are on the page.
 This step gives the form the same shortcut, and it uses everything in this topic at once: a ref to the field, a listener on the window, and a cleanup.
+Watch where the focus goes when you press `/` on the page and when you press it inside a field.
+
+```predict
+After these edits you run, click the page heading, and press `/`; where does the cursor go?
+= Into the Title field
+- Nowhere, because only the element with the focus hears a key
+- Nowhere: the browser opens its quick find instead
+```
 
 Add a second effect in `AddProductForm`, under the one that focuses the field on load.
 The anchor is the closing line of that effect, and the fence starts with a blank line.
@@ -27,14 +35,7 @@ The anchor is the closing line of that effect, and the fence starts with a blank
   }, []);
 ```
 
-Read the handler line by line.
-The listener is on `window`, not on the form, because the shopper can press the key anywhere on the page, and a `keydown` event bubbles up to the window from wherever it started.
-The first line ignores every key but `/`, and ignores `/` as well when the shopper is typing in a field, because then it is just a character, as in `1/2 lb apples`.
-`event.preventDefault()` stops the browser from treating the key as its own shortcut, which some browsers use for quick find.
-Then the ref does what it did in Step 1.
-
-The dependency array is empty because the handler uses only `titleRef`, which is the same object on every render; the listener added after the first render stays correct for the life of the component.
-The cleanup removes it, so that a form that leaves the page takes its shortcut with it.
+The listener is on `window`, so the key works anywhere on the page, and the handler returns early for every key but `/` and for a `/` pressed in a field.
 
 Tell the shopper about the shortcut in the note.
 
@@ -44,15 +45,34 @@ Tell the shopper about the shortcut in the note.
 
 Run the code, click somewhere in the result that is not a field, such as the heading, and press `/`.
 The cursor lands in the Title field.
-Type `1/2` into the Price field: the `/` stays a character, because the guard saw that the key was pressed in an input.
+Click the Price field and press `/`: the focus stays there, because the guard saw that the key was pressed in an input.
+
+## Read more
+
+Read the handler line by line.
+The listener is on `window`, not on the form, because the shopper can press the key anywhere on the page, and a `keydown` event bubbles up to the window from wherever it started.
+The first line ignores every key but `/`, and ignores `/` as well when the shopper is typing in a field, because then it is just a character, as in `1/2 lb apples`.
+`event.preventDefault()` stops the browser from treating the key as its own shortcut, which some browsers use for quick find.
+Then the ref does what it did in Step 1.
+
+The dependency array is empty because the handler uses only `titleRef`, which is the same object on every render; the listener added after the first render stays correct for the life of the component.
+The cleanup removes it, so that a form that leaves the page takes its shortcut with it.
+
+**If it breaks:** If `/` does nothing, the listener is on the form instead of `window`, or the comparison is against the wrong key name; `event.key` for the slash is the one-character string `/`.
+If pressing `/` in the Price field jumps to the Title, the guard on `event.target.tagName` is missing; tag names are uppercase, so compare with `"INPUT"`.
+If the console says `titleRef is not defined`, the effect is in `App` instead of `AddProductForm`.
 
 **Check:** Run the code, click the heading in the result, and press `/`: the Title field takes the focus.
 Click the Price field and press `/`: the focus stays there.
 Press **Run checks** to confirm; the checks fire the key events themselves.
 
-**If it breaks:** If `/` does nothing, the listener is on the form instead of `window`, or the comparison is against the wrong key name; `event.key` for the slash is the one-character string `/`.
-If pressing `/` in the Price field jumps to the Title, the guard on `event.target.tagName` is missing; tag names are uppercase, so compare with `"INPUT"`.
-If the console says `titleRef is not defined`, the effect is in `App` instead of `AddProductForm`.
+```quiz
+Why can the shortcut's effect use an empty dependency array?
+- Keyboard listeners are removed automatically after every render
+= The handler uses only `titleRef`, which is the same object on every render
+- An empty array makes the effect run after every key press
+> The listener added after the first render reads `titleRef.current` when a key arrives, and the ref object never changes, so there is nothing that would need a fresh listener.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>

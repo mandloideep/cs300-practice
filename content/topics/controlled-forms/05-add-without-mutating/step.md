@@ -8,11 +8,21 @@ inspector:
 required: [list-grows, new-product-filters]
 ---
 
-`App` receives each new product and only logs it.
-The last topic ended by appending to the list with `[...items, product]`, and we told you why.
-This time, type the mistake first and watch what it looks like, because it is the one bug in this session that produces no error anywhere.
+`App` receives each new product and only logs it, and this step adds it to the list.
+Type the mistake first, `push` into the array React holds, because it is the one bug in this session that produces no error anywhere.
+Watch the lead sentence and the list when you submit, then again after the fix.
+
+```demo name="mutation-vs-copy"
+```
 
 Replace the log in `handleAdd` with the way you would add to an array in Week 3.
+
+```predict
+After you replace the log with `push` and `setItems(items)`, run, and add `Kiwi`, what does the page show?
+- A seventh card, Kiwi, at the end of the list
+- An error in the console about changing state directly
+= The form clears, and the lead sentence and the list still show six products
+```
 
 ```jsx file="src/App.jsx" action="replace" anchor='    console.log("New product:", product);'
     items.push(product);
@@ -22,12 +32,7 @@ Replace the log in `handleAdd` with the way you would add to an array in Week 3.
 Run the code, type `Kiwi` and `2.49`, and press **Add product**.
 The form clears, so the submit worked, and then nothing: the lead sentence still says six, there is no seventh card, and the console is empty.
 Press **Run checks** and read the first check; it submitted a product too and reports that the screen did not change.
-
-Here is what happened.
-`push` changed the array that React is already holding, in place.
-`setItems(items)` then handed React that same array, React compared the new value with the old one with `Object.is`, found the same array, and skipped the render.
-The product is in there; a `console.log(items)` would show seven.
-The screen will show it only after something else makes `App` render, which is a bug that appears far from its cause.
+`push` changed the array React already holds, so `setItems(items)` handed React the same array, and React skipped the render.
 
 A setter always gets a new value.
 Replace the two lines with a new array.
@@ -38,6 +43,16 @@ Replace the two lines with a new array.
 
 Run the code and add the product again.
 The seventh card appears, the lead says seven, and the inspector tree shows the new array on `App`.
+
+## Read more
+
+The last topic ended by appending to the list with `[...items, product]`, and we told you why; this step showed what the other way looks like on screen.
+
+Here is what happened.
+`push` changed the array that React is already holding, in place.
+`setItems(items)` then handed React that same array, React compared the new value with the old one with `Object.is`, found the same array, and skipped the render.
+The product is in there; a `console.log(items)` would show seven.
+The screen will show it only after something else makes `App` render, which is a bug that appears far from its cause.
 
 The same rule covers every change to an array or an object in state.
 Build a new one and hand it over; never change the one React holds.
@@ -51,13 +66,21 @@ Build a new one and hand it over; never change the one React holds.
 
 `push`, `splice`, `sort` on the array itself, and assignment to a property all change the value in place, and React will not notice.
 
+**If it breaks:** If the form clears but the list does not change, `handleAdd` still pushes into `items`; call `setItems` with a new array.
+If the console says `items is not iterable`, the spread is applied to something other than the array, or the state line in `App` has changed.
+If the new card shows `$NaN`, the form is sending the price as text; check `Number(fields.price)` in `handleSubmit`.
+
 **Check:** Run the code, choose **All**, and add `Kiwi` at `2.49` in the groceries category.
 It appears as the last card, the lead sentence goes up by one, and choosing **Groceries** shows it among the groceries.
 Press **Run checks** to confirm.
 
-**If it breaks:** If the form clears but the list does not change, `handleAdd` still pushes into `items`; call `setItems` with a new array.
-If the console says `items is not iterable`, the spread is applied to something other than the array, or the state line in `App` has changed.
-If the new card shows `$NaN`, the form is sending the price as text; check `Number(fields.price)` in `handleSubmit`.
+```quiz
+Which call removes a product from `items` in a way React will notice?
+- `items.splice(index, 1)` and then `setItems(items)`
+= `setItems(items.filter((item) => item.id !== id))`
+- `delete items[index]` and then `setItems(items)`
+> `filter` returns a new array, so `Object.is` sees a different value and React renders; `splice` and `delete` change the array React already holds, and handing back the same array changes nothing on screen.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>

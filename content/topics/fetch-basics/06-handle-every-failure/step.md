@@ -9,13 +9,18 @@ api:
 required: [second-submit-is-ignored, busy-flag-follows-the-request, failure-messages]
 ---
 
-The search works when everything goes right.
-This step is about the three ways it goes wrong and one way a user makes it worse, and the fixture controls let you cause every one of them on demand.
+The search works when everything goes right, and this step handles the three ways it goes wrong and one way a second submit makes it worse.
+Watch the status line as you cause each failure with the fixture controls: each kind of error should get its own sentence for the user.
 
-Start with the user.
-A slow answer invites a second click, and a second request that lands after the first would overwrite its result.
-Disabling the button helps, but pressing Enter in the field still submits the form.
-Keep a flag that says a request is in flight and refuse to start another.
+```predict
+Before you edit anything, you choose a dropped connection in the fixture controls, run, and search for `phone`; what does the status line say?
+- `Could not reach the server. Check the connection and the API source, then try again.`
+- `No products match "phone".`
+= `Could not load products. Failed to fetch`
+```
+
+Put the fixture controls back to their defaults after that run.
+Start with the second submit: keep a flag that says a request is in flight and refuse to start another.
 
 ```js file="app.js" action="insert-before" anchor="async function loadProducts(query) {"
 let loading = false;
@@ -41,12 +46,7 @@ While we are there, tell assistive technology that the list is changing, with th
     list.setAttribute("aria-busy", "false");
 ```
 
-Now the failures.
-Three different things can throw inside `try`, and they are different kinds of error, so the user can be told what to do about each.
-A network failure makes `fetch` reject with a `TypeError`.
-A body that is not JSON makes `response.json()` throw a `SyntaxError`.
-Our own `throw` carries the HTTP status in its message.
-Replace the one sentence in `catch` with one per kind.
+Now the failures: replace the one sentence in `catch` with one per kind of error.
 
 ```js file="app.js" action="replace" anchor='    status.textContent = "Could not load products. " + error.message;'
     if (error instanceof TypeError) {
@@ -58,8 +58,24 @@ Replace the one sentence in `catch` with one per kind.
     }
 ```
 
-`instanceof` asks which kind of error object this is.
+`instanceof` asks which kind of error object this is, so a dropped connection now gets a sentence the user can act on.
+
+## Read more
+
+A slow answer invites a second submit, and a second request that lands after the first would overwrite its result.
+Disabling the button stops a click, and the browser will not submit a form from the Enter key while its submit button is disabled, but code can still submit the form, as the checks do with `requestSubmit()`.
+The flag makes `loadProducts` itself refuse a second request, whatever started it.
+
+Three different things can throw inside `try`, and they are different kinds of error, so the user can be told what to do about each.
+A network failure makes `fetch` reject with a `TypeError`.
+A body that is not JSON makes `response.json()` throw a `SyntaxError`.
+Our own `throw` carries the HTTP status in its message.
+
 The console still gets the real error from `console.error`, with its stack, because that line is for us; the status line is for the user, and a raw `Failed to fetch` tells them nothing.
+
+**If it breaks:** If the second submit still sends a request, `loading = true` is set after the `await` or `loading` is never read at the top of the function.
+If no search works after one failure, `loading = false` is missing from `finally`, so the flag stays up forever.
+If every failure shows the generic sentence, the `instanceof` checks are comparing against strings instead of the `TypeError` and `SyntaxError` constructors.
 
 **Check:** Run the code with **Fixtures** selected and cause each outcome.
 
@@ -72,9 +88,13 @@ Put the controls back to their defaults and search again; the products return an
 Then choose a **Custom** base and type an address that does not exist, such as `https://example.invalid`: the request fails as a network error, and the console explains whether the cause was the address or a CORS refusal.
 Press **Run checks** with the controls at their defaults; the checks submit twice in a row and count the requests.
 
-**If it breaks:** If the second submit still sends a request, `loading = true` is set after the `await` or `loading` is never read at the top of the function.
-If no search works after one failure, `loading = false` is missing from `finally`, so the flag stays up forever.
-If every failure shows the generic sentence, the `instanceof` checks are comparing against strings instead of the `TypeError` and `SyntaxError` constructors.
+```quiz
+With the finished code, which of these errors reaches the `else` branch in `catch`?
+- The `TypeError` from a dropped connection
+- The `SyntaxError` from a malformed body
+= The `Error` we throw when `response.ok` is false
+> `fetch` rejects with a `TypeError` and `response.json()` throws a `SyntaxError`, so the only error left for `else` is our own, whose message carries the status.
+```
 
 <details>
 <summary>app.js after this step</summary>

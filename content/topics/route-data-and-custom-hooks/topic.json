@@ -5,6 +5,28 @@
   "summary": "Reuse the useFetch hook on a list page and on a detail page whose request is keyed on the id from useParams, so every route owns its own loading, success, and error state. You will tell a product the server no longer has from a failed request, write a useLocalStorage hook that remembers saved products across runs, and read how custom hooks relate to the built-in ones.",
   "prerequisites": ["routing"],
   "minutes": 60,
-  "updated": "2026-10-26",
-  "changeNote": "First version."
+  "updated": "2026-10-27",
+  "changeNote": "Rewritten so each step opens with an explainer or a prediction, folds the background under Read more, and ends with a quiz.",
+  "links": [
+    {
+      "kind": "reading",
+      "title": "react.dev: Reusing logic with custom hooks",
+      "url": "https://react.dev/learn/reusing-logic-with-custom-hooks"
+    },
+    {
+      "kind": "reference",
+      "title": "react.dev: Rules of Hooks",
+      "url": "https://react.dev/reference/rules/rules-of-hooks"
+    },
+    {
+      "kind": "reference",
+      "title": "MDN: Window.localStorage",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage"
+    },
+    {
+      "kind": "reference",
+      "title": "MDN: 404 Not Found",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/404"
+    }
+  ]
 }

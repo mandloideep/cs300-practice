@@ -11,8 +11,17 @@ required: [request-uses-api-base, three-cards-from-the-response, records-are-nor
 
 **We used this in:** [Fetch basics](#/topic/fetch-basics) fetched JSON from an API source, checked `response.ok`, and built a URL with `encodeURIComponent`.
 
-The sample books have done their job.
-From here the search asks a server for data: the Open Library search service, whose answers are an object with a `docs` array, where each record uses `key`, `title`, `author_name`, and `first_publish_year`.
+The sample books have done their job, and from here the search asks a server for data.
+Watch the Network view and the author lines: the first run shows why the server's records have to be converted before a card can use them.
+
+```predict
+After the next three edits, you run with Fixtures and search: what do the author lines on the cards read?
+= `undefined`, on every card
+- The authors from the fixture, such as `Alex Rivera`
+- `Unknown author`, on the third card only
+```
+
+The server is the Open Library search service, whose answers are an object with a `docs` array, where each record uses `key`, `title`, `author_name`, and `first_publish_year`.
 The step's fixtures copy that shape, so **Fixtures** answers offline with three records, and the **Open Library search** preset answers with real books.
 
 Add a function that requests the books and reads the array out of the answer.
@@ -29,10 +38,7 @@ async function requestBooks(query) {
 
 ```
 
-`encodeURIComponent` keeps the whole query one parameter even when it contains `&` or spaces.
-The `fields` parameter asks the service for only the four fields we use, and `limit` keeps the response small.
 `response.ok` is `false` for a 404 or a 500, which `fetch` does not treat as an error on its own, so we throw.
-The shape check throws when the parsed value is not what we expect, so a wrong answer fails here with a clear message rather than later with a confusing one.
 
 Make the submit handler wait for the request instead of filtering the sample array.
 
@@ -47,10 +53,10 @@ app.addEventListener("submit", async function (event) {
 
 Run it and search for anything.
 The Network view shows a request to `/search.json` with status 200, and three cards appear with the titles from the fixture file.
-The author lines read `undefined`, because the records use `author_name` rather than `author`, and the third title appears as bold text, because the fixture's third record has a title that looks like HTML and `escapeHTML` was given `undefined` for the author but the title went through as it should; the problem is the shape.
+The author and year lines read `undefined`, because the records use `author_name` and `first_publish_year` rather than `author` and `year`.
+The third title looks like HTML, yet it shows as plain text because it went through `escapeHTML`; the problem is only the shape.
 
-The service names its fields differently from our cards and sometimes omits them.
-Instead of teaching every component about the service's names, convert each record once into the `id`, `title`, `author`, and `year` shape the rest of the script already uses.
+Convert each record once into the `id`, `title`, `author`, and `year` shape the rest of the script already uses.
 
 ```js file="app.js" action="replace" anchor="  return data.docs;"
   const books = data.docs.map(function (book) {
@@ -68,10 +74,7 @@ Instead of teaching every component about the service's names, convert each reco
   return books.filter((book, index) => books.findIndex(item => item.id === book.id) === index);
 ```
 
-`map` builds a new array with one of our book objects per record.
-A record without a usable key or title cannot become a card, so the function throws rather than passing a broken object along.
-The author comes from the first entry of `author_name` when it exists; otherwise a readable fallback is used, and the same idea gives the year.
-The final `filter` keeps only the first record for each id, so duplicate keys in a response cannot create two cards that fight over one bookmark.
+`map` builds a new array with one of our book objects per record, with a readable fallback when the author or the year is missing.
 
 The sample array is no longer used, so remove it and its first render.
 
@@ -81,6 +84,22 @@ The sample array is no longer used, so remove it and its first render.
 ```js file="app.js" action="delete" anchor="renderBooks(sampleBooks);"
 ```
 
+## Read more
+
+`encodeURIComponent` keeps the whole query one parameter even when it contains `&` or spaces.
+The `fields` parameter asks the service for only the four fields we use, and `limit` keeps the response small.
+The shape check throws when the parsed value is not what we expect, so a wrong answer fails here with a clear message rather than later with a confusing one.
+
+The service names its fields differently from our cards and sometimes omits them.
+Converting each record once is better than teaching every component about the service's names.
+A record without a usable key or title cannot become a card, so the function throws rather than passing a broken object along.
+The author comes from the first entry of `author_name` when it exists; otherwise a readable fallback is used, and the same idea gives the year.
+The final `filter` keeps only the first record for each id, so duplicate keys in a response cannot create two cards that fight over one bookmark.
+
+**If it breaks:** If the Network view shows a URL containing `undefined`, check the spelling of `import.meta.env.API_BASE`.
+If the console reports `sampleBooks is not defined`, a line still refers to it; the submit handler should call `requestBooks` only.
+If the live search errors, open the request in the Network view; a blocked network or a service outage shows there, and the fixtures still work.
+
 **Check:** Run the code with **Fixtures** selected; the page starts with the status sentence from the HTML and no cards.
 Search, and the three cards show real authors, `Unknown author` and `Year unavailable` on the third card, and the suspicious title `<strong>CSS & Layout</strong>` appears as visible text rather than bold.
 Bookmark the third card and press **Run, keeping saved data** to confirm the saved book is restored after a search.
@@ -88,9 +107,13 @@ Then choose the **Open Library search** preset, search for `javascript`, and rea
 Search for `mac & cheese` and confirm the request URL shows `%26` in place of the ampersand.
 Press **Run checks** with **Fixtures** selected.
 
-**If it breaks:** If the Network view shows a URL containing `undefined`, check the spelling of `import.meta.env.API_BASE`.
-If the console reports `sampleBooks is not defined`, a line still refers to it; the submit handler should call `requestBooks` only.
-If the live search errors, open the request in the Network view; a blocked network or a service outage shows there, and the fixtures still work.
+```quiz
+You search for `mac & cheese`; how does the ampersand appear in the request URL?
+- As `&`, which splits the query into two parameters
+= As `%26`, so the whole text stays one `q` parameter
+- As `&amp;`, the way `escapeHTML` writes it
+> `encodeURIComponent` encodes the characters that mean something in a URL, so `&` becomes `%26`; `&amp;` is the HTML escape, which belongs in markup, not in an address.
+```
 
 <details>
 <summary>app.js after this step</summary>

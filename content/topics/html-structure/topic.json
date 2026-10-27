@@ -5,6 +5,28 @@
   "summary": "Write the skeleton every HTML page shares, then fill it with headings, lists, links, an image with alt text, landmarks, a labeled form, and a table. You will watch the DOM view redraw the tree as each element goes in and see why tags describe what content is, not how it looks.",
   "prerequisites": [],
   "minutes": 60,
-  "updated": "2026-10-26",
-  "changeNote": "First version."
+  "updated": "2026-10-27",
+  "changeNote": "Rewritten so each step opens with an explainer or a prediction, folds the background under Read more, and ends with a quiz.",
+  "links": [
+    {
+      "kind": "reading",
+      "title": "MDN: Structuring content with HTML",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content"
+    },
+    {
+      "kind": "reading",
+      "title": "MDN: HTML, a good basis for accessibility",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Accessibility/HTML"
+    },
+    {
+      "kind": "reference",
+      "title": "MDN: HTML elements reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements"
+    },
+    {
+      "kind": "reference",
+      "title": "The W3C markup validator",
+      "url": "https://validator.w3.org/"
+    }
+  ]
 }

@@ -8,13 +8,18 @@ inspector:
 required: [handler-passed-down, click-filters-list]
 ---
 
-Data now flows down: `App` owns `category` and both children read it.
-What is missing is the way back up.
-The buttons live in `CategoryFilter`, the state lives in `App`, and a child must never change a prop, so the filter cannot set `category` itself.
+Data now flows down: `App` owns `category` and both children read it, and what is missing is the way back up.
+This step has `App` pass a function down as a prop, and the filter calls it when a button is clicked: **data down, actions up**.
+Watch the **Flow** view draw one click as an event, a prop call, a setter, and a re-render.
 
-The answer is the other half of the React rule: **data down, actions up**.
-`App` passes a function down as a prop, and the child calls that function when something happens.
-The function belongs to `App`, so when it runs it can call `setCategory` even though the click happened two components below.
+```predict
+When this step is done and you press **Beauty**, which code calls `setCategory`?
+- The button's `onClick` in `CategoryFilter`, directly
+= `handleSelect` in `App`, called through the `onSelect` prop
+- Nothing; React updates the prop on its own when the button changes
+```
+
+The buttons live in `CategoryFilter`, the state lives in `App`, and a child must never change a prop, so the filter cannot set `category` itself.
 
 Write the handler in `App`, under the state.
 The block starts with the state line and ends with the `return (` line, both already there, so you type the function between them.
@@ -35,8 +40,7 @@ Pass it to the filter as a prop named `onSelect`.
       <CategoryFilter category={category} onSelect={handleSelect} />
 ```
 
-The names follow the course convention: the parent's function is `handleSomething`, and the prop it travels in is `onSomething`.
-The `on` prefix tells whoever reads `CategoryFilter` that this prop is a callback, something to call, not a value to display.
+The `on` prefix marks the prop as a callback, something for the child to call.
 
 In the child, receive the prop and call it from the click.
 
@@ -48,9 +52,7 @@ function CategoryFilter({ category, onSelect }) {
         <button key={option.id} type="button" aria-pressed={category === option.id} onClick={() => onSelect(option.id)}>
 ```
 
-`CategoryFilter` does not know what `onSelect` does, and it does not need to.
-It reports "the shopper chose this id" and lets the owner of the data decide what happens.
-That is what keeps the filter reusable: the same component could drive a different list, or a request to a server, without a change to its code.
+`CategoryFilter` does not know what `onSelect` does, and it does not need to: it reports "the shopper chose this id" and lets the owner of the data decide what happens.
 
 Run the code.
 The inspector opens on the **Flow** view this time, next to **Boundaries**.
@@ -61,18 +63,38 @@ Press **Beauty** and read the trace from the top.
 3. `setCategory` in `App`, from `"all"` to `"beauty"`.
 4. The components that rendered as a result: `App`, `CategoryFilter`, `ProductList`, and the two `ProductCard`s that remain.
 
-That is the sequence we drew on the board in Session 1, recorded from a real click.
 Hover a row to see the components it names light up in the result.
+
+## Read more
+
+The answer to the missing way up is the other half of the React rule: **data down, actions up**.
+`App` passes a function down as a prop, and the child calls that function when something happens.
+The function belongs to `App`, so when it runs it can call `setCategory` even though the click happened two components below.
+
+The names follow the course convention: the parent's function is `handleSomething`, and the prop it travels in is `onSomething`.
+The `on` prefix tells whoever reads `CategoryFilter` that this prop is a callback, something to call, not a value to display.
+
+Not knowing what `onSelect` does is what keeps the filter reusable: the same component could drive a different list, or a request to a server, without a change to its code.
+
+The trace is the sequence we drew on the board in Session 1, recorded from a real click.
 Every click you make from now on in React follows this shape: an event in a child, a callback up to the owner, a setter, and a re-render that flows back down.
+
+**If it breaks:** If the console says `onSelect is not a function`, `App` does not pass the prop, or passes it under a different name than the child destructures.
+If pressing a button filters the list but the trace shows the setter without a prop call, the child received `setCategory` directly; passing `handleSelect` keeps the decision in `App`.
+If the list never changes, `handleSelect` is not calling `setCategory`, or the button calls `onSelect` without an argument.
 
 **Check:** Run the code and press **Beauty**.
 The list shows the two beauty products, the Beauty button fills in, and the flow view shows the event, the `onSelect` call, the `setCategory` call in `App`, and the render set.
 Press **All** and the six products return.
 Press **Run checks** to confirm.
 
-**If it breaks:** If the console says `onSelect is not a function`, `App` does not pass the prop, or passes it under a different name than the child destructures.
-If pressing a button filters the list but the trace shows the setter without a prop call, the child received `setCategory` directly; passing `handleSelect` keeps the decision in `App`.
-If the list never changes, `handleSelect` is not calling `setCategory`, or the button calls `onSelect` without an argument.
+```quiz
+What does `CategoryFilter` need to know about the `onSelect` prop it receives?
+- That it calls `setCategory`, so the filter can call `setCategory` itself
+= Only that it is a function to call with the chosen category id
+- Which components will render after it runs
+> The child reports what happened and leaves the decision to the owner of the data, which is why the same filter could drive a different list without a change to its code.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>

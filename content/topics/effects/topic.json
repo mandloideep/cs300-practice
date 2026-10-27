@@ -5,6 +5,23 @@
   "summary": "Run code after React has updated the page with useEffect, and choose when it runs with the dependency array. You will watch the effect land after the re-render flash, see the wrong dependency array leave the page stale, save the product list to localStorage, and clean up a timer so that a later change cannot be cut short by an earlier one.",
   "prerequisites": ["controlled-forms"],
   "minutes": 55,
-  "updated": "2026-10-26",
-  "changeNote": "First version."
+  "updated": "2026-10-27",
+  "changeNote": "Rewritten so each step opens with an explainer or a prediction, folds the background under Read more, and ends with a quiz.",
+  "links": [
+    {
+      "kind": "reading",
+      "title": "react.dev: Synchronizing with Effects",
+      "url": "https://react.dev/learn/synchronizing-with-effects"
+    },
+    {
+      "kind": "reading",
+      "title": "react.dev: You Might Not Need an Effect",
+      "url": "https://react.dev/learn/you-might-not-need-an-effect"
+    },
+    {
+      "kind": "reference",
+      "title": "react.dev: useEffect",
+      "url": "https://react.dev/reference/react/useEffect"
+    }
+  ]
 }

@@ -10,9 +10,11 @@ required: [product-links-in-list, detail-page-from-the-url, back-link-returns]
 
 **We used this in:** [Lists and keys](#/topic/lists-and-keys), where every product had a stable `id`, and [Components and props](#/topic/components-and-props), where a component drew itself from a value it was given.
 
-A shop has a page per product, and nobody writes six components for six products.
-One `ProductPage` component draws whichever product the address names: `/products/3` shows the product whose id is 3.
-The part of the path that changes is a **route parameter**, written `:id` in the route and read with the `useParams` hook in the component.
+This step adds one `ProductPage` component that draws whichever product the address names, so `/products/3` shows the product whose id is 3.
+Watch the part of the path that changes: it is a **route parameter**, written `:id` in the route and read with the `useParams` hook.
+
+```demo name="router-match"
+```
 
 ## The route and the component
 
@@ -49,9 +51,7 @@ function ProductPage() {
 
 ```
 
-`useParams()` returns an object with one property per parameter in the matched route, named as the route names them, so a route with `:id` gives `{ id }`.
-Everything in a URL is text, so `id` is the string `"3"`, and `products.find` compares it with `Number(id)`; forgetting that conversion is the most common bug on a detail page, and it shows up as a page that finds nothing.
-The `if (!product)` branch is for an id that matches the route's shape but names no product, such as `/products/999`; it is a different "not found" from an address that matches no route, which the next step handles.
+`useParams()` returns an object with one property per parameter in the matched route, so a route with `:id` gives `{ id }`, and `Number(id)` turns the text into a number before the comparison.
 
 Register the route under the list.
 
@@ -63,11 +63,38 @@ Register the route under the list.
 
 Each product title becomes a link to its own page.
 
+```predict
+After this edit, run the code and type `/products/999` into the address bar; what does the page show?
+- A blank page area, because no route matches
+- The Products list, because `/products/999` starts with `/products`
+= `No product has the id 999`, with a link back to the products
+```
+
 ```jsx file="src/App.jsx" action="replace" anchor='            <span className="product-title">{product.title}</span>'
             <Link className="product-title" to={`/products/${product.id}`}>{product.title}</Link>
 ```
 
 The template literal builds `/products/3` from the product's id, so the list and the route agree on the shape of the address.
+
+## Read more
+
+### One component for every product
+
+A shop has a page per product, and nobody writes six components for six products.
+One `ProductPage` component draws whichever product the address names.
+
+### Text in the URL, numbers in the data
+
+`useParams()` names each property as the route names its parameter.
+Everything in a URL is text, so `id` is the string `"3"`, and `products.find` compares it with `Number(id)`; forgetting that conversion is the most common bug on a detail page, and it shows up as a page that finds nothing.
+
+### Two kinds of not found
+
+The `if (!product)` branch is for an id that matches the route's shape but names no product, such as `/products/999`; it is a different "not found" from an address that matches no route, which the next step handles.
+
+**If it breaks:** If every product page says no product has the id, `Number(id)` is missing, so `"3" === 3` is false.
+If the console says `useParams is not defined`, the import is missing the hook.
+If clicking a title does nothing, the route path is `/products:id` or `/product/:id`; the route and the link must spell the same path, with `/` before `:id`.
 
 **Check:** Run the code, press **Products**, then press **Apple**.
 The address bar shows `/products/16`, the page shows the title, the category, and the price, and the Products link in the nav stays marked, because `/products/16` starts with `/products`.
@@ -75,9 +102,13 @@ Press **Back to the products**, then try another product.
 Type `/products/999` into the address bar: the page says no product has that id and offers the way back.
 Press **Run checks**.
 
-**If it breaks:** If every product page says no product has the id, `Number(id)` is missing, so `"3" === 3` is false.
-If the console says `useParams is not defined`, the import is missing the hook.
-If clicking a title does nothing, the route path is `/products:id` or `/product/:id`; the route and the link must spell the same path, with `/` before `:id`.
+```quiz
+On the address `/products/16`, what does `useParams()` return in `ProductPage`?
+- `{ id: 16 }`, a number, because the ids in `products.js` are numbers
+= `{ id: "16" }`, a string, because everything in a URL is text
+- `"16"`, the parameter on its own
+> The router reads parameters out of the address, which is text, so `ProductPage` converts with `Number(id)` before comparing with the numeric ids.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>

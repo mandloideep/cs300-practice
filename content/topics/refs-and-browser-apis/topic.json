@@ -5,6 +5,28 @@
   "summary": "Reach the DOM element behind a JSX tag with useRef to focus a field, and keep a value between renders without re-rendering. You will compare a ref with state in the re-render flash, read the window size through a resize listener with cleanup, and add a keyboard shortcut that jumps to the form.",
   "prerequisites": ["effects"],
   "minutes": 45,
-  "updated": "2026-10-26",
-  "changeNote": "First version."
+  "updated": "2026-10-27",
+  "changeNote": "Rewritten so each step opens with an explainer or a prediction, folds the background under Read more, and ends with a quiz.",
+  "links": [
+    {
+      "kind": "reading",
+      "title": "react.dev: Referencing values with refs",
+      "url": "https://react.dev/learn/referencing-values-with-refs"
+    },
+    {
+      "kind": "reading",
+      "title": "react.dev: Manipulating the DOM with refs",
+      "url": "https://react.dev/learn/manipulating-the-dom-with-refs"
+    },
+    {
+      "kind": "reference",
+      "title": "react.dev: useRef",
+      "url": "https://react.dev/reference/react/useRef"
+    },
+    {
+      "kind": "reference",
+      "title": "MDN: Window resize event",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/resize_event"
+    }
+  ]
 }

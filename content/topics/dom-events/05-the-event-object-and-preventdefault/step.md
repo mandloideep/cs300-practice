@@ -8,12 +8,14 @@ required: [submit-is-prevented, submit-adds-a-project, submit-bubbles-to-main]
 ---
 
 The page has a form now: a labeled text field and an **Add project** button.
-A form has a built-in behavior that is older than JavaScript.
-When it is submitted, by the button or by pressing Enter in the field, the browser collects the field values, sends them to the address in the form's `action`, and loads the response as a new page.
-Our form has no `action`, so the browser would reload the current address, throwing away everything the script built.
+This step handles its submit, stops the browser's built-in reload, watches the event bubble up to `main`, and adds the typed project to the list.
+Watch the event object: every listener receives one, and it says what happened and where.
 
-When the browser runs a listener, it passes one argument, the **event object**, which describes what happened.
-`event.target` is the element the event started on, `event.type` is the kind of event, and `event.preventDefault()` tells the browser to skip the built-in behavior.
+```demo name="preventdefault"
+```
+
+When the browser runs a listener, it passes one argument, the **event object**.
+`event.target` is the element the event started on, and `event.preventDefault()` tells the browser to skip the built-in behavior.
 Add a submit listener whose first line prevents the reload.
 
 ```js file="app.js" action="append"
@@ -24,20 +26,23 @@ form.addEventListener("submit", (event) => {
 });
 ```
 
-We listen for `submit` on the form, not for `click` on the button, because a submit happens from the button and from the Enter key alike, and one listener should cover both.
-The arrow function is an anonymous callback, written where it is used, and `event` is the name we chose for its one parameter.
-`event.timeStamp` is the time of the event in milliseconds since the page loaded, so the log shows that this code runs long after the script finished.
+We listen for `submit` on the form, not for `click` on the button, so that the Enter key is covered too.
 
 Run it, type a title, and press Enter.
 The page stays, the log appears, and the field keeps its text.
 Now see why the first line matters: delete `event.preventDefault();`, run, and submit again.
 The result pane leaves your page entirely, because the browser submitted the form to a new address.
 Press **Run** to get the page back, and put the line back.
-Week 6 called this the one line you will almost always need in a submit listener.
 
-Events do not stop at the element they started on.
-After the form's listeners run, the same event travels up through the form's ancestors, `main`, `body`, and `html`, and listeners on any of them run too.
-This is **bubbling**, and you can watch it with one more listener.
+Events do not stop at the element they started on: after the form's listeners run, the same event travels up through its ancestors.
+Watch it with one more listener.
+
+```predict
+After you add the listener on `main`, run, and submit, what does that listener log?
+- Nothing, because the form's listener already handled the submit
+- `main heard a submit from main`
+= `main heard a submit from add-form`
+```
 
 ```js file="app.js" action="append"
 
@@ -46,9 +51,7 @@ document.querySelector("main").addEventListener("submit", (event) => {
 });
 ```
 
-Submit again and read the console: the form's log comes first, then `main heard a submit from add-form`.
-`event.target` is still the form, because the target is where the event started, not where it is being heard.
-The next step builds on bubbling to handle a whole list with one listener.
+Submit again and read the console: the form's log comes first, then the one from `main`.
 
 Now make the submit do its job.
 `FormData` reads every named field of a form, and `get("title")` returns the text of the field whose `name` is `title`.
@@ -65,19 +68,54 @@ Replace the log with a guard clause and an update to the data.
   form.reset();
 ```
 
+An empty title gets a message and an early return; otherwise the project goes into the array and `renderProjects` redraws the list from it.
+
+## Read more
+
+### The form's built-in behavior
+
+A form has a built-in behavior that is older than JavaScript.
+When it is submitted, by the button or by pressing Enter in the field, the browser collects the field values, sends them to the address in the form's `action`, and loads the response as a new page.
+Our form has no `action`, so the browser would reload the current address, throwing away everything the script built.
+Week 6 called `event.preventDefault()` the one line you will almost always need in a submit listener.
+
+### The event object
+
+`event.type` is the kind of event, and `event.target` is the element it started on.
+A submit happens from the button and from the Enter key alike, and one listener on the form covers both.
+The arrow function is an anonymous callback, written where it is used, and `event` is the name we chose for its one parameter.
+`event.timeStamp` is the time of the event in milliseconds since the page loaded, so the log shows that this code runs long after the script finished.
+
+### Bubbling
+
+After the form's listeners run, the same event travels up through the form's ancestors, `main`, `body`, and `html`, and listeners on any of them run too.
+This is **bubbling**.
+`event.target` is still the form in the listener on `main`, because the target is where the event started, not where it is being heard.
+The next step builds on bubbling to handle a whole list with one listener.
+
+### Changing the data
+
 `trim` removes spaces around the text, so a field full of spaces counts as empty.
 The guard clause handles that case with a message and returns early, as our Week 5 functions did.
 Otherwise we add an object to the array and call `renderProjects`, which rebuilds the list from the array; the page is never edited directly.
 `form.reset()` clears the field for the next entry.
+
+**If it breaks:** If the result pane shows a different page after a submit, `event.preventDefault()` is missing or runs after a `return`.
+If the console says `Cannot read properties of null (reading 'trim')`, the field's `name` attribute is not `title`.
+If the new item never appears but the console shows no error, the object was pushed but `renderProjects` was not called.
 
 **Check:** Run the code.
 Type `Portfolio` and press Enter: a fourth item appears, the status reads `4 of 4 projects shown.`, the field clears, and the console shows `main heard a submit from add-form`.
 Submit an empty field: the status asks for a title and nothing is added.
 Press **Run checks**; the checks submit for you and remove what they added.
 
-**If it breaks:** If the result pane shows a different page after a submit, `event.preventDefault()` is missing or runs after a `return`.
-If the console says `Cannot read properties of null (reading 'trim')`, the field's `name` attribute is not `title`.
-If the new item never appears but the console shows no error, the object was pushed but `renderProjects` was not called.
+```quiz
+Why does the submit listener go on the form rather than as a click listener on the Add project button?
+- A button cannot have a click listener inside a form
+= A submit also happens when the reader presses Enter in the field, and one submit listener covers both
+- `preventDefault` only works in a submit listener
+> Clicking the submit button and pressing Enter in the field both submit the form, so listening for `submit` on the form catches every way in.
+```
 
 <details>
 <summary>app.js after this step</summary>

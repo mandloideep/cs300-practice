@@ -5,6 +5,28 @@
   "summary": "Turn one page into several with React Router: Routes and Route choose a page from the address, Link and NavLink move between pages without a reload, and useParams reads an id out of the URL for a detail page. You will add a catch-all route for addresses that match nothing and send the shopper to a new product's page from code after a form submit.",
   "prerequisites": ["fetching-and-request-states"],
   "minutes": 60,
-  "updated": "2026-10-26",
-  "changeNote": "First version."
+  "updated": "2026-10-27",
+  "changeNote": "Rewritten so each step opens with an explainer or a prediction, folds the background under Read more, and ends with a quiz.",
+  "links": [
+    {
+      "kind": "reading",
+      "title": "MDN: SPA (single-page application)",
+      "url": "https://developer.mozilla.org/en-US/docs/Glossary/SPA"
+    },
+    {
+      "kind": "reading",
+      "title": "MDN: Working with the History API",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/History_API/Working_with_the_History_API"
+    },
+    {
+      "kind": "reference",
+      "title": "MDN: aria-current",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-current"
+    },
+    {
+      "kind": "reference",
+      "title": "MDN: 404 Not Found",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/404"
+    }
+  ]
 }

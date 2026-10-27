@@ -9,12 +9,15 @@ api:
 required: [initial-render-from-state, search-through-state, bookmark-through-state]
 ---
 
-The application works, and its script has grown in the order we needed things.
-It remembers things in separate places: a `bookmarks` variable, a `shownBooks` variable, a `loading` flag, and whatever text happens to be in the status line.
-When a screen shows the wrong thing, there is no single place to look.
-This step replaces the scattered variables with **one state object** and **one way to change it**, the second pattern from Week 8 Session 1 and the one that `useState` automates in React.
-
+The application works, but it remembers things in separate places: a `bookmarks` variable, a `shownBooks` variable, a `loading` flag, and whatever text happens to be in the status line.
+This step replaces them with **one state object** and **one way to change it**, so every change ends in one function that draws the whole page from that object.
 Nothing the user can do changes in this step; each edit replaces a scattered piece with a line that reads from `state` or writes through `setState`.
+
+```demo name="render-cycle"
+```
+
+The explainer shows React's version of the loop; our `setState` and `render` do the same job by hand.
+Replace the two variables with the state object and the function that changes it.
 
 ```js file="app.js" action="replace" anchor="let bookmarks = loadBookmarks();\nlet shownBooks = [];"
 const state = {
@@ -30,9 +33,7 @@ function setState(changes) {
 }
 ```
 
-`status` is one of `initial`, `loading`, `success`, `empty`, or `error`, so the application can never be loading and failed at the same time.
 `setState` merges only the fields you pass into `state` and then draws the page; it is our own small function, not a built-in feature.
-Assigning to `state.query` directly changes data without drawing anything, which is exactly the bug `setState` prevents.
 
 The display function becomes `render`, which reads everything it needs from `state`.
 
@@ -52,7 +53,6 @@ function render() {
 }
 ```
 
-`render` takes no arguments because `state` is the only input.
 The `messages` object maps each status to its sentence, so the status line, the disabled button, and the busy flag all come from the same field.
 
 The list reads the saved books from state.
@@ -78,7 +78,6 @@ async function searchBooks(query) {
 ```
 
 It describes what is true, loading, then success or empty or error, and `render` turns each description into the right screen.
-There is no `finally` block any more because every path ends in a `setState` call that leaves `loading` behind.
 
 The two handlers change in the same way.
 
@@ -102,13 +101,33 @@ Finally, draw the initial screen from the initial state.
 render();
 ```
 
-**Check:** Every behavior from Step 7 still works: searching, the five outcomes, bookmarking, and restoring after a kept run.
-The page starts with `Search for books to get started.`, an empty submit says `Enter a title or topic first.`, and a search ends with `3 books found.` on fixtures.
-Press **Run checks**.
+## Read more
+
+When a screen shows the wrong thing and the application remembers things in separate places, there is no single place to look.
+One state object and one way to change it is the second pattern from Week 8 Session 1, and it is the one that `useState` automates in React.
+
+`status` is one of `initial`, `loading`, `success`, `empty`, or `error`, so the application can never be loading and failed at the same time.
+Assigning to `state.query` directly changes data without drawing anything, which is exactly the bug `setState` prevents.
+
+`render` takes no arguments because `state` is the only input.
+
+There is no `finally` block any more because every path ends in a `setState` call that leaves `loading` behind.
 
 **If it breaks:** If the console reports `renderBooks is not defined`, one call site still uses the old name.
 If the page is blank, `render` is called before `state` exists; the `render()` call must be the last line of the file.
 If a bookmark click does nothing, the handler is reading `shownBooks` instead of `state.books`.
+
+**Check:** Every behavior from Step 7 still works: searching, the five outcomes, bookmarking, and restoring after a kept run.
+The page starts with `Search for books to get started.`, an empty submit says `Enter a title or topic first.`, and a search ends with `3 books found.` on fixtures.
+Press **Run checks**.
+
+```quiz
+A line writes `state.status = "loading"` instead of calling `setState`; what does the page do?
+= Nothing, until something calls `render`
+- It shows `Searching...` at once
+- It throws, because `state` is declared with `const`
+> `setState` is what calls `render` after merging the changes, so assigning to a field of `state` changes the data without drawing it; `const` only stops `state` from being reassigned, not its fields from changing.
+```
 
 <details>
 <summary>app.js after this step</summary>

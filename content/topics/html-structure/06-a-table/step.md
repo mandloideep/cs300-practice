@@ -7,10 +7,16 @@ inspector:
 required: [header-row, body-rows, cells-match-columns]
 ---
 
-The meeting list from Step 2 held three facts per meeting in one sentence each.
 Data with rows and columns, a schedule, a grade sheet, a comparison, belongs in a `<table>`, where each fact has its own cell and the browser lines the columns up.
 The page has a new **This week's schedule** section, and this step builds the table inside it.
-One warning from the lesson before we start: tables are for data, never for arranging a page; the CSS topic has layout tools for that.
+Keep the DOM view open and watch the nesting in the file become the nesting in the tree.
+
+```predict
+After you add the table with only its head row and run, what does the schedule section show?
+= Three bold headings side by side, each in its own cell
+- Three bold headings stacked one under another
+- Nothing yet, because a table needs a data row before it draws
+```
 
 Begin with the table and its header row.
 
@@ -26,10 +32,7 @@ Begin with the table and its header row.
         </table>
 ```
 
-Run the page.
-Three bold headings sit in a row, each in its own cell.
-`<table>` holds everything, `<thead>` holds the rows that name the columns, `<tr>` is one row, and `<th>` is a header cell.
-Open the DOM view and expand `table`: the tree is `table`, then `thead`, then `tr`, then three `th`, exactly the nesting in the file.
+Run the page: `<thead>` holds the row that names the columns, `<tr>` is one row, and `<th>` is a header cell.
 
 Now the first row of data, in a body section after the head.
 
@@ -44,8 +47,6 @@ Now the first row of data, in a body section after the head.
 ```
 
 `<tbody>` holds the data rows, and `<td>` is a data cell.
-A row is a `<tr>` in both sections; what changes is the cell: `<th>` for a heading, `<td>` for a value.
-Keeping the head and the body apart lets a screen reader say "Day: Tuesday" for each cell, lets CSS color the heading row on its own, and lets a printer repeat the heading on every page.
 
 Add two more rows after the first one.
 
@@ -63,16 +64,36 @@ Add two more rows after the first one.
 ```
 
 Every row has the same number of cells as there are headings.
+
+## Read more
+
+The meeting list from Step 2 held three facts per meeting in one sentence each, which is exactly the kind of content a table is for.
+One warning from the lesson: tables are for data, never for arranging a page; the CSS topic has layout tools for that.
+
+`<table>` holds everything.
+Open the DOM view and expand `table`: the tree is `table`, then `thead`, then `tr`, then three `th`, exactly the nesting in the file.
+
+A row is a `<tr>` in both sections; what changes is the cell: `<th>` for a heading, `<td>` for a value.
+Keeping the head and the body apart lets a screen reader say "Day: Tuesday" for each cell, lets CSS color the heading row on its own, and lets a printer repeat the heading on every page.
+
 Try deleting one `<td>` and running: the browser still draws the table, with a hole where the cell was, and the check tells you which row is short.
 The browser never reports an HTML mistake; it does its best with what it is given, which is why we read the DOM view and the checks.
+
+**If it breaks:** If the headings appear as a column instead of a row, each `<th>` is inside its own `<tr>`; one row holds all three.
+If a row's text runs together without cell borders, its cells are missing `<td>` tags.
+If the table looks fine but a check fails, a `</tr>` or `</tbody>` is in the wrong place; compare the nesting with the panel below.
 
 **Check:** Run the page.
 The schedule has a shaded heading row with Day, Time, and Topic, and three rows of meetings under it, with borders around every cell.
 Press **Run checks** to confirm the head, the body, and that every row has three cells.
 
-**If it breaks:** If the headings appear as a column instead of a row, each `<th>` is inside its own `<tr>`; one row holds all three.
-If a row's text runs together without cell borders, its cells are missing `<td>` tags.
-If the table looks fine but a check fails, a `</tr>` or `</tbody>` is in the wrong place; compare the nesting with the panel below.
+```quiz
+A row has two `<td>` cells under three headings; what does the browser do?
+- It refuses to draw the table and shows an error
+= It draws the table with a hole where the third cell should be
+- It stretches the two cells across all three columns
+> HTML has no error messages: the browser draws what it can, so a short row leaves an empty space, and only the DOM view or a check tells you why.
+```
 
 <details>
 <summary>index.html after this step</summary>

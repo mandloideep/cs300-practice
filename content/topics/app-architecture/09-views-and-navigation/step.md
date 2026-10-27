@@ -10,6 +10,18 @@ required: [bookmarks-view, browse-view-returns, current-button-marked]
 ---
 
 The Bookmarks screen shows the same cards as Browse, with a different heading, a different message, and no search form.
+This step writes each screen as a **view** function and lets the two header buttons choose between them.
+Watch the line under the header buttons: it moves to the screen you choose.
+
+```predict
+Before any edit, you run and click Bookmarks in the header: what happens?
+= Nothing, because no listener handles the header buttons yet
+- The shelf shows the saved books
+- The page reloads, because the button sits in a `nav`
+```
+
+Press **Run** and click **Bookmarks** before you change anything, to see where the step starts.
+
 A **view** function describes one screen as data: a title, a description, a message, and the markup for the results.
 Because the reorganization of Step 8 is done, the second screen costs almost nothing, which is the payoff of that step.
 
@@ -48,7 +60,6 @@ function bookmarksView() {
 
 ```
 
-The `messages` object moved out of `render` into `browseView`, because those sentences belong to the Browse screen.
 `bookmarksView` passes the saved books through the same `bookList`, so a card on the shelf has the same button and the same pressed state.
 
 Now `render` picks the view by name and applies its parts to the page, and marks the navigation button for the current view.
@@ -72,8 +83,6 @@ function render() {
 ```
 
 `views[state.view]` looks up a function by the name stored in state, and the trailing parentheses call it.
-`render` updates the heading and description, hides the form on the shelf, and replaces only the result markup, so the search field keeps its value and the delegated listeners stay attached to `main`.
-The last loop sets `aria-current` on the button for the current view, which the stylesheet underlines.
 
 A bookmark click on the shelf must look up the book among the saved books, and when the removed card disappears there is no button left to focus.
 
@@ -87,9 +96,7 @@ A bookmark click on the shelf must look up the book among the saved books, and w
   else document.querySelector("#view-title").focus();
 ```
 
-Finally, let the two navigation buttons choose the view.
-In Week 8 these were links whose `href` began with a hash, and a `hashchange` listener read the address: hash routing.
-The lab's result pane has no address bar of its own, so here the buttons carry a `data-view` attribute and one delegated listener does the same job; the [Routing](#/topic/routing) topic does it with real addresses.
+Finally, let the two navigation buttons choose the view with one listener on the `nav` element.
 
 ```js file="app.js" action="replace" anchor="render();"
 document.querySelector("nav").addEventListener("click", function (event) {
@@ -103,15 +110,33 @@ render();
 
 When a person switches screens, focus moves to the new heading so keyboard and screen reader users land at the start of the new screen.
 
+## Read more
+
+The `messages` object moved out of `render` into `browseView`, because those sentences belong to the Browse screen.
+
+`render` updates the heading and description, hides the form on the shelf, and replaces only the result markup, so the search field keeps its value and the delegated listeners stay attached to `main`.
+The last loop sets `aria-current` on the button for the current view, which the stylesheet underlines.
+
+In Week 8 the navigation buttons were links whose `href` began with a hash, and a `hashchange` listener read the address: hash routing.
+The lab's result pane has no address bar of its own, so here the buttons carry a `data-view` attribute and one delegated listener does the same job; the [Routing](#/topic/routing) topic does it with real addresses.
+
+**If it breaks:** If the console reports `views[state.view] is not a function`, the view name in state does not match a key in the `views` object.
+If clicking a navigation button does nothing, the listener is on `app` instead of `nav`, and the buttons sit in the header.
+If the shelf shows `undefined`, `bookmarksView` is returning a different set of keys than `browseView`.
+
 **Check:** Search and save two books.
 Click **Bookmarks**: the heading changes to `Your reading shelf.`, the form disappears, the underline moves, and the two saved cards appear.
 Remove one from the shelf and focus moves to the heading.
 Click **Browse** and the search results return with the field still filled in.
 Press **Run checks**; the checks switch views and switch back.
 
-**If it breaks:** If the console reports `views[state.view] is not a function`, the view name in state does not match a key in the `views` object.
-If clicking a navigation button does nothing, the listener is on `app` instead of `nav`, and the buttons sit in the header.
-If the shelf shows `undefined`, `bookmarksView` is returning a different set of keys than `browseView`.
+```quiz
+Why does the search field keep its text when you switch to Bookmarks and back?
+- `render` writes `state.query` back into the field
+= `render` only hides the form and replaces the results' markup, so the field is never rebuilt
+- The browser restores every form field after a `setState`
+> On the shelf `form.hidden` is `true`, which hides the form without removing it, and `results.innerHTML` touches only the results region, so the input element and its value stay as they were.
+```
 
 <details>
 <summary>app.js after this step</summary>

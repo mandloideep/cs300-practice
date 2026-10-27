@@ -8,9 +8,15 @@ inspector:
 required: [navlink-marks-the-current-page, home-is-not-current-on-products]
 ---
 
-A navigation bar should show where the shopper is.
-In the Week 8 CourseHub we did that by hand, with a class on the link of the current page in each HTML file.
-The router knows the current address, so it can do it for us: `NavLink` is a `Link` that marks itself when its `to` matches the address.
+This step makes the navigation bar show where the shopper is: `NavLink` is a `Link` that marks itself when its `to` matches the address.
+Watch which links fill in on each page, because the first try marks one link too many.
+
+```predict
+After you replace both links with `NavLink`, run the code, and press **Products**, which links are filled in?
+- Only Products, because it is the current page
+= Both Home and Products
+- Neither, until you add a class for the current page
+```
 
 ## Replace Link with NavLink
 
@@ -25,12 +31,7 @@ import { BrowserRouter, NavLink, Route, Routes } from "react-router";
 
 Run the code and press **Products**.
 The Products link fills in, because `NavLink` set `aria-current="page"` on it, and the stylesheet we gave you styles `.site-nav a[aria-current="page"]`.
-`aria-current` is the attribute a screen reader announces as "current page", so the same mark serves everyone.
-`NavLink` also adds the class `active`, which is what most tutorials style; the attribute is the better hook because it carries meaning as well as looks.
-
-But Home filled in too, and it stays filled in on every page.
-A `NavLink` matches when the address *starts with* its `to`, so that a link to `/products` also counts as current on `/products/3`, which is what you want for a section link.
-Every address starts with `/`, so the Home link is current everywhere.
+But Home filled in too, and it stays filled in on every page: a `NavLink` matches when the address *starts with* its `to`, and every address starts with `/`.
 
 ## The end prop
 
@@ -41,7 +42,27 @@ Tell the Home link to match only the exact address.
 ```
 
 `end` means "match the end of the address too"; `/` matches `/` and nothing longer.
+
+## Read more
+
+### The mark, by hand and by the router
+
+A navigation bar should show where the shopper is.
+In the Week 8 CourseHub we did that by hand, with a class on the link of the current page in each HTML file.
+The router knows the current address, so it can do it for us.
+
+`aria-current` is the attribute a screen reader announces as "current page", so the same mark serves everyone.
+`NavLink` also adds the class `active`, which is what most tutorials style; the attribute is the better hook because it carries meaning as well as looks.
+
+### Why Home matched everywhere
+
+A `NavLink` matches when the address *starts with* its `to`, so that a link to `/products` also counts as current on `/products/3`, which is what you want for a section link.
+Every address starts with `/`, so the Home link is current everywhere until it has `end`.
 The Products link keeps the default, so it stays current on the product pages we add next.
+
+**If it breaks:** If no link ever fills in, the links are still `Link`; only `NavLink` adds the mark.
+If Home is marked on the Products page, `end` is missing from the Home link.
+If the console says `NavLink is not defined`, the import still names `Link`.
 
 **Check:** Run the code.
 Home is filled in and Products is not.
@@ -49,9 +70,13 @@ Press **Products**: the marks swap.
 Open the browser's accessibility tree, or hover the links with **Boundaries** on, and read the attribute: the current link carries `aria-current="page"` and the other has no such attribute.
 Press **Run checks**.
 
-**If it breaks:** If no link ever fills in, the links are still `Link`; only `NavLink` adds the mark.
-If Home is marked on the Products page, `end` is missing from the Home link.
-If the console says `NavLink is not defined`, the import still names `Link`.
+```quiz
+With `end` on Home and not on Products, which link is marked on the address `/products/3`?
+- Home, because every address starts with `/`
+= Products, because `/products/3` starts with `/products`
+- Neither, because no link's `to` is exactly `/products/3`
+> Without `end`, a `NavLink` is current for its own path and every path below it; `end` limits Home to the exact address `/`.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>

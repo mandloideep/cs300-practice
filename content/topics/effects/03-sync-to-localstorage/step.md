@@ -9,8 +9,15 @@ required: [storage-holds-the-list, storage-follows-add, notice-says-saved]
 ---
 
 The effect now runs exactly when the list changes, which is exactly when the list should be saved.
-In Week 6 we kept data across page loads with `localStorage`, which stores strings under a key in the browser, and `JSON.stringify` turned our arrays into strings.
-Writing to it is a side effect, something that reaches outside the component, so it belongs in the effect and nowhere else.
+This step writes the list to `localStorage` from that effect and changes the notice to say so.
+Watch the stored string in your browser's developer tools as you add a product, and then watch what a fresh run starts from.
+
+```predict
+After the list is saved on every change, you add a product and press **Run** again; what does the page start with?
+= The six built-in products, because nothing reads the saved list back yet
+- Seven products, because the effect saved the one you added
+- No products until storage has loaded
+```
 
 Add the write above the setter.
 
@@ -19,7 +26,6 @@ Add the write above the setter.
 ```
 
 Every time `items` changes, React renders the new list, and then the effect writes the whole array under the key `products`.
-We write the whole array rather than one product, because `localStorage` holds one string per key, and replacing it is simpler and safer than editing it.
 The notice can now tell the truth.
 
 ```jsx file="src/App.jsx" action="replace" anchor='      {savedAt && <p className="notice" role="status">List changed at {savedAt.toLocaleTimeString()}</p>}'
@@ -28,18 +34,34 @@ The notice can now tell the truth.
 
 Run the code and add a product.
 To see the stored string, open your browser's developer tools, choose the Application tab, open Local Storage, and pick this site's address: the key `cs300-lab:sandbox:products` holds the JSON of the list, including the product you added.
+Nothing reads the value back yet, so a fresh run still starts from the six built-in products.
+
+## Read more
+
+In Week 6 we kept data across page loads with `localStorage`, which stores strings under a key in the browser, and `JSON.stringify` turned our arrays into strings.
+Writing to it is a side effect, something that reaches outside the component, so it belongs in the effect and nowhere else.
+
+We write the whole array rather than one product, because `localStorage` holds one string per key, and replacing it is simpler and safer than editing it.
+
 The result page shares the browser's storage with the lab itself, so the lab keeps your code's keys in a scope of their own with that prefix; your code sees the key as `products`, and in your own Vite project it would be stored as `products` too.
 
-Nothing reads the value back yet, so a fresh run still starts from the six built-in products.
 Reading it back on load is the subject of the persistence topic, and it takes one more idea, a lazy initial state, that we save for there.
+
+**If it breaks:** If the stored value is missing, `setItem` is outside the effect, or the key is spelled differently.
+If the stored value is `[object Object]` or a list of `[object Object]`, the array was stored without `JSON.stringify`.
+If the stored list lags one product behind the screen, the effect depends on something other than `items`, so it ran for an older render.
 
 **Check:** Run the code and add a product.
 The notice says `Saved at` with the current time.
 Press **Run checks**: the checks parse the `products` key and compare it with the list on the screen, before and after adding a product of their own.
 
-**If it breaks:** If the stored value is missing, `setItem` is outside the effect, or the key is spelled differently.
-If the stored value is `[object Object]` or a list of `[object Object]`, the array was stored without `JSON.stringify`.
-If the stored list lags one product behind the screen, the effect depends on something other than `items`, so it ran for an older render.
+```quiz
+Why does the effect store `JSON.stringify(items)` rather than `items`?
+= `localStorage` stores only strings, and an array of objects turned into a string its own way becomes `[object Object]` text
+- `JSON.stringify` makes the write faster
+- Without it, `localStorage` would keep a reference to the live array and change along with it
+> `setItem` converts whatever it is given to a string; `JSON.stringify` makes that string the JSON of the list, which `JSON.parse` can turn back into the same array later.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>

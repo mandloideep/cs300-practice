@@ -11,9 +11,15 @@ required: [query-is-encoded, empty-query-refused, results-or-empty-message]
 
 **We used this in:** [DOM and events](#/topic/dom-events) read a form with `FormData` and prevented the submit.
 
-Loading the same eight products is a demo.
-A real page asks the server for what the user wants, and the way to ask is the **query string**: the part of a URL after `?`, made of `key=value` pairs separated by `&`.
-`/products/search?q=phone&limit=8` asks DummyJSON for products whose title matches `phone`, eight at most.
+This step turns the button into a search: the user's words go into the request URL as a **query string**, the part after `?`.
+Watch the request URL in the Network view, especially what happens to a space and an `&` the user types.
+
+```predict
+After you read the field below, run, and press Search with the field empty, what happens?
+- A request to `/products?limit=8` appears in the Network view and eight products load
+- The page reloads and the field is cleared
+= No request appears, and the status line says `Type something to search for.`
+```
 
 The button became a search form with a field named `q`, and the submit listener already prevents the reload and calls `loadProducts`.
 Read the field and refuse an empty search before any request is made.
@@ -42,12 +48,7 @@ Build the URL from it.
     const response = await fetch(url);
 ```
 
-The template literal puts the base, the path, and the parameters together.
-`encodeURIComponent` is the line that matters.
-A user can type anything, and some characters mean something inside a URL: a space is not allowed, `&` starts the next parameter, `#` starts a fragment.
-`encodeURIComponent("mac & cheese")` gives `mac%20%26%20cheese`, so the whole phrase stays one value of `q`.
-Without it, `q=mac & cheese` would send `q=mac` and a second nonsense parameter named ` cheese`.
-Anything that comes from user input goes through `encodeURIComponent` before it goes into a URL.
+The template literal puts the base, the path, and the parameters together, and `encodeURIComponent` keeps whatever the user typed as one value of `q`.
 
 The empty state can name the query now.
 
@@ -55,15 +56,35 @@ The empty state can name the query now.
       status.textContent = `No products match "${query}".`;
 ```
 
+## Read more
+
+Loading the same eight products is a demo.
+A real page asks the server for what the user wants, and the way to ask is the query string: `key=value` pairs after the `?`, separated by `&`.
+`/products/search?q=phone&limit=8` asks DummyJSON for products whose title matches `phone`, eight at most.
+
+`encodeURIComponent` is the line that matters.
+A user can type anything, and some characters mean something inside a URL: a space is not allowed, `&` starts the next parameter, `#` starts a fragment.
+`encodeURIComponent("mac & cheese")` gives `mac%20%26%20cheese`, so the whole phrase stays one value of `q`.
+Without it, `q=mac & cheese` would send `q=mac` and a second nonsense parameter named ` cheese`.
+Anything that comes from user input goes through `encodeURIComponent` before it goes into a URL.
+
+**If it breaks:** If the request URL contains `undefined`, `loadProducts` is still declared without the `query` parameter.
+If a search for `mac & cheese` shows `q=mac%20&%20cheese` or `q=mac & cheese`, `encodeURIComponent` is missing.
+If every search ends with a 404, the path is wrong; the search endpoint is `/products/search`, not `/products?search`.
+
 **Check:** Run the code with **Fixtures** selected, type `phone`, and press Enter.
 The Network view shows a request to `/products/search?q=phone&limit=8` and five products appear.
 Search for `mac & cheese` and read the request URL: it contains `q=mac%20%26%20cheese`.
 Fixtures answer every search with the same five products, because fixture routes ignore the query string, so switch to the **DummyJSON** preset to see real searching: `phone` returns phones, and `zzzz` ends with `No products match "zzzz".`
 Press **Run checks**.
 
-**If it breaks:** If the request URL contains `undefined`, `loadProducts` is still declared without the `query` parameter.
-If a search for `mac & cheese` shows `q=mac%20&%20cheese` or `q=mac & cheese`, `encodeURIComponent` is missing.
-If every search ends with a 404, the path is wrong; the search endpoint is `/products/search`, not `/products?search`.
+```quiz
+The user searches for `mac & cheese`; which request URL keeps the whole phrase as one value of `q`?
+- `/products/search?q=mac & cheese&limit=8`
+- `/products/search?q=mac%20&%20cheese&limit=8`
+= `/products/search?q=mac%20%26%20cheese&limit=8`
+> `encodeURIComponent` turns the space into `%20` and the `&` into `%26`, so the server never mistakes the `&` for the start of the next parameter.
+```
 
 <details>
 <summary>app.js after this step</summary>

@@ -5,29 +5,35 @@ entry: index.html
 required: [labels-connected, email-is-required, select-and-submit]
 ---
 
-Forms are how a page collects something from the reader: a search, a login, a sign-up.
 The page now has a **Join the group** section with an empty `<form>`, and this step fills it with three fields and a button.
 The lesson's one rule for forms comes first: every field has a label, and the label is **connected** to its field.
+Watch what clicking a label does before and after that connection exists.
+
+```demo name="label-for"
+```
 
 Add the first field inside the form.
+
+```predict
+After you add this label and field and run, what happens when you click the word Name?
+- The cursor lands in the text field
+= Nothing: the field does not get focus
+- The browser shows an error about the label
+```
 
 ```html file="index.html" action="insert-after" anchor="        <form>"
           <label>Name</label>
           <input id="name" name="name" type="text" />
 ```
 
-Run the page and click the word **Name**.
-Nothing happens: the text field does not get focus, and a screen reader arriving at the field would announce "edit text" with no name.
-The label is next to the field, but the browser has no idea they belong together.
+Run the page and click the word **Name**: the label is next to the field, but the browser has no idea they belong together.
 Connect them: the label's `for` attribute names the `id` of its field.
 
 ```html file="index.html" action="replace" anchor="          <label>Name</label>"
           <label for="name">Name</label>
 ```
 
-Click the word **Name** again.
-The cursor lands in the field, because the label now belongs to it, and the same connection is what a screen reader reads out.
-The `id` is for the label; the `name` attribute is different: it is the name the field's value travels under when the form is sent, and it is the one JavaScript and servers look for.
+Click the word **Name** again, and the cursor lands in the field.
 
 Add an email field.
 
@@ -36,8 +42,6 @@ Add an email field.
           <input id="email" name="email" type="email" required />
 ```
 
-`type="email"` makes the browser check the value looks like an address and gives a phone the keyboard with the `@` key.
-`required` is a **boolean attribute**: its presence is the whole value, so it has no `="..."` part.
 Press **Join** with the email empty, and the browser refuses to send the form and points at the field, with no JavaScript at all.
 
 Finish with a choice and a button.
@@ -52,18 +56,38 @@ Finish with a choice and a button.
           <button type="submit">Join</button>
 ```
 
-`<select>` is a drop-down, and each `<option>` is one choice; the `value` is what gets sent, and the text is what the reader sees.
+`<select>` is a drop-down with one `<option>` per choice, and `<button type="submit">` sends the form.
+
+## Read more
+
+Forms are how a page collects something from the reader: a search, a login, a sign-up.
+
+Without the connection, a screen reader arriving at the name field would announce "edit text" with no name.
+With `for` naming the field's `id`, the label belongs to the field, and the same connection is what a screen reader reads out.
+The `id` is for the label; the `name` attribute is different: it is the name the field's value travels under when the form is sent, and it is the one JavaScript and servers look for.
+
+`type="email"` makes the browser check the value looks like an address and gives a phone the keyboard with the `@` key.
+`required` is a **boolean attribute**: its presence is the whole value, so it has no `="..."` part.
+
+An option's `value` is what gets sent, and its text is what the reader sees.
 Radio buttons would do for three choices too; a drop-down earns its place at five or more.
-`<button type="submit">` sends the form.
-This page has no server to send it to, so pressing it with the fields filled in reloads the result; the DOM topic in Week 6 shows how JavaScript takes over that moment.
+This page has no server to send the form to, so pressing **Join** with the fields filled in reloads the result; the DOM topic in Week 6 shows how JavaScript takes over that moment.
+
+**If it breaks:** If clicking a label does nothing, its `for` value and the field's `id` differ, even by one letter.
+If two fields focus from one label, two elements share an `id`; an `id` is unique on the page.
+If the check cannot find the submit button, it is outside the `</form>` line.
 
 **Check:** Run the page.
 Clicking each label focuses its field, the email field refuses to submit while empty, and the drop-down lists three days.
 Press **Run checks** to confirm.
 
-**If it breaks:** If clicking a label does nothing, its `for` value and the field's `id` differ, even by one letter.
-If two fields focus from one label, two elements share an `id`; an `id` is unique on the page.
-If the check cannot find the submit button, it is outside the `</form>` line.
+```quiz
+What does a label's `for` attribute hold?
+- The `name` of the field, the one the form sends
+= The `id` of the field it labels
+- The `id` of the form the field is in
+> `for` points at an `id`, which is unique on the page, so the browser knows exactly which field to focus and what a screen reader should announce; `name` is only for sending the value.
+```
 
 <details>
 <summary>index.html after this step</summary>

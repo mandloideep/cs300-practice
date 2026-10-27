@@ -4,6 +4,12 @@ mode: read
 ---
 
 There is nothing to type in this step.
+Read the finished `app.js` from Step 9 by the job each section does, then set each section beside the React code that does the same job.
+In a React project those sections become files that import each other, which is what the explainer below draws.
+
+```demo name="module-graph"
+```
+
 Open the finished `app.js` from Step 9 and read it from top to bottom.
 Because each step inserted its code in a deliberate place, the file is already organized by the job each section does.
 
@@ -20,13 +26,19 @@ Because each step inserted its code in a deliberate place, the file is already o
 | Events | Validate input and call actions | `FormData`, `dataset`, actions |
 | Navigation | Choose the view from a button | `setState` |
 
+```predict
+On one bookmark click, which function writes the new array to `localStorage`?
+- `render`, after it draws the shelf
+= `saveBookmarks`, called from the click listener
+- `setState`, before it calls `render`
+```
+
 Trace one bookmark click through the table: the click listener finds the button, builds a new bookmarks array, `saveBookmarks` writes it, `setState` records it, `render` draws the shelf, and the listener restores focus.
 Nothing in `render` starts a request or writes to storage, which is why re-rendering is always safe.
 
 ## The same page in React
 
-In [The React mental model](#/topic/react-mental-model) the study tracker was written twice: by hand, with `textContent` and `innerHTML`, and then with React.
-CourseHub follows the same two paths, and the second one is Week 10.
+CourseHub is built again with React in Week 10.
 Set the pieces side by side.
 
 A component is a function from data to markup in both worlds.
@@ -77,7 +89,7 @@ const [books, setBooks] = useState([]);
 setStatus("loading");
 ```
 
-`render` disappears as a function you call, because React calls the component again whenever its state changes, and it updates only the parts of the DOM that differ, as Step 3 of the mental model topic showed with the flash view.
+`render` disappears as a function you call, because React calls the component again whenever its state changes, and it updates only the parts of the DOM that differ.
 
 Everything else maps the same way.
 
@@ -95,8 +107,22 @@ Everything else maps the same way.
 React removes the plumbing, not the concepts.
 The components, the state, the props, the events, the views, and the sections are exactly what you just built and read, and the names will already be familiar when they come back as files in a Vite project.
 
+## Read more
+
+In [The React mental model](#/topic/react-mental-model) the study tracker was written twice: by hand, with `textContent` and `innerHTML`, and then with React.
+CourseHub follows the same two paths, and the second one is Week 10.
+Step 3 of that topic showed the partial update with the flash view: React changes only the parts of the DOM that differ.
+
+**If it breaks:** If the mapping table feels abstract, open [The React mental model](#/topic/react-mental-model) Step 3 with **Flash** on and click the button while reading the State row again; the flash is the render that `setState` had to call for us.
+
 **Check:** For each function in the finished `app.js`, say which section it belongs to without reading its body.
 Then explain in two sentences why `render` never calls `fetch` or `localStorage.setItem`, and what React does for you that `setState` did by hand.
 If your answers name the responsibility table and the automatic re-render, you have the model this topic is about.
 
-**If it breaks:** If the mapping table feels abstract, open [The React mental model](#/topic/react-mental-model) Step 3 with **Flash** on and click the button while reading the State row again; the flash is the render that `setState` had to call for us.
+```quiz
+Which section of the finished `app.js` may call `fetch`?
+- Render, because it draws the results
+= Requests, which fetch, check, and normalize data
+- Components, because each card needs its book
+> Only `requestBooks` talks to the network, and only the action `searchBooks` calls it; `render` reads state and updates the page, which is why re-rendering is always safe.
+```

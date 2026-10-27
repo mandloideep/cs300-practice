@@ -3,9 +3,16 @@ title: "Thinking in React, on the product page"
 mode: read
 ---
 
-The React documentation has a short essay called "Thinking in React" that describes how to design an app before writing it.
-Its five steps are the plan we have been following since Week 10 without naming it, and now that you have props, state, callback props, and controlled forms, you can read it as four questions.
+The React documentation has a short essay called "Thinking in React" that describes how to design an app before writing it, and its five steps are the plan we have been following since Week 10 without naming it.
+Now that you have props, state, callback props, and controlled forms, you can read it as four questions.
 Here they are, asked of the product page we built in [Lists and keys](#/topic/lists-and-keys): a category select, a checkbox that pretends the load failed, a top-rated row, and the full list.
+
+```predict
+On that product page, which of these values earns its own `useState`?
+- The visible products, because they change when the category does
+= The chosen category, because the shopper changes it and nothing else can compute it
+- The six products, because they are the page's data
+```
 
 ## 1. What are the pieces?
 
@@ -65,7 +72,9 @@ This is the fifth official step, add inverse data flow, and it is the "actions u
 | Who owns it? | 4. Identify where state lives | The state line in the closest shared parent |
 | How does it change? | 5. Add inverse data flow | Handlers in the owner, `on` props to the children |
 
-## Try it on the form
+## Read more
+
+### Try it on the form
 
 Ask the four questions of the `AddProductForm` you built in this topic.
 The pieces are the form and the three fields.
@@ -73,12 +82,20 @@ The values that change are the three fields, kept in one object, and the two rul
 The form owns `fields`, because only the form reads and changes them, while `items` lives in `App`, because the list reads it and the form changes it.
 The change is `handleChange` for every keystroke and `handleSubmit` for the submit, which calls `onAdd` to reach the owner of `items`.
 
-## What comes next
+### What comes next
 
 Everything so far happened inside the page: state in, JSX out.
 Next week's first topic, [Effects](#/topic/effects), is about the moments a component has to reach outside: to the console, to `localStorage`, to a timer, or to the browser window.
 
+**If it breaks:** If you find a value that two components each keep their own copy of, that is the signal to move it up, and the Step 2 and Step 3 traces of the last topic show what the move looks like.
+
 **Check:** Take the Week 8 CourseHub, or any page you have built this term, and answer the four questions for it on paper.
 If every value on the page is either a constant, a piece of state with one owner, or something computed from state, the design is done.
 
-**If it breaks:** If you find a value that two components each keep their own copy of, that is the signal to move it up, and the Step 2 and Step 3 traces of the last topic show what the move looks like.
+```quiz
+Why does `items` live in `App` while `fields` lives in `AddProductForm`?
+- `App` is the only component allowed to call `useState` for arrays
+= The list reads `items` and the form changes it, while only the form reads and changes `fields`
+- `fields` changes on every keystroke, and `App` must not re-render that often
+> State lives in the closest component that contains everyone who reads or changes it: for `items` that is `App`, the parent of the list and the form, and for `fields` it is the form itself.
+```

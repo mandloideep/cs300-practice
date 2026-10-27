@@ -7,9 +7,16 @@ inspector:
 required: [items-carry-data, remove-uses-the-id, filter-by-category]
 ---
 
-Step 6 found a project by reading its title back out of the page.
-That works until two projects share a title, and it ties the script to the exact markup of the item.
-HTML has a cleaner way to attach information to an element: any attribute whose name starts with `data-` is a **data attribute**, and JavaScript reads and writes all of them through the element's `dataset` property.
+Step 6 found a project by reading its title back out of the page, which breaks as soon as two projects share a title.
+This step carries each project's id and category on its element as **data attributes**, reads them back through `dataset`, and uses them for a row of category filters.
+Watch the DOM view: the attributes the script writes show up on every item.
+
+```predict
+After you add the two `dataset` lines and run, which attribute does the first item carry in the DOM view?
+= `data-id="1"`
+- `id="1"`
+- `dataset.id="1"`
+```
 
 Two things changed in the workspace.
 Every project in the array now has an `id`, and the submit listener gives a new project `Date.now()` as its id, a number that is different for every entry.
@@ -22,9 +29,7 @@ Start by writing two data attributes on each item as it is built.
     item.dataset.category = project.category;
 ```
 
-`item.dataset.id = 1` produces `data-id="1"` on the element, and `dataset.category` produces `data-category`.
-A name with several words converts between kebab-case in HTML and camelCase in JavaScript, so `data-due-date` would be `dataset.dueDate`.
-Run the code and look at an item in the DOM view of the inspector: the attributes are there, written by the script.
+Run the code and look at an item in the DOM view of the inspector: `data-id` and `data-category` are there, written by the script.
 
 Now the remove listener can identify a project without reading its title.
 
@@ -33,9 +38,7 @@ Now the remove listener can identify a project without reading its title.
   const index = projects.findIndex((project) => project.id === id);
 ```
 
-Data attribute values are always strings, because attributes are strings.
-`dataset.id` is `"1"`, not `1`, and `"1" === 1` is `false`, so we convert with `Number` before comparing.
-Forgetting that conversion is the usual data attribute bug, and it fails silently: `findIndex` returns `-1` and `splice(-1, 1)` removes the last project instead of the clicked one.
+Data attribute values are always strings, so we convert with `Number` before comparing with the number in the array.
 
 The category buttons combine data attributes with delegation.
 One listener on the group reads which filter was clicked and hides every item whose category does not match.
@@ -55,19 +58,46 @@ filters.addEventListener("click", (event) => {
 });
 ```
 
+The first loop hides the items whose `data-category` does not match, and the second presses the clicked button and releases the others.
+
+## Read more
+
+### What a data attribute is
+
+Reading the title back out of the page also ties the script to the exact markup of the item.
+HTML has a cleaner way to attach information to an element: any attribute whose name starts with `data-` is a **data attribute**, and JavaScript reads and writes all of them through the element's `dataset` property.
+
+`item.dataset.id = 1` produces `data-id="1"` on the element, and `dataset.category` produces `data-category`.
+A name with several words converts between kebab-case in HTML and camelCase in JavaScript, so `data-due-date` would be `dataset.dueDate`.
+
+### Strings, always
+
+Data attribute values are always strings, because attributes are strings.
+`dataset.id` is `"1"`, not `1`, and `"1" === 1` is `false`, so we convert with `Number` before comparing.
+Forgetting that conversion is the usual data attribute bug, and it fails silently: `findIndex` returns `-1` and `splice(-1, 1)` removes the last project instead of the clicked one.
+
+### The filter listener
+
 `[data-filter]` is an attribute selector, so `closest` finds the button no matter which button it is.
 The first loop compares the filter with each item's `data-category` and toggles the `hidden` class, which the stylesheet turns into `display: none`; the `all` filter hides nothing.
-The second loop presses the clicked button and releases the others.
 The data on the elements decides everything, and the script never needs a separate list of which button goes with which category.
+
+**If it breaks:** If clicking Remove deletes the last project instead of the clicked one, `dataset.id` is compared without `Number`.
+If every item disappears on a filter click, the comparison uses `item.category` instead of `item.dataset.category`.
+If nothing happens when a filter is clicked, the listener is not on `#filters` or the selector is missing its square brackets.
 
 **Check:** Run the code and click **CSS**: only `Landing page` stays visible and the CSS button is pressed.
 Click **All** to see every project.
 Add a project named `Landing page` and remove the original one; the right item goes, because the ids differ.
 Press **Run checks**.
 
-**If it breaks:** If clicking Remove deletes the last project instead of the clicked one, `dataset.id` is compared without `Number`.
-If every item disappears on a filter click, the comparison uses `item.category` instead of `item.dataset.category`.
-If nothing happens when a filter is clicked, the listener is not on `#filters` or the selector is missing its square brackets.
+```quiz
+An item is written as `<li data-id="2">`; what does `item.dataset.id === 2` give?
+- `true`
+= `false`
+- `undefined`
+> `dataset` values are always strings, so `item.dataset.id` is `"2"`, and a string is never strictly equal to a number; convert with `Number` first.
+```
 
 <details>
 <summary>app.js after this step</summary>
