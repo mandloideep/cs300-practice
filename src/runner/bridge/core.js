@@ -249,12 +249,12 @@ function serialize(value, depth = 3, ancestors = []) {
 const SPECIAL_WORDS = new Set(["NaN", "Infinity", "-Infinity", "undefined"]);
 
 // JSON.stringify's compact form, except that the words above print bare.
-function print(value) {
+function printCompact(value) {
   if (typeof value === "string") return SPECIAL_WORDS.has(value) ? value : JSON.stringify(value);
-  if (Array.isArray(value)) return `[${value.map(print).join(",")}]`;
+  if (Array.isArray(value)) return `[${value.map(printCompact).join(",")}]`;
   if (value && typeof value === "object") {
     const entries = Object.entries(value).map(
-      ([key, item]) => `${JSON.stringify(key)}:${print(item)}`,
+      ([key, item]) => `${JSON.stringify(key)}:${printCompact(item)}`,
     );
     return `{${entries.join(",")}}`;
   }
@@ -268,7 +268,7 @@ function display(value) {
   const serialized = serialize(value);
   if (typeof serialized === "string") return serialized;
   try {
-    return print(serialized);
+    return printCompact(serialized);
   } catch {
     return String(value);
   }
