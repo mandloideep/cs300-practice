@@ -3,11 +3,18 @@ title: Timers and the queue
 mode: edit
 entry: index.html
 required: [delay-order, timers-wait-for-the-stack, break-cancelled]
+links:
+  - kind: reference
+    title: "MDN: setTimeout()"
+    url: https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout
 ---
 
 A callback handed to `setTimeout` waits somewhere until it is allowed onto the stack, and that somewhere is the **task queue**.
 This step sets up a study timer with three timers in the wrong order, then blocks the stack with a long calculation, and reads the time each callback really ran.
 Watch the milliseconds: a timer's delay is the earliest it can run, not a promise that it will run then.
+
+```demo name="event-loop"
+```
 
 The starter records the moment it starts and has a helper, `stamp`, that logs a label with the milliseconds since then.
 Press **Run** and the console shows `Study timer started after 0 ms`.
@@ -22,7 +29,13 @@ setTimeout(() => stamp("Flashcards done"), 200);
 stamp("Timers set");
 ```
 
-Predict before you run: in which order do the three timers print, the order of the lines (break, reading, flashcards), the order of their delays (reading, flashcards, break), or all at once right after `Timers set`?
+```predict
+In which order do the three timers print?
+- `Break over`, `Reading done`, `Flashcards done`, the order of the lines
+- All three at once, right after `Timers set`
+= `Reading done`, `Flashcards done`, `Break over`, the order of their delays
+```
+
 Run it.
 The console shows `Timers set after 0 ms`, then `Reading done` after about 100 ms, `Flashcards done` after about 200, and `Break over` after about 300; the exact numbers wobble by a millisecond or two from run to run.
 Each `setTimeout` returned at once, so `Timers set` printed in the same millisecond.
@@ -38,7 +51,14 @@ stamp("Long calculation finished");
 ```
 
 The loop stands in for any slow synchronous work, such as sorting a huge list.
-Predict before you run: `Reading done` is due at 100 ms, so does it print after about 100 ms, after about 250 ms, or before `Long calculation finished`?
+
+```predict
+`Reading done` is due at 100 ms; when does it print now?
+- After about 100 ms
+= After about 250 ms, once the loop has ended
+- Before `Long calculation finished`
+```
+
 Run it.
 `Long calculation finished after 250 ms` prints first, and only then `Reading done` and `Flashcards done`, both after about 250 ms, with `Break over` still at about 300.
 The reading timer was due at 100 ms and went into the queue then, but the script was still on the stack, and nothing in the queue can run until the stack is empty.
@@ -57,10 +77,18 @@ clearTimeout(breakTimer);
 stamp("Break skipped");
 ```
 
-Predict before you run: does `Break over` still print, at about 300 ms?
+```predict
+Does `Break over` still print?
+- Yes, at about 300 ms
+= No, never
+- Yes, right after `Break skipped`
+```
+
 Run it.
 `Break skipped` prints right after the long calculation, and `Break over` never prints.
 `setTimeout` returns a number that names the timer, and `clearTimeout` with that number removes the callback before it reaches the queue.
+
+## Read more
 
 The browser's part in all this is the **event loop**: while the stack is empty, take the first callback from the queue, run it until the stack is empty again, and repeat.
 Timers, clicks, and the arrival of network responses all add callbacks to the queue the same way, which is why the Week 6 click handlers and the fetch callbacks both ran "later".
@@ -79,6 +107,22 @@ If every timer prints at 0 ms, the callbacks call `stamp` immediately: each `set
 The console shows `Study timer started` and `Timers set` at 0 ms, `Long calculation finished` and `Break skipped` at about 250 ms, then `Reading done` and `Flashcards done`, both at about 250 ms, and no `Break over`.
 The checks wait a little over a third of a second for the timers before they read the console.
 Press **Run checks** to confirm.
+
+```quiz
+A timer set for 100 ms is due while a loop keeps the stack busy for 250 ms; when does its callback run?
+- At 100 ms, interrupting the loop
+= At about 250 ms, right after the loop ends
+- Never, because its time has passed
+> A delay is the earliest a callback can run; it waits in the task queue until the stack is empty, however late that is.
+```
+
+```quiz
+What does `clearTimeout` need to cancel a timer?
+- The callback function
+- The delay in milliseconds
+= The id that `setTimeout` returned
+> `setTimeout` returns a number that names the timer, so keep it in a variable if you might cancel the timer later.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

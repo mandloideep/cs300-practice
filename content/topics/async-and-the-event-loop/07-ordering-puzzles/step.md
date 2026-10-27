@@ -16,12 +16,18 @@ Press **Run** and the console shows `1 sync`.
 Puzzle one: a timer, a promise callback, and a plain log, in that order in the code.
 `Promise.resolve()` makes a promise that is already fulfilled, so its `then` callback is ready to run as soon as it is allowed to.
 
+```predict
+With the two lines below added above `console.log("1 sync")`, in which order does puzzle one print?
+- `1 timer`, `1 microtask`, `1 sync`
+= `1 sync`, `1 microtask`, `1 timer`
+- `1 sync`, `1 timer`, `1 microtask`
+```
+
 ```js file="src/main.js" action="insert-before" anchor='  console.log("1 sync");'
   setTimeout(() => console.log("1 timer"), 0);
   Promise.resolve().then(() => console.log("1 microtask"));
 ```
 
-Predict before you run: is the order `1 timer / 1 microtask / 1 sync`, `1 sync / 1 timer / 1 microtask`, or `1 sync / 1 microtask / 1 timer`?
 Run it.
 `1 sync`, `1 microtask`, `1 timer`.
 The plain log runs first because the script is still on the stack.
@@ -48,7 +54,13 @@ And start it 100 ms after the run.
 setTimeout(puzzleTwo, 100);
 ```
 
-Predict before you run: after `2 sync`, is the order `2 first then / 2 second then / 2 queueMicrotask / 2 timer`, `2 first then / 2 queueMicrotask / 2 second then / 2 timer`, or `2 queueMicrotask / 2 first then / 2 second then / 2 timer`?
+```predict
+After `2 sync`, in which order do the other four lines print?
+- `2 first then`, `2 second then`, `2 queueMicrotask`, `2 timer`
+- `2 queueMicrotask`, `2 first then`, `2 second then`, `2 timer`
+= `2 first then`, `2 queueMicrotask`, `2 second then`, `2 timer`
+```
+
 Run it.
 `2 sync`, `2 first then`, `2 queueMicrotask`, `2 second then`, `2 timer`.
 When `puzzleTwo` ran, only two microtasks were queued: the first `then`, because its promise was already fulfilled, and the `queueMicrotask` function.
@@ -76,7 +88,13 @@ function puzzleThree() {
 setTimeout(puzzleThree, 200);
 ```
 
-Predict before you run: does `3 microtask from the timer` print right after `3 first timer`, after `3 second timer`, or last of all?
+```predict
+Where does `3 microtask from the timer` print?
+- After `3 second timer`
+= Right after `3 first timer`
+- Last of all
+```
+
 Run it.
 `3 microtask`, `3 first timer`, `3 microtask from the timer`, `3 second timer`, `3 timer from the microtask`.
 The microtask runs first, as in puzzle one, and sets a third timer, which goes to the back of the timer queue.
@@ -104,10 +122,18 @@ function puzzleFour() {
 setTimeout(puzzleFour, 300);
 ```
 
-Predict before you run: what comes right after `4 before await`, `4 after await`, `4 sync after the call`, or `4 timer`?
+```predict
+Which line comes right after `4 before await`?
+- `4 after await`
+- `4 timer`
+= `4 sync after the call`
+```
+
 Run it.
 `4 before await`, `4 sync after the call`, `4 after await`, `4 timer`.
 `checkIn` runs like any function until its `await`; the rest of it, the part a `then` callback would hold, becomes a microtask, so it runs after `puzzleFour` has finished and before the timer.
+
+## Read more
 
 Every puzzle follows the same three rules.
 Plain code runs to the end, and nothing interrupts it.
@@ -131,6 +157,22 @@ If `4 after await` prints before `4 sync after the call`, the `await` is missing
 The console shows the four puzzles in turn, each in the order explained above, ending with `4 timer`.
 The checks wait for `4 timer` before they read the console.
 Press **Run checks** to confirm.
+
+```quiz
+After the script ends, which runs first: a `setTimeout(..., 0)` callback set at the top, or a `then` callback on `Promise.resolve()` set below it?
+- The timer, because it was set first
+= The `then` callback
+- Whichever the browser picks
+> When a task ends, the event loop empties the microtask queue before it takes the next task, so a promise callback beats a zero delay timer.
+```
+
+```quiz
+A timer callback queues a microtask, and a second timer is already waiting; when does that microtask run?
+= Right after the first timer's callback, before the second timer
+- After the second timer
+- After every timer in the queue
+> One task, then every microtask, then the next task: the microtask queue is emptied after each timer callback, not only after the script.
+```
 
 <details>
 <summary>src/main.js after this step</summary>
