@@ -95,7 +95,7 @@ export function parseQuestion(token, k) {
   if (options.length < 2 || options.length > 4) {
     return fail(`has ${options.length} option(s); a question needs two to four`);
   }
-  if (answer === -1) return fail("marks no answer; start exactly one option with = ");
+  if (answer === -1) return fail(`marks no answer; start exactly one option with "= "`);
   return {
     id,
     kind,
@@ -149,16 +149,29 @@ export function isCheckParagraph(tokens, index) {
   );
 }
 
+function isIfItBreaksParagraph(tokens, index) {
+  const token = tokens[index];
+  return (
+    token.type === "paragraph_open" &&
+    token.level === 0 &&
+    inlineText(tokens, index).startsWith("**If it breaks:**")
+  );
+}
+
 // Where the Read more section starts and where its Check paragraph is, as token indexes:
-// { headings: [index...], check: index | -1 } with check the first Check after the first heading.
+// { headings: [index...], check: index | -1, lateIfItBreaks: index | -1 } with check the first
+// Check after the first heading and lateIfItBreaks an If it breaks paragraph after that Check.
 export function readMoreSection(tokens) {
   const headings = [];
   let check = -1;
+  let lateIfItBreaks = -1;
   tokens.forEach((_, index) => {
     if (isReadMoreHeading(tokens, index)) headings.push(index);
     else if (headings.length > 0 && check === -1 && isCheckParagraph(tokens, index)) check = index;
+    else if (check !== -1 && lateIfItBreaks === -1 && isIfItBreaksParagraph(tokens, index))
+      lateIfItBreaks = index;
   });
-  return { headings, check };
+  return { headings, check, lateIfItBreaks };
 }
 
 // Problems with a links value, as reasons; [] when the value is absent or valid.

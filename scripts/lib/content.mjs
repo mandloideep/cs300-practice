@@ -8,7 +8,13 @@ import matter from "gray-matter";
 import { transform } from "sucrase";
 import { unifiedDiff } from "./diff.mjs";
 import { ACTIONS, ANCHORED_ACTIONS, applyEdits, editsFromTokens, parseInfo } from "./edits.mjs";
-import { fenceKind, fencesFromTokens } from "./fences.mjs";
+import {
+  compiledLinks,
+  fenceKind,
+  fencesFromTokens,
+  linkProblems,
+  readMoreSection,
+} from "./fences.mjs";
 import { isDirectory, listDirectories, readJson, readTree } from "./files.mjs";
 import { createMarkdown, LANGUAGES } from "./render.mjs";
 import { rulesFor } from "./style.mjs";
@@ -195,7 +201,7 @@ function loadStep(topicDir, dirName, index, context, problems) {
   const offset = raw.split("\n").length - body.split("\n").length;
   const tokens = markdown.parse(body, {});
   for (const token of tokens) {
-    if (token.type !== "fence" || fenceKind(token.info) === "demo") continue;
+    if (token.type !== "fence" || fenceKind(token.info)) continue;
     const { lang } = parseInfo(token.info);
     if (!LANGUAGES.includes(lang)) {
       problems.add(
@@ -213,6 +219,32 @@ function loadStep(topicDir, dirName, index, context, problems) {
   for (const demo of fences.demos) {
     if (demo.error) problems.add(stepFile, `line ${demo.line + offset}: demo fence ${demo.error}`);
   }
+  const questionIds = new Set();
+  for (const question of fences.questions) {
+    const where = `line ${question.line + offset}: ${question.kind} fence`;
+    if (question.error) problems.add(stepFile, `${where} ${question.error}`);
+    else if (questionIds.has(question.id))
+      problems.add(stepFile, `${where} uses the id ${question.id} twice in this step`);
+    questionIds.add(question.id);
+  }
+  const readMore = readMoreSection(tokens);
+  if (readMore.headings.length > 1) {
+    const line = (tokens[readMore.headings[1]].map?.[0] ?? 0) + 1 + offset;
+    problems.add(stepFile, `line ${line}: a step has at most one ## Read more heading`);
+  } else if (readMore.headings.length === 1 && readMore.check === -1) {
+    const line = (tokens[readMore.headings[0]].map?.[0] ?? 0) + 1 + offset;
+    problems.add(
+      stepFile,
+      `line ${line}: ## Read more needs a **Check:** paragraph after it, which stays outside the folded part`,
+    );
+  } else if (readMore.lateIfItBreaks !== -1) {
+    const line = (tokens[readMore.lateIfItBreaks].map?.[0] ?? 0) + 1 + offset;
+    problems.add(
+      stepFile,
+      `line ${line}: the **If it breaks:** paragraph belongs inside Read more, before **Check:**`,
+    );
+  }
+  for (const reason of linkProblems(front.links)) problems.add(stepFile, `front matter ${reason}`);
 
   const edits = editsFromTokens(tokens).map((edit) => ({ ...edit, line: edit.line + offset }));
   edits.forEach((edit, i) => {
@@ -317,6 +349,17 @@ function loadStep(topicDir, dirName, index, context, problems) {
     api,
     required,
     demos: fences.demos.filter((demo) => !demo.error).map((demo) => demo.id),
+    questions: fences.questions
+      .filter((question) => !question.error)
+      .map(({ id, kind, question, options, answer, explanation }) => ({
+        id,
+        kind,
+        question,
+        options,
+        answer,
+        explanation,
+      })),
+    links: compiledLinks(front.links),
     edits: edits.map(({ file, action, anchor, code, lang }) => ({
       file,
       action,
@@ -381,13 +424,15 @@ function loadTopic(topicsDir, id, context, problems) {
     problems.add(topicFile, "changeNote must be a sentence that says what changed");
   }
 
+  for (const reason of linkProblems(meta.links)) problems.add(topicFile, reason);
+
   const dirs = listDirectories(topicDir);
   if (dirs.length === 0) problems.add(topicDir, "topic has no step directories");
   const steps = dirs
     .map((dir, index) => loadStep(topicDir, dir, index, context, problems))
     .filter(Boolean);
   const metaOut = Object.fromEntries(TOPIC_FIELDS.map((field) => [field, meta[field] ?? null]));
-  return { ...metaOut, steps };
+  return { ...metaOut, links: compiledLinks(meta.links), steps };
 }
 
 function loadList(file, problems, label) {

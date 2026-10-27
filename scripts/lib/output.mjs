@@ -10,6 +10,7 @@ const TOPIC_FIELDS = [
   "minutes",
   "updated",
   "changeNote",
+  "links",
 ];
 
 function topicMeta(topic) {
@@ -44,7 +45,9 @@ export function buildTopic(topic, render) {
         inspector: step.inspector,
         api: step.api,
         required: step.required,
+        links: step.links,
         demos: step.demos,
+        questions: step.questions,
         edits: step.edits,
         workspace: editing ? step.workspace : null,
         solution: editing ? step.solution : null,

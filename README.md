@@ -265,6 +265,65 @@ Besides the format rules above, it holds `content/` to these style rules, and ea
 `npm run build:content` runs the same checks and then writes `public/content/`.
 Finally, run `npm run dev` and walk the new topic in the browser.
 
+## Predict, quiz, Read more, and links
+
+A step opens with a lead of two to four sentences, then an explainer or a predict block, then the edit blocks, then the longer explanation under "Read more", then the `**Check:**` paragraph.
+[docs/PHASE6.md](docs/PHASE6.md) explains the order; the fences and fields below are how a step says it.
+
+A `predict` fence asks what the console or the page will show before the student runs the code.
+Its first line is the question, then two to four options that each start with `- `, except the one answer, which starts with `= `:
+
+````markdown
+```predict
+What does the console show after one click on Add to cart?
+- Nothing until the second click
+= Rendering Essence Mascara with quantity 1
+- Six lines, one per card
+```
+````
+
+The step page shows the options as a radio group and keeps the pick in progress.
+On an edit step the answer is revealed when the student next runs the code, so the console confirms or corrects the guess; on a read or local step it is revealed on the pick.
+
+A `quiz` fence has the same shape and may end with one or more explanation lines that start with `> `.
+Its answer is revealed on the pick, with the explanation, and the topic page shows how many of the topic's quizzes are answered and how many are right.
+
+````markdown
+```quiz
+Which call adds three?
+- setCount(count + 1), three times
+= setCount((c) => c + 1), three times
+> The updater form reads the latest pending value each time.
+```
+````
+
+Each block gets the id `predict-1`, `predict-2`, `quiz-1`, and so on in body order, which names its record in progress; give one a fixed name with `id="<slug>"` in the info string if it might move.
+Options and explanations may use inline code in backticks.
+The validator names the line of a block with no answer, more than one answer, fewer than two or more than four options, or an explanation in a predict.
+
+A level-two heading whose text is exactly `Read more` starts the folded part of a step.
+Everything from that heading to the `**Check:**` paragraph is closed by default; put the background, the comparison with an earlier week, and the `**If it breaks:**` paragraph there.
+A step has at most one such heading, the `**Check:**` paragraph must follow it, and a step without it validates as before.
+A student who prefers to read first can tick "Keep explanations open", which opens every Read more on every step.
+
+`topic.json` and a step's front matter may carry `links`, each a lecture, a reading, or a reference with a title and an `https` URL:
+
+```json
+"links": [
+  { "kind": "lecture", "title": "Week 5 Session 1 slides", "url": "https://..." },
+  { "kind": "reading", "title": "javascript.info: Functions", "url": "https://javascript.info/function-basics" }
+]
+```
+
+```yaml
+links:
+  - kind: reference
+    title: "MDN: Array.prototype.map"
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
+```
+
+The step page lists the topic's links and then the step's under the step title, labeled by kind, and the unit page lists each topic's lecture links.
+
 ## Adding an explainer
 
 An explainer is a small React component that shows one idea moving inside a step's explanation.
