@@ -1,0 +1,82 @@
+:root {
+  color-scheme: light;
+  color: #172033;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 1.5rem;
+}
+
+.site-header,
+.site-footer {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: #12253a;
+  color: #f7fafc;
+}
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.site-header a {
+  color: #f7fafc;
+}
+
+.brand {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.sidebar,
+.catalog {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: #eef2f7;
+}
+
+.sidebar {
+  align-self: start;
+}
+
+.sidebar h2,
+.catalog h1 {
+  margin-top: 0;
+}
+
+.card {
+  padding: 1rem;
+  border: 1px solid #8a8a8a;
+  border-radius: 0.5rem;
+  background: #ffffff;
+}
+
+.card > * {
+  margin: 0;
+}
+
+.card h2 {
+  font-size: 1.1rem;
+}
+
+.site-footer p {
+  margin: 0;
+}

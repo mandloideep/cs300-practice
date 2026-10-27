@@ -1,0 +1,10 @@
+{
+  "id": "html-structure",
+  "title": "HTML structure",
+  "area": "html",
+  "summary": "Write the skeleton every HTML page shares, then fill it with headings, lists, links, an image with alt text, landmarks, a labeled form, and a table. You will watch the DOM view redraw the tree as each element goes in and see why tags describe what content is, not how it looks.",
+  "prerequisites": [],
+  "minutes": 60,
+  "updated": "2026-10-26",
+  "changeNote": "First version."
+}
