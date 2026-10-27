@@ -1,0 +1,98 @@
+figure.demo-frame .preventdefault__side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+figure.demo-frame .preventdefault__address {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  min-height: 2rem;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-sunken);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .preventdefault__page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 9.5rem;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  transition: opacity 200ms ease;
+}
+
+figure.demo-frame .preventdefault__page.is-loading {
+  justify-content: center;
+  align-items: center;
+}
+
+figure.demo-frame .preventdefault__items {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .preventdefault__items li {
+  padding-left: var(--space-2);
+  border-left: 3px solid var(--color-border);
+}
+
+figure.demo-frame .preventdefault__items li.preventdefault__new {
+  border-left-color: var(--color-success);
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .preventdefault__status {
+  margin: 0;
+}
+
+figure.demo-frame .preventdefault__form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+figure.demo-frame .preventdefault__field {
+  flex: 1 1 6rem;
+  min-width: 0;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-size: var(--text-sm);
+  line-height: 1.75rem;
+  overflow-wrap: anywhere;
+}
+
+figure.demo-frame .preventdefault__field.is-submit {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 1px var(--color-accent);
+}
+
+figure.demo-frame .preventdefault__placeholder {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+figure.demo-frame .preventdefault__button {
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-sunken);
+  font-size: var(--text-sm);
+  line-height: 1.75rem;
+}
+
+figure.demo-frame .preventdefault__diff {
+  margin: var(--space-3) 0 var(--space-2);
+  font-size: var(--text-sm);
+}

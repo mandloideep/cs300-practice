@@ -95,11 +95,11 @@ Each one takes its data from the fence body where that makes sense, so the same 
 
 | Id | Shows | Serves | Phase | Status |
 | --- | --- | --- | --- | --- |
-| `event-propagation` | A click on nested boxes passing through capture, target, and bubble, with `stopPropagation` as a toggle | dom-events/event-delegation, *events-in-depth* | 6 | planned |
-| `delegation` | One listener on a list and `event.target` lighting the item that was clicked | dom-events/event-delegation | 6 | planned |
-| `preventdefault` | A form submitted with and without `preventDefault`, showing the reload that the page would do | dom-events/the-event-object-and-preventdefault | 6 | planned |
-| `storage-across-reload` | A key written to `localStorage`, the page reloaded, and the key read back, beside a variable that does not survive | dom-events/remember-with-localstorage, persistence | 6 | planned |
-| `http-anatomy` | A request and a response with method, URL, headers, status, and body, each part named when selected | fetch-basics, *http-and-apis* | 6 | planned |
+| `event-propagation` | A click on nested boxes passing through capture, target, and bubble, with `stopPropagation` as a toggle | dom-events/event-delegation, *events-in-depth* | 6 | built |
+| `delegation` | One listener on a list and `event.target` lighting the item that was clicked | dom-events/event-delegation | 6 | built |
+| `preventdefault` | A form submitted with and without `preventDefault`, showing the reload that the page would do | dom-events/the-event-object-and-preventdefault | 6 | built |
+| `storage-across-reload` | A key written to `localStorage`, the page reloaded, and the key read back, beside a variable that does not survive | dom-events/remember-with-localstorage, persistence | 6 | built |
+| `http-anatomy` | A request and a response with method, URL, headers, status, and body, each part named when selected | fetch-basics, *http-and-apis* | 6 | built |
 | `cors-check` | A browser request to another origin, the preflight, and the header that allows or blocks it | *http-and-apis*, *security-for-client-apps* | 8 | planned |
 | `keyboard-events` | `keydown`, `keypress`, and `keyup` firing for one key, with the event properties read off each | *events-in-depth*, refs-and-browser-apis/a-keyboard-shortcut | later | planned |
 

@@ -1,0 +1,93 @@
+figure.demo-frame .event-propagation__phases {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  margin: 0 0 var(--space-3);
+}
+
+figure.demo-frame .event-propagation__phases li + li::before {
+  margin-right: var(--space-2);
+  color: var(--color-text-muted);
+  content: "→";
+}
+
+figure.demo-frame .event-propagation__layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: flex-start;
+  margin-bottom: var(--space-3);
+}
+
+figure.demo-frame .event-propagation__tree {
+  flex: 2 1 17rem;
+  min-width: 0;
+}
+
+figure.demo-frame .event-propagation__console {
+  flex: 1 1 11rem;
+  min-width: 0;
+}
+
+figure.demo-frame .event-propagation__box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: var(--space-2);
+  border: 2px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease;
+}
+
+figure.demo-frame .event-propagation__box .event-propagation__box {
+  padding: var(--space-1) var(--space-2) var(--space-2);
+}
+
+figure.demo-frame .event-propagation__box--accent {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+figure.demo-frame
+  .event-propagation__box--accent
+  .event-propagation__box:not(.event-propagation__box--accent) {
+  background: var(--color-surface);
+}
+
+figure.demo-frame .event-propagation__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+figure.demo-frame .event-propagation__name {
+  margin-right: var(--space-1);
+  font-weight: var(--weight-bold);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .event-propagation__item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .event-propagation__category {
+  color: var(--color-text-muted);
+}
+
+figure.demo-frame .event-propagation__remove {
+  align-self: flex-start;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-sunken);
+  font-size: var(--text-sm);
+}
