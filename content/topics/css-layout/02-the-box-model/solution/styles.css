@@ -1,0 +1,38 @@
+:root {
+  --accent: #003da5;
+  color-scheme: light;
+  color: #172033;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 1.5rem;
+}
+
+main {
+  max-width: 36rem;
+  padding: 1rem;
+  border: 1px dashed #8a8a8a;
+}
+
+.card {
+  width: 100%;
+  padding: 1.5rem;
+  margin-block: 1.5rem;
+  border: 0.25rem solid var(--accent);
+}
+
+.eyebrow {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}

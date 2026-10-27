@@ -1,0 +1,38 @@
+:root {
+  color-scheme: light;
+  color: #172033;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 1.5rem;
+}
+
+.site-header {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: #12253a;
+  color: #f7fafc;
+}
+
+.site-header a {
+  color: #f7fafc;
+}
+
+.brand {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+main {
+  max-width: 40rem;
+}

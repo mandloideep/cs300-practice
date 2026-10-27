@@ -1,0 +1,10 @@
+{
+  "id": "css-layout",
+  "title": "CSS layout",
+  "area": "css",
+  "summary": "Style a page from selectors and the cascade through the box model, a flex row, a flex card, a grid page, and a responsive breakpoint. You will reproduce the specificity mistake that keeps a rule from winning, watch a card overflow until box-sizing fixes it, and see the layout change when the result pane narrows.",
+  "prerequisites": ["html-structure"],
+  "minutes": 75,
+  "updated": "2026-10-26",
+  "changeNote": "First version."
+}

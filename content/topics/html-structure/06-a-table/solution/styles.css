@@ -1,0 +1,50 @@
+:root {
+  color-scheme: light dark;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+body {
+  margin: 0;
+  padding: 1.5rem;
+}
+
+header,
+footer {
+  padding-block: 0.75rem;
+  border-block: 1px solid #8a8a8a;
+}
+
+nav a {
+  margin-right: 1rem;
+}
+
+main {
+  max-width: 40rem;
+}
+
+section {
+  margin-block: 1.5rem;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid #8a8a8a;
+  padding: 0.4rem 0.75rem;
+  text-align: left;
+}
+
+thead {
+  background: #dbe7f3;
+  color: #172033;
+}

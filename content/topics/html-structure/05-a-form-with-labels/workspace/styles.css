@@ -1,0 +1,56 @@
+:root {
+  color-scheme: light dark;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+body {
+  margin: 0;
+  padding: 1.5rem;
+}
+
+header,
+footer {
+  padding-block: 0.75rem;
+  border-block: 1px solid #8a8a8a;
+}
+
+nav a {
+  margin-right: 1rem;
+}
+
+main {
+  max-width: 40rem;
+}
+
+section {
+  margin-block: 1.5rem;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+form {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 24rem;
+}
+
+label {
+  font-weight: 600;
+}
+
+input,
+select,
+button {
+  font: inherit;
+  padding: 0.4rem 0.6rem;
+}
+
+button {
+  justify-self: start;
+  margin-top: 0.5rem;
+}
