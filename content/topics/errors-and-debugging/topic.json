@@ -3,7 +3,7 @@
   "title": "Errors and debugging",
   "area": "javascript",
   "summary": "Break a small gradebook on purpose and read what the browser tells you: the stack trace, the five messages you will meet most, and the console levels beyond log. You will throw and catch your own errors, pause the code in DevTools with a breakpoint, and guard a function against bad input without hiding real bugs.",
-  "prerequisites": ["javascript-basics"],
+  "prerequisites": ["arrays-in-depth"],
   "minutes": 60,
   "updated": "2026-10-27",
   "changeNote": "First version."
