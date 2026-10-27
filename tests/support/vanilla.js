@@ -123,6 +123,26 @@ export async function buildVanillaTopic() {
       writeTree(path.join(stepDir, "solution"), solution);
     }
 
+    // Validation requires every topic to be reachable from a path, so the fixture gets one.
+    const pathsDir = path.join(content, "paths");
+    mkdirSync(pathsDir, { recursive: true });
+    writeFileSync(
+      path.join(pathsDir, "test-fixtures.json"),
+      JSON.stringify({
+        id: "test-fixtures",
+        title: "Test fixtures",
+        units: [
+          {
+            id: "vanilla",
+            title: TOPIC_TITLE,
+            intro: "A unit that exists only so the fixture topic validates.",
+            topics: [{ id: TOPIC_ID, required: true }],
+            localNotes: [],
+          },
+        ],
+      }),
+    );
+
     const loaded = loadContent(content);
     if (loaded.problems.length > 0) {
       throw new Error(`The vanilla fixture does not validate:\n${formatProblems(loaded.problems)}`);
