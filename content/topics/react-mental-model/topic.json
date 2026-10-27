@@ -5,6 +5,23 @@
   "summary": "We compare updating the page by hand with describing the page from data, first in plain JavaScript and then in React. You will watch React re-run only the component whose state changed and see why data flows down while events flow up.",
   "prerequisites": [],
   "minutes": 30,
-  "updated": "2026-10-26",
-  "changeNote": "First version."
+  "updated": "2026-10-27",
+  "changeNote": "Rewritten so each step opens with an explainer or a prediction, folds the background under Read more, and ends with a quiz.",
+  "links": [
+    {
+      "kind": "reading",
+      "title": "react.dev: Thinking in React",
+      "url": "https://react.dev/learn/thinking-in-react"
+    },
+    {
+      "kind": "reading",
+      "title": "react.dev: Render and commit",
+      "url": "https://react.dev/learn/render-and-commit"
+    },
+    {
+      "kind": "reading",
+      "title": "react.dev: Sharing state between components",
+      "url": "https://react.dev/learn/sharing-state-between-components"
+    }
+  ]
 }

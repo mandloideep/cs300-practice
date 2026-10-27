@@ -3,14 +3,15 @@ title: "Data down, events up"
 mode: read
 ---
 
+This step moves the state from Step 3 up into `App`, so that `Header` and `ReviewPanel` can both show it.
+Watch the direction of each arrow: **data flows down** from a parent to its children as props, and **events flow up** from a child to the parent that owns the data.
+
+```demo name="props-flow"
+```
+
 In Step 3 the state lived inside `ReviewPanel`, and that worked because `ReviewPanel` was the only component that needed it.
-Real pages are rarely that tidy.
 Suppose `Header` should also say how many concepts are left.
 `Header` cannot read a variable that lives inside `ReviewPanel`, because each component is its own function with its own local variables.
-
-React's answer is a rule of direction that every React app follows.
-**Data flows down** from a parent component to its children.
-**Events flow up** from a child to the parent that owns the data.
 
 ## Data down
 
@@ -77,20 +78,37 @@ Follow one click all the way around:
 5. `App` passes the new values down as props, and React calls `Header` and `ReviewPanel` with them.
 6. React compares the new JSX with the old and changes only the text that differs.
 
-If this version were in the editor with **Flash** on, all three outlines would flash on each click, because the state now lives in `App` and `App` passes new props to both children.
+```predict
+If this version were in the editor with Flash on, which outlines would flash on each click?
+- Only `ReviewPanel`, as in Step 3
+- Only `App`, because it owns the state
+= All three: `App`, `Header`, and `ReviewPanel`
+```
+
+All three flash, because the state now lives in `App` and `App` passes new props to both children.
 That is the trade we make when we lift state up: more components re-run, and in exchange every component that shows the value always agrees with it.
 
-## What to take from this topic
+You will practice props, destructuring, and passing functions in [Components and props](#/topic/components-and-props).
+Next, [Vite project anatomy](#/topic/vite-project-anatomy) sets up a real React project on your computer and shows how `index.html`, `main.jsx`, and `App.jsx` connect.
+
+## Read more
+
+### What to take from this topic
 
 In Step 1 we changed the page by hand and had to remember every element that showed the value.
 In Step 2 we described the page from a value and rebuilt it on every change.
 In Step 3 React let us describe the page from state while it updated only what changed.
 Here we saw how components share that state: the owner keeps it, passes values down as props, and passes functions down so that children can send events back up.
 
-You will practice props, destructuring, and passing functions in [Components and props](#/topic/components-and-props).
-Next, [Vite project anatomy](#/topic/vite-project-anatomy) sets up a real React project on your computer and shows how `index.html`, `main.jsx`, and `App.jsx` connect.
+**If it breaks:** If the six numbered steps feel abstract, go back to Step 3 and click the button with **Flash** on while reading them; steps 4 through 6 are exactly what the flash shows, with the state one level lower.
 
 **Check:** Without looking back, explain in two sentences where the `reviewed` state should live when both `Header` and `ReviewPanel` need it, and how a click in `ReviewPanel` changes it.
 If your answer names `App` as the owner and `onReview` as the way up, you have the model this topic is about.
 
-**If it breaks:** If the six numbered steps feel abstract, go back to Step 3 and click the button with **Flash** on while reading them; steps 4 through 6 are exactly what the flash shows, with the state one level lower.
+```quiz
+With the state in `App`, how does a click in `ReviewPanel` change `reviewed`?
+- `ReviewPanel` assigns `reviewed = reviewed + 1` to its prop
+- `ReviewPanel` calls its own `useState` and copies the value up
+= `ReviewPanel` calls `onReview`, the function `App` passed down, which calls `setReviewed`
+> A child never changes a prop; it sends the event up by calling a function prop, and the owner of the state asks React for the new value.
+```
