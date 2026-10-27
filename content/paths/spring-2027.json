@@ -76,6 +76,10 @@
         {
           "id": "fetch-basics",
           "required": true
+        },
+        {
+          "id": "errors-and-debugging",
+          "required": true
         }
       ],
       "localNotes": [

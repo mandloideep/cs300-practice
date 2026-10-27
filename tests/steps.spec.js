@@ -10,6 +10,7 @@ import { openHarness, resultFrame, runStep } from "./support/harness.js";
 // Console errors a solution produces on purpose, because the step teaches them.
 const EXPECTED_CONSOLE_ERRORS = {
   "lists-and-keys/01-render-with-map": [/unique "key" prop/],
+  "errors-and-debugging/04-console-beyond-log": [/^Diana has an impossible score: 140$/],
 };
 
 // Solutions that import react-router run only once the Phase 3 runtime branch (PHASE3 milestone 1)
