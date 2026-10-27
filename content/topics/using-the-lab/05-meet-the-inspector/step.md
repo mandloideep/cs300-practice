@@ -12,6 +12,9 @@ This step adds a second counter to the page and uses the inspector to watch what
 The inspector draws the parts of a page that the result alone does not show: which component drew each region, which ones ran again after a click, and the values each one remembers.
 Keep one eye on the result and one on the inspector pane while you click.
 
+```demo name="inspector-tour"
+```
+
 The starter has something new at the bottom of the page: a **Runs** button with `Count: 0` beside it.
 In the code, `Tally` is a **component**, a function that returns a piece of the page, and `<Tally label="Runs" />` near the end of `App` places one on the page.
 Each tally remembers its own count with `useState`, which the React weeks teach properly; for now it is enough to know that the number is a value the component keeps.
@@ -39,20 +42,37 @@ Selecting a component in the tree opens the line of code that declares it.
 
 **Re-render flash** briefly highlights each component that ran again after a change.
 
-Predict before you click: when you press **Checks**, which parts of the page flash, the whole `App`, both tallies, or only the **Checks** tally?
-Press **Checks** and watch.
+```predict
+You press **Checks**; which parts of the page flash?
+- The whole `App`, because the page changed
+- Both tallies, because they come from the same function
+= Only the **Checks** tally
+```
+
+Run the code once more so that the lab can reveal the answer, then press **Checks** and watch.
 Only that tally flashes, its count goes up by one, and in the tree its state goes up with it while the **Runs** tally still reads `0`.
 That is the first idea of the React weeks in one picture: a change runs again only the component that owns the changed value.
 
+## Read more
+
 The other toggles, **Flow trace** and **DOM**, are for later topics; you can turn any view on or off at any time, and the step remembers nothing about it.
+The inspector works on plain pages too: there it shows the **DOM** view, the elements of the page, which the JavaScript and DOM topics use.
+
+**If it breaks:** If only one tally shows, the new line went somewhere else or the label has a typo that leaves the tag unclosed; it needs the space and the `/>` at the end.
+If the result says **Did not compile** with `Expected corresponding JSX closing tag`, the line is missing its `/`.
+If the inspector pane says it has no components yet, wait for the status pill to read **Ready** and run again.
 
 **Check:** Run the code.
 The page shows two tallies, **Runs** at `Count: 0` and **Checks** at `Count: 1`, and the inspector tree shows `App` with two `Tally` components.
 Press **Checks** twice: its count reads 3, the **Runs** count still reads 0, and only the **Checks** tally flashes each time.
 
-**If it breaks:** If only one tally shows, the new line went somewhere else or the label has a typo that leaves the tag unclosed; it needs the space and the `/>` at the end.
-If the result says **Did not compile** with `Expected corresponding JSX closing tag`, the line is missing its `/`.
-If the inspector pane says it has no components yet, wait for the status pill to read **Ready** and run again.
+```quiz
+Which inspector view shows the values a component remembers?
+- Boundaries
+= Tree and state
+- Re-render flash
+> Boundaries outlines each component and Re-render flash marks what ran again; the values live in Tree and state, under each component.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>
