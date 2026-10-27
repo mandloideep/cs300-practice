@@ -353,7 +353,7 @@ The inspector stream may point `react` and `react/jsx-dev-runtime` at wrapper mo
 
 - The `srcdoc` document order is: `<!doctype html>`, `<head>` contents from the workspace `index.html` with workspace `<link rel="stylesheet">` tags replaced by inline `<style>` and workspace `<script>` tags removed, then the bridge as an inline classic script, then the import map, then `<body>` contents from the workspace `index.html`, then `<script type="module">import "<entry blob url>"</script>`.
 - When `entry` is `index.html`, the entry module script is omitted and workspace `<script src>` tags are rewritten to blob URLs in place instead of removed.
-- The bridge is assembled from `src/runner/bridge/core.js`, `src/runner/bridge/inspector-hook.js`, and `src/runner/bridge/fetch-shim.js`, each imported with Vite's `?raw` suffix and concatenated in that order; the second and third start as empty files that later streams fill.
+- The bridge is assembled from `src/runner/bridge/core.js`, `src/runner/bridge/inspector-hook.js`, `src/runner/bridge/fetch-shim.js`, and `src/runner/bridge/dom.js` (Phase 4), each imported with Vite's `?raw` suffix and concatenated in that order.
 - The bridge runs before the import map and before React loads.
 - `core.js` defines one global the other bridge parts and the check runner use: `globalThis.__LAB__ = { runId, env, declarations, console: [], network: [], inspector: { commits: [], latest: null }, post(message) }`; `post` adds `source` and `runId` and calls `window.parent.postMessage`; `console` holds `{ level, text, time }`; the fetch shim pushes request records into `network` and the inspector hook pushes commits into `inspector.commits` and sets `latest`, so that `check.js` receives `__LAB__.console`, `__LAB__.network`, and `__LAB__.inspector.latest` without the parts knowing each other.
 - The runner stream verifies `buildRun` through a dev-only harness page at `src/runner/harness/index.html` (served by the Vite dev server, not part of the production build) and a Playwright spec `tests/runner.spec.js` with a `playwright.config.js` whose `webServer` starts `npm run dev`.
@@ -377,8 +377,9 @@ Every message is posted with `window.parent.postMessage(message, "*")` and has `
 | `flow` | `trace` (below) | After each finished flow trace (Phase 2) |
 | `location` | `pathname`, `search`, `hash`, `index`, `length` | On each change of the router's memory history, and once when the first router mounts (Phase 3) |
 | `dom` | `snapshot` (below) | Once after `settled` and then once per animation frame in which the body's subtree changed, when the `dom` view is open (Phase 4) |
+| `resize-request` | `width` (CSS pixels, rounded; `null` or a non-positive value restores) | Posted by `__LAB__.resize(width)` from a check or workspace code; the parent's result pane applies it exactly as its own `resize` and forwards nothing (Phase 4) |
 
-`args` are serialized to plain JSON: primitives as is, functions as `"[Function name]"`, DOM nodes as `"<tag#id.class>"`, objects and arrays to depth 3 with cycles cut as `"[Circular]"`, errors as `{ name, message, stack }`.
+`args` are serialized to plain JSON: primitives as is (`NaN`, `Infinity`, `-Infinity`, and `undefined` become the strings `"NaN"`, `"Infinity"`, `"-Infinity"`, and `"undefined"` at any depth, and print bare in `text` as a browser console does), functions as `"[Function name]"`, DOM nodes as `"<tag#id.class>"`, objects and arrays to depth 3 with cycles cut as `"[Circular]"`, errors as `{ name, message, stack }`.
 `file` in `error` is the workspace path, mapped from the blob URL through `moduleUrls`.
 
 An inspector commit:
@@ -474,7 +475,7 @@ A DOM snapshot (Phase 4):
 }
 ```
 
-- `nodes` lists the element nodes of `document.body`'s subtree in document order; `text` carries the first 60 characters of an element's own text content when it has no element children, else `null`.
+- `nodes` lists `body` itself (with `parentId` `null`) and the element nodes of its subtree in document order; `text` carries the first 60 characters of an element's own whitespace-collapsed text content when it has no element children, else `null`; a `src` attribute that is a blob URL is reported as the workspace path.
 - `declaredAt` is the line in `index.html` the element came from, taken from a map the compile step builds from the parsed markup, or `null` for a node a script created.
 - `changed` is `added`, `removed`, `attributes`, `text`, or `null`, from a `MutationObserver` batched per animation frame; a removed node appears in the snapshot in which it was removed with its last known fields, then disappears.
 - Hovering a row in the DOM view sends `dom-highlight` with the node id; the overlay draws the box through the existing layer.
@@ -513,6 +514,9 @@ Posted with `iframe.contentWindow.postMessage(message, "*")`, with `source: "cs3
   networkRequests,    // [{...}] keyed by id, updated in place as states change
   flowTraces,         // array of flow traces for the current run, newest last (Phase 2)
   location,           // the last location message or null (Phase 3)
+  ready,              // true once the bridge posted ready for this run (Phase 4)
+  frameWidth,         // the result iframe's requested width in CSS pixels or null (Phase 4)
+  domSnapshot,        // the latest dom snapshot or null (Phase 4)
   send(message),      // post a parent-to-iframe message with runId filled in
   runId
 }
@@ -628,3 +632,4 @@ A vanilla workspace (entry `index.html`, no React import) downloads as the works
 - 2026-10-26: Phase 3 contracts pinned: the `location` message and `navigate` message, the `request` and `response` flow entries, `stale` and `duplicateOf` on the network record, `preserveStorage` on `run()`, and `location` on `useRunSession`. The router runs on a memory history in the iframe through a `react-router` wrapper. Phase 3 ownership is in `docs/PHASE3.md`.
 - 2026-10-26: `react-router` always resolves to `runtime/wrap/react-router.js`, inspector on or off. The iframe's `localStorage` and `sessionStorage` are Proxy views scoped under `cs300-lab:sandbox:` so student code cannot touch the site's progress, and `run()` clears that scope before each run unless `preserveStorage: true`. Decided by the Phase 3 runtime stream.
 - 2026-10-26: Phase 4 contracts pinned: the `dom` snapshot message, `dom-highlight` and `resize` parent messages, `dom` as an `inspector.views` value and the default for a vanilla workspace, and the vanilla download layout. The DOM view is the vanilla counterpart of boundaries and flash. Phase 4 ownership is in `docs/PHASE4.md`.
+- 2026-10-26: The bridge has a fourth part, `src/runner/bridge/dom.js`, concatenated after `fetch-shim.js`; it owns the `dom` snapshots and `dom-highlight`, and the overlay host is shared with the inspector hook. A content build defaults `inspector.views` to `[dom]` for a vanilla step. Decided by the Phase 4 runtime stream.

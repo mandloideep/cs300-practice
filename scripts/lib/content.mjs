@@ -15,6 +15,7 @@ import { rulesFor } from "./style.mjs";
 export const MODES = ["edit", "read", "local"];
 export const VIEWS = ["boundaries", "flash", "tree", "flow", "network", "dom"];
 const REACT_VIEWS = ["boundaries", "flash", "tree"];
+const VANILLA_VIEWS = ["dom"];
 const STEP_DIR = /^(\d{2})-([a-z0-9]+(?:-[a-z0-9]+)*)$/;
 const markdown = createMarkdown();
 
@@ -302,7 +303,10 @@ function loadStep(topicDir, dirName, index, context, problems) {
     entry,
     inspector:
       inspector && inspector.views === null
-        ? { ...inspector, views: workspace && isReactWorkspace(workspace) ? REACT_VIEWS : [] }
+        ? {
+            ...inspector,
+            views: workspace && isReactWorkspace(workspace) ? REACT_VIEWS : VANILLA_VIEWS,
+          }
         : inspector,
     api,
     required,
