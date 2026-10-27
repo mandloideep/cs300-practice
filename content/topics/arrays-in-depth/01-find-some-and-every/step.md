@@ -14,6 +14,9 @@ Watch what each returns, because none of them returns an array, and one of them 
 Press **Run**.
 The console shows `Products: 4`, a small school store with an id, a title, a price, and a stock flag on each product.
 
+```demo name="array-methods"
+```
+
 Find one product by its title.
 
 ```js file="src/main.js" action="append"
@@ -27,7 +30,12 @@ Run the code, and the console shows `Found: {"id":3,"title":"Pens","price":3,"in
 This is how you look up an object by its contents, the job `includes` could not do: the callback compares a property, so it does not matter which arrow you hold.
 
 Now ask for a product the store does not sell.
-Predict before you run: does the console show `Stapler: undefined`, `Stapler: null`, or `Stapler: []`?
+```predict
+What does `find` return for a product the store does not sell?
+- `Stapler: null`
+= `Stapler: undefined`
+- `Stapler: []`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -56,7 +64,13 @@ console.log("All under $50?", allUnderFifty);
 Both are `true` for this store: the backpack is out of stock, and every price is under fifty.
 
 Last, the edge case.
-Predict before you run: for an empty cart, do `every` and `some` print `true` and `true`, `true` and `false`, or `false` and `false`?
+
+```predict
+For an empty cart, what do `every` and `some` print?
+- `Empty every: true` and `Empty some: true`
+- `Empty every: false` and `Empty some: false`
+= `Empty every: true` and `Empty some: false`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -69,6 +83,8 @@ Run the code.
 `every` on an empty array is `true` and `some` is `false`, whatever the callback says, because the callback never runs.
 `every` means "no item fails", and an empty cart has no item that fails; `some` means "at least one item passes", and an empty cart has none.
 So check `cart.length > 0` first when "every item is paid for" should not be true for a cart with nothing in it.
+
+## Read more
 
 Two relatives are worth knowing.
 `findIndex` works like `find` but returns the position instead of the item, and `-1` when nothing passes, so `products.findIndex((product) => product.id === 3)` is `2`.
@@ -84,6 +100,21 @@ If `Any out of stock?` is `false`, the callback is missing the `!` in front of `
 **Check:** Run the code.
 The console shows the pens as one object, `Stapler: undefined`, `filter instead: []`, `Stapler price: not sold here`, `true` for both store questions, `Empty every: true`, and `Empty some: false`.
 Press **Run checks** to confirm.
+
+```quiz
+What does `find` return when no item passes?
+- `[]`, an empty array
+= `undefined`
+- `-1`
+> `find` returns the item itself or `undefined`; `filter` is the one that returns `[]`, and `findIndex` the one that returns `-1`.
+```
+
+```quiz
+What is `[].some((item) => true)`?
+- `true`
+= `false`
+> On an empty array the callback never runs, so no item passes, and `some` needs at least one.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

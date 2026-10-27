@@ -14,6 +14,13 @@ The console shows `queue: ["Alice","Bob","Charlie","Diana","Eve"]`, five student
 
 Take the first three with `slice`.
 
+```predict
+What does `queue.slice(0, 3)` return?
+- `["Bob","Charlie","Diana"]`
+= `["Alice","Bob","Charlie"]`
+- `["Alice","Bob","Charlie","Diana"]`
+```
+
 ```js file="src/main.js" action="append"
 
 const firstThree = queue.slice(0, 3);
@@ -28,7 +35,12 @@ A negative index counts from the end, so `slice(-2)` returns the last two, Diana
 `queue after slice` still shows all five: `slice` returned new arrays and never touched `queue`.
 
 Now `splice`, which takes a start index and a **count**.
-Predict before you run: does `queue after splice:` show `["Alice","Bob","Charlie","Diana","Eve"]`, `["Alice","Diana","Eve"]`, or `["Bob","Charlie"]`?
+```predict
+After `queue.splice(1, 2)`, what does the console show for the queue?
+- `queue after splice: ["Alice","Bob","Charlie","Diana","Eve"]`
+- `queue after splice: ["Bob","Charlie"]`
+= `queue after splice: ["Alice","Diana","Eve"]`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -67,6 +79,8 @@ console.log("queue unchanged:", queue);
 `toSpliced` is to `splice` what `toSorted` was to `sort` in Step 2.
 Older code reaches the same result with `queue.slice(1)`, everything from index `1` on, or with `filter`, as in `queue.filter((name) => name !== "Alice")`, which removes an item by its value wherever it is.
 
+## Read more
+
 A mistake to try: change `queue.splice(1, 2)` to `queue.splice(1, 3)`, run, and see three students helped and only two left; the second argument of `splice` is a count, while the second argument of `slice` is an end index.
 Change it back to `2`.
 
@@ -78,6 +92,22 @@ If `queue unchanged` is missing Alice, the line calls `splice` instead of `toSpl
 **Check:** Run the code.
 The console shows the first three and the last two with the queue unchanged, `Helped: ["Bob","Charlie"]` with three students left, `Frank joins: ["Alice","Frank","Diana","Eve"]`, `Next up: ["Frank","Diana","Eve"]`, and the queue still starting with Alice.
 Press **Run checks** to confirm.
+
+```quiz
+What does `["a", "b", "c", "d"].slice(1, 3)` return?
+= `["b","c"]`
+- `["b","c","d"]`
+- `["a","d"]`
+> The second number of `slice` is the index to stop before, so it copies indexes `1` and `2`.
+```
+
+```quiz
+What does `splice` return?
+- The array after the change
+= The items it removed, in a new array
+- The new length of the array
+> `splice` changes the array it was called on and hands back what it cut, which is why `Helped` showed Bob and Charlie.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

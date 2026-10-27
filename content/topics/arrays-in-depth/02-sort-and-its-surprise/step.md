@@ -13,7 +13,12 @@ Press **Run**.
 The console shows `scores: [88,9,100,72,95]`, five scores in the order they were entered.
 
 Start with three small numbers.
-Predict before you run: does the console show `[1,9,10]`, `[1,10,9]`, or `[10,9,1]`?
+```predict
+What does `[10, 9, 1].sort()` print?
+- `[1,9,10]`
+= `[1,10,9]`
+- `[10,9,1]`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -37,7 +42,11 @@ console.log("Low to high:", lowToHigh);
 `a - b` is negative exactly when `a` is smaller, so the console shows `Low to high: [9,72,88,95,100]`; `b - a` would sort from high to low.
 
 Now look at `scores` itself.
-Predict before you run: does the console show `scores now: [88,9,100,72,95]` or `scores now: [9,72,88,95,100]`?
+```predict
+After `scores.sort((a, b) => a - b)`, what does the console show for `scores` itself?
+- `scores now: [88,9,100,72,95]`
+= `scores now: [9,72,88,95,100]`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -63,6 +72,8 @@ The compare function reads a property of each student, `b.score - a.score`, so t
 `roster still` shows the original order, `["Diana","Alice","Bob"]`, because `toSorted` built a new array and left `roster` alone.
 `toSorted` is new enough that older code writes `[...roster].sort(...)` instead: copy with spread, then sort the copy.
 
+## Read more
+
 Two things to try.
 Take the compare function out of the `lowToHigh` line so that it reads `scores.sort()`, run, and see `[100,72,88,9,95]`, the same string order as `[1,10,9]`; put `(a, b) => a - b` back.
 Then sort the roster by name with `roster.toSorted((a, b) => a.name.localeCompare(b.name))`; `localeCompare` compares two strings the way a dictionary does and returns a negative number, zero, or a positive number, exactly what `sort` wants, and it also puts `"alice"` and `"Alice"` together, which the default order does not.
@@ -75,6 +86,20 @@ If the console shows `TypeError: roster.toSorted is not a function`, the browser
 **Check:** Run the code.
 The console shows `[1,10,9]`, `Low to high: [9,72,88,95,100]`, `scores now` with the same sorted order and `Same array? true`, `By score: ["Alice","Bob","Diana"]`, and `roster still: ["Diana","Alice","Bob"]`.
 Press **Run checks** to confirm.
+
+```quiz
+Which compare function sorts scores from high to low?
+- `(a, b) => a - b`
+= `(a, b) => b - a`
+> `b - a` is negative when `b` is smaller, which puts the larger `a` first.
+```
+
+```quiz
+After `const sorted = scores.sort((a, b) => a - b)`, what is `sorted === scores`?
+= `true`
+- `false`
+> `sort` changes the array in place and returns that same array; only `toSorted` returns a new one.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

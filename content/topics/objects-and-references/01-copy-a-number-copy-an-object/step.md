@@ -14,7 +14,14 @@ Watch which original changes and which does not.
 Press **Run**.
 The console shows `score: 85` and `student: {"name":"Alice","score":85}`, one number and one object with the same score.
 
-Predict before you run the first edit: after the curve, does the console show `score after the curve: 85` or `score after the curve: 90`?
+```demo name="value-vs-reference"
+```
+
+```predict
+After the first edit, what does the console show for the original score?
+- `score after the curve: 90`
+= `score after the curve: 85`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -30,7 +37,12 @@ Run the code.
 Strings and booleans behave the same way, because they are values too.
 
 Now do the same with the object.
-Predict before you run: does the console show `student after the change: {"name":"Alice","score":85}` or `student after the change: {"name":"Alice","score":90}`?
+
+```predict
+After the second edit, what does the console show for the original student?
+= `student after the change: {"name":"Alice","score":90}`
+- `student after the change: {"name":"Alice","score":85}`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -60,6 +72,8 @@ console.log("student after addBonus:", student);
 The parameter `record` receives a copy of the arrow, so `record` and `student` point to the same object, and the function changes Alice's score to `95` for everyone who holds an arrow to her.
 A function that receives a number gets a copy of the number instead, and nothing it does to its parameter reaches the caller.
 
+## Read more
+
 Think of it as two rules.
 Numbers, strings, booleans, `null`, and `undefined` are **primitive values**, and assigning one copies the value.
 Objects and arrays are reached through references, and assigning one copies the reference.
@@ -80,6 +94,22 @@ If `student after addBonus` still shows `90`, the function was declared but `add
 **Check:** Run the code.
 The console shows `curvedScore: 90` beside `score after the curve: 85`, both objects with a score of `90` and `Same object? true`, and `student after addBonus: {"name":"Alice","score":95}`.
 Press **Run checks** to confirm.
+
+```quiz
+After `const a = [1]; const b = a; b.push(2);`, what is `a`?
+- `[1]`
+= `[1,2]`
+- An error, because `a` is a `const`
+> `b` is a second arrow to the same array, so the `push` through `b` changes the one array that `a` points to.
+```
+
+```quiz
+What does `const` stop you from doing with an object?
+- Changing its properties
+= Pointing the variable at a different object
+- Both of those
+> `const` fixes the arrow, not what it points to, so `student.score = 90` is allowed and `student = {}` is not.
+```
 
 <details>
 <summary>src/main.js after this step</summary>
