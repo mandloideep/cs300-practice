@@ -1,0 +1,10 @@
+{
+  "id": "persistence",
+  "title": "Persistence with localStorage",
+  "area": "react",
+  "summary": "Keep state across page loads by writing it to localStorage in an effect and reading it back with a lazy initial state. You will version the stored shape so that a value saved by an older version of the page cannot crash the new one, and check that a saved list survives a reload.",
+  "prerequisites": ["effects"],
+  "minutes": 40,
+  "updated": "2026-10-26",
+  "changeNote": "First version."
+}

@@ -1,0 +1,10 @@
+{
+  "id": "effects",
+  "title": "Effects",
+  "area": "react",
+  "summary": "Run code after React has updated the page with useEffect, and choose when it runs with the dependency array. You will watch the effect land after the re-render flash, see the wrong dependency array leave the page stale, save the product list to localStorage, and clean up a timer so that a later change cannot be cut short by an earlier one.",
+  "prerequisites": ["controlled-forms"],
+  "minutes": 55,
+  "updated": "2026-10-26",
+  "changeNote": "First version."
+}

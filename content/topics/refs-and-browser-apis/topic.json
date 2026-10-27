@@ -1,0 +1,10 @@
+{
+  "id": "refs-and-browser-apis",
+  "title": "Refs and browser APIs",
+  "area": "react",
+  "summary": "Reach the DOM element behind a JSX tag with useRef to focus a field, and keep a value between renders without re-rendering. You will compare a ref with state in the re-render flash, read the window size through a resize listener with cleanup, and add a keyboard shortcut that jumps to the form.",
+  "prerequisites": ["effects"],
+  "minutes": 45,
+  "updated": "2026-10-26",
+  "changeNote": "First version."
+}
