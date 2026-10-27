@@ -31,6 +31,11 @@ const VIEW_LABELS = {
 
 const steps = allSteps();
 
+// A step whose fixtures answer after a delay runs checks that wait for those answers, sometimes
+// several in a row, so on a loaded machine its check summary can take well over the usual wait.
+const CHECK_SUMMARY_TIMEOUT = 15_000;
+const DELAYED_CHECK_SUMMARY_TIMEOUT = 45_000;
+
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     if (!sessionStorage.getItem("cs300-test:cleared")) {
@@ -50,6 +55,7 @@ test.describe("edit steps run their solution on the step page", () => {
   for (const step of steps.filter((candidate) => candidate.mode === "edit")) {
     test(step.id, async ({ page }) => {
       test.fixme(step.usesRouter && !ROUTER_WRAPPER, NEEDS_RUNTIME_ROUTER);
+      if (step.fixtureDelay > 0) test.slow();
       await openStep(page, step);
       const status = page.locator(".pane--result .status-pill");
       await expect(status).toHaveText("Ready", { timeout: 15_000 });
@@ -62,7 +68,9 @@ test.describe("edit steps run their solution on the step page", () => {
         .getByRole("button", { name: "Run", exact: true })
         .click();
       await expect(status).toHaveText("Ready", { timeout: 15_000 });
-      await expect(page.locator(".check-summary")).toBeVisible({ timeout: 15_000 });
+      await expect(page.locator(".check-summary")).toBeVisible({
+        timeout: step.fixtureDelay > 0 ? DELAYED_CHECK_SUMMARY_TIMEOUT : CHECK_SUMMARY_TIMEOUT,
+      });
 
       const result = page.frameLocator(".result-frame").locator("body");
       await expect(result).not.toBeEmpty();
