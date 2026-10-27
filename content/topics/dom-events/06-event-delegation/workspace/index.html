@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project browser</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Project browser</h1>
+      <div class="toolbar">
+        <button type="button" id="filter-button" aria-pressed="false">Show finished only</button>
+      </div>
+      <form id="add-form">
+        <div>
+          <label for="new-title">New project</label>
+          <input id="new-title" name="title" maxlength="60" />
+        </div>
+        <button type="submit">Add project</button>
+      </form>
+      <p id="status" role="status">Loading projects...</p>
+      <ul id="project-list"></ul>
+    </main>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product finder</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Product finder</h1>
+      <p>Products come from the API source chosen in the toolbar.</p>
+      <form id="search-form">
+        <div>
+          <label for="q">Search products</label>
+          <input id="q" name="q" type="search" maxlength="60" />
+        </div>
+        <button type="submit" id="load">Search</button>
+      </form>
+      <p id="status" role="status">Search for a product to get started.</p>
+      <ul id="products" aria-label="Products" aria-busy="false"></ul>
+    </main>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

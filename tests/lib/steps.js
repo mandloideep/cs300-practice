@@ -48,9 +48,8 @@ function checkDependencies(source) {
   return ["inspector", "network"].filter((name) => new RegExp(`\\b${name}\\b`).test(parameters));
 }
 
-// Whether any file under the step's solution/ imports react-router: those solutions run only
-// once the runtime maps BrowserRouter onto a memory history inside the iframe (PHASE3 milestone 1).
-function usesRouter(stepDir) {
+// Whether any script under the step's solution/ has an import matching the pattern.
+function solutionImports(stepDir, pattern) {
   const solutionDir = path.join(stepDir, "solution");
   if (!existsSync(solutionDir)) return false;
   const files = [];
@@ -62,7 +61,19 @@ function usesRouter(stepDir) {
     }
   };
   walk(solutionDir);
-  return files.some((file) => /\bfrom\s+["']react-router["']/.test(readFileSync(file, "utf8")));
+  return files.some((file) => pattern.test(readFileSync(file, "utf8")));
+}
+
+// Whether the solution imports react-router: those solutions run only once the runtime maps
+// BrowserRouter onto a memory history inside the iframe (PHASE3 milestone 1).
+function usesRouter(stepDir) {
+  return solutionImports(stepDir, /\bfrom\s+["']react-router["']/);
+}
+
+// Whether the solution is a React workspace (CONTRACTS section 2); a vanilla workspace renders
+// no components, so the inspector pane shows its empty message instead of a commit.
+function usesReact(stepDir) {
+  return solutionImports(stepDir, /\bfrom\s+["']react(?:\/[\w-]+)?["']/);
 }
 
 export function allSteps() {
@@ -88,6 +99,7 @@ export function allSteps() {
         checkDependsOn: check ? checkDependencies(check) : [],
         hasLocal: existsSync(path.join(stepDir, "local")),
         usesRouter: usesRouter(stepDir),
+        usesReact: usesReact(stepDir),
       });
     });
   }
