@@ -105,7 +105,7 @@ required: [renders-three-items]
 | `title` | yes | Shown in navigation and as the step heading |
 | `mode` | yes | `edit`, `read`, or `local` |
 | `entry` | edit only | Workspace path of the module the runner executes; `index.html` for a workspace with no module entry |
-| `inspector.views` | no | Inspector views that start open: any of `boundaries`, `flash`, `tree`, `flow`, `network`; default `[boundaries, flash, tree]` for a React workspace and `[]` otherwise |
+| `inspector.views` | no | Inspector views that start open: any of `boundaries`, `flash`, `tree`, `flow`, `network`, `dom` (Phase 4); default `[boundaries, flash, tree]` for a React workspace and `[dom]` otherwise |
 | `inspector.watch` | no | Component names the inspector pins at the top of the tree |
 | `api.default` | no | Present when the workspace fetches; `fixtures`, a preset id, or `custom`; the toolbar shows the API source selector only when this field is present |
 | `required` | no | Ids of checks that must pass for the step to count as complete; default is every check the step's `check.js` returns |
@@ -376,6 +376,7 @@ Every message is posted with `window.parent.postMessage(message, "*")` and has `
 | `inspector-select` | `componentId`, `name`, `declaredAt`, `usedAt` | The student clicked a boundary label in the overlay |
 | `flow` | `trace` (below) | After each finished flow trace (Phase 2) |
 | `location` | `pathname`, `search`, `hash`, `index`, `length` | On each change of the router's memory history, and once when the first router mounts (Phase 3) |
+| `dom` | `snapshot` (below) | Once after `settled` and then once per animation frame in which the body's subtree changed, when the `dom` view is open (Phase 4) |
 
 `args` are serialized to plain JSON: primitives as is, functions as `"[Function name]"`, DOM nodes as `"<tag#id.class>"`, objects and arrays to depth 3 with cycles cut as `"[Circular]"`, errors as `{ name, message, stack }`.
 `file` in `error` is the workspace path, mapped from the blob URL through `moduleUrls`.
@@ -461,6 +462,24 @@ A flow trace (Phase 2):
 - Nested labeled calls inside one event produce one trace with several entries, never nested traces.
 - Phase 3 adds two entry kinds: `{ "kind": "request", "time", "requestId", "method", "url", "calledIn" }` when the fetch shim is called while a trace is open, and `{ "kind": "response", "time", "requestId", "state", "status", "duration", "stale", "duplicateOf" }` as the first entry of a trace that a settling response opens with `event: null`; `calledIn` is the component rendering when the request was made, or `null`.
 
+A DOM snapshot (Phase 4):
+
+```json
+{
+  "seq": 3,
+  "time": 1234.5,
+  "nodes": [
+    { "id": "n1", "parentId": null, "tag": "main", "attributes": { "class": "page" }, "text": null, "declaredAt": { "file": "index.html", "line": 9 }, "changed": "attributes" }
+  ]
+}
+```
+
+- `nodes` lists the element nodes of `document.body`'s subtree in document order; `text` carries the first 60 characters of an element's own text content when it has no element children, else `null`.
+- `declaredAt` is the line in `index.html` the element came from, taken from a map the compile step builds from the parsed markup, or `null` for a node a script created.
+- `changed` is `added`, `removed`, `attributes`, `text`, or `null`, from a `MutationObserver` batched per animation frame; a removed node appears in the snapshot in which it was removed with its last known fields, then disappears.
+- Hovering a row in the DOM view sends `dom-highlight` with the node id; the overlay draws the box through the existing layer.
+- The `dom` view is available for every workspace; it is the only inspector view a vanilla workspace shows beside `network`.
+
 ### 4.4 Messages from the parent to the iframe
 
 Posted with `iframe.contentWindow.postMessage(message, "*")`, with `source: "cs300-lab"` and `runId`.
@@ -472,6 +491,8 @@ Posted with `iframe.contentWindow.postMessage(message, "*")`, with `source: "cs3
 | `inspector-highlight` | `componentId` or `null`; or `componentIds: [...]` (Phase 2) | Highlight the component's rects in the overlay; `componentIds` highlights several at once and an empty array clears, and a message carrying both honors `componentIds` |
 | `inspector-config` | `views: [...]` | Which views are open; the overlay draws only when `boundaries` or `flash` is open |
 | `navigate` | `delta` (-1 or 1) or `to` (a path) | Move the router's memory history, as the result pane's Back, Forward, and path field do (Phase 3) |
+| `dom-highlight` | `nodeId` or `null` | Highlight the element's box in the overlay (Phase 4) |
+| `resize` | `width` (CSS pixels) or `null` | Set the result iframe's width, so a check or a step can show a narrow layout; `null` restores the pane's width (Phase 4). Handled by the parent's result pane, which forwards nothing to the iframe |
 
 ### 4.5 Run session hook
 
@@ -583,6 +604,7 @@ The `localStorage` key `cs300-lab:progress` and the exported file share one shap
 
 The ZIP never includes the vendored runtime, the wrappers, `check.js`, fixtures, or the solution.
 A `local` step keeps its existing download, whose content is the step's `local` files.
+A vanilla workspace (entry `index.html`, no React import) downloads as the workspace files plus a `README.md` that says to open `index.html` or serve the folder, with no `package.json` or `vite.config.js` (Phase 4).
 
 ## 6. Session working rules
 
@@ -605,3 +627,4 @@ A `local` step keeps its existing download, whose content is the step's `local` 
 - 2026-10-26: Phase 2 contracts pinned: the `flow` message and trace record (4.3), `componentIds` on `inspector-highlight` (4.4), `flowTraces` on `useRunSession` (4.5), `flow` as an `inspector.views` value, the progress JSON shape (5.1), and the downloaded workspace layout (5.2). Phase 2 ownership is in `docs/PHASE2.md`.
 - 2026-10-26: Phase 3 contracts pinned: the `location` message and `navigate` message, the `request` and `response` flow entries, `stale` and `duplicateOf` on the network record, `preserveStorage` on `run()`, and `location` on `useRunSession`. The router runs on a memory history in the iframe through a `react-router` wrapper. Phase 3 ownership is in `docs/PHASE3.md`.
 - 2026-10-26: `react-router` always resolves to `runtime/wrap/react-router.js`, inspector on or off. The iframe's `localStorage` and `sessionStorage` are Proxy views scoped under `cs300-lab:sandbox:` so student code cannot touch the site's progress, and `run()` clears that scope before each run unless `preserveStorage: true`. Decided by the Phase 3 runtime stream.
+- 2026-10-26: Phase 4 contracts pinned: the `dom` snapshot message, `dom-highlight` and `resize` parent messages, `dom` as an `inspector.views` value and the default for a vanilla workspace, and the vanilla download layout. The DOM view is the vanilla counterpart of boundaries and flash. Phase 4 ownership is in `docs/PHASE4.md`.
