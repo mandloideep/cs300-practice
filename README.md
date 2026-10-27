@@ -350,7 +350,7 @@ A step places an explainer with a `demo` fence whose body is empty or one JSON o
 
 ````markdown
 ```demo name="event-loop"
-{ "timers": 2 }
+{ "script": [{ "log": "A" }, { "timeout": "B", "delay": 0 }, { "promise": "C" }] }
 ```
 ````
 
@@ -363,7 +363,7 @@ The component lives in `src/demos/<id>/index.jsx`, with any styles of its own in
 ```jsx
 export const id = "event-loop";
 
-export const defaults = { script: ["log A", "timeout B 0", "promise C", "log D"] };
+export const defaults = { script: [{ log: "A" }, { timeout: "B", delay: 0 }, { promise: "C" }] };
 
 export function stepCount(props) {
   return 7;

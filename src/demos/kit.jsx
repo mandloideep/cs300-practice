@@ -21,19 +21,32 @@ export function Stack({ children, className = "" }) {
   return <div className={`demo-stack ${className}`.trim()}>{children}</div>;
 }
 
+// A titled box; a group rather than a region, so that explainers add no landmarks to the page.
 export function Panel({ title, children, sunken = false, className = "" }) {
   const id = useId();
   const classes = ["demo-panel", sunken && "demo-panel--sunken", className].filter(Boolean);
   return (
-    <section className={classes.join(" ")} aria-labelledby={title ? id : undefined}>
+    <div
+      className={classes.join(" ")}
+      role={title ? "group" : undefined}
+      aria-labelledby={title ? id : undefined}
+    >
       {title && (
         <p id={id} className="demo-panel__title">
           {title}
         </p>
       )}
       {children}
-    </section>
+    </div>
   );
+}
+
+// Code text with a line-break opportunity after each ".", "(", and ",", so that a long
+// expression wraps between its parts rather than inside a name.
+function breakable(text) {
+  return text
+    .split(/(?<=[.(,])/)
+    .flatMap((part, index) => (index === 0 ? [part] : [<wbr key={index} />, part]));
 }
 
 // Lines of code with some marked: `active` is the line running now; `marks` maps a line index
@@ -53,7 +66,7 @@ export function CodeView({ lines, active = -1, marks = {}, label }) {
               style={indent > 0 ? { "--demo-indent": `${indent}ch` } : undefined}
             >
               {index === active && <span className="visually-hidden">Running now: </span>}
-              {line.trim() === "" ? " " : line.slice(indent)}
+              {line.trim() === "" ? " " : breakable(line.slice(indent))}
             </span>
           );
         })}

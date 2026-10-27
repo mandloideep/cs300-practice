@@ -53,15 +53,18 @@ export default function Tour() {
     };
   }, []);
 
-  return open ? <TourDialog stop={Math.min(stop, STOPS.length - 1)} /> : null;
+  return <TourDialog open={open} stop={Math.min(stop, STOPS.length - 1)} />;
 }
 
-function TourDialog({ stop }) {
+// Stays mounted while the step page is, so that Dialog closes the native dialog itself and the
+// browser returns focus to the control that opened it.
+function TourDialog({ open, stop }) {
   const current = STOPS[stop];
   const last = stop === STOPS.length - 1;
   const nextRef = useRef(null);
 
   useLayoutEffect(() => {
+    if (!open) return undefined;
     const elements = current.targets.flatMap((selector) => [
       ...document.querySelectorAll(selector),
     ]);
@@ -69,11 +72,11 @@ function TourDialog({ stop }) {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     elements[0]?.scrollIntoView({ block: "start", behavior: reduced ? "auto" : "smooth" });
     return () => elements.forEach((element) => element.classList.remove("tour-target"));
-  }, [current]);
+  }, [open, current]);
 
   useEffect(() => {
-    nextRef.current?.focus();
-  }, [stop]);
+    if (open) nextRef.current?.focus();
+  }, [open, stop]);
 
   function finish() {
     markTour("stepPage");
@@ -82,7 +85,7 @@ function TourDialog({ stop }) {
 
   return (
     <Dialog
-      open
+      open={open}
       onClose={finish}
       title="Tour of the step page"
       className="tour-dialog"
