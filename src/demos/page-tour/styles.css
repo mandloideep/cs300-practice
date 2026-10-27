@@ -1,0 +1,106 @@
+.page-tour {
+  container-type: inline-size;
+}
+
+.page-tour__page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+}
+
+.page-tour__pane--explanation,
+.page-tour__pane--checks,
+.page-tour__pane--steps {
+  grid-column: 1 / -1;
+}
+
+@container (min-width: 30rem) {
+  .page-tour__page {
+    grid-template-columns: 2fr 3fr 3fr;
+    grid-template-areas:
+      "explanation editor editor"
+      "explanation result console"
+      "explanation inspector checks"
+      "steps steps steps";
+  }
+
+  .page-tour__pane--explanation {
+    grid-area: explanation;
+  }
+
+  .page-tour__pane--editor {
+    grid-area: editor;
+  }
+
+  .page-tour__pane--result {
+    grid-area: result;
+  }
+
+  .page-tour__pane--console {
+    grid-area: console;
+  }
+
+  .page-tour__pane--inspector {
+    grid-area: inspector;
+  }
+
+  .page-tour__pane--checks {
+    grid-area: checks;
+  }
+
+  .page-tour__pane--steps {
+    grid-area: steps;
+  }
+}
+
+.page-tour__pane {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  min-width: 0;
+  padding: var(--space-2);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease;
+}
+
+.page-tour__pane:hover {
+  border-color: var(--color-border-strong);
+}
+
+.page-tour__pane[aria-pressed="true"] {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+.page-tour__name {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+}
+
+.page-tour__sketch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.page-tour__sketch span {
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-sunken);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  white-space: nowrap;
+}

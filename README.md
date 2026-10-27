@@ -69,6 +69,7 @@ Markdown keeps one sentence per physical line, and the edit blocks in each `step
 A step page shows the explanation, the editor with file tabs, the result, the console, the inspector (boundaries, re-render flash, tree and state, flow trace, and the DOM view for plain pages), the network pane on fetching steps, the check panel, and step navigation.
 Every edit step has "Download this workspace", which writes a Vite project for a React workspace or a plain folder for an HTML, CSS, and JavaScript one, and a step whose code saves to `localStorage` gets a second "Run, keeping saved data" button that runs without clearing the result's storage.
 Progress stays in the browser and can be exported and imported on the home page.
+A five-stop tour of the step page opens on the first edit step a browser visits and again from the Tour button in the header, and the home page points new visitors at the `using-the-lab` topic until they finish it or hide the card.
 
 Routes use hash routing so that deep links work on GitHub Pages: `#/`, `#/topics`, `#/topic/<id>`, `#/topic/<id>/<n>`, `#/path/<pathId>`, and `#/path/<pathId>/<unit>`.
 
@@ -346,10 +347,12 @@ The validator rejects an id that is not in the registry and a body that is not a
 The build turns the fence into a placeholder that holds the title and the description as text, and the step page mounts the component into it.
 A registered id with no component yet keeps that text, so a step can place an explainer before it is built.
 
-The component lives in `src/demos/<id>/index.jsx`, with any styles of its own in `src/demos/<id>/styles.css`, and exports three things:
+The component lives in `src/demos/<id>/index.jsx`, with any styles of its own in `src/demos/<id>/styles.css`, and exports four things:
 
 ```jsx
 export const id = "event-loop";
+
+export const defaults = { script: ["log A", "timeout B 0", "promise C", "log D"] };
 
 export function stepCount(props) {
   return 7;
@@ -362,6 +365,7 @@ export default function EventLoop({ props, step }) {
 
 `src/demos/DemoFrame.jsx` draws the title, the description, and the Play, Pause, Back, Step, and Reset controls, and passes the component the stage to draw as `step`, from `0` to `stepCount(props) - 1`.
 The component only draws that stage; it never starts a timer of its own.
+`defaults` holds the props it uses when a step gives none, merged under whatever the fence body gives, and documents the props a step can pass; the harness page shows them.
 It also receives `reducedMotion` and `goTo(stage)` for an explainer that moves itself when the student clicks inside it.
 Build it from the pieces in `src/demos/kit.jsx`, such as `Caption`, `CodeView`, `ConsoleView`, `Panel`, `Chip`, and `Choice`, so that every explainer reads the same.
 
@@ -374,7 +378,7 @@ Every explainer keeps the contract in [docs/CONTRACTS.md](docs/CONTRACTS.md) sec
 - It takes the step's own values from its props where that makes sense, and works with no props.
 - The code it shows carries no explanatory comments; the caption explains.
 
-With `npm run dev` running, `/cs300-react-lab/src/demos/harness/index.html` lists every explainer, and `?id=<id>&width=320` shows one at phone width with optional `&props=<json>`.
+With `npm run dev` running, `/cs300-react-lab/src/demos/harness/index.html` lists every explainer, and `?id=<id>&width=320` shows one at phone width with optional `&props=<json>` and its default props below it.
 `tests/demos.spec.js` mounts every built explainer on that page, steps it from the first stage to the last from the keyboard, checks the 320 pixel column, and runs axe in light and dark with motion allowed and reduced.
 When an explainer is built, set its Status in [docs/EXPLAINERS.md](docs/EXPLAINERS.md) to `built`.
 

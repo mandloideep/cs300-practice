@@ -1,6 +1,8 @@
 import { Link, NavLink } from "react-router";
+import { openTour, useTour } from "../ui/tourStore.js";
 
 export default function SiteHeader({ mainId }) {
+  const tour = useTour();
   function skipToMain(event) {
     event.preventDefault();
     const main = document.getElementById(mainId);
@@ -27,6 +29,18 @@ export default function SiteHeader({ mainId }) {
             <li>
               <NavLink to="/topics">Topics</NavLink>
             </li>
+            {tour.available > 0 && (
+              <li>
+                <button
+                  type="button"
+                  className="site-nav__button"
+                  aria-haspopup="dialog"
+                  onClick={openTour}
+                >
+                  Tour
+                </button>
+              </li>
+            )}
           </ul>
         </nav>
       </div>

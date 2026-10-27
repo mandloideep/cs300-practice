@@ -152,12 +152,16 @@ test.describe("keyboard-only operation of the step page", () => {
       ["a", "CS300 Lab"],
       ["a", "Home"],
       ["a", "Topics"],
+      ["button", "Tour"],
       ["a", "Topics"],
       ["a", "Components and props"],
       ["tab", "src/App.jsx"],
       ["editor", "Code editor for src/App.jsx"],
     ]);
-    expect(toEditor.filter((stop) => stop.kind === "button")).toEqual([]);
+    expect(
+      toEditor.filter((stop) => stop.kind === "button").map((stop) => stop.name),
+      "the header's Tour button is the only button before the editor",
+    ).toEqual(["Tour"]);
 
     await page.keyboard.press("Tab");
     expect((await focused(page)).kind, "Tab inside the editor indents instead of leaving").toBe(

@@ -16,6 +16,7 @@ import ConsolePane from "./ConsolePane.jsx";
 import CheckPanel, { checkSummaryText, summarizeChecks } from "./CheckPanel.jsx";
 import { WorkspaceDownload } from "./StepActions.jsx";
 import { StepRunContext } from "./runContext.js";
+import Tour from "./Tour.jsx";
 
 const SolutionDiff = lazy(() => import("../editor/SolutionDiff.jsx"));
 
@@ -291,6 +292,7 @@ export default function EditStep({ topic, step, presets, announce, explanation }
         )}
         <CheckPanel step={step} session={session} />
       </div>
+      <Tour />
 
       <ConfirmDialog
         open={dialog === "reset"}

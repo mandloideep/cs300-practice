@@ -10,6 +10,7 @@ export default function Dialog({
   children,
   actions,
   wide = false,
+  className = "",
 }) {
   const ref = useRef(null);
   const openRef = useRef(open);
@@ -30,7 +31,7 @@ export default function Dialog({
   return (
     <dialog
       ref={ref}
-      className={wide ? "dialog dialog--wide" : "dialog"}
+      className={["dialog", wide && "dialog--wide", className].filter(Boolean).join(" ")}
       aria-labelledby={titleId}
       aria-describedby={description ? descriptionId : undefined}
       onClose={() => {

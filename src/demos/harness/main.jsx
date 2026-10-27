@@ -9,7 +9,8 @@ import "../../styles/content.css";
 
 // Development-only page that mounts explainers outside a step, for tests/demos.spec.js and for
 // authors: ?id=<id> mounts one explainer, ?props=<json> passes it props, and ?width=<px> sets
-// the column width; with no id it lists every registered explainer and whether it is built.
+// the column width; with no id it lists every registered explainer and whether it is built. Below
+// one explainer it shows the props it accepts, as its defaults.
 
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
@@ -41,7 +42,17 @@ function Gallery() {
 
 function One({ id }) {
   const module = use(loadDemo(id));
-  return <DemoFrame entry={demoEntry(id)} module={module} props={readProps(params.get("props"))} />;
+  return (
+    <>
+      <DemoFrame entry={demoEntry(id)} module={module} props={readProps(params.get("props"))} />
+      <details className="demo-harness__props">
+        <summary>Props and their defaults</summary>
+        <pre>
+          <code>{JSON.stringify(module.defaults ?? {}, null, 2)}</code>
+        </pre>
+      </details>
+    </>
+  );
 }
 
 function Page() {

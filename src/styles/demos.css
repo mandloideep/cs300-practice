@@ -181,7 +181,7 @@ figure.demo-frame .demo-code__line {
   border-left: 3px solid transparent;
   text-indent: -2ch;
   white-space: pre-wrap;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 figure.demo-frame .demo-code__line.is-active {

@@ -3,6 +3,8 @@ import "./styles.css";
 
 export const id = "edit-run-loop";
 
+export const defaults = {};
+
 const LOOP = ["Edit", "Run", "Result", "Console", "Checks"];
 
 const FIRST = 'heading.textContent = "Hello, lab";';

@@ -8,9 +8,11 @@ import { TopicsByArea } from "./Catalog.jsx";
 import { UnitList } from "./PathPage.jsx";
 import {
   exportProgress,
+  markTour,
   parseProgress,
   replaceProgress,
   setChosenPath,
+  topicCompletion,
   useProgress,
 } from "../progress/store.js";
 import { ConfirmDialog } from "../ui/Dialog.jsx";
@@ -28,9 +30,47 @@ export default function Home() {
           runs in your browser.
         </p>
       </div>
-      {contentFallback(index) ?? <HomeContent index={index.data} />}
+      {contentFallback(index) ?? (
+        <>
+          <WelcomeCard index={index.data} />
+          <HomeContent index={index.data} />
+        </>
+      )}
       <ProgressTransfer />
     </>
+  );
+}
+
+export const WELCOME_TOPIC = "using-the-lab";
+
+// The card for new visitors (docs/CONTRACTS.md section 7.6): it points at the topic that teaches
+// the lab until every step of it is complete or the student hides the card.
+function WelcomeCard({ index }) {
+  const progress = useProgress();
+  const topic = index.topics?.find((candidate) => candidate.id === WELCOME_TOPIC);
+  if (!topic || progress.tour.homeCard || topicCompletion(progress, topic).complete) return null;
+
+  function dismiss() {
+    markTour("homeCard");
+    document.getElementById("main-content")?.focus();
+  }
+
+  return (
+    <section className="card welcome-card" aria-labelledby="welcome-heading">
+      <h2 id="welcome-heading">New to the lab?</h2>
+      <p>
+        Start with {topic.title}. In about {topic.minutes} minutes it walks you through a step page,
+        from your first edit to a passing check.
+      </p>
+      <div className="button-row">
+        <Link className="button button--primary" to={`/topic/${topic.id}`}>
+          Start {topic.title}
+        </Link>
+        <button type="button" className="button" onClick={dismiss}>
+          Hide this card
+        </button>
+      </div>
+    </section>
   );
 }
 

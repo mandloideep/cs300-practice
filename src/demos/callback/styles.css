@@ -1,0 +1,17 @@
+figure.demo-frame .callback__side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+figure.demo-frame .callback__holds {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .callback__clicks {
+  margin: 0;
+}
