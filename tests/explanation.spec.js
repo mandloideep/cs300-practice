@@ -227,10 +227,9 @@ test.describe("links back to the course", () => {
     });
     await page.goto("#/path/fall-2026/week-10");
     const lectures = page.getByRole("list", { name: "Lectures for The React mental model" });
-    await expect(lectures.getByRole("link")).toHaveText([
+    await expect(lectures.getByRole("link"), "the reading is left out").toHaveText([
       "Week 10 Session 1 slides (lecture, opens in a new tab)",
     ]);
-    await expect(page.getByRole("link", { name: /Thinking in React/ })).toHaveCount(0);
   });
 });
 

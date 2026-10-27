@@ -1,6 +1,7 @@
 // Accessibility tests: axe on every kind of page in light and dark at desktop and phone width,
 // a keyboard-only walk of the step page in the focus order docs/PHASE2.md names, the Escape then
-// Tab way out of the editor, named regions for every pane, and the dialogs.
+// Tab way out of the editor, named regions for every pane, and the dialogs. The walks serve their
+// own explanation HTML, so a step rewritten into the interactive-first layout cannot move them.
 
 /* global document */
 
@@ -137,10 +138,30 @@ function expectOrder(stops, expected) {
   }
 }
 
+// Serves lists-and-keys with the given HTML, questions, and links in place of step 2's own, so the
+// keyboard walk depends on no step's real text. The workspace, the checks, and the titles stay.
+async function serveStepTwo(page, { html, questions = [], links = null }) {
+  await page.route("**/content/topics/lists-and-keys.json", async (route) => {
+    const response = await route.fetch();
+    const topic = await response.json();
+    topic.links = null;
+    const step = topic.steps[1];
+    step.html = html;
+    step.questions = questions;
+    step.links = links;
+    await route.fulfill({ response, json: topic });
+  });
+}
+
+const PLAIN_EXPLANATION =
+  '<p>Each item needs a key; <a href="#/topic/components-and-props">Components and props</a> passed props the same way.</p>\n' +
+  "<pre><code>items.map((item) => &lt;li key={item.id}&gt;{item.title}&lt;/li&gt;)</code></pre>\n";
+
 test.describe("keyboard-only operation of the step page", () => {
   test("Tab walks header, explanation, tabs, editor, Run, panes, checks, step navigation", async ({
     page,
   }) => {
+    await serveStepTwo(page, { html: PLAIN_EXPLANATION });
     await page.goto("#/topic/lists-and-keys/2");
     await expect(page.locator(".pane--result .status-pill")).toHaveText("Ready", {
       timeout: 15_000,
@@ -196,6 +217,56 @@ test.describe("keyboard-only operation of the step page", () => {
     expect(await focused(page)).toMatchObject({ kind: "a", name: "Stable keys" });
   });
 
+  test("the interactive-first explanation's controls come between the topic header and the files", async ({
+    page,
+  }) => {
+    await serveStepTwo(page, {
+      links: [
+        {
+          kind: "reading",
+          title: "Rendering lists",
+          url: "https://react.dev/learn/rendering-lists",
+        },
+      ],
+      questions: [
+        {
+          id: "predict-1",
+          kind: "predict",
+          question: "What does the list show after the reorder?",
+          options: ["The same order", "The new order"],
+          answer: 1,
+          explanation: null,
+        },
+      ],
+      html:
+        "<p>Lead paragraph.</p>\n" +
+        '<div class="demo" data-demo="callback" data-props="{}"><p class="demo-fallback">Callbacks.</p></div>\n' +
+        '<div class="predict" data-predict="predict-1"><div class="question-fallback"><p>Q</p></div></div>\n' +
+        '<details class="read-more"><summary>Read more</summary>\n<p>Background.</p>\n</details>\n' +
+        "<p><strong>Check:</strong> Run it.</p>\n",
+    });
+    await page.goto("#/topic/lists-and-keys/2");
+    await expect(page.locator(".pane--result .status-pill")).toHaveText("Ready", {
+      timeout: 15_000,
+    });
+    await expect(page.locator(".pane--explanation .demo-frame")).toBeVisible();
+
+    const toEditor = await tabUntil(page, (stop) => stop.kind === "editor");
+    expectOrder(toEditor, [
+      ["a", "Components and props"],
+      ["a", "Rendering lists"],
+      ["input", ""],
+      ["button", "Play"],
+      ["button", "Back"],
+      ["button", "Step"],
+      ["button", "Reset"],
+      ["input", ""],
+      ["summary", "Read more"],
+      ["tab", "src/App.jsx"],
+      ["editor", "Code editor for src/App.jsx"],
+    ]);
+  });
+
   test("Enter runs the code and the solution dialog traps focus and closes on Escape", async ({
     page,
   }) => {
@@ -221,10 +292,33 @@ test.describe("keyboard-only operation of the step page", () => {
   });
 
   test("every pane is a named region and every control has a name", async ({ page }) => {
+    await page.route("**/content/topics/lists-and-keys.json", async (route) => {
+      const response = await route.fetch();
+      const topic = await response.json();
+      const step = topic.steps[4];
+      step.questions = [
+        ...(step.questions ?? []),
+        {
+          id: "a11y-check",
+          kind: "predict",
+          question: "How many requests does the page make?",
+          options: ["None", "One", "Two"],
+          answer: 1,
+          explanation: null,
+        },
+      ];
+      step.html =
+        '<div class="demo" data-demo="reconcile-keys" data-props="{}"><p class="demo-fallback">Keys.</p></div>\n' +
+        '<div class="predict" data-predict="a11y-check"><div class="question-fallback"><p>Q</p></div></div>\n' +
+        step.html;
+      await route.fulfill({ response, json: topic });
+    });
     await page.goto("#/topic/lists-and-keys/5");
     await expect(page.locator(".pane--result .status-pill")).toHaveText("Ready", {
       timeout: 15_000,
     });
+    await expect(page.locator('[data-predict="a11y-check"] input[type="radio"]')).toHaveCount(3);
+    await expect(page.locator('[data-demo="reconcile-keys"] input').first()).toBeVisible();
     for (const name of [
       "Load the products from an API",
       "Editor",
@@ -252,7 +346,8 @@ test.describe("keyboard-only operation of the step page", () => {
           const labelledBy = element.getAttribute("aria-labelledby");
           const byFor = element.id && document.querySelector(`label[for="${element.id}"]`);
           const text = element.textContent?.trim();
-          return !(label || labelledBy || byFor || text || element.title);
+          const wrapped = element.labels?.length > 0 || element.closest("label");
+          return !(label || labelledBy || byFor || wrapped || text || element.title);
         })
         .map((element) => element.outerHTML.slice(0, 80));
     });

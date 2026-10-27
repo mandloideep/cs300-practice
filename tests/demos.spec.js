@@ -2,8 +2,8 @@
 // component: it mounts on the fixture page, never plays on its own, steps from the first stage to
 // the last from the keyboard, opens on the last stage under reduced motion with Back, Step, and
 // Reset still working, fits a 320 pixel column, and passes axe in light and dark with motion
-// allowed and reduced. The last tests mount explainers on a real step page from the compiled
-// placeholder.
+// allowed and reduced. The last test mounts explainers on a step page from compiled placeholders
+// served in place of the step's own HTML, so it depends on no step's real text.
 
 /* global document, requestAnimationFrame */
 
@@ -182,23 +182,24 @@ test.describe("the frame", () => {
 
 test.describe("explainers on the step page", () => {
   const sample = built[0];
-  const planned = registry.find((entry) => !built.includes(entry));
+  const unbuilt = { id: "no-component-yet", title: "Not built" };
 
-  test("the placeholder mounts its explainer and a planned one keeps its text fallback", async ({
+  test("the placeholder mounts its explainer and one without a component keeps its fallback", async ({
     page,
   }) => {
     test.skip(!sample, "no explainer is built yet");
     await page.route("**/content/topics/react-mental-model.json", async (route) => {
       const response = await route.fetch();
       const topic = await response.json();
-      const placeholder = (entry, props = "{}") =>
-        `<div class="demo" data-demo="${entry.id}" data-props="${props.replace(/"/g, "&quot;")}">` +
+      const placeholder = (entry) =>
+        `<div class="demo" data-demo="${entry.id}" data-props="{}">` +
         `<p class="demo-fallback">${entry.title}: fallback text.</p></div>`;
-      topic.steps[3].html =
-        "<p>Lead paragraph.</p>" +
-        placeholder(sample) +
-        (planned ? placeholder(planned) : "") +
-        topic.steps[3].html;
+      const step = topic.steps[3];
+      step.html = "<p>Lead paragraph.</p>" + placeholder(sample) + placeholder(unbuilt);
+      step.questions = [];
+      step.links = null;
+      step.demos = [sample.id, unbuilt.id];
+      topic.links = null;
       await route.fulfill({ response, json: topic });
     });
     await page.goto("#/topic/react-mental-model/4");
@@ -209,21 +210,16 @@ test.describe("explainers on the step page", () => {
       explanation.locator(`[data-demo="${sample.id}"] > .demo-fallback`),
       "the mounted explainer replaces its fallback",
     ).toBeHidden();
-    if (planned) {
-      await expect(
-        explanation.locator(`[data-demo="${planned.id}"] > .demo-fallback`),
-      ).toBeVisible();
-      await expect(explanation.locator(`[data-demo="${planned.id}"] .demo-frame`)).toHaveCount(0);
-    }
+    await expect(explanation.locator(`[data-demo="${unbuilt.id}"] > .demo-fallback`)).toBeVisible();
+    await expect(explanation.locator(`[data-demo="${unbuilt.id}"] .demo-frame`)).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Mark this step as read" })).toBeVisible();
     const results = await new AxeBuilder({ page })
       .withTags(TAGS)
       .include(".pane--explanation")
       .analyze();
     expect(results.violations.map((violation) => violation.id)).toEqual([]);
-    expect(
-      await page.evaluate(() => document.querySelectorAll(".demo-frame").length),
-      "one frame per built placeholder",
-    ).toBe(1);
+    await expect(explanation.locator(".demo-frame"), "one frame per built placeholder").toHaveCount(
+      1,
+    );
   });
 });
