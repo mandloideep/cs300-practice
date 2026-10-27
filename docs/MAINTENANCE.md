@@ -9,24 +9,48 @@ The design of record is [DESIGN.md](DESIGN.md), the shared interfaces are in [CO
 1. **Copy the path.**
    Duplicate `content/paths/<last-term>.json` as `content/paths/<term>.json`, rename the id and title, and move topics between units to match the new schedule.
    Every topic must appear in at least one path, or validation fails and names it.
-2. **Review the presets.**
+2. **Set the release dates.**
+   Give each unit of the new path `"opens": "YYYY-MM-DD"`, the Monday of its week, and leave it out only for a unit that should be open from the first day.
+   Set `"active": false` on the path of a semester that is over, so the deployed site drops it; leave it `true` while students still use it.
+   Run `npm run validate`, then check the calendar by building as of a few dates in the term and walking the path page:
+
+   ```sh
+   LAB_BUILD_DATE=2027-03-01 npm run build && npm run preview
+   ```
+
+   Confirm in the repository's Actions tab that the `Test and deploy` workflow is enabled, since its weekly schedule is what opens each unit.
+3. **Review the presets.**
    Open each entry of `content/api-presets.json` in a browser and confirm the base URL still answers and the documented endpoints still return the described shape.
    Remove or replace a preset that has gone away; the fetching steps run on Fixtures regardless.
-3. **Upgrade the runtime** if the course baseline moved:
+4. **Upgrade the runtime** if the course baseline moved:
 
    ```sh
    npm run upgrade:runtime -- <react-version> <react-router-version>
    ```
 
    Then open a React step with the inspector on and check boundaries, the tree, and the flow view, as the README's "Upgrading the runtime" section says.
-4. **Export the D2L pages** and copy them into the course's posting kit:
+5. **Export the D2L pages** and copy them into the course's posting kit:
 
    ```sh
    npm run export:d2l -- <term>
    ```
 
-5. **Walk the site by keyboard** on the deployed address, following `docs/ACCESSIBILITY.md`, and run a screen reader over one step page.
+   The export skips the units that have not opened as of the build, so build as of the last day of the term first to export every week at once:
+
+   ```sh
+   LAB_BUILD_DATE=<last-day> npm run build:content && npm run export:d2l -- <term>
+   ```
+
+6. **Walk the site by keyboard** on the deployed address, following `docs/ACCESSIBILITY.md`, and run a screen reader over one step page.
    Record the date and what was found at the end of that file.
+
+## During the semester
+
+Each week opens on its own.
+Every Monday at 12:00 UTC, 7:00 in Chicago in summer time and 6:00 in winter, `deploy.yml` builds the site as of that day, so a unit whose `opens` date has arrived is compiled in full and its topics are written, while later units stay as a title and a date.
+The run publishes only when the build and every Playwright shard are green; when it fails, GitHub sends the usual failed-run notification, the site keeps the previous week's release, and starting the workflow by hand after the fix opens the unit.
+To move a week, change its `opens` date and push; the next scheduled run, or one started by hand, applies it.
+GitHub disables the schedule of a public repository's workflow after 60 days without repository activity; if the Actions tab shows `Test and deploy` as disabled, enable it there again, since a new commit alone does not.
 
 ## When a topic changes
 

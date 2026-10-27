@@ -203,7 +203,10 @@ test.describe("export and import", () => {
       transfer.getByRole("button", { name: "Export progress" }).click(),
     ]);
     const exported = JSON.parse(readFileSync(await download.path(), "utf8"));
-    expect(exported.version).toBe(1);
+    expect(exported.version, "a stored version 1 snapshot is upgraded").toBe(2);
+    expect(exported.answers).toEqual({});
+    expect(exported.preferences).toEqual({ explanationsOpen: false });
+    expect(exported.tour).toEqual({ stepPage: null, homeCard: null });
     expect(exported.completed).toEqual({ "jsx-rules/1": "2026-10-26T00:00:00Z" });
     expect(exported.files).toEqual({ "jsx-rules/1": { "src/App.jsx": "edited" } });
     expect(typeof exported.exportedAt).toBe("string");
@@ -252,11 +255,14 @@ test.describe("export and import", () => {
       "Imported progress with 3 completed steps.",
     );
     const stored = await readProgress(page);
-    expect(stored).toEqual({
-      version: 1,
+    expect(stored, "a version 1 file is upgraded to version 2 on import").toEqual({
+      version: 2,
       completed: incoming.completed,
       files: incoming.files,
       pathId: "fall-2026",
+      answers: {},
+      preferences: { explanationsOpen: false },
+      tour: { stepPage: null, homeCard: null },
     });
     await expect(page.getByRole("heading", { name: "Fall 2026" })).toBeVisible();
   });
@@ -268,7 +274,7 @@ test.describe("export and import", () => {
     await input.setInputFiles({
       name: "future.json",
       mimeType: "application/json",
-      buffer: Buffer.from(JSON.stringify({ version: 2, completed: {}, files: {} })),
+      buffer: Buffer.from(JSON.stringify({ version: 3, completed: {}, files: {} })),
     });
     await expect(transfer.getByRole("status")).toHaveText(
       "This file was exported by a newer version of the lab.",

@@ -4,6 +4,7 @@ import { loadIndex } from "./content.js";
 import { NotFoundNotice, contentFallback } from "./ContentState.jsx";
 import PageTitle from "./PageTitle.jsx";
 import { countLabel } from "./format.js";
+import { OpensDate } from "./UnitPage.jsx";
 import ProgressNote from "../progress/ProgressNote.jsx";
 import { setChosenPath, topicCompletion, useProgress } from "../progress/store.js";
 
@@ -62,9 +63,24 @@ export function UnitList({ path, index, headingLevel = 2 }) {
   const progress = useProgress();
   const Heading = `h${headingLevel}`;
 
+  const units = path.units ?? [];
+  const ordered = [...units.filter((unit) => !unit.closed), ...units.filter((unit) => unit.closed)];
+
   return (
     <ol className="card-list">
-      {(path.units ?? []).map((unit) => {
+      {ordered.map((unit) => {
+        if (unit.closed) {
+          return (
+            <li key={unit.id}>
+              <article className="card card--closed">
+                <Heading>{unit.title}</Heading>
+                <p className="meta">
+                  Opens <OpensDate date={unit.opens} />
+                </p>
+              </article>
+            </li>
+          );
+        }
         const { done, total } = unitProgress(unit, index, progress);
         return (
           <li key={unit.id}>

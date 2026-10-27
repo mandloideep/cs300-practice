@@ -15,6 +15,7 @@ import ResultPane from "./ResultPane.jsx";
 import ConsolePane from "./ConsolePane.jsx";
 import CheckPanel, { checkSummaryText, summarizeChecks } from "./CheckPanel.jsx";
 import { WorkspaceDownload } from "./StepActions.jsx";
+import { StepRunContext } from "./runContext.js";
 
 const SolutionDiff = lazy(() => import("../editor/SolutionDiff.jsx"));
 
@@ -88,6 +89,8 @@ export default function EditStep({ topic, step, presets, announce, explanation }
   const editorRef = useRef(null);
   const session = useRunSession({ step, files, apiSource, fixtureControls });
   const { run, status, diagnostics, checkResults } = session;
+  const readyRunId = session.ready ? session.runId : null;
+  const runInfo = useMemo(() => ({ readyRunId }), [readyRunId]);
 
   const modifiedFiles = useMemo(
     () => new Set(Object.keys(files).filter((path) => files[path] !== starter[path])),
@@ -187,7 +190,7 @@ export default function EditStep({ topic, step, presets, announce, explanation }
 
   return (
     <div className="step-layout">
-      {explanation}
+      <StepRunContext value={runInfo}>{explanation}</StepRunContext>
       <div className="step-work">
         <section className="pane pane--editor" aria-labelledby="editor-heading">
           <div className="pane__header">
