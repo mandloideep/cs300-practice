@@ -8,8 +8,12 @@ inspector:
 required: [save-count-climbs, no-extra-state]
 ---
 
-A ref can hold more than an element.
-It can hold any value that a component needs to remember between renders without showing it, and this step finds out why neither a plain variable nor state does that job.
+A ref can hold more than an element: it can hold any value that a component needs to remember between renders without showing it.
+This step counts how many times the save effect has run, first with a plain variable and then with a ref, and finds out why neither a plain variable nor state does that job.
+Watch the numbers in the `Save` lines and the flashes on `App` as you add products.
+
+```demo name="ref-vs-state"
+```
 
 Suppose we want the console to say how many times the save effect has run, as a debugging aid.
 Try the obvious thing, a variable in the body of `App`.
@@ -20,6 +24,13 @@ Try the obvious thing, a variable in the body of `App`.
 
 Count in the effect, right after the write.
 
+```predict
+After you add the count and run, you add one product; what does the line for that save say?
+= Save 1 wrote 7 products
+- Save 3 wrote 7 products
+- Save 2 wrote 7 products
+```
+
 ```jsx file="src/App.jsx" action="insert-after" anchor='    localStorage.setItem("products", JSON.stringify(items));'
     saves += 1;
     console.log("Save", saves, "wrote", items.length, "products");
@@ -27,10 +38,9 @@ Count in the effect, right after the write.
 
 Run the code and add two products.
 The load logs `Save 1` and `Save 2`, because Strict Mode ran the first render's effect twice, and then every product you add logs `Save 1` again.
-Each render is a fresh call of `App`, and `let saves = 0` runs again on every call, so a variable in the body lives for exactly one render and then starts over.
+A variable in the body lives for exactly one render and then starts over.
 
-State would remember the number, but a setter also re-renders the component, and nobody displays this number.
-Watch the flash view while you add a product: `App` already renders twice, once for the new item and once for `setSavedAt` in the effect, and a `setSaves` would add a third render for a value that never reaches the page.
+Watch the flash view while you add a product: `App` already renders twice, once for the new item and once for `setSavedAt` in the effect.
 
 A ref is the third option: remembered across renders, like state, and silent when it changes, like a plain variable.
 Replace the variable with a ref.
@@ -52,6 +62,13 @@ The console says `Save 1` and `Save 2` on load, because Strict Mode runs the eff
 `App` still flashes twice per add, no more: the ref changed in between and asked for nothing.
 Open the **Tree and state** view: `App` lists three state values and no `saves`, because a ref is not part of what React watches.
 
+## Read more
+
+The plain variable starts over because each render is a fresh call of `App`, and `let saves = 0` runs again on every call.
+
+State would remember the number, but a setter also re-renders the component, and nobody displays this number.
+A `setSaves` would add a third render to every add, for a value that never reaches the page.
+
 | | Plain variable | State | Ref |
 | --- | --- | --- | --- |
 | Survives a re-render? | No | Yes | Yes |
@@ -61,13 +78,21 @@ Open the **Tree and state** view: `App` lists three state values and no `saves`,
 Timer ids, the previous value of a prop, and whether a request is still in flight are the usual tenants of a ref.
 A value the shopper can see belongs in state, because a ref change would leave the screen stale.
 
+**If it breaks:** If every line says `Save 1`, the counter is still a plain variable in the body of `App`.
+If the console says `saves.current is not a function` or `Cannot read properties of undefined`, the ref is read without `.current`, or `useRef` is called outside `App`.
+If `App` gained a fourth state value, the counter went into `useState`; it belongs in `useRef`.
+
 **Check:** Run the code and add two products.
 The `Save` lines count up, and `App` flashes twice per add.
 Press **Run checks** to confirm.
 
-**If it breaks:** If every line says `Save 1`, the counter is still a plain variable in the body of `App`.
-If the console says `saves.current is not a function` or `Cannot read properties of undefined`, the ref is read without `.current`, or `useRef` is called outside `App`.
-If `App` gained a fourth state value, the counter went into `useState`; it belongs in `useRef`.
+```quiz
+A component needs to remember a timer id between renders, and the page never shows it; where does the id belong?
+- In a `let` variable in the body of the component
+- In state, with `useState`
+= In a ref, with `useRef`
+> A `let` in the body starts over on every render, and state would re-render the component for a value nobody sees; a ref survives renders and changes silently.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>

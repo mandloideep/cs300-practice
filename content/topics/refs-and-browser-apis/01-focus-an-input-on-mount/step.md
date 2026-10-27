@@ -10,9 +10,15 @@ required: [title-focused-on-load, title-focused-after-submit, ref-is-not-state]
 
 **We used this in:** [Effects](#/topic/effects) finished the product page with effects that save the list and clear a notice; this topic starts from that page.
 
-React draws the page from JSX, and most of the time we never touch the DOM elements it creates.
-A few browser features need the element itself: focusing a field, scrolling to a section, measuring a box, playing a video.
-`useRef` gives us a handle on an element, and an effect is where we use it, because the element exists only after the render.
+A few browser features need the DOM element itself, not the JSX that describes it: focusing a field, scrolling to a section, measuring a box, playing a video.
+This step uses `useRef` to get a handle on the Title input, and an effect to focus it as soon as the page loads; watch where the cursor is after each run and after each submit.
+
+```predict
+Once the ref is in place, what does the inspector tree list for `AddProductForm`?
+= One state value, the fields object
+- Two state values, the fields object and the ref
+- No state, because the ref replaces the fields
+```
 
 The form should put the cursor in the Title field as soon as the page loads, so that a shopper can start typing.
 Import `useRef` next to the other two hooks.
@@ -28,7 +34,6 @@ Create the ref in `AddProductForm`, under the two rules.
 ```
 
 `useRef(null)` returns an object with one property, `current`, which starts as `null`.
-Unlike state, it is the same object on every render, and changing `current` does not make React render.
 
 Attach it to the input.
 
@@ -36,7 +41,6 @@ Attach it to the input.
         <input name="title" type="text" value={fields.title} onChange={handleChange} ref={titleRef} />
 ```
 
-`ref` is a special attribute, like `key`: it is not passed as a prop.
 After React creates the input element on the page, it stores that element in `titleRef.current`.
 
 Focus it after the first render.
@@ -48,10 +52,6 @@ The fence starts with a blank line, so the effect sits under the ref.
     titleRef.current.focus();
   }, []);
 ```
-
-Why an effect, and not a line in the body of the component?
-During the first render `titleRef.current` is still `null`, because the input does not exist yet; an effect runs after React has put the input on the page.
-The empty array is the "after the first render only" row of the table in the last topic.
 
 Run the code.
 The Title field shows its focus ring and the cursor is in it, ready to type.
@@ -65,7 +65,26 @@ Add one line to the end of `handleSubmit`.
 ```
 
 This is an event handler, not an effect, and that is fine: by the time a shopper submits, the input has existed for a long while.
-The rule is only that a ref is never read during render.
+
+## Read more
+
+React draws the page from JSX, and most of the time we never touch the DOM elements it creates.
+`useRef` gives us a handle on an element, and an effect is where we use it, because the element exists only after the render.
+
+Unlike state, a ref is the same object on every render, and changing `current` does not make React render.
+That is why the inspector tree still lists one state value on `AddProductForm`: the ref is not state.
+
+`ref` is a special attribute, like `key`: it is not passed as a prop.
+
+Why an effect, and not a line in the body of the component?
+During the first render `titleRef.current` is still `null`, because the input does not exist yet; an effect runs after React has put the input on the page.
+The empty array is the "after the first render only" row of the table in the last topic.
+
+The second `focus()` call lives in `handleSubmit`, and the rule it follows is only that a ref is never read during render.
+
+**If it breaks:** If the console says `Cannot read properties of null (reading 'focus')`, the `.focus()` call runs in the body of the component, or the `ref` attribute is missing from the input, so `current` is still `null`.
+If the console says `useRef is not defined`, the import on the first line does not name it.
+If the field is focused on load but not after a submit, the second `focus()` call is missing from `handleSubmit`.
 
 **Check:** Run the code.
 The Title field has the focus.
@@ -73,9 +92,13 @@ Fill in the form and click **Add product** with the mouse: the product is added 
 In the inspector tree, `AddProductForm` still holds one state value; the ref is not state.
 Press **Run checks** to confirm, right after running, before clicking inside the result.
 
-**If it breaks:** If the console says `Cannot read properties of null (reading 'focus')`, the `.focus()` call runs in the body of the component, or the `ref` attribute is missing from the input, so `current` is still `null`.
-If the console says `useRef is not defined`, the import on the first line does not name it.
-If the field is focused on load but not after a submit, the second `focus()` call is missing from `handleSubmit`.
+```quiz
+Why does `titleRef.current.focus()` on load go in an effect rather than in the body of `AddProductForm`?
+- The body of a component cannot call methods on DOM elements
+= During the first render `titleRef.current` is still `null`, because the input is not on the page yet
+- An effect runs before the render, so the field is focused before it is drawn
+> React fills in `titleRef.current` only after it has created the input, and an effect runs after that, which is why the same call in the body fails with `Cannot read properties of null (reading 'focus')`.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>

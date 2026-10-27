@@ -9,8 +9,15 @@ required: [width-shown, width-follows-resize, width-is-state]
 ---
 
 The browser knows plenty that React does not: the window size, the scroll position, whether the tab is visible, the time.
-Reading one of those values is easy.
-The work is in hearing about it when it changes, because the window is outside React and will not re-render anything on its own.
+This step shows the window width on the page and then keeps it current with a `resize` listener added in an effect.
+Watch the number as you make the browser window narrower and wider, before the listener and after it.
+
+```predict
+After you show the width and run, what happens to the number when you make the browser window narrower?
+- It follows the window, because the cards reflow
+= It stays the same, even though the cards reflow
+- The page throws an error, because the width changed during a render
+```
 
 Suppose the page should say how wide the window is and how the cards are laid out at that width.
 Start by reading the width once, as the initial value of a state.
@@ -28,7 +35,7 @@ Show it under the lead sentence.
 Run the code.
 The sentence shows the width of the result pane, which is the window as far as the code inside it is concerned.
 Now make your browser window narrower, or wider.
-The cards reflow, because CSS follows the window, but the number does not move: `window.innerWidth` was read once, on the first render, and nothing has asked React to render since.
+The cards reflow, because CSS follows the window, but the number does not move.
 
 The browser announces a change of size with a `resize` event on `window`.
 Listening for it is a side effect with a second half, exactly like the timer in the last topic, so it goes in an effect with a cleanup.
@@ -45,19 +52,34 @@ Add it under the timer effect.
   }, []);
 ```
 
-The effect adds the listener after the first render and never again, which is what the empty array says.
 The listener reads the new width and stores it with `setWidth`, and that setter is what brings the change into React: the state changes, `App` renders, the sentence updates.
-The cleanup removes the same function it added, so that if `App` ever leaves the page, or Strict Mode runs the effect twice, no stray listener keeps calling a setter on a component that is gone.
 
 Run the code and resize the window again.
 The number follows the window, and below 480 pixels the sentence changes to one column.
 
-**Check:** Run the code and make the window narrower and wider: the sentence follows.
-Press **Run checks**; the checks pretend the window is 777 pixels wide, fire a `resize` event, and read the sentence.
+## Read more
+
+Reading one of the browser's values is easy.
+The work is in hearing about it when it changes, because the window is outside React and will not re-render anything on its own.
+Before the listener, `window.innerWidth` was read once, on the first render, and nothing had asked React to render since.
+
+The effect adds the listener after the first render and never again, which is what the empty array says.
+The cleanup removes the same function it added, so that if `App` ever leaves the page, or Strict Mode runs the effect twice, no stray listener keeps calling a setter on a component that is gone.
 
 **If it breaks:** If the sentence never changes, the listener is not added, or it calls `setWidth` with the old value instead of reading `window.innerWidth` again.
 If the console warns that `handleResize is not defined` in the cleanup, the function is declared outside the effect; keep both lines inside so that they share it.
 If the sentence shows `undefined`, the state is read under a different name than `width`.
+
+**Check:** Run the code and make the window narrower and wider: the sentence follows.
+Press **Run checks**; the checks pretend the window is 777 pixels wide, fire a `resize` event, and read the sentence.
+
+```quiz
+Why does the cleanup pass `handleResize` to `removeEventListener`, the same function the effect added?
+= The browser removes a listener only when it is given the very function that was added
+- Any function with the same body removes it
+- `removeEventListener("resize")` with no function removes every resize listener
+> A listener is identified by the event name and the function object, so the cleanup must name the same `handleResize`; that is why both lines live inside the one effect.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>
