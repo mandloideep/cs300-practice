@@ -8,7 +8,7 @@ The site is deployed to GitHub Pages at <https://mandloideep.github.io/cs300-rea
 Everything runs in the visitor's browser: there is no server, no account, no database, and no analytics.
 
 The design of record is [docs/DESIGN.md](docs/DESIGN.md).
-The Phase 1 scope is in [docs/KICKOFF.md](docs/KICKOFF.md), the plans for Phases 2 to 5 are in [docs/PHASE2.md](docs/PHASE2.md), [docs/PHASE3.md](docs/PHASE3.md), [docs/PHASE4.md](docs/PHASE4.md), and [docs/PHASE5.md](docs/PHASE5.md), the semester-to-semester tasks are in [docs/MAINTENANCE.md](docs/MAINTENANCE.md), and the interfaces shared by every part of the code are in [docs/CONTRACTS.md](docs/CONTRACTS.md).
+The Phase 1 scope is in [docs/KICKOFF.md](docs/KICKOFF.md), the plans for Phases 2 to 6 are in [docs/PHASE2.md](docs/PHASE2.md), [docs/PHASE3.md](docs/PHASE3.md), [docs/PHASE4.md](docs/PHASE4.md), [docs/PHASE5.md](docs/PHASE5.md), and [docs/PHASE6.md](docs/PHASE6.md), the explainer inventory is [docs/EXPLAINERS.md](docs/EXPLAINERS.md), the curriculum map is [docs/CURRICULUM.md](docs/CURRICULUM.md), the semester-to-semester tasks are in [docs/MAINTENANCE.md](docs/MAINTENANCE.md), and the interfaces shared by every part of the code are in [docs/CONTRACTS.md](docs/CONTRACTS.md).
 
 ## Local setup
 
