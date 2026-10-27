@@ -10,31 +10,27 @@ api:
 required: [one-products-request, uses-api-base, products-render]
 ---
 
-So far the products have been an array typed into `App.jsx`.
-Real product data comes from a server, and in Week 7 we fetched JSON with `fetch`, `async`, and `await`.
+So far the products have been an array typed into `App.jsx`, and real product data comes from a server.
 In this step the same page loads its products over the network, and we see every state a request can be in: loading, loaded, empty, and failed.
+Watch the page and the inspector's **Network** view together: each state of the request has its own message on the page.
+
+```predict
+`loadProducts` only throws an error for now; when you run the starter, what does the page show?
+- `Loading products...`, and it never finishes
+= `Could not load products. loadProducts is not written yet.`
+- `No products match this category.` in both sections
+```
 
 We prepared two pieces for you.
 `src/api.js` holds a `loadProducts` function that for now only throws an error.
 `App` calls it once when the page first appears, using `useEffect`, and remembers the result with `useState`.
 Effects and state are Week 11 and Week 12 topics, so read that block as "after the first render, call `loadProducts`, then store either the products or the error message".
-The practice checkbox from Step 3 is gone, because the network can now fail for real.
 
 Run the starter.
 The page shows `Could not load products. loadProducts is not written yet.`, which is our error branch from Step 3 doing its job.
 
-## Choose where the data comes from
-
-The toolbar above the editor has an **API source** selector with three kinds of entry.
-
-- **Fixtures** answers requests inside this page from files that come with the step, so it works offline and always returns the same data.
-  It also has controls to add latency, answer with an HTTP error status, send a malformed body, or drop the connection.
-- **A preset** is a real public server, such as DummyJSON, chosen from a list.
-- **Custom** is any base URL you type, for example your own server or a classmate's deployment.
-
-Our code never names a server.
-It reads the chosen base URL from `import.meta.env.API_BASE`, which the lab fills in from the selector, the same way a Vite project reads settings from `import.meta.env`.
-Switching the source never means editing the request code.
+The toolbar above the editor has an **API source** selector; leave it on **Fixtures**, which answers requests from files that come with the step.
+Our code never names a server: it reads the chosen base URL from `import.meta.env.API_BASE`.
 
 ## Write the request
 
@@ -49,13 +45,7 @@ Open `src/api.js` and replace the line that throws with a real request.
   return data.products;
 ```
 
-Line by line, as in Week 7:
-
-- `fetch` sends a GET request to the base URL plus `/products?limit=8`; the query string asks for eight products.
-- `{ signal }` connects the request to the `AbortController` in `App`, so React can cancel it if the component goes away.
-- `fetch` only rejects when the network fails, so `response.ok` is how we notice a 404 or a 500; throwing turns that into our error state.
-- `response.json()` parses the body.
-- The server answers with an object shaped like `{ products: [...], total, skip, limit }`, so we return `data.products`, the array our components expect.
+The request asks for eight products, throws when the status is not ok, and returns `data.products`, the array our components expect.
 
 ## Show the loading state
 
@@ -71,14 +61,37 @@ Add a loading branch in `App`, before the error branch.
 The questions are now asked in this order: is it still loading, did it fail, is it empty, and only then show the list.
 That order is the whole lesson of this topic in one place.
 
-**Check:** Run the code with **Fixtures** selected.
-Eight products appear, split into Top rated and All products.
-Open the **Network** view of the inspector.
-You see a request to `/products?limit=8` that ends `ok` with status 200, and you may also see one marked `aborted`.
-That aborted row is expected: in development, React's Strict Mode runs every effect twice on purpose to expose missing cleanup, and our cleanup cancels the first request.
-Click the `ok` row and the editor highlights the `fetch` line in `src/api.js`.
+## Read more
 
-Now cause each state on purpose and watch the page and the network panel together.
+In Week 7 we fetched JSON with `fetch`, `async`, and `await`.
+The practice checkbox from Step 3 is gone, because the network can now fail for real.
+
+### Choose where the data comes from
+
+The **API source** selector has three kinds of entry.
+
+- **Fixtures** answers requests inside this page from files that come with the step, so it works offline and always returns the same data.
+  It also has controls to add latency, answer with an HTTP error status, send a malformed body, or drop the connection.
+- **A preset** is a real public server, such as DummyJSON, chosen from a list.
+- **Custom** is any base URL you type, for example your own server or a classmate's deployment.
+
+Our code never names a server.
+It reads the chosen base URL from `import.meta.env.API_BASE`, which the lab fills in from the selector, the same way a Vite project reads settings from `import.meta.env`.
+Switching the source never means editing the request code.
+
+### The request, line by line
+
+Line by line, as in Week 7:
+
+- `fetch` sends a GET request to the base URL plus `/products?limit=8`; the query string asks for eight products.
+- `{ signal }` connects the request to the `AbortController` in `App`, so React can cancel it if the component goes away.
+- `fetch` only rejects when the network fails, so `response.ok` is how we notice a 404 or a 500; throwing turns that into our error state.
+- `response.json()` parses the body.
+- The server answers with an object shaped like `{ products: [...], total, skip, limit }`, so we return `data.products`, the array our components expect.
+
+### Cause each state on purpose
+
+Once the check passes, cause each state on purpose and watch the page and the network panel together.
 
 1. Set the fixture latency to 2000 milliseconds and run: `Loading products...` shows for two seconds, then the list.
 2. Choose an HTTP error such as 500: the request row ends as an HTTP error and the page shows our error message with the status.
@@ -96,6 +109,21 @@ If you choose a preset whose data has a different shape, such as JSONPlaceholder
 If the page goes blank and the console says `request.products.filter is not a function`, `loadProducts` returned the whole `data` object instead of `data.products`.
 If the network panel shows two `ok` requests, the cleanup line `return () => controller.abort();` was removed from `App`.
 If a custom server fails with a CORS message in the console, the server is not allowing requests from this page; that is a server setting, not a bug in your code.
+
+**Check:** Run the code with **Fixtures** selected.
+Eight products appear, split into Top rated and All products.
+Open the **Network** view of the inspector.
+You see a request to `/products?limit=8` that ends `ok` with status 200, and you may also see one marked `aborted`.
+That aborted row is expected: in development, React's Strict Mode runs every effect twice on purpose to expose missing cleanup, and our cleanup cancels the first request.
+Click the `ok` row and the editor highlights the `fetch` line in `src/api.js`.
+
+```quiz
+The server answers a request with status 500; what does `fetch` do?
+- It rejects, so the error goes straight to the `catch`
+= It resolves with a response whose `ok` is `false`, so our code throws to reach the error state
+- It retries the request until the server answers 200
+> `fetch` rejects only when the network itself fails; an HTTP error status still arrives as a response, which is why `loadProducts` checks `response.ok`.
+```
 
 <details>
 <summary>src/api.js after this step</summary>

@@ -10,16 +10,23 @@ required: [six-items, items-from-data, prices-formatted]
 
 **We used this in:** [Components and props](#/topic/components-and-props) wrote one tag per course by hand; this topic renders the tags from an array.
 
+The page says six products and shows one, because the list has one item typed by hand.
+This step replaces that item with a `.map()` over the `products` array, so the data decides how many rows there are.
+Watch the result pane for the rows, and then the console for the warning React logs about them.
+
+```demo name="map-filter-reduce"
+```
+
 Open `src/App.jsx`.
 The `products` array holds six products, and the lead sentence already reads `products.length` from it.
-The list, though, has one item typed by hand, so the page says six products and shows one.
-Typing a tag per product does not scale and goes stale the moment the data changes.
-
-In Week 6 we built lists in vanilla JavaScript by mapping an array to HTML strings, joining them, and setting `innerHTML`.
-React takes the same first step, `.map()`, but the callback returns JSX instead of a string.
-React accepts an array of elements as a child, so there is no `join` and no `innerHTML`; React creates the DOM nodes for us.
-
 Replace the hand-written item with a `.map()` over the data.
+
+```predict
+After this edit and a run, what does the console show?
+- Nothing, because the page works
+= A warning that starts with `Each child in a list should have a unique "key" prop`
+- Six lines, one for each product
+```
 
 ```jsx file="src/App.jsx" action="replace" anchor="        <li>Essence Mascara Lash Princess, $9.99</li>"
         {products.map((product) => (
@@ -30,27 +37,44 @@ Replace the hand-written item with a `.map()` over the data.
         ))}
 ```
 
-Read it from the outside in.
+`products.map(...)` calls the arrow function once per product and collects what it returns into a new array, one `li` for each product.
+
+Now open the console.
+React has logged a warning that starts with `Each child in a list should have a unique "key" prop`.
+The page works, so the warning is easy to ignore, but it points at a real problem that Step 2 makes visible and then fixes.
+
+## Read more
+
+Typing a tag per product does not scale and goes stale the moment the data changes.
+
+In Week 6 we built lists in vanilla JavaScript by mapping an array to HTML strings, joining them, and setting `innerHTML`.
+React takes the same first step, `.map()`, but the callback returns JSX instead of a string.
+React accepts an array of elements as a child, so there is no `join` and no `innerHTML`; React creates the DOM nodes for us.
+
+Read the edit from the outside in.
 The outer braces switch from JSX to JavaScript.
-`products.map(...)` calls the arrow function once per product and collects what it returns into a new array.
 The parentheses after the arrow wrap a multi-line JSX value, so the function returns one `li` for each product.
 
 Inside the `li`, `{product.title}` and `{product.price.toFixed(2)}` read from the current object.
 The `$` before the price brace is plain text in JSX, not template literal syntax, so it appears on the page as a dollar sign.
 `toFixed(2)` returns the number as a string with exactly two decimals, so a price of `2.5` would show as `2.50`.
 
+**If it breaks:** If the list is empty and the console is silent, the arrow function uses braces without `return`, as in `(product) => { <li>...</li> }`; use parentheses around the JSX, or write `return` inside the braces.
+If the page shows `[object Object]`, the code inside braces is an object rather than JSX or text, for example `{product}` instead of `{product.title}`.
+If the console says `toFixed is not a function`, the `price` in one of the objects is written as a string in quotes.
+
 **Check:** Run the code.
 Six rows appear, one per product, each with a title on the left and a price on the right.
 Add a seventh object to the array, for example `{ id: 30, title: "Kiwi", category: "groceries", price: 2.49, rating: 4.93 }`, and run again: a seventh row appears and the lead sentence says seven, with no other change.
 Remove it again before moving on.
 
-Now open the console.
-React has logged a warning that starts with `Each child in a list should have a unique "key" prop`.
-The page works, so the warning is easy to ignore, but it points at a real problem that Step 2 makes visible and then fixes.
-
-**If it breaks:** If the list is empty and the console is silent, the arrow function uses braces without `return`, as in `(product) => { <li>...</li> }`; use parentheses around the JSX, or write `return` inside the braces.
-If the page shows `[object Object]`, the code inside braces is an object rather than JSX or text, for example `{product}` instead of `{product.title}`.
-If the console says `toFixed is not a function`, the `price` in one of the objects is written as a string in quotes.
+```quiz
+What does `products.map((product) => { <li>{product.title}</li> })` put in the list?
+- One `li` per product, the same as with parentheses
+= Nothing, because the callback returns `undefined` for every product
+- A compile error at the `<li>`
+> Braces after an arrow start a function body, which returns nothing without `return`; parentheses make the JSX the returned value.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>

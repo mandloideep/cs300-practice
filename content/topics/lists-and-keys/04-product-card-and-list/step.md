@@ -10,12 +10,16 @@ required: [two-product-lists, cards-in-both-lists, variants-differ]
 
 **We used this in:** [Components and props](#/topic/components-and-props) covered destructuring, default values, and composition.
 
-This step applies the pattern from our Week 10 Session 2 example to the product page.
-In that example, `CourseCard` drew one course and `CourseList` mapped the courses to cards and handled the empty case.
-Here `ProductCard` will draw one product, `ProductList` will map products to cards, and a `variant` prop will let the same two components draw two different layouts:
+This step splits the product page into `ProductCard`, which draws one product, and `ProductList`, which maps products to cards.
+A `variant` prop lets the same two components draw two layouts: `card` for a browsing grid and `row` for a compact "Top rated" list.
+Watch the inspector tree gain a `ProductCard` for every product, and compare the `variant` props of the two lists.
 
-- `card`: a grid of boxes with the category and rating, for browsing.
-- `row`: a compact line with only the title and price, for a short "Top rated" list.
+```predict
+After you add the `ProductCard` function above `ProductList` and run, what changes on the page?
+= Nothing yet, because `ProductList` still draws the two spans
+- Every row turns into a box with its category and rating
+- The page goes blank until `ProductList` uses the card
+```
 
 Start with the card, above `ProductList`.
 The block ends with the first line of `ProductList`, which is already there, so you type only the new function above it.
@@ -34,11 +38,7 @@ function ProductCard({ product, variant = "card" }) {
 function ProductList({ items }) {
 ```
 
-`ProductCard` receives the whole product object as one prop.
-When a component shows several fields of the same object, passing the object keeps the tag short.
-The class name is a template literal, so `variant="row"` produces `product product--row` and the stylesheet styles each variation.
-The `&&` line from the JSX rules topic shows the category and rating only in the `card` variation.
-`variant = "card"` is a default, so a parent that does not care about layout gets the grid.
+`ProductCard` receives the whole product object as one prop, and its class name is a template literal, so `variant="row"` produces `product product--row`.
 
 Now let `ProductList` accept the same prop.
 
@@ -65,8 +65,6 @@ Then delete the price span, because the card now shows the price.
 ```
 
 The `key` stays on the `li`, the outermost element the `map` returns.
-`ProductList` passes its own `variant` down to every card, so one prop on the list controls the layout of all of its cards.
-Data moves one way: `App` gives products to `ProductList`, and `ProductList` gives one product at a time to `ProductCard`.
 
 Back in `App`, compute the top rated products from the visible ones, right after `visibleProducts`.
 
@@ -75,6 +73,13 @@ Back in `App`, compute the top rated products from the visible ones, right after
 ```
 
 Finally, render two lists instead of one.
+
+```predict
+After this edit and a run with All selected, which products does Top rated show?
+- All six, drawn as compact rows
+= Powder Canister and Cooking Oil
+- Cooking Oil only, the highest rated
+```
 
 ```jsx file="src/App.jsx" action="replace" anchor="        <ProductList items={visibleProducts} />"
         <>
@@ -86,16 +91,42 @@ Finally, render two lists instead of one.
 ```
 
 The fragment groups the two headings and two lists into the one value the conditional branch needs, without adding a `div` to the page.
+
+## Read more
+
+This step applies the pattern from our Week 10 Session 2 example to the product page.
+In that example, `CourseCard` drew one course and `CourseList` mapped the courses to cards and handled the empty case.
+Here `ProductCard` will draw one product, `ProductList` will map products to cards, and a `variant` prop will let the same two components draw two different layouts:
+
+- `card`: a grid of boxes with the category and rating, for browsing.
+- `row`: a compact line with only the title and price, for a short "Top rated" list.
+
+When a component shows several fields of the same object, passing the object keeps the tag short.
+The stylesheet styles each variation from its class.
+The `&&` line from the JSX rules topic shows the category and rating only in the `card` variation.
+`variant = "card"` is a default, so a parent that does not care about layout gets the grid.
+
+`ProductList` passes its own `variant` down to every card, so one prop on the list controls the layout of all of its cards.
+Data moves one way: `App` gives products to `ProductList`, and `ProductList` gives one product at a time to `ProductCard`.
+
 Each list keeps the empty state from Step 3, so choosing a category with no top rated product says so in that section alone.
+
+**If it breaks:** If both lists look the same, the `variant` prop is not passed from `ProductList` to `ProductCard`, or the class name uses quotes instead of backticks.
+If a card shows `undefined`, the card reads a field the object does not have; `product.name` should be `product.title`.
+If the console warns about keys again, the `key` moved onto `ProductCard` inside the `li` or disappeared from the `li`.
 
 **Check:** Run the code.
 **Top rated** shows two compact rows, Powder Canister and Cooking Oil, and **All products** shows six boxes in a grid with category and rating.
 The inspector tree shows two `ProductList` components; select each and compare their `variant` props.
 Choose **Fragrances**: the top rated section reports that no products match, while the grid shows the two fragrances.
 
-**If it breaks:** If both lists look the same, the `variant` prop is not passed from `ProductList` to `ProductCard`, or the class name uses quotes instead of backticks.
-If a card shows `undefined`, the card reads a field the object does not have; `product.name` should be `product.title`.
-If the console warns about keys again, the `key` moved onto `ProductCard` inside the `li` or disappeared from the `li`.
+```quiz
+`ProductList` maps each product to `<li key={product.id}><ProductCard product={product} /></li>`; where must the `key` be?
+= On the `li`, the outermost element the callback returns
+- On the `ProductCard`, because it is the component that draws the product
+- On the `ul`, once for the whole list
+> React matches the siblings the `map` returns, and those siblings are the `li` elements; a key inside them, or on their parent, does not tell React which row is which.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>
