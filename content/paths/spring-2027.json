@@ -60,6 +60,10 @@
         {
           "id": "dom-events",
           "required": true
+        },
+        {
+          "id": "objects-and-references",
+          "required": true
         }
       ],
       "localNotes": []
