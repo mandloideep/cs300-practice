@@ -5,7 +5,7 @@
 // allowed and reduced. The last tests mount explainers on a real step page from the compiled
 // placeholder.
 
-/* global document */
+/* global document, requestAnimationFrame */
 
 import { readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
@@ -33,11 +33,15 @@ async function stagePosition(frame) {
   return match ? { at: Number(match[1]), total: Number(match[2]) } : { at: 1, total: 1 };
 }
 
-// Colors cross-fade between stages and after a color scheme switch; axe measures the end state.
+// Colors cross-fade between stages and after a color scheme switch; axe measures the end state,
+// once a frame has passed for the switch to start its transitions.
 async function settle(page) {
-  await page.evaluate(() =>
-    Promise.all(document.getAnimations().map((animation) => animation.finished.catch(() => null))),
-  );
+  await page.evaluate(async () => {
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    await Promise.all(
+      document.getAnimations().map((animation) => animation.finished.catch(() => null)),
+    );
+  });
 }
 
 async function expectNoViolations(page) {

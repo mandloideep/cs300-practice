@@ -83,7 +83,9 @@ The editor's own syntax colors in `src/styles/tokens.css` pass on both editor ba
 
 ## Motion
 
-`src/styles/global.css` shortens every animation and transition to effectively zero under `prefers-reduced-motion: reduce`.
+`src/styles/global.css` shortens every animation to effectively zero and turns every transition off under `prefers-reduced-motion: reduce`.
+A transition duration of zero rather than a tiny one matters: a tiny duration gives every element a transition on every property, so a color scheme switch would briefly animate every color on the page (Phase 6).
+The explainers under `src/demos/` follow the same rule, and their frame opens on the last stage under reduced motion.
 The re-render flash is drawn inside the result iframe by `src/runner/bridge/inspector-hook.js`, which carries its own `prefers-reduced-motion` rule that replaces the pulse with a static dashed outline; the changed-value pulse in `src/inspector/inspector.css` does the same.
 Both belong to the inspector stream and were read, not changed.
 

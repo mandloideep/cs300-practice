@@ -306,13 +306,17 @@ main:focus-visible {
   }
 }
 
+/* A zero transition duration creates no transition at all; a tiny nonzero one would give every
+   element a transition on every property, so that a color scheme switch briefly animated every
+   color on the page. Nothing in the site listens for transitionend. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
     scroll-behavior: auto !important;
   }
 }
