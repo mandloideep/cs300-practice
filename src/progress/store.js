@@ -1,20 +1,41 @@
 import { useSyncExternalStore } from "react";
 
 // Progress lives only in this browser, under one localStorage key, in the shape pinned in
-// docs/CONTRACTS.md section 5.1:
-//   { version: 1, completed: { "<topic>/<n>": ISO date }, files: { "<topic>/<n>": { path: source } }, pathId }
+// docs/CONTRACTS.md sections 5.1 and 7.7:
+//   { version: 2, completed: { "<topic>/<n>": ISO date }, files: { "<topic>/<n>": { path: source } },
+//     pathId, answers: { "<topic>/<n>/<question>": { pick, revealedAt } },
+//     preferences: { explanationsOpen }, tour: { stepPage, homeCard } }
 
 export const PROGRESS_KEY = "cs300-lab:progress";
-export const PROGRESS_VERSION = 1;
+export const PROGRESS_VERSION = 2;
 export const NEWER_VERSION_MESSAGE = "This file was exported by a newer version of the lab.";
 const NOT_AN_EXPORT_MESSAGE = "That file is not a CS300 Lab progress export.";
 const listeners = new Set();
 
-// Upgrades from each older version to the next; version 1 is the first, so none exist yet.
-const UPGRADES = {};
+const DEFAULT_PREFERENCES = { explanationsOpen: false };
+const DEFAULT_TOUR = { stepPage: null, homeCard: null };
+
+// Upgrades from each older version to the next.
+const UPGRADES = {
+  1: (value) => ({
+    ...value,
+    version: 2,
+    answers: {},
+    preferences: { ...DEFAULT_PREFERENCES },
+    tour: { ...DEFAULT_TOUR },
+  }),
+};
 
 function empty() {
-  return { version: PROGRESS_VERSION, completed: {}, files: {}, pathId: null };
+  return {
+    version: PROGRESS_VERSION,
+    completed: {},
+    files: {},
+    pathId: null,
+    answers: {},
+    preferences: { ...DEFAULT_PREFERENCES },
+    tour: { ...DEFAULT_TOUR },
+  };
 }
 
 function isMap(candidate) {
@@ -35,11 +56,27 @@ function normalize(value) {
     );
     if (Object.keys(kept).length > 0) files[key] = kept;
   }
+  const answers = {};
+  for (const [key, record] of Object.entries(isMap(value.answers) ? value.answers : {})) {
+    if (!isMap(record) || !Number.isInteger(record.pick) || record.pick < 0) continue;
+    answers[key] = {
+      pick: record.pick,
+      revealedAt: typeof record.revealedAt === "string" ? record.revealedAt : null,
+    };
+  }
+  const preferences = isMap(value.preferences) ? value.preferences : {};
+  const tour = isMap(value.tour) ? value.tour : {};
   return {
     version: PROGRESS_VERSION,
     completed,
     files,
     pathId: typeof value.pathId === "string" ? value.pathId : null,
+    answers,
+    preferences: { explanationsOpen: preferences.explanationsOpen === true },
+    tour: {
+      stepPage: typeof tour.stepPage === "string" ? tour.stepPage : null,
+      homeCard: typeof tour.homeCard === "string" ? tour.homeCard : null,
+    },
   };
 }
 
@@ -126,6 +163,57 @@ export function clearEditedFiles(topicId, n) {
 
 export function setChosenPath(pathId) {
   commit({ ...snapshot, pathId });
+}
+
+export function answerKey(topicId, n, questionId) {
+  return `${stepKey(topicId, n)}/${questionId}`;
+}
+
+// Records a pick; `reveal` also marks it revealed, as a quiz is on its first pick. A revealed
+// answer keeps its pick.
+export function setAnswerPick(key, pick, { reveal = false } = {}) {
+  const current = snapshot.answers[key];
+  if (current?.revealedAt) return;
+  const revealedAt = reveal ? new Date().toISOString() : null;
+  commit({ ...snapshot, answers: { ...snapshot.answers, [key]: { pick, revealedAt } } });
+}
+
+export function revealAnswer(key) {
+  const current = snapshot.answers[key];
+  if (!current || current.revealedAt) return;
+  commit({
+    ...snapshot,
+    answers: { ...snapshot.answers, [key]: { ...current, revealedAt: new Date().toISOString() } },
+  });
+}
+
+// How many of a topic's quizzes are answered and how many of those are right, from the compiled
+// topic's step questions.
+export function quizScore(progress, topic) {
+  let total = 0;
+  let answered = 0;
+  let right = 0;
+  for (const step of topic?.steps ?? []) {
+    for (const question of step.questions ?? []) {
+      if (question.kind !== "quiz") continue;
+      total += 1;
+      const record = progress.answers[answerKey(topic.id, step.n, question.id)];
+      if (!record?.revealedAt) continue;
+      answered += 1;
+      if (record.pick === question.answer) right += 1;
+    }
+  }
+  return { total, answered, right };
+}
+
+export function setExplanationsOpen(open) {
+  commit({ ...snapshot, preferences: { ...snapshot.preferences, explanationsOpen: open } });
+}
+
+// Stores today's date under `field` of the tour record: "stepPage" once the step-page tour is
+// finished or skipped, "homeCard" once the home-page card is dismissed.
+export function markTour(field) {
+  commit({ ...snapshot, tour: { ...snapshot.tour, [field]: new Date().toISOString() } });
 }
 
 export function exportProgress() {

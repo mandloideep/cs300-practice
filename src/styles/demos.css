@@ -1,0 +1,457 @@
+/*
+ * Styles for the explainer frame in src/demos/DemoFrame.jsx and the drawing kit in
+ * src/demos/kit.jsx. Explainers draw only with these classes and the design tokens, so they
+ * follow the color scheme, and everything wraps to fit a 320 pixel column.
+ */
+
+.demo {
+  margin: 0 0 var(--space-5);
+}
+
+.demo:has(> .demo-frame) > .demo-fallback {
+  display: none;
+}
+
+.demo-fallback {
+  padding: var(--space-3) var(--space-4);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+}
+
+.demo-frame {
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.demo-frame__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface-sunken);
+}
+
+.demo-frame__title {
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+}
+
+.demo-frame__description {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+}
+
+.demo-frame__stage {
+  padding: var(--space-4);
+  min-width: 0;
+}
+
+.demo-frame__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.demo-frame__controls .button[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.demo-frame__controls .button[aria-disabled="true"]:hover {
+  background: var(--color-surface);
+}
+
+.demo-frame__position {
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/*
+ * The kit. Every rule starts from figure.demo-frame so that it outweighs the element rules of
+ * .step-content in content.css, which would otherwise indent lists and space paragraphs inside
+ * an explainer.
+ */
+
+figure.demo-frame :is(ul, ol) {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+figure.demo-frame :is(ul, ol) li + li {
+  margin-top: 0;
+}
+
+figure.demo-frame p {
+  margin: 0;
+}
+
+figure.demo-frame table {
+  display: table;
+  margin: 0;
+}
+
+figure.demo-frame .demo-caption {
+  min-height: 3em;
+  margin: var(--space-3) 0 0;
+  padding: var(--space-2) var(--space-3);
+  border-left: 4px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-soft);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+figure.demo-frame .demo-caption:empty {
+  display: none;
+}
+
+figure.demo-frame .demo-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+figure.demo-frame .demo-row > * {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+figure.demo-frame .demo-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+figure.demo-frame .demo-panel {
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+figure.demo-frame .demo-panel__title {
+  margin: 0 0 var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+figure.demo-frame .demo-panel--sunken {
+  background: var(--color-surface-sunken);
+}
+
+figure.demo-frame .demo-empty {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-style: italic;
+}
+
+figure.demo-frame .demo-code {
+  margin: 0;
+  padding: var(--space-2) 0;
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-code-bg);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+}
+
+figure.demo-frame .demo-code__line {
+  display: block;
+  min-height: 1.55em;
+  padding: 0 var(--space-3);
+  padding-left: calc(var(--space-3) + 2ch);
+  border-left: 3px solid transparent;
+  text-indent: -2ch;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+figure.demo-frame .demo-code__line.is-active {
+  border-left-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+figure.demo-frame .demo-code__line.is-done {
+  color: var(--color-text-muted);
+}
+
+figure.demo-frame .demo-code__line.is-error {
+  border-left-color: var(--color-danger);
+  background: var(--color-danger-soft);
+}
+
+figure.demo-frame .demo-code__line.is-good {
+  border-left-color: var(--color-success);
+  background: var(--color-success-soft);
+}
+
+figure.demo-frame .demo-mono {
+  font-family: var(--font-mono);
+  font-size: 0.925em;
+  overflow-wrap: anywhere;
+}
+
+figure.demo-frame .demo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  max-width: 100%;
+  padding: 0.1em 0.55em;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease;
+}
+
+figure.demo-frame .demo-chip--accent,
+figure.demo-frame .demo-box--accent {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+figure.demo-frame .demo-chip--success,
+figure.demo-frame .demo-box--success {
+  border-color: var(--color-success);
+  background: var(--color-success-soft);
+}
+
+figure.demo-frame .demo-chip--warning,
+figure.demo-frame .demo-box--warning {
+  border-color: var(--color-warning);
+  background: var(--color-warning-soft);
+}
+
+figure.demo-frame .demo-chip--danger,
+figure.demo-frame .demo-box--danger {
+  border-color: var(--color-danger);
+  background: var(--color-danger-soft);
+}
+
+figure.demo-frame .demo-chip--muted,
+figure.demo-frame .demo-box--muted {
+  border-style: dashed;
+  color: var(--color-text-muted);
+}
+
+figure.demo-frame .demo-box {
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+  border: 2px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    opacity 200ms ease;
+}
+
+figure.demo-frame .demo-box__label {
+  display: block;
+  margin-bottom: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .demo-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+figure.demo-frame .demo-cells {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+figure.demo-frame .demo-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 3rem;
+  padding: var(--space-1) var(--space-2);
+  border: 2px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease;
+}
+
+figure.demo-frame .demo-cell__index {
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+}
+
+figure.demo-frame .demo-console {
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-sunken);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  list-style: none;
+}
+
+figure.demo-frame .demo-console li {
+  overflow-wrap: anywhere;
+}
+
+figure.demo-frame .demo-console li + li {
+  margin-top: var(--space-1);
+}
+
+figure.demo-frame .demo-console .is-error {
+  color: var(--color-danger);
+}
+
+figure.demo-frame .demo-console .is-new {
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .demo-choice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin: 0 0 var(--space-3);
+  padding: 0;
+  border: 0;
+}
+
+figure.demo-frame .demo-choice legend {
+  width: 100%;
+  margin-bottom: var(--space-1);
+  padding: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+
+figure.demo-frame .demo-choice label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+figure.demo-frame .demo-choice label:has(input:checked) {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  font-weight: var(--weight-medium);
+}
+
+figure.demo-frame .demo-choice label:has(input:focus-visible) {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+figure.demo-frame .demo-choice input {
+  accent-color: var(--color-accent);
+}
+
+figure.demo-frame .demo-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .demo-field > span {
+  color: var(--color-text-muted);
+  font-weight: var(--weight-medium);
+}
+
+figure.demo-frame .demo-field input[type="text"] {
+  width: 100%;
+  min-height: 2.25rem;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-family: var(--font-mono);
+}
+
+figure.demo-frame .demo-field input[type="range"] {
+  width: 100%;
+  accent-color: var(--color-accent);
+}
+
+figure.demo-frame .demo-arrow {
+  color: var(--color-text-muted);
+  font-weight: var(--weight-bold);
+  text-align: center;
+}
+
+figure.demo-frame .demo-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .demo-table th,
+figure.demo-frame .demo-table td {
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border);
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+figure.demo-frame .demo-table th {
+  background: var(--color-surface-sunken);
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .demo-table tr.is-active > * {
+  background: var(--color-accent-soft);
+}
+
+figure.demo-frame .demo-table tr.is-muted > * {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+figure.demo-frame .demo-hidden {
+  visibility: hidden;
+}
