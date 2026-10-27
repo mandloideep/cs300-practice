@@ -21,5 +21,10 @@ document.getElementById("toggle").addEventListener("click", () => {
   console.log(`compact is now ${compact}`);
 });
 
+const note = document.createElement("p");
+note.className = "note";
+note.textContent = "Press Add a book to grow the list.";
+list.after(note);
+
 updateCount();
 console.log("reading list ready");

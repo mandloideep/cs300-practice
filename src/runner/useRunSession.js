@@ -35,6 +35,7 @@ const EMPTY = {
   networkRequests: [],
   flowTraces: [],
   location: null,
+  domSnapshot: null,
   ready: false,
   frameWidth: null,
   runId: null,
@@ -192,6 +193,8 @@ export function useRunSession({ step, files, apiSource, fixtureControls }) {
             };
           case "flow":
             return { ...previous, flowTraces: [...previous.flowTraces, message.trace] };
+          case "dom":
+            return { ...previous, domSnapshot: message.snapshot ?? null };
           case "location":
             return {
               ...previous,
@@ -267,6 +270,7 @@ export function useRunSession({ step, files, apiSource, fixtureControls }) {
     networkRequests: state.networkRequests,
     flowTraces: state.flowTraces,
     location: state.location,
+    domSnapshot: state.domSnapshot,
     ready: state.ready,
     frameWidth: state.frameWidth,
     send,

@@ -4,7 +4,8 @@
 import coreSource from "./bridge/core.js?raw";
 import inspectorHookSource from "./bridge/inspector-hook.js?raw";
 import fetchShimSource from "./bridge/fetch-shim.js?raw";
-import { compileModule, findDeclarations, isModulePath } from "./compile.js";
+import domSource from "./bridge/dom.js?raw";
+import { compileModule, findDeclarations, findMarkupLines, isModulePath } from "./compile.js";
 import { createModuleGraph } from "./graph.js";
 import { buildSrcdoc, createImportMap, escapeScriptText, inlineJson } from "./srcdoc.js";
 
@@ -34,10 +35,13 @@ export function clearSandboxStorage() {
   }
 }
 
+// The DOM part comes last so that it can use the overlay host from core.js and the settled hook,
+// and so that the three parts the contract names keep their order.
 const BRIDGE_PARTS = [
   ["core.js", coreSource],
   ["inspector-hook.js", inspectorHookSource],
   ["fetch-shim.js", fetchShimSource],
+  ["dom.js", domSource],
 ];
 
 let runCount = 0;
@@ -105,6 +109,7 @@ export function buildRun({
   for (const [path, source] of Object.entries(files)) {
     if (isModulePath(path)) declarations[path] = findDeclarations(source);
   }
+  const markup = findMarkupLines(files["index.html"]);
 
   let checkUrl = null;
   if (check) {
@@ -156,6 +161,7 @@ export function buildRun({
     runId,
     env,
     declarations,
+    markup,
     moduleUrls,
     fixtures,
     fixtureControls,

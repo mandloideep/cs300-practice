@@ -466,13 +466,10 @@ function installInspector() {
     let frame = 0;
     const flashing = new Map();
 
-    const host = document.createElement("lab-inspector-overlay");
-    host.setAttribute("aria-hidden", "true");
-    host.style.cssText =
-      "all: initial !important; position: fixed !important; inset: 0 !important; z-index: 2147483647 !important; pointer-events: none !important; display: block !important;";
-    const shadow = host.attachShadow({ mode: "open" });
-    shadow.innerHTML = `<style>
-      :host { all: initial; }
+    // The boxes live in their own layer inside the shared overlay host (lab.overlay), beside
+    // the DOM view's highlight layer.
+    const style = document.createElement("style");
+    style.textContent = `
       .layer { position: fixed; inset: 0; pointer-events: none; font: 600 11px/1.3 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
       .box { position: fixed; box-sizing: border-box; border: 1.5px solid var(--hue); border-radius: 3px; background: color-mix(in srgb, var(--hue) 6%, transparent); }
       .box.highlight { border-width: 3px; background: color-mix(in srgb, var(--hue) 22%, transparent); }
@@ -485,11 +482,12 @@ function installInspector() {
       @media (prefers-reduced-motion: reduce) {
         .flash { animation: none; opacity: 0.85; background: transparent; border-style: dashed; }
       }
-    </style><div class="layer"></div>`;
-    const layer = shadow.querySelector(".layer");
+    `;
+    const layer = document.createElement("div");
+    layer.className = "layer";
 
     function attach() {
-      if (!host.isConnected) document.documentElement.append(host);
+      if (!layer.isConnected) lab.overlay.shadow().append(style, layer);
     }
 
     function hueFor(name) {

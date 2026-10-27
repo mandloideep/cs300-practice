@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import DomView from "./DomView.jsx";
 import FlowView from "./FlowView.jsx";
 import { jumpTarget } from "./jump.js";
 import LiveRegion from "../ui/LiveRegion.jsx";
@@ -171,6 +172,7 @@ export default function InspectorPane({ session, step, onJumpToCode, announce })
     status,
     send,
     ready = false,
+    domSnapshot = null,
   } = session;
   const react = useMemo(() => isReactWorkspace(step.workspace), [step.workspace]);
   const [views, setViews] = useState(
@@ -267,17 +269,17 @@ export default function InspectorPane({ session, step, onJumpToCode, announce })
     meta = hasCommits
       ? `${components.length} ${components.length === 1 ? "component" : "components"} · commit ${latestCommit.seq}`
       : "No components yet";
+  } else if (domSnapshot) {
+    const count = domSnapshot.nodes.filter((node) => node.changed !== "removed").length;
+    meta = `${count} ${count === 1 ? "element" : "elements"} · snapshot ${domSnapshot.seq}`;
   } else {
-    meta = "Plain HTML, CSS, and JavaScript";
+    meta = "No elements yet";
   }
 
   const domSection = showDom && (
     <section className="inspector-dom" aria-label="DOM">
-      <p className="meta inspector-empty">
-        {status === "compile-error"
-          ? "Fix the compile error to see the page's elements."
-          : "The DOM view shows the page's elements once it runs."}
-      </p>
+      {react && <h3 className="inspector-subheading">DOM</h3>}
+      <DomView snapshot={domSnapshot} status={status} send={send} onJumpToCode={onJumpToCode} />
     </section>
   );
 

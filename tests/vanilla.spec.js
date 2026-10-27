@@ -199,7 +199,7 @@ test.describe("the vanilla fixture on the step page", () => {
   test("the inspector shows the DOM toggle alone and no React views", async ({ page }) => {
     await openStep(page, 1, "Add a third book");
     const pane = page.locator(".pane--inspector");
-    await expect(pane.locator(".pane__header .meta")).toHaveText("Plain HTML, CSS, and JavaScript");
+    await expect(pane.locator(".pane__header .meta")).toHaveText(/^\d+ elements · snapshot \d+$/);
     const toggles = pane.getByRole("group", { name: "Inspector views" }).getByRole("button");
     await expect(toggles).toHaveText(["DOM", "Network"]);
     await expect(pane.getByRole("button", { name: "DOM" })).toHaveAttribute("aria-pressed", "true");

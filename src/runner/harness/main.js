@@ -131,6 +131,11 @@ function describe(message) {
     const names = rest.commit.components.map((c) => `${c.name}${c.rendered ? "*" : ""}`);
     return `inspector #${rest.commit.seq}: ${names.join(", ") || "(no components)"}`;
   }
+  if (type === "dom") {
+    const changed = rest.snapshot.nodes.filter((node) => node.changed);
+    const summary = changed.map((node) => `${node.changed} <${node.tag}>`).join(", ");
+    return `dom #${rest.snapshot.seq}: ${rest.snapshot.nodes.length} nodes${summary ? ` (${summary})` : ""}`;
+  }
   if (type === "check-results") {
     return `check-results:\n${rest.results.map((r) => `  ${r.pass ? "pass" : "FAIL"} ${r.id}: ${r.title}${r.pass ? "" : ` (${r.hint})`}`).join("\n")}`;
   }

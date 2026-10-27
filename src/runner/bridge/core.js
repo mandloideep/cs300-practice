@@ -19,6 +19,13 @@
 //                            pane's own width for null, by posting a `resize-request` message;
 //                            a check uses it to show a narrow layout
 //   onSettled(callback)      runs `callback` once the run has settled (at once when it already has)
+//   hasSettled()             whether the run has settled
+//   overlay.shadow()         the shadow root of the one fixed overlay layer above the page, the
+//                            <lab-inspector-overlay> element, attached on first use; the inspector
+//                            hook draws boundary boxes in it and the DOM part draws the highlight
+//   markupLines              the start tags of index.html's body with their lines, from the
+//                            compile step; the DOM part pairs them with the parser's elements
+//                            and defines markup.before and markup.after for the runner's sentinels
 // and globalThis.__LAB_ENV__, which compiled workspace code reads in place of import.meta.env.
 //
 // The document shares the site's origin, so window.localStorage and window.sessionStorage are
@@ -305,10 +312,31 @@ const router = {
   },
 };
 
+// One fixed, pointer-transparent layer above everything, drawn inside this document so that it
+// follows scrolling; its shadow root keeps the inspector's and the DOM view's styles apart.
+let overlayShadow = null;
+const overlay = {
+  shadow() {
+    if (!overlayShadow) {
+      const host = document.createElement("lab-inspector-overlay");
+      host.setAttribute("aria-hidden", "true");
+      host.style.cssText =
+        "all: initial !important; position: fixed !important; inset: 0 !important; z-index: 2147483647 !important; pointer-events: none !important; display: block !important;";
+      overlayShadow = host.attachShadow({ mode: "open" });
+      const style = document.createElement("style");
+      style.textContent = ":host { all: initial; }";
+      overlayShadow.append(style);
+    }
+    if (!overlayShadow.host.isConnected) document.documentElement.append(overlayShadow.host);
+    return overlayShadow;
+  },
+};
+
 const lab = {
   runId: boot.runId,
   env,
   declarations: boot.declarations,
+  markupLines: Array.isArray(boot.markup) ? boot.markup : [],
   moduleUrls: boot.moduleUrls,
   fixtures: boot.fixtures,
   fixtureControls: boot.fixtureControls,
@@ -322,6 +350,7 @@ const lab = {
   mapUrls,
   originalConsole,
   router,
+  overlay,
   resize(width) {
     const value = width === null || width === undefined ? null : Math.round(Number(width));
     post({ type: "resize-request", width: Number.isFinite(value) && value > 0 ? value : null });
@@ -420,6 +449,7 @@ lab.onSettled = (callback) => {
   if (hasSettled) callback();
   else settledListeners.push(callback);
 };
+lab.hasSettled = () => hasSettled;
 
 lab.entryEvaluated = () => {
   entryState = "done";
