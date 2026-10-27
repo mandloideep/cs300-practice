@@ -59,10 +59,10 @@ Each one takes its data from the fence body where that makes sense, so the same 
 | `function-call` | A call binding arguments to parameters, running the body in a frame, and returning a value to the caller | *functions-and-callbacks* | 6 | built |
 | `callback` | A function handed to another function and run later, beside the version with parentheses that runs it at once | *functions-and-callbacks*, dom-events/a-click-handler, state-usestate/a-click-handler-that-logs | 6 | built |
 | `arrow-equivalence` | A function expression and its arrow form, with each part of one highlighted in the other as the student switches | *functions-and-callbacks* | 6 | built |
-| `scope-chain` | Nested scopes as nested boxes and a variable lookup walking outward until it finds the name | *scope-and-closures* | 6 | planned |
-| `closure` | A function that keeps the variables around it, three counters made from one factory, and the loop-variable classic with `var` and `let` | *scope-and-closures*, *why-react-behaves-this-way* | 6 | planned |
-| `call-stack` | Frames pushed and popped through nested calls, and the stack trace an error prints read from that stack | *errors-and-debugging*, *async-and-the-event-loop* | 6 | planned |
-| `this-binding` | A method called on its object and the same function called detached, with what `this` is in each | *classes-and-prototypes* | 6 | planned |
+| `scope-chain` | Nested scopes as nested boxes and a variable lookup walking outward until it finds the name | *scope-and-closures* | 6 | built |
+| `closure` | A function that keeps the variables around it, three counters made from one factory, and the loop-variable classic with `var` and `let` | *scope-and-closures*, *why-react-behaves-this-way* | 6 | built |
+| `call-stack` | Frames pushed and popped through nested calls, and the stack trace an error prints read from that stack | *errors-and-debugging*, *async-and-the-event-loop* | 6 | built |
+| `this-binding` | A method called on its object and the same function called detached, with what `this` is in each | *classes-and-prototypes* | 6 | built |
 | `prototype-chain` | A property lookup walking from an object to its prototype to `Object.prototype` | *classes-and-prototypes* | later | planned |
 
 ## JavaScript: objects, arrays, and data

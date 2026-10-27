@@ -1,0 +1,43 @@
+figure.demo-frame .this-binding__layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: var(--space-3);
+  align-items: start;
+  margin-bottom: var(--space-3);
+}
+
+figure.demo-frame .this-binding__side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+figure.demo-frame .this-binding__call {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+}
+
+figure.demo-frame .this-binding__expr,
+figure.demo-frame .this-binding__value {
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .this-binding__values {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 8rem), 1fr));
+  gap: var(--space-2);
+}
+
+figure.demo-frame .this-binding__values .demo-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+figure.demo-frame .this-binding__note {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}

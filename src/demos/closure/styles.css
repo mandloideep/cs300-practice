@@ -1,0 +1,36 @@
+figure.demo-frame .closure__layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: var(--space-3);
+  align-items: start;
+  margin-bottom: var(--space-3);
+}
+
+figure.demo-frame .closure__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 6.5rem), 1fr));
+  gap: var(--space-2);
+}
+
+figure.demo-frame .closure__grid .demo-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  height: 100%;
+}
+
+figure.demo-frame .closure__kind {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+figure.demo-frame .closure__value {
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .closure__callbacks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+}
