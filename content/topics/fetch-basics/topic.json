@@ -1,0 +1,10 @@
+{
+  "id": "fetch-basics",
+  "title": "Fetch basics",
+  "area": "fetch",
+  "summary": "Trace synchronous and asynchronous code, then wait for promises with then and with async and await. You will fetch JSON from an API source you can switch between fixtures and a real server, show the loading, success, empty, and error states on the page, build a search URL from user input, and cause every failure on purpose with the fixture controls.",
+  "prerequisites": ["dom-events"],
+  "minutes": 80,
+  "updated": "2026-10-26",
+  "changeNote": "First version."
+}

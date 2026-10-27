@@ -1,0 +1,24 @@
+{
+  "docs": [
+    {
+      "key": "/works/demo-1",
+      "title": "Learning JavaScript",
+      "author_name": [
+        "Alex Rivera"
+      ],
+      "first_publish_year": 2024
+    },
+    {
+      "key": "/works/demo-2",
+      "title": "Accessible Interfaces",
+      "author_name": [
+        "Jordan Lee"
+      ],
+      "first_publish_year": 2023
+    },
+    {
+      "key": "/works/demo-3",
+      "title": "<strong>CSS & Layout</strong>"
+    }
+  ]
+}

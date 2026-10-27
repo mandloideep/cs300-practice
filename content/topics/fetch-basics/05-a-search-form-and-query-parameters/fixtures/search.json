@@ -1,0 +1,47 @@
+{
+  "products": [
+    {
+      "id": 101,
+      "title": "Apple AirPods Max Silver",
+      "category": "mobile-accessories",
+      "price": 549.99,
+      "rating": 3.47,
+      "stock": 59
+    },
+    {
+      "id": 104,
+      "title": "Apple iPhone Charger",
+      "category": "mobile-accessories",
+      "price": 19.99,
+      "rating": 4.15,
+      "stock": 31
+    },
+    {
+      "id": 105,
+      "title": "Apple MagSafe Battery Pack",
+      "category": "mobile-accessories",
+      "price": 99.99,
+      "rating": 3.62,
+      "stock": 1
+    },
+    {
+      "id": 107,
+      "title": "Beats Flex Wireless Earphones",
+      "category": "mobile-accessories",
+      "price": 49.99,
+      "rating": 4.24,
+      "stock": 50
+    },
+    {
+      "id": 108,
+      "title": "iPhone 12 Silicone Case with MagSafe Plum",
+      "category": "mobile-accessories",
+      "price": 29.99,
+      "rating": 3.62,
+      "stock": 69
+    }
+  ],
+  "total": 5,
+  "skip": 0,
+  "limit": 8
+}

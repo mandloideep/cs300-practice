@@ -1,0 +1,6 @@
+{
+  "routes": [
+    { "method": "GET", "path": "/products/search", "status": 200, "body": "search.json" },
+    { "method": "GET", "path": "/products/search-empty", "status": 200, "body": "products-empty.json" }
+  ]
+}

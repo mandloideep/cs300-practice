@@ -1,0 +1,10 @@
+{
+  "id": "app-architecture",
+  "title": "Application architecture: CourseHub",
+  "area": "javascript",
+  "summary": "Build CourseHub, the Week 8 book search, as a sequence of small typed edits: components that return markup, a search form, bookmark buttons handled by one listener, safe storage, a real request with every outcome shown, and then one state object that the whole page is rendered from. You will finish by comparing the vanilla build with the React version of the same ideas.",
+  "prerequisites": ["fetch-basics"],
+  "minutes": 120,
+  "updated": "2026-10-26",
+  "changeNote": "First version."
+}
