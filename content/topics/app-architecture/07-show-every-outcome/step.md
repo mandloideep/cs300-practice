@@ -11,9 +11,17 @@ required: [loading-shows-first, outcome-is-shown, controls-restored]
 
 **We used this in:** [Fetch basics](#/topic/fetch-basics) rendered the loading, success, empty, and error states with `try`, `catch`, and `finally`.
 
-A request takes time and can fail.
-Right now a slow response leaves the old cards on screen with no hint, and a failure stops the script with an error in the console.
-Move the work into an **action** function that shows every outcome.
+A request takes time and can fail: right now a slow response leaves the page with no hint, and a failure stops the script with an error in the console.
+This step moves the work into an **action** function that shows every outcome: loading, success, empty, and error.
+
+```predict
+After the three edits, you set the latency to 2000 milliseconds and search on Fixtures: what shows during the wait?
+= `Searching...`, no cards, and a disabled Search books button
+- The page as it was, until the three cards arrive
+- `3 books found.` at once, because fixtures answer offline
+```
+
+Add the action above the submit listener.
 
 ```js file="app.js" action="insert-before" anchor='app.addEventListener("submit", async function (event) {'
 let loading = false;
@@ -40,6 +48,9 @@ async function searchBooks(query) {
 
 ```
 
+Before the `await`, the action clears old cards, disables the button, marks the region busy, and shows `Searching...`; that is the loading state.
+`finally` runs whether the request succeeded or failed, so the button and the busy flag are always restored.
+
 The handler now only validates the input and hands the query to the action.
 
 ```js file="app.js" action="replace" anchor='app.addEventListener("submit", async function (event) {'
@@ -50,11 +61,16 @@ app.addEventListener("submit", function (event) {
   searchBooks(query);
 ```
 
-Before the `await`, the action clears old cards, disables the button, marks the region busy, and shows `Searching...`; that is the loading state.
+## Read more
+
+Before this step, a slow response left the old cards on screen with no hint.
 After the `await`, a non-empty array is success and an empty array is the empty state with its own sentence.
 Any throw from `requestBooks` lands in `catch`, which logs the real error for us and shows a recoverable message for the user.
-`finally` runs whether the request succeeded or failed, so the button and the busy flag are always restored.
 The `loading` flag refuses a second submission while one is pending.
+
+**If it breaks:** If the button stays disabled after an error, the `finally` block is missing or sits inside the `try`.
+If `Searching...` never appears, the message is set after the `await` instead of before it.
+If the page still crashes on a failure, the submit handler is still calling `requestBooks` directly instead of `searchBooks`.
 
 **Check:** Run the code with **Fixtures** selected, set the latency to 2000 milliseconds, and search: `Searching...` shows with the button disabled, then three cards and `3 books found.`
 Now cause the other outcomes.
@@ -70,9 +86,13 @@ Three of these arrive with a successful status code and still fail later, which 
 After every failure the button is enabled again and the query stays in the field.
 Press **Run checks** with the controls back at their defaults.
 
-**If it breaks:** If the button stays disabled after an error, the `finally` block is missing or sits inside the `try`.
-If `Searching...` never appears, the message is set after the `await` instead of before it.
-If the page still crashes on a failure, the submit handler is still calling `requestBooks` directly instead of `searchBooks`.
+```quiz
+`/wrong-shape.json` answers with status 200; which line of `requestBooks` makes the search fail?
+- `if (!response.ok) throw new Error(...)`
+= `if (!data || !Array.isArray(data.docs)) throw new Error(...)`
+- `const response = await fetch(url);`
+> The fixture answers 200 with `{ "results": [] }`, which is valid JSON with no `docs` array, so the shape check throws and `catch` in `searchBooks` shows the error sentence.
+```
 
 <details>
 <summary>app.js after this step</summary>

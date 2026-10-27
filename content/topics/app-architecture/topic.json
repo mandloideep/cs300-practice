@@ -5,6 +5,28 @@
   "summary": "Build CourseHub, the Week 8 book search, as a sequence of small typed edits: components that return markup, a search form, bookmark buttons handled by one listener, safe storage, a real request with every outcome shown, and then one state object that the whole page is rendered from. You will finish by comparing the vanilla build with the React version of the same ideas.",
   "prerequisites": ["fetch-basics"],
   "minutes": 120,
-  "updated": "2026-10-26",
-  "changeNote": "First version."
+  "updated": "2026-10-27",
+  "changeNote": "Rewritten so each step opens with an explainer or a prediction, folds the background under Read more, and ends with a quiz.",
+  "links": [
+    {
+      "kind": "reading",
+      "title": "javascript.info: Event delegation",
+      "url": "https://javascript.info/event-delegation"
+    },
+    {
+      "kind": "reading",
+      "title": "react.dev: Reacting to input with state",
+      "url": "https://react.dev/learn/reacting-to-input-with-state"
+    },
+    {
+      "kind": "reading",
+      "title": "react.dev: Thinking in React",
+      "url": "https://react.dev/learn/thinking-in-react"
+    },
+    {
+      "kind": "reference",
+      "title": "MDN: Using the Fetch API",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch"
+    }
+  ]
 }
