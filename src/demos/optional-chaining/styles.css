@@ -1,0 +1,30 @@
+figure.demo-frame .optional-chaining__walk {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+}
+
+figure.demo-frame .optional-chaining__walk li {
+  min-width: 0;
+}
+
+figure.demo-frame .optional-chaining__link {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+figure.demo-frame .optional-chaining__walk .demo-chip {
+  font-family: var(--font-mono);
+}
+
+figure.demo-frame .optional-chaining__value {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+figure.demo-frame .optional-chaining .demo-box.demo-box--success {
+  border-color: var(--color-success);
+  background: var(--color-success-soft);
+}

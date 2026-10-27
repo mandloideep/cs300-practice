@@ -73,15 +73,15 @@ Each one takes its data from the fence body where that makes sense, so the same 
 | `spread-and-destructure` | Spread copying into a new object or array and destructuring pulling names out of one | *objects-and-references* | 6 | built |
 | `json-roundtrip` | An object stringified and parsed back, with the parts JSON cannot carry marked as lost | *objects-and-references*, persistence/version-the-stored-shape | 6 | built |
 | `equality` | `===` and `==` on primitives, and two equal-looking objects that are not the same object | *objects-and-references* | 6 | built |
-| `array-methods` | `find`, `some`, `every`, `sort`, `slice`, and `splice` applied to one array, with which ones change it | *arrays-in-depth* | 6 | planned |
-| `optional-chaining` | A nested path walked with `?.` and a fallback supplied by `??`, with the step where a missing value stops the walk | *objects-and-references* | 6 | planned |
+| `array-methods` | `find`, `some`, `every`, `sort`, `slice`, and `splice` applied to one array, with which ones change it | *arrays-in-depth* | 6 | built |
+| `optional-chaining` | A nested path walked with `?.` and a fallback supplied by `??`, with the step where a missing value stops the walk | *objects-and-references* | 6 | built |
 
 ## JavaScript: errors, asynchrony, and modules
 
 | Id | Shows | Serves | Phase | Status |
 | --- | --- | --- | --- | --- |
-| `error-propagation` | A `throw` unwinding frames until a `catch` takes it, and what happens when none does | *errors-and-debugging* | 6 | planned |
-| `error-decoder` | The common messages, `x is not defined`, `cannot read properties of undefined`, `x is not a function`, each with the line that causes it | *errors-and-debugging*, *using-the-lab* | 6 | planned |
+| `error-propagation` | A `throw` unwinding frames until a `catch` takes it, and what happens when none does | *errors-and-debugging* | 6 | built |
+| `error-decoder` | The common messages, `x is not defined`, `cannot read properties of undefined`, `x is not a function`, each with the line that causes it | *errors-and-debugging*, *using-the-lab* | 6 | built |
 | `event-loop` | The call stack, the timer and event queues, and the order in which plain code, `setTimeout`, a click, and a promise reaction run | *async-and-the-event-loop*, fetch-basics/synchronous-and-asynchronous | 6 | planned |
 | `promise-states` | A promise moving from pending to fulfilled or rejected, with `then`, `catch`, and `finally` attached and fired | *async-and-the-event-loop*, fetch-basics/promises-then-async-and-await | 6 | planned |
 | `async-await-unroll` | An `async` function and its `then` chain side by side, advanced one `await` at a time | *async-and-the-event-loop*, fetch-basics/promises-then-async-and-await | 6 | planned |

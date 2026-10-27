@@ -1,0 +1,42 @@
+figure.demo-frame .array-methods__array .demo-cell.demo-box--accent {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+figure.demo-frame .array-methods__array .demo-cell.demo-box--danger {
+  border-color: var(--color-danger);
+  background: var(--color-danger-soft);
+}
+
+figure.demo-frame .array-methods__state {
+  margin-top: var(--space-2);
+}
+
+figure.demo-frame .array-methods__same {
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .array-methods__returned {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+figure.demo-frame .array-methods__note {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+figure.demo-frame .array-methods__ledger {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+  gap: var(--space-1) var(--space-3);
+}
+
+figure.demo-frame .array-methods__ledger li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+}

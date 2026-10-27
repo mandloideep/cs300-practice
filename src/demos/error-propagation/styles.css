@@ -1,0 +1,43 @@
+figure.demo-frame .error-propagation__stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+figure.demo-frame .error-propagation__frame {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-2);
+  border-width: 1px;
+}
+
+figure.demo-frame .error-propagation__name {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .error-propagation__line {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+figure.demo-frame .error-propagation__holds {
+  flex: 1 1 100%;
+}
+
+figure.demo-frame .error-propagation__trace {
+  display: block;
+}
+
+figure.demo-frame .error-propagation__trace--at {
+  padding-left: 4ch;
+  font-weight: var(--weight-normal);
+}
+
+figure.demo-frame .error-propagation .demo-box.demo-box--danger {
+  border-color: var(--color-danger);
+  background: var(--color-danger-soft);
+}

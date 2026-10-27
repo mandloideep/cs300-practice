@@ -1,0 +1,71 @@
+figure.demo-frame .error-decoder__index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-bottom: var(--space-3);
+}
+
+figure.demo-frame .error-decoder__jump {
+  max-width: 100%;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  text-align: left;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease;
+}
+
+figure.demo-frame .error-decoder__index li:first-child .error-decoder__jump {
+  font-family: var(--font-sans);
+  font-weight: var(--weight-medium);
+}
+
+figure.demo-frame .error-decoder__jump:hover {
+  border-color: var(--color-accent);
+}
+
+figure.demo-frame .error-decoder__jump[aria-pressed="true"] {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .error-decoder__trace {
+  display: block;
+}
+
+figure.demo-frame .error-decoder__trace--at {
+  padding-left: 4ch;
+  font-weight: var(--weight-normal);
+}
+
+figure.demo-frame .error-decoder__parts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+figure.demo-frame .error-decoder__parts li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .error-decoder__parts .demo-chip {
+  font-family: var(--font-mono);
+}
+
+figure.demo-frame .error-decoder__text {
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
