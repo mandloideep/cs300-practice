@@ -9,6 +9,21 @@ required: [card-from-data, link-from-data, card-component]
 ---
 
 The last step puts every rule of this topic together, as the adaptation in our Week 10 Session 1 example does: we translate a semantic HTML card into JSX and fill it from a data object.
+Watch the bottom of the page and the inspector: the card appears only once `App` renders it, with its own outline inside `App`.
+
+Open `src/ConceptCard.jsx`.
+We started the file with the data: a `concept` object holding each value the card shows, and `ConceptCard` currently returns `null`.
+
+```predict
+`ConceptCard` returns `null` and `App` does not use it yet; when you press Run, what does the page show?
+= The same page as in Step 4, with no card
+- An empty card with a border and no text
+- An error saying a component must return an element
+```
+
+Press **Run** before you change anything.
+`return null;` is how a component renders nothing, which is why the page looks the same as in Step 4.
+
 Here is the card as we would write it in plain HTML, the way we learned semantic structure in Week 3.
 
 ```html
@@ -23,14 +38,6 @@ Here is the card as we would write it in plain HTML, the way we learned semantic
   </footer>
 </article>
 ```
-
-`<article>` marks content that makes sense on its own, such as one concept.
-The `<header>` and `<footer>` inside it belong to the article, not to the page.
-The card has one heading, an `<h2>`, because the page's `<h1>` is already in `App`.
-
-Open `src/ConceptCard.jsx`.
-We started the file with the data: a `concept` object holding each value the card shows.
-`ConceptCard` currently returns `null`, which is how a component renders nothing; that is why the page looks the same as in Step 4.
 
 Replace `return null;` with the translated card.
 Type it rather than pasting the HTML, and make three changes as you go: `class` becomes `className`, each piece of text that is data becomes an expression, and the link's `href` reads the object too.
@@ -50,13 +57,7 @@ Type it rather than pasting the HTML, and make three changes as you go: `class` 
   );
 ```
 
-The whole card is one root, the `<article>`, so the one-root rule from Step 2 holds without a fragment.
-`className` comes from Step 3.
-The parentheses let the JSX start on its own line after `return`; without them, JavaScript would end the statement at the line break and return nothing.
-
-`href={concept.reference}` has braces and no quotes.
-Quotes make an attribute a fixed string, and braces make it an expression.
-`href="{concept.reference}"` would send the browser to a page literally named `{concept.reference}`.
+`href={concept.reference}` has braces and no quotes, because quotes make an attribute a fixed string and braces make it an expression.
 
 Now render the card from `App`.
 Open `src/App.jsx` and import the component under the existing import.
@@ -77,16 +78,37 @@ With **Boundaries** on, `ConceptCard` has its own outline inside `App`.
 
 Change one value in the `concept` object, such as `name`, and run again.
 The heading changes, and nothing else in the card needed editing.
-In [Components and props](#/topic/components-and-props) we take the next step: instead of one object inside the file, `App` passes each concept to the card as props, so one component can show any concept.
 
-**Check:** The card shows **Week 10, Session 1**, the heading **Root rendering**, the summary, and a **Read the reference** link to the React `createRoot` page.
-The console shows no `Invalid DOM property` warning, and the inspector shows `ConceptCard` inside `App`.
-Press **Run checks** to confirm.
+## Read more
+
+`<article>` marks content that makes sense on its own, such as one concept.
+The `<header>` and `<footer>` inside it belong to the article, not to the page.
+The card has one heading, an `<h2>`, because the page's `<h1>` is already in `App`.
+
+The whole card is one root, the `<article>`, so the one-root rule from Step 2 holds without a fragment.
+`className` comes from Step 3.
+The parentheses let the JSX start on its own line after `return`; without them, JavaScript would end the statement at the line break and return nothing.
+
+`href="{concept.reference}"` would send the browser to a page literally named `{concept.reference}`.
+
+In [Components and props](#/topic/components-and-props) we take the next step: instead of one object inside the file, `App` passes each concept to the card as props, so one component can show any concept.
 
 **If it breaks:** If nothing new appears, check that `App.jsx` imports `ConceptCard` and uses `<ConceptCard />`, and that `return null;` is gone from the card.
 If the console warns `Invalid DOM property class`, one of the two `class` attributes was not renamed.
 If the link goes to a strange address, its `href` is in quotes; it must be `href={concept.reference}`.
 If the result pane says `concept is not defined`, the object at the top of `ConceptCard.jsx` was deleted or renamed.
+
+**Check:** The card shows **Week 10, Session 1**, the heading **Root rendering**, the summary, and a **Read the reference** link to the React `createRoot` page.
+The console shows no `Invalid DOM property` warning, and the inspector shows `ConceptCard` inside `App`.
+Press **Run checks** to confirm.
+
+```quiz
+Which `href` makes the link go to the address stored in `concept.reference`?
+- `href="concept.reference"`
+- `href="{concept.reference}"`
+= `href={concept.reference}`
+> Quotes make an attribute a fixed string, even with braces inside them; braces alone make it an expression whose value React reads.
+```
 
 <details>
 <summary>src/ConceptCard.jsx after this step</summary>

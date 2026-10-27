@@ -5,6 +5,28 @@
   "summary": "We learn the rules that make JSX different from HTML: expressions in braces, one root, attribute names such as className and htmlFor, closed tags, and conditional rendering. You will practice each rule on the Week 10 Session 1 example and finish by translating a semantic HTML card into JSX rendered from a data object.",
   "prerequisites": ["vite-project-anatomy"],
   "minutes": 45,
-  "updated": "2026-10-26",
-  "changeNote": "First version."
+  "updated": "2026-10-27",
+  "changeNote": "Rewritten so each step opens with an explainer or a prediction, folds the background under Read more, and ends with a quiz.",
+  "links": [
+    {
+      "kind": "reading",
+      "title": "react.dev: Writing markup with JSX",
+      "url": "https://react.dev/learn/writing-markup-with-jsx"
+    },
+    {
+      "kind": "reading",
+      "title": "react.dev: JavaScript in JSX with curly braces",
+      "url": "https://react.dev/learn/javascript-in-jsx-with-curly-braces"
+    },
+    {
+      "kind": "reading",
+      "title": "react.dev: Conditional rendering",
+      "url": "https://react.dev/learn/conditional-rendering"
+    },
+    {
+      "kind": "reference",
+      "title": "react.dev: Fragment",
+      "url": "https://react.dev/reference/react/Fragment"
+    }
+  ]
 }
