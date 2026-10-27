@@ -1,0 +1,20 @@
+figure.demo-frame .array-index-walk__state {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  margin: var(--space-3) 0;
+}
+
+figure.demo-frame .array-index-walk__cells {
+  margin-bottom: var(--space-3);
+}
+
+figure.demo-frame .array-index-walk__cells.has-ghost .demo-cell:last-child {
+  border-style: dashed;
+}
+
+figure.demo-frame .array-index-walk__note {
+  margin-top: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}

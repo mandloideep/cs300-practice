@@ -1,0 +1,46 @@
+figure.demo-frame .function-call__frames {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--space-3);
+  align-items: start;
+  margin: var(--space-3) 0;
+}
+
+figure.demo-frame .function-call__vars {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 7rem), 1fr));
+  gap: var(--space-2);
+}
+
+figure.demo-frame .function-call__var {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+figure.demo-frame .function-call__value {
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .function-call__kind,
+figure.demo-frame .function-call__from {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .function-call__from {
+  font-size: var(--text-xs);
+}
+
+figure.demo-frame .function-call__args {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .function-call__frame.is-leaving {
+  border-style: dashed;
+}
