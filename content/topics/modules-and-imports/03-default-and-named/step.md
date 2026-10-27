@@ -12,6 +12,11 @@ When it is done, `main.js` only connects the pieces.
 Press **Run**.
 Nothing has changed yet: five rows, the summary, and three lines in the console ending with `main.js ran`.
 
+By the end of this step the files import each other in a small graph, and that graph decides the order in which they run.
+
+```demo name="module-graph"
+```
+
 Replace the placeholder in `src/render.js` with the two rendering functions.
 
 ```js file="src/render.js" action="create"
@@ -54,12 +59,21 @@ renderSummary(document.querySelector("#summary"), students);
 
 `main.js` is now seven lines: two imports, two calls, and the log.
 
-Predict before you run: `main.js` no longer imports `format.js`; only `render.js` does.
-Does the console leave out `format.js ran`, show it above `render.js ran`, or show it below `render.js ran`?
+`main.js` no longer imports `format.js`; only `render.js` does.
+
+```predict
+Where does `format.js ran` appear in the console now?
+- Below `render.js ran`
+= Above `render.js ran`
+- Nowhere, because `main.js` stopped importing it
+```
+
 Run the code.
 The console shows `students.js ran`, `format.js ran`, `render.js ran`, `main.js ran`, and the page is unchanged.
 A file runs when any file imports it, not only when `main.js` does, and a file's own imports always run before it: `render.js` needs `format.js`, so `format.js` goes first.
 The files and their imports form a graph with `main.js` at the top, and the browser runs it from the bottom up.
+
+## Read more
 
 Default and named exports differ in how they are imported.
 A named export is imported by its exact name in braces, and `as` gives it another name in the importing file: `import { renderSummary as showCount } from "./render.js"`.
@@ -81,6 +95,22 @@ If the rows appear twice, the old loop is still in `src/main.js` beside the new 
 **Check:** Run the code.
 The page shows the five rows and `5 students graded.`, and the console shows `students.js ran`, `format.js ran`, `render.js ran`, `main.js ran`, with no red lines.
 Press **Run checks** to confirm.
+
+```quiz
+`render.js` says `export default function renderGradebook`, and `main.js` imports it as `import drawRows from "./render.js";`, so what happens?
+- `SyntaxError: ... does not provide an export named 'drawRows'`
+= It works, and `drawRows` is `renderGradebook` under a new name
+- `drawRows` is `undefined`
+> The importing file names the default export, because a file has only one; only named exports must match by name.
+```
+
+```quiz
+How many default exports can one file have?
+= One
+- As many as it needs
+- None, if it also has named exports
+> A file has at most one default export and any number of named ones, as `render.js` shows with one of each.
+```
 
 <details>
 <summary>src/main.js after this step</summary>
