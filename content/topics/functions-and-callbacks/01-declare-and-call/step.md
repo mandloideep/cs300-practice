@@ -5,17 +5,22 @@ entry: index.html
 required: [divider-printed-twice, lines-in-order]
 ---
 
+**We used this in:** [JavaScript basics](#/topic/javascript-basics) used arrow functions such as `getGrade` and handed small functions to `map` and `filter`; this topic slows down and looks at what a function is and what happens when it runs.
+
 A **function** is a named block of code that you write once and run as many times as you like.
 This step declares one that prints a divider line in a small gradebook and then calls it in two places.
 Watch for the difference between writing a function down and running it: the first does nothing you can see.
-
-**We used this in:** [JavaScript basics](#/topic/javascript-basics) used arrow functions such as `getGrade` and handed small functions to `map` and `filter`; this topic slows down and looks at what a function is and what happens when it runs.
 
 Press **Run** and the console shows three lines: `CS300 gradebook`, `Alice: 92`, and `Bob: 78`.
 We want a line of dashes under the title and another after the last student.
 Rather than typing the same `console.log` twice, we give that job a name.
 
-Predict before you run: once you add the function below, does the console show the dashes once, twice, or not at all?
+```predict
+Once you add the function below and run, how many lines of dashes does the console show?
+- One
+= None
+- Two
+```
 
 ```js file="src/main.js" action="append"
 
@@ -31,11 +36,16 @@ A declaration only stores the instructions under the name `printDivider`; nothin
 A call is the name followed by parentheses.
 Put the first one right under the title.
 
+```predict
+With the call above the function in the file, what does the console show under the title?
+- `ReferenceError: printDivider is not defined`
+= `----------`
+```
+
 ```js file="src/main.js" action="insert-after" anchor='console.log("CS300 gradebook");'
 printDivider();
 ```
 
-Predict before you run: the call sits above the function in the file, so does the console show the dashes, or `ReferenceError: printDivider is not defined`?
 Run it, and the dashes appear under the title.
 JavaScript reads every function declaration in a file before it runs the first line, so a declared function can be called from anywhere in the file, even above it.
 
@@ -48,6 +58,8 @@ printDivider();
 Run the code, and the dashes appear twice.
 Each call jumps into the body, runs it from the top, and comes back to the line after the call, so two calls print two dividers from one definition.
 If we later want a longer divider, we change one line inside the function and both places change with it.
+
+## Read more
 
 A function is the first tool you have for not repeating yourself, and it is also the way you give a piece of a program a name that says what it does.
 `printDivider()` reads as a sentence; `console.log("----------")` makes you work out what the dashes are for.
@@ -66,6 +78,21 @@ If the result pane says **Your code did not compile**, a brace is usually missin
 **Check:** Run the code.
 The console shows the title, a line of dashes, Alice and Bob, and a second line of dashes, five lines in all.
 Press **Run checks** to confirm.
+
+```quiz
+What does a line that reads `printDivider;`, with no parentheses, do?
+- Prints a line of dashes
+- Throws `ReferenceError: printDivider is not defined`
+= Nothing at all
+> Without parentheses the name only mentions the function, and only `printDivider()` calls it.
+```
+
+```quiz
+Can a function declaration be called on a line above the declaration?
+- No, the call throws a `ReferenceError`
+= Yes, because declarations are read before the file runs
+> JavaScript reads every function declaration before it runs the first line, which is why the first call in this step worked.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

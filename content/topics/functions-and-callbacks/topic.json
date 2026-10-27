@@ -4,6 +4,18 @@
   "area": "javascript",
   "summary": "Declare and call functions, pass values in through parameters and get one back with return, and treat a function as a value you can store and hand to another function. You will fix the parentheses mistake that breaks most first callbacks, rewrite a function as an arrow, and watch setTimeout run a callback after the rest of the file.",
   "prerequisites": ["javascript-basics"],
+  "links": [
+    {
+      "kind": "reading",
+      "title": "javascript.info: Functions",
+      "url": "https://javascript.info/function-basics"
+    },
+    {
+      "kind": "reading",
+      "title": "MDN: Functions",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions"
+    }
+  ],
   "minutes": 70,
   "updated": "2026-10-27",
   "changeNote": "First version."
