@@ -177,7 +177,7 @@ figure.demo-frame .demo-code__line {
   display: block;
   min-height: 1.55em;
   padding: 0 var(--space-3);
-  padding-left: calc(var(--space-3) + 2ch);
+  padding-left: calc(var(--space-3) + var(--demo-indent, 0ch) + 2ch);
   border-left: 3px solid transparent;
   text-indent: -2ch;
   white-space: pre-wrap;
@@ -224,36 +224,6 @@ figure.demo-frame .demo-chip {
   transition:
     background-color 200ms ease,
     border-color 200ms ease;
-}
-
-figure.demo-frame .demo-chip--accent,
-figure.demo-frame .demo-box--accent {
-  border-color: var(--color-accent);
-  background: var(--color-accent-soft);
-}
-
-figure.demo-frame .demo-chip--success,
-figure.demo-frame .demo-box--success {
-  border-color: var(--color-success);
-  background: var(--color-success-soft);
-}
-
-figure.demo-frame .demo-chip--warning,
-figure.demo-frame .demo-box--warning {
-  border-color: var(--color-warning);
-  background: var(--color-warning-soft);
-}
-
-figure.demo-frame .demo-chip--danger,
-figure.demo-frame .demo-box--danger {
-  border-color: var(--color-danger);
-  background: var(--color-danger-soft);
-}
-
-figure.demo-frame .demo-chip--muted,
-figure.demo-frame .demo-box--muted {
-  border-style: dashed;
-  color: var(--color-text-muted);
 }
 
 figure.demo-frame .demo-box {
@@ -314,6 +284,38 @@ figure.demo-frame .demo-cell__index {
   color: var(--color-text-muted);
   font-family: var(--font-sans);
   font-size: var(--text-xs);
+}
+
+/* Tones come after the base rules of chips, boxes, and cells so that they win. */
+
+figure.demo-frame .demo-chip--accent,
+figure.demo-frame .demo-box--accent {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+figure.demo-frame .demo-chip--success,
+figure.demo-frame .demo-box--success {
+  border-color: var(--color-success);
+  background: var(--color-success-soft);
+}
+
+figure.demo-frame .demo-chip--warning,
+figure.demo-frame .demo-box--warning {
+  border-color: var(--color-warning);
+  background: var(--color-warning-soft);
+}
+
+figure.demo-frame .demo-chip--danger,
+figure.demo-frame .demo-box--danger {
+  border-color: var(--color-danger);
+  background: var(--color-danger-soft);
+}
+
+figure.demo-frame .demo-chip--muted,
+figure.demo-frame .demo-box--muted {
+  border-style: dashed;
+  color: var(--color-text-muted);
 }
 
 figure.demo-frame .demo-console {

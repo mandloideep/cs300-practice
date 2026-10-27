@@ -37,17 +37,23 @@ export function Panel({ title, children, sunken = false, className = "" }) {
 }
 
 // Lines of code with some marked: `active` is the line running now; `marks` maps a line index
-// to "done", "error", or "good". Indexes start at 0.
+// to "done", "error", or "good". Indexes start at 0. A line too long for the column wraps with
+// its continuation indented two characters past the line's own indentation.
 export function CodeView({ lines, active = -1, marks = {}, label }) {
   return (
     <pre className="demo-code" aria-label={label}>
       <code>
         {lines.map((line, index) => {
           const state = index === active ? "active" : marks[index];
+          const indent = /^ */.exec(line)[0].length;
           return (
-            <span key={index} className={state ? `demo-code__line is-${state}` : "demo-code__line"}>
+            <span
+              key={index}
+              className={state ? `demo-code__line is-${state}` : "demo-code__line"}
+              style={indent > 0 ? { "--demo-indent": `${indent}ch` } : undefined}
+            >
               {index === active && <span className="visually-hidden">Running now: </span>}
-              {line === "" ? " " : line}
+              {line.trim() === "" ? " " : line.slice(indent)}
             </span>
           );
         })}
