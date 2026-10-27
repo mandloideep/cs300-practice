@@ -35,22 +35,22 @@ npm run preview
 
 | Script | What it does |
 | --- | --- |
-| `npm run dev` | Compiles the content, then starts the Vite dev server |
-| `npm run build` | Compiles the content, then builds the site into `dist/` |
+| `npm run dev` | Compiles all the content with `--all`, then starts the Vite dev server |
+| `npm run build` | Compiles the content released as of today, then builds the site into `dist/`; set `LAB_BUILD_DATE` to build as of another date |
 | `npm run preview` | Serves `dist/` locally |
-| `npm run build:content` | Compiles `content/` into `public/content/` with `scripts/build-content.mjs` |
+| `npm run build:content` | Compiles `content/` into `public/content/` with `scripts/build-content.mjs`, leaving out the units that have not opened as of `LAB_BUILD_DATE` or today; `-- --all` compiles everything |
 | `npm run build:runtime` | Rebuilds the vendored React runtime in `public/runtime/` with `scripts/build-runtime.mjs` |
 | `npm run verify:runtime` | Loads the vendored runtime in headless Chromium and checks that it acts as one React instance |
 | `npm run upgrade:runtime -- <react> <react-router>` | Pins the exact versions, rebuilds and verifies the runtime, and prints the commit message; `--dry-run` only prints the steps |
-| `npm run validate` | Validates `content/` without writing anything, with `scripts/validate-content.mjs` |
+| `npm run validate` | Validates all of `content/`, whatever the `opens` dates say, without writing anything, with `scripts/validate-content.mjs` |
 | `npm run new:topic -- <id> --area <area> --title "<title>"` | Scaffolds a topic with its first step from `scripts/templates/` |
 | `npm run new:step -- <topic-id> "<title>"` | Adds the next numbered step to a topic, starting from the previous step's solution |
 | `npm run lint` | Runs ESLint over `src`, `scripts`, and `tests` |
 | `npm run format` | Formats the code with Prettier |
 | `npm run format:check` | Checks the formatting with Prettier |
 | `npm run test:scripts` | Runs the Node tests for the scripts, under `scripts/test/`, without a browser |
-| `npm test` | Runs the Playwright tests against the Vite dev server; set `PLAYWRIGHT_PORT` when another checkout's server already holds port 4173 |
-| `npm run export:d2l -- <path-id>` | Writes a Brightspace page per unit of a path into `dist-d2l/` |
+| `npm test` | Compiles all the content with `--all`, then runs the Playwright tests against the Vite dev server; set `PLAYWRIGHT_PORT` when another checkout's server already holds port 4173 |
+| `npm run export:d2l -- <path-id>` | Writes a Brightspace page per open unit of a path into `dist-d2l/` |
 
 Prettier does not touch Markdown or `content/`.
 Markdown keeps one sentence per physical line, and the edit blocks in each `step.md` must match their workspace files byte for byte.
@@ -81,12 +81,23 @@ Two workflows live in `.github/workflows/`.
 It installs with `npm ci`, then runs lint, the format check, content validation, the build, and the script tests.
 It needs no browser and finishes in under a minute.
 
-`deploy.yml` runs only when it is started by hand, from the Actions tab or with `gh workflow run deploy.yml`.
-Its build job repeats the checks and uploads `dist/` as the Pages artifact.
+`deploy.yml` runs every Monday at 12:00 UTC, which is 7:00 in Chicago in summer time and 6:00 in winter, and whenever it is started by hand, from the Actions tab or with `gh workflow run deploy.yml`.
+Its build job repeats the checks, runs `npm run build` as of that day, and uploads `dist/` as the Pages artifact.
 Its test job restores the cached Chromium build, runs the runtime check, and runs the Playwright suite in three parallel shards.
 Its deploy job publishes the artifact to GitHub Pages once the build and every shard are green.
 The run takes two inputs, both on by default: `tests` skips the suite when off, and `deploy` skips publishing when off.
-Start it at the end of a phase or at any milestone worth publishing.
+A scheduled run has no inputs and behaves as a manual run with both on.
+Start it by hand at the end of a phase or at any milestone worth publishing.
+
+The weekly run is how a semester opens one unit at a time.
+`npm run build` compares each unit's `opens` date with the build date and compiles a unit that has not opened as its title and date only, and a topic that is in no open unit of an active path is left out of the deployed files, so its page does not exist until its week.
+On the Monday a unit opens, the scheduled run builds it in, runs the suite, and publishes only when every shard is green; a failed run reaches the instructor as the usual Actions failure notification, and the site stays as it was.
+`npm run dev`, `npm run validate`, and `npm test` always use `--all`, so authors and the suite see the whole site.
+To see the site as students will on a given day, build as of that date and serve it:
+
+```bash
+LAB_BUILD_DATE=2027-03-01 npm run build && npm run preview
+```
 
 ## Adding a topic
 
@@ -391,6 +402,7 @@ It never copies topic content, so improving a topic improves every path that use
 {
   "id": "spring-2027",
   "title": "Spring 2027",
+  "active": true,
   "units": [
     {
       "id": "week-10",
@@ -400,13 +412,18 @@ It never copies topic content, so improving a topic improves every path that use
         { "id": "react-mental-model", "required": true },
         { "id": "lists-and-keys", "required": false }
       ],
-      "localNotes": ["What students run on their own computer this week."]
+      "localNotes": ["What students run on their own computer this week."],
+      "opens": "2027-01-25"
     }
   ]
 }
 ```
 
 Every topic id must exist under `content/topics/`, every `required` is `true` or `false`, and `localNotes` is a list of sentences.
+Two optional fields control when students see the path, as the "Deployment" section explains.
+`opens` on a unit is the date it is released, written as `YYYY-MM-DD`; set it to the Monday of the unit's week so the scheduled deploy opens it that morning, and leave it out for a unit that is open from the start.
+`active` on the path is `true` by default; set it to `false` when a semester is over and the path is kept only for its history, and the deployed site leaves it out along with every topic that no active path releases.
+Validation still requires every topic to be in some path, whatever the dates and `active` say.
 The unit page is `#/path/<path-id>/<unit-id>`, which is the link to post in D2L.
 Run `npm run validate` after editing.
 

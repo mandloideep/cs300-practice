@@ -1,6 +1,10 @@
 name: Test and deploy
 
 on:
+  # Monday at 12:00 UTC, 7:00 in Chicago in summer time and 6:00 in winter, so that a unit whose
+  # opens date is that Monday is released by the gated npm run build.
+  schedule:
+    - cron: "0 12 * * 1"
   workflow_dispatch:
     inputs:
       tests:
@@ -48,8 +52,9 @@ jobs:
         with:
           path: dist
 
+  # A scheduled run has no inputs, so it runs the suite and deploys, as a manual run with both on.
   test:
-    if: ${{ inputs.tests }}
+    if: ${{ github.event_name == 'schedule' || inputs.tests }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -91,7 +96,7 @@ jobs:
           if-no-files-found: ignore
 
   deploy:
-    if: ${{ always() && inputs.deploy && needs.build.result == 'success' && (needs.test.result == 'success' || needs.test.result == 'skipped') }}
+    if: ${{ always() && (github.event_name == 'schedule' || inputs.deploy) && needs.build.result == 'success' && (needs.test.result == 'success' || needs.test.result == 'skipped') }}
     needs: [build, test]
     runs-on: ubuntu-latest
     environment:
