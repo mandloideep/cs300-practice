@@ -4,9 +4,11 @@ mode: read
 ---
 
 Every lesson in this lab is a topic, and every topic is a short row of steps that you take in order.
-This page is a step, and it is the plain kind: you read it and mark it as read.
-Most steps are the other kind, where you edit code on the right, run it, and see what it does, and the next step is one of those.
-Spend two minutes here learning what each part of an edit step is for, so that the rest of the semester you know where to look.
+This step is a map of the step page: what each pane is for and when to look at it.
+Select each pane in the picture below and read what it does, then read the table under it.
+
+```demo name="page-tour"
+```
 
 ## Three kinds of step
 
@@ -34,7 +36,38 @@ On a wide screen the explanation sits on the left and the work panes run down th
 The status pill at the top of the result pane says where a run is: **Not run yet**, **Compiling**, **Running**, **Ready**, or **Did not compile**.
 Wait for **Ready** before you read the console or the checks.
 
-## The buttons under the editor
+## How a step reads
+
+Every step opens with a few sentences that say what it builds and what to watch for, and then, before any code, one of two things.
+An **explainer** is a small moving picture, like the one above, with **Play**, **Step**, and **Reset** buttons; step through it once before you type.
+A **predict** question asks what the console or the page will show before you run the code.
+Pick an answer, then run: on an edit step the lab reveals the right answer after your next run, so the console, not the page, tells you whether you were right.
+
+Then come the edits, one small card at a time, each naming the file and saying exactly where the code goes.
+You type each edit rather than pasting it, because typing is how the shape of the code gets into your hands, and a typo you fix yourself teaches more than one you never made.
+
+The longer explanation sits under a **Read more** control, closed until you open it.
+Open it when you want the background or when something broke; if you prefer to read everything first, tick **Keep explanations open** under the step title, and every Read more on every step opens for you.
+
+Every step then ends the same way.
+A **Check:** paragraph says what a correct result looks like, and the checks pane confirms it.
+A **quiz** question or two follows, whose answer and explanation appear as soon as you pick; the topic page keeps your score.
+A collapsed panel at the very end of an edit step holds the whole file as it should be after the step, for when you want to compare.
+
+Try the predict question here: on a read step there is nothing to run, so it reveals its answer as soon as you pick.
+
+```predict
+On an edit step, which pane do you read first after pressing Run, when the step says nothing else?
+- The editor, to check what you typed
+= The result, and then the console
+- The checks, to see whether the step is done
+```
+
+The explanation usually says what to look at; when it does not, read the page your code drew and then what it printed, because a page that looks right can still have a red line in the console.
+
+## Read more
+
+### The buttons under the editor
 
 **Run** compiles every file in the editor and runs the result from scratch.
 **Run checks** runs the checks again without running the code again, which is useful after you click around in the result.
@@ -42,22 +75,17 @@ Wait for **Ready** before you read the console or the checks.
 **Reset to starter** puts back the files the step started with, after asking first.
 **Download this workspace** saves the step's files to your computer, which the last step of this topic explains.
 
-## How an edit step reads
-
-The explanation gives you small edits, one at a time, each in a card that names the file and says exactly where the code goes.
-You type each edit into the editor rather than pasting it, because typing is how the shape of the code gets into your hands, and because a typo you fix yourself teaches more than one you never made.
-After each edit you run the code and compare what you see with what the explanation says you should see.
-
-Every step ends the same way.
-A **Check:** paragraph says what a correct result looks like, and the checks pane confirms it.
-An **If it breaks:** paragraph names the mistakes students in our class make most often and where to look for each.
-A collapsed panel at the very end holds the whole file as it should be after the step, for when you want to compare.
-
-Predict before you continue: on an edit step, which pane do you read first after pressing **Run**, the editor, the result, or the console?
-The explanation tells you, every time; when it says nothing, read the result and then the console.
+**If it breaks:** If the panes look squeezed, widen the window or turn a tablet sideways; below 900 pixels the panes stack, and you scroll down to reach the console and the checks.
+If a step page shows an error instead of the step, reload the page; the lab keeps your work in this browser, so nothing is lost.
 
 **Check:** You can name, without looking back, the pane that shows what your code printed and the pane that says whether the step is done.
 They are the console and the checks pane, and you will use both in every edit step of this topic.
+Then press **Mark this step as read**.
 
-**If it breaks:** If the panes look squeezed, widen the window or turn a tablet sideways; below 900 pixels the panes stack, and you scroll down to reach the console and the checks.
-If a step page shows an error instead of the step, reload the page; the lab keeps your work in this browser, so nothing is lost.
+```quiz
+Which pane shows every error your code caused, in red?
+- The result
+- The checks
+= The console
+> The result shows only what the page draws, and the checks show only the step's expectations; errors go to the console, at the top.
+```

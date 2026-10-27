@@ -3,7 +3,12 @@
   "title": "Modules and imports",
   "area": "javascript",
   "summary": "Split a gradebook script that does everything into modules for its data, its formatting, and its output, with named and default exports, and watch a module that two files import run once and share its state. You will also read the two errors a browser gives when a script is not a module and when an import names a package it cannot find.",
-  "prerequisites": ["javascript-basics"],
+  "prerequisites": ["async-and-the-event-loop"],
+  "links": [
+    { "kind": "reading", "title": "javascript.info: Modules, introduction", "url": "https://javascript.info/modules-intro" },
+    { "kind": "reading", "title": "javascript.info: Export and Import", "url": "https://javascript.info/import-export" },
+    { "kind": "reading", "title": "MDN: JavaScript modules", "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules" }
+  ],
   "minutes": 60,
   "updated": "2026-10-27",
   "changeNote": "First version."

@@ -4,6 +4,18 @@
   "area": "javascript",
   "summary": "Find out where a variable can be seen: inside a block, inside a function, and out along the scope chain, and why const and let replaced var. You will build functions that remember the variables around them, make several independent counters from one factory, and explain the classic loop that prints the same number three times.",
   "prerequisites": ["functions-and-callbacks"],
+  "links": [
+    {
+      "kind": "reading",
+      "title": "javascript.info: Variable scope, closure",
+      "url": "https://javascript.info/closure"
+    },
+    {
+      "kind": "reading",
+      "title": "MDN: Closures",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures"
+    }
+  ],
   "minutes": 60,
   "updated": "2026-10-27",
   "changeNote": "First version."

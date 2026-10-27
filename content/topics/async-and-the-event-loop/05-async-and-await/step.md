@@ -11,6 +11,9 @@ Watch what the function does at each `await`, and what the rest of the script do
 
 **We used this in:** [Fetch basics](#/topic/fetch-basics) used `async` and `await` around `fetch`; this step shows what they stand for, using the chain you just wrote.
 
+```demo name="async-await-unroll"
+```
+
 The starter is the last step's finished file.
 Press **Run** and the console shows the six lines for orders 101 and 102, with the warning for 102.
 
@@ -34,7 +37,12 @@ trackWithAwait(first);
 console.log("Tracking started");
 ```
 
-Predict before you run: does `Tracking started` print before or after `Order 101 prepared`?
+```predict
+Which line prints first?
+- `Order 101 prepared`
+= `Tracking started`
+```
+
 Run it.
 `Tracking started` prints first, and `Order 101 prepared` about 100 ms later.
 At the `await`, `trackWithAwait` stopped and gave control back to its caller, so the script went on to the next line; when the promise was fulfilled, the function picked up where it stopped.
@@ -57,7 +65,13 @@ trackWithAwait(first);
 trackWithAwait(second);
 ```
 
-Predict before you run: order 102 has no address, so does the console show a warning, a red line, or nothing for it?
+```predict
+Order 102 has no address; what does the console show for it after `Order 102 prepared`?
+- A warning, `Problem: Order 102 has no address`
+= A red uncaught line
+- Nothing
+```
+
 Run it.
 A red **uncaught** line: `Error: Order 102 has no address`.
 When the promise an `await` waits for is rejected, the `await` line **throws** the rejection's error, as if the line said `throw error`.
@@ -80,6 +94,8 @@ Wrap the stages in `try`, the same `try` and `catch` as in the last topic, and a
 
 Run it.
 The console shows `Tracking started`, then the same six lines the chain printed, in the same order: `Order 101 prepared`, `Order 102 prepared`, `Order 101 shipped`, `Order 101 done`, the warning for 102, and `Order 102 done`.
+
+## Read more
 
 Read `track` and `trackWithAwait` side by side, because they are the same program.
 
@@ -110,6 +126,22 @@ If the code does not compile, check that `catch (error) {` and `finally {` each 
 The console shows `Tracking started` first, then `Order 101 prepared`, `Order 102 prepared`, `Order 101 shipped`, `Order 101 done`, a warning `Problem: Order 102 has no address`, and `Order 102 done`, with no red line.
 The checks wait for the last line before they read the console.
 Press **Run checks** to confirm.
+
+```quiz
+What does `await` pause?
+- The whole page, until the promise settles
+= Only the `async` function it is in
+- Every `async` function that is running
+> At an `await`, the function hands control back to its caller, and the rest of the page keeps running until the promise settles.
+```
+
+```quiz
+If you forget `await` before `prepare(order)`, what does `prepared` hold?
+- The prepared order
+= The promise itself
+- `undefined`
+> Without `await` you get the promise object, which has no `id` or `status`, so the log reads `Order undefined undefined`.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

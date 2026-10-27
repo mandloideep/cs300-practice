@@ -5,15 +5,20 @@ entry: index.html
 required: [var-prints-three-threes, let-prints-each, reminders-for-the-roster]
 ---
 
+**We used this in:** [Functions and callbacks](#/topic/functions-and-callbacks) ran a callback later with `setTimeout`, after the rest of the file.
+
 This step puts the whole topic together in one famous puzzle: a loop that sets a timer on each pass, where each timer prints the loop counter.
 With `var` the three timers print the same number, and with `let` they print three different ones.
 Watch the output and then work out why, using three ideas from this topic: `var` ignores blocks, a callback runs after the file finishes, and a closure reads a variable's current value.
 
-**We used this in:** [Functions and callbacks](#/topic/functions-and-callbacks) ran a callback later with `setTimeout`, after the rest of the file.
-
 The starter loops three times with a `var` counter, and each pass sets a 50 millisecond timer whose callback prints `i`.
 
-Predict before you run: does the console show `var i is 0`, `var i is 1`, and `var i is 2`, or `var i is 3` three times, or `var i is 2` three times?
+```predict
+When you run the starter, what does the console show?
+- `var i is 0`, `var i is 1`, `var i is 2`
+- `var i is 2` three times
+= `var i is 3` three times
+```
 
 Press **Run**, and the console shows `var i is 3` three times.
 Here is the order of events.
@@ -24,7 +29,11 @@ All three callbacks close over that same `i`, and a closure reads the variable's
 
 Now the same loop with `let`.
 
-Predict before you run: after the next edit, do the new lines show `let j is 0`, `let j is 1`, and `let j is 2`, or `let j is 3` three times?
+```predict
+After the next edit, what do the new lines show?
+- `let j is 3` three times
+= `let j is 0`, `let j is 1`, `let j is 2`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -56,6 +65,8 @@ Each callback reads `roster[index]` with the `index` of its own pass, so each st
 The delays are different, 50, 100, and 150 milliseconds, only to keep the three groups of lines apart in the console.
 The checks wait for the last group before they read the console, so give them a moment after **Run**.
 
+## Read more
+
 Before `let` existed, programmers fixed this by wrapping the body of the loop in a function and calling it with `i`, so that each call made a new scope; you may see that pattern in old code, and you never need to write it.
 Today the fix is the habit from Step 2: never write `var`, and a loop counter is a `let`.
 The same reasoning will explain a React puzzle later in the course, where a handler or a timer inside a component sees an older value than you expected, because it closed over the variables of the render that created it.
@@ -72,6 +83,22 @@ If the reminders show `undefined`, the loop runs past the end of the roster, so 
 **Check:** Run the code and wait a moment.
 The console shows `var i is 3` three times, then `let j is 0`, `let j is 1`, and `let j is 2`, then the three reminders for Alice, Bob, and Charlie.
 Press **Run checks** to confirm.
+
+```quiz
+Why do the three `var` callbacks all print `3`?
+- The timers are too slow to catch the earlier values
+= There is one shared `i`, and it is already `3` when the callbacks run
+- `setTimeout` adds one to `i` before it calls the callback
+> The loop finishes before any timer fires, and all three callbacks read the same `var`.
+```
+
+```quiz
+What is the modern fix for this loop?
+- A longer delay
+- Moving the timer above the loop
+= Declaring the counter with `let`
+> A `let` in the head of a `for` loop makes a new variable for each pass, so each callback keeps its own value.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

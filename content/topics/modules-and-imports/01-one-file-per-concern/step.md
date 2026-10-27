@@ -21,6 +21,15 @@ In a file this short that is fine.
 In a file of four hundred lines, a change to how a grade is shown means scrolling past the data and the page code to find it, and a teammate changing the data at the same time edits the same file.
 One file per concern means each job has one place to live.
 
+You are about to move the array out of `main.js`, and you will run once after deleting it there and before importing it back.
+
+```predict
+After the array is deleted from main.js and before any import, what does a run show?
+- The five rows, as before
+= `ReferenceError: students is not defined`
+- An empty list and no error
+```
+
 Start with the data.
 `src/students.js` is already in the file list and holds only `export {};`, which is an empty module; replace all of it with the array.
 
@@ -44,7 +53,6 @@ The array now exists twice, so delete it from `src/main.js`, together with the b
 ```js file="src/main.js" action="delete" anchor='const students = [\n  { name: "Alice", score: 95 },\n  { name: "Bob", score: 73 },\n  { name: "Charlie", score: 88 },\n  { name: "Diana", score: 62 },\n  { name: "Frank", score: 45 }\n];\n'
 ```
 
-Predict before you run: does the page show five rows, the page with no rows, or an error in the console?
 Run the code.
 The console shows a red `ReferenceError: students is not defined` with an **uncaught** badge, the rows are gone, and `students.js ran` is nowhere.
 Each file is a **module**, and a module has its own scope: a name declared in one file does not exist in another until that file imports it.
@@ -60,6 +68,8 @@ import { students } from "./students.js";
 `import { students } from "./students.js"` reads as "take the export named `students` from the file `students.js` in the same folder as this one".
 Run the code.
 The five rows and the summary are back, and the console shows `students.js ran` above `main.js ran`.
+
+## Read more
 
 You may have typed lines like `import App from "./App.jsx"` before without being told what they do; this topic is the why.
 The Week 8 CourseHub build in [Application architecture](#/topic/app-architecture) kept one `app.js` and organized it into sections by responsibility.
@@ -77,6 +87,14 @@ If the result pane says it cannot find the file, the path in the import does not
 **Check:** Run the code.
 The page shows five rows and `5 students graded.`, and the console shows `students.js ran` and then `main.js ran`, with no red lines.
 Press **Run checks** to confirm.
+
+```quiz
+If `src/students.js` exports its array but no file imports it, does `students.js ran` appear in the console?
+- Yes, every file in `src/` runs when the page loads
+- Only on the second run
+= No, a file runs only when something imports it
+> The browser loads only the scripts the page names and the files they import, so a module nothing imports is never even fetched.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

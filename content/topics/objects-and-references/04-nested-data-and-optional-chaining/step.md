@@ -13,6 +13,9 @@ Press **Run**.
 The console shows `Course: CS101 Introduction to Programming` and `Instructor: Ana Rivera`.
 Look at the data first: `course.instructor` is an object, `course.instructor.office` is another one inside it, `course.ta` is `null` because no TA has been hired yet, and Bob has no `advisor` key at all.
 
+```demo name="optional-chaining"
+```
+
 Walk three levels down.
 
 ```js file="src/main.js" action="append"
@@ -25,7 +28,13 @@ Read the path left to right: start at `course`, follow `instructor` to its objec
 Each dot needs the value on its left to be an object.
 
 Now ask for the name of the TA.
-Predict before you run: does the console show `TA: undefined`, `TA: null`, or `TypeError: Cannot read properties of null (reading 'name')`?
+
+```predict
+What does the console show for `course.ta.name` when `course.ta` is `null`?
+- `TA: undefined`
+= `TypeError: Cannot read properties of null (reading 'name')`
+- `TA: null`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -68,7 +77,12 @@ students.forEach((student) => {
 Alice and Charlie show their advisors, and Bob shows `not assigned`: `student.advisor` is `undefined` for him, because reading a key an object does not have gives `undefined`, so `?.` stops and `??` fills in.
 
 Last, why `??` and not the `||` you may have seen.
-Predict before you run: does the console show `with ??: 0` or `with ??: 5`?
+
+```predict
+With `extraCredit` set to `0`, what does the `??` line show?
+- `with ??: 5`
+= `with ??: 0`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -82,6 +96,8 @@ Run the code.
 `||` falls back whenever the left side is falsy, and `0`, `""`, and `false` are all falsy, so it throws away a real score of zero.
 `??` falls back only for `null` and `undefined`, the values that mean "nothing here", which is almost always what you want for data.
 
+## Read more
+
 One `?.` covers the rest of its path: in `course.ta?.office.room` the walk stops at the `null` and never reaches `.office`, so you do not need `?.` on every dot.
 Put `?.` only where a value may really be missing; on a value that must exist, a plain dot and a loud error tell you about a bug sooner than a quiet `undefined` does.
 Try it: change `course.instructor.office.room` to `course.instuctor.office.room`, with the `r` missing, run, and read `Cannot read properties of undefined (reading 'office')`, because the misspelled key is `undefined`; that error points straight at the typo, and a `?.` there would have hidden it.
@@ -94,6 +110,21 @@ If `with ??:` shows `5`, the line uses `||` twice.
 **Check:** Run the code.
 The console shows `Room: 204`, `TA: no TA this term` with no red line, one advisor line per student with `Bob's advisor: not assigned` in the middle, `with ||: 5`, and `with ??: 0`.
 Press **Run checks** to confirm.
+
+```quiz
+What is `undefined?.name`?
+= `undefined`
+- `TypeError: Cannot read properties of undefined (reading 'name')`
+- `null`
+> `?.` checks the value on its left, finds `undefined`, and stops the walk there instead of reading `name`.
+```
+
+```quiz
+What is `"" ?? "none"`?
+= `""`, the empty string
+- `"none"`
+> `??` falls back only for `null` and `undefined`; an empty string is a real value, and only `||` would replace it.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

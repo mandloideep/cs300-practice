@@ -16,6 +16,13 @@ The console shows `Products: 6`, a store with a category, a price, and a stock f
 
 Start with two filters.
 
+```predict
+How many products are both in stock and under $20?
+- `Affordable: 5`
+= `Affordable: 4`
+- `Affordable: 6`
+```
+
 ```js file="src/main.js" action="append"
 
 const affordable = products
@@ -56,7 +63,13 @@ The `filter` keeps the pens and the highlighters, and `reduce` adds their prices
 `reduce` returns a number, so it is always the last link: a number has no `map` or `filter`.
 
 Last, the order of the links.
-Predict before you run: does the console show `map first: []`, `map first: ["Notebook","Backpack","Pens","Highlighters","Planner"]`, or a `TypeError`?
+
+```predict
+What does the console show when `map` to titles comes before the `inStock` filter?
+- `map first: ["Notebook","Backpack","Pens","Highlighters","Planner"]`
+= `map first: []`
+- `TypeError: Cannot read properties of undefined (reading 'inStock')`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -71,6 +84,8 @@ The console shows `map first: []`.
 After the `map`, the array holds only strings such as `"Notebook"`, and a string has no `inStock` property, so `title.inStock` is `undefined` for every one, `filter` keeps none, and nothing complains.
 Each link sees only what the link before it returned, so filter while you still have the objects, and map to strings at the end.
 
+## Read more
+
 When a chain gives the wrong answer, break it apart.
 Give each link its own `const` and log it, as the first two edits did with `affordable` and `labels`, and the first log that looks wrong tells you which link to fix.
 Chaining also does not change `products`: every link here is a copying method, which is why `Products: 6` stays true for the whole file.
@@ -83,6 +98,22 @@ If `Writing supplies total` shows `0`, the category in the filter is misspelled,
 **Check:** Run the code.
 The console shows `Affordable: 4`, the four labels from `Pens $3.00` to `Planner $12.00`, `Writing supplies total: 9.25`, and `map first: []`.
 Press **Run checks** to confirm.
+
+```quiz
+In a chain of `filter`, `map`, and `reduce`, which one has to come last?
+- `filter`
+- `map`
+= `reduce`
+> `reduce` returns one value, such as a number, and a number has no array methods to chain onto.
+```
+
+```quiz
+Why does `products.map((product) => product.title).filter((title) => title.inStock)` keep nothing?
+- `filter` cannot follow `map`
+= The strings that `map` returned have no `inStock` property
+- `map` changed the products, so they lost `inStock`
+> Each link sees only what the link before it returned, so after the `map` there are only titles, and `title.inStock` is `undefined` for every one.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

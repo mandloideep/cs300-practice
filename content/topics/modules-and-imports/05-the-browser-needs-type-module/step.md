@@ -15,7 +15,14 @@ The page shows the five curved rows, and the console shows five lines from `stud
 Open `index.html`.
 The script tag is the last line inside `<body>`, after the list it fills.
 Remove the attribute first: change the tag to `<script src="/src/main.js"></script>`, with no `type`.
-Predict before you run: do the rows render as before, does the page stay unrendered with an empty console, or does the console show an error about the `import` statement?
+
+```predict
+With `type="module"` gone, what does a run show?
+- The five rows, as before
+= `SyntaxError: Cannot use import statement outside a module`
+- No rows and an empty console
+```
+
 Run the code.
 The page says `The gradebook has not rendered yet.`, and the console shows one red line with an **uncaught** badge: `SyntaxError: Cannot use import statement outside a module`, pointing at `src/main.js:1`.
 Without `type="module"`, the browser loads the file as a **classic script**, the older kind, and in a classic script `import` is not a statement at all; the browser cannot even read the file, so not one line of it runs.
@@ -33,12 +40,21 @@ Put the same tag in the `<head>`, under the stylesheet link.
     <script type="module" src="/src/main.js"></script>
 ```
 
-Predict before you run: the script now comes before the `<ul id="grades">` that it fills.
-Does the page show the five rows, the page with no rows and no error, or an error because `#grades` does not exist yet?
+The script now comes before the `<ul id="grades">` that it fills.
+
+```predict
+What does the page show with the module script in the head?
+- No rows and no error
+- `TypeError: Cannot read properties of null`, because `#grades` does not exist yet
+= The five curved rows, as before
+```
+
 Run the code.
 The five rows render exactly as before.
 A module script never runs where the browser meets it: the browser downloads it and its imports while it keeps reading the HTML, and runs it only after the whole document has been built, so `#grades` is there by the time `main.js` looks for it.
 This is called being **deferred**, and every module script is deferred without you asking.
+
+## Read more
 
 Keep the attribute from here on.
 If you remove it again now that the tag is in the `<head>`, the page stays unrendered and the lab's console stays empty, because a classic script in the `<head>` runs before the lab's console starts listening; the browser's own console, opened with F12, still shows the `SyntaxError`.
@@ -59,6 +75,22 @@ If the rows appear twice, the old tag is still at the end of `<body>`.
 **Check:** Run the code.
 The tag sits in the `<head>` with `type="module"`, the five curved rows render, and the console has no red lines.
 Press **Run checks** to confirm.
+
+```quiz
+Why does a module script in the `<head>` still find `#grades`, which comes later in the HTML?
+- The browser moves module scripts to the end of `<body>`
+= A module script waits until the whole document has been parsed
+- `querySelector` waits until the element exists
+> Every module script is deferred: it downloads while the HTML is read and runs only once the document is built.
+```
+
+```quiz
+What does `<script src="/src/main.js"></script>` give when `main.js` starts with an `import` line?
+- `ReferenceError: import is not defined`
+- It works, because the file ends in `.js`
+= `SyntaxError: Cannot use import statement outside a module`
+> Without `type="module"` the file is a classic script, where `import` is not a statement, so the browser cannot read the file at all.
+```
 
 <details>
 <summary>index.html after this step</summary>

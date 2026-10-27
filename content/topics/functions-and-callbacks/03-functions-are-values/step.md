@@ -12,7 +12,12 @@ Watch the difference between the name of a function on its own and the same name
 Press **Run** and the console shows `Curved 80: 85`.
 `addCurve(80)` is a call, so what reaches `console.log` is the number the function returned.
 
-Predict before you run: after the next edit, does the line `The value itself:` show `85`, `[Function addCurve]`, or `undefined`?
+```predict
+After the next edit, what does the line `The value itself:` show?
+- `85`
+- `undefined`
+= `[Function addCurve]`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -66,6 +71,8 @@ The array holds two functions, not two results, because neither name has parenth
 The loop takes each one in turn, calls it with the current score, and keeps what it returns: `98` becomes `103` with the curve and `100` with the cap.
 Run the code and the console shows `After every rule: 100`.
 
+## Read more
+
 Storing functions is not a trick for its own sake.
 Once a function is a value, one piece of code can choose which function to run, or hand a function to another function and let that one decide when to call it.
 The loop above already does a small version of that: it does not know what any rule does, only that each one takes a score and returns a score.
@@ -83,6 +90,22 @@ If `After every rule:` prints `103`, the array has only `addCurve` in it.
 **Check:** Run the code.
 The console shows `addCurve is a function`, `The value itself: [Function addCurve]`, `Called through adjust: 75`, `Capped 104: 100`, and `After every rule: 100`.
 Press **Run checks** to confirm.
+
+```quiz
+What does `const adjust = addCurve;` do?
+- Calls `addCurve` and stores its result
+= Gives the same function a second name
+- Copies the code of `addCurve` into a new function
+> Without parentheses nothing runs; `adjust` and `addCurve` now name one function.
+```
+
+```quiz
+What is `typeof addCurve`?
+- `"object"`
+- `"string"`
+= `"function"`
+> A function is a value with a type of its own, beside strings, numbers, and booleans.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

@@ -3,6 +3,10 @@ title: Breakpoints in DevTools
 mode: edit
 entry: index.html
 required: [alice-average, bob-average, no-nan]
+links:
+  - kind: reading
+    title: "MDN: JavaScript debugging and error handling"
+    url: https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Debugging_JavaScript
 ---
 
 Some bugs raise no error at all: the code runs to the end and prints the wrong value.
@@ -23,6 +27,13 @@ Leave DevTools open for the rest of this step.
 
 Now add a `debugger` statement inside the loop, after the line that adds to `total`.
 
+```predict
+What does a `debugger;` line do when DevTools is closed?
+- It pauses the code anyway, until you open DevTools
+= Nothing at all
+- It throws a `SyntaxError`
+```
+
 ```js file="src/main.js" action="insert-after" anchor="    total += scores[i];"
     debugger;
 ```
@@ -38,7 +49,13 @@ You can also hover over a variable in the code to see its value.
 Press the **Resume** button, the triangle at the top of the right-hand side, or F8.
 The loop runs one more pass and stops on the same line again: `i` is `1` and `total` is `183`.
 
-Predict before you run on: on which pause does `total` stop being a number, the third, the fourth, or never, because the bug is somewhere else?
+```predict
+On which pause does `total` stop being a number?
+- The third
+= The fourth
+- Never, because the bug is somewhere else
+```
+
 Press **Resume** twice more and read `total` each time.
 On the third pause `i` is `2` and `total` is `275`, all three scores added.
 On the fourth pause `i` is `3` and `total` is `NaN`.
@@ -62,6 +79,8 @@ Then remove the `debugger` line, because a breakpoint left in the code pauses th
 
 Run it, and the console shows `Alice: 91.7` and `Bob: 74.0`.
 
+## Read more
+
 The `debugger` statement is the fastest way into the Sources panel in the lab, because it finds your file for you.
 Once DevTools is paused in your file, you can also click a line number in the code to set a breakpoint there without typing anything, and click it again to remove it; right-click a line number and choose **Add conditional breakpoint** to stop only when an expression such as `i === 3` is true, which skips straight to the pass you care about.
 The buttons beside **Resume** step through the code: **Step over** (F10) runs the current line and stops on the next one, and **Step into** (F11) follows a function call inside.
@@ -79,6 +98,14 @@ If the console still shows `NaN`, the loop test still reads `<=`.
 **Check:** Run the code.
 The console shows `Alice: 91.7` and `Bob: 74.0`, and nothing prints `NaN`.
 Press **Run checks** to confirm.
+
+```quiz
+A loop over a three-item array has the test `i <= scores.length`; what is the last value of `i` inside the loop?
+- `2`
+= `3`
+- `4`
+> The test lets `i` reach `scores.length`, one past the last index, so `scores[3]` is `undefined` and the total becomes `NaN`.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

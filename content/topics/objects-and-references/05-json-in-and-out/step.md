@@ -13,8 +13,17 @@ Press **Run**.
 The console shows the cart, `{"owner":"Alice","items":[{"title":"Notebook","price":4.5,"quantity":2},{"title":"Pens","price":3,"quantity":1}]}`.
 The lab's console prints every object in this compact form, which is JSON, so keep an eye on the types and not only on the text.
 
+```demo name="json-roundtrip"
+```
+
 Turn the cart into text.
-Predict before you run: does the console show `Type of text: object`, `Type of text: string`, or `Type of text: json`?
+
+```predict
+What does the console show for the type of `JSON.stringify(cart)`?
+- `Type of text: object`
+- `Type of text: json`
+= `Type of text: string`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -29,7 +38,12 @@ Run the code.
 **JSON** is that spelling: keys and strings in double quotes, numbers, `true`, `false`, `null`, arrays in brackets, and objects in braces, which is why every language can read it.
 
 Now go back the other way.
-Predict before you run: after the restored copy is changed, does the console show `cart quantity: 2` or `cart quantity: 5`?
+
+```predict
+After the restored copy's quantity is set to `5`, what does the console show for the original cart?
+= `cart quantity: 2`
+- `cart quantity: 5`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -45,7 +59,13 @@ Run the code.
 Unlike the spread in Step 3, parsing builds new objects at **every** level, including the item inside the array, so nothing is shared with the original.
 
 JSON has no spelling for some values.
-Predict before you run: does the console show `Keys after: ["id","placed","coupon","formatTotal"]`, `Keys after: ["id","placed"]`, or `Keys after: ["id"]`?
+
+```predict
+Which keys does the order still have after the round trip through JSON?
+- `Keys after: ["id","placed","coupon","formatTotal"]`
+= `Keys after: ["id","placed"]`
+- `Keys after: ["id"]`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -68,6 +88,8 @@ Run the code.
 `placed` survives, but as a different type: a `Date` is an object before the trip and a `string` after it, the text `2026-10-27T15:00:00.000Z`.
 Calling `roundTrip.placed.getFullYear()` would fail, because a string has no such method; when you load a date from JSON, you make a `Date` from the string again with `new Date(roundTrip.placed)`.
 
+## Read more
+
 You will meet JSON at both ends of every app you build this semester.
 `localStorage` stores only strings, so next week you will save state with `JSON.stringify` and load it with `JSON.parse`.
 `fetch` gets JSON text from a server, and its `response.json()` is a `JSON.parse` for you.
@@ -83,6 +105,22 @@ If the console shows a red `SyntaxError` that mentions JSON, `JSON.parse` receiv
 **Check:** Run the code.
 The console shows the cart as text, `Type of text: string`, `text.owner: undefined`, `Restored owner: Alice`, `Same object? false`, `cart quantity: 2`, four keys before and two after, `placed before: object after: string`, and the date as a string.
 Press **Run checks** to confirm.
+
+```quiz
+What is `JSON.stringify({ coupon: undefined, total: 12 })`?
+- `{"coupon":undefined,"total":12}`
+= `{"total":12}`
+- `{"coupon":null,"total":12}`
+> JSON has no way to write `undefined`, so `JSON.stringify` leaves that key out without a word.
+```
+
+```quiz
+After `JSON.parse(JSON.stringify(order))`, what type is the date that was in `order.placed`?
+- `object`, still a `Date`
+= `string`
+- `number`
+> A `Date` is written as text such as `2026-10-27T15:00:00.000Z`, and parsing gives that text back, not a `Date`.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

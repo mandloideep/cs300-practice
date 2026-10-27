@@ -13,6 +13,13 @@ Press **Run** and the console shows one line, `Gradebook loaded`, with a **log**
 
 Turn the first line into a status message at the **info** level, and let it say how many students there are.
 
+```predict
+After this edit, what does the console pane show?
+- Nothing, because `console.info` prints only in the browser's own console
+- `info: Gradebook loaded: 4 students` with a **log** badge
+= `Gradebook loaded: 4 students` with an **info** badge
+```
+
 ```js file="src/main.js" action="replace" anchor='console.log("Gradebook loaded");'
 console.info("Gradebook loaded:", students.length, "students");
 ```
@@ -27,7 +34,13 @@ Now print the first student, the way many people try it first.
 console.log("First student: " + students[0]);
 ```
 
-Predict before you run: does the console show `First student: {"name":"Alice","score":95}`, `First student: [object Object]`, or an error?
+```predict
+What does the console show for the first student?
+- `First student: {"name":"Alice","score":95}`
+= `First student: [object Object]`
+- A red `TypeError`
+```
+
 Run it.
 The console shows `First student: [object Object]`.
 `+` with a string turns the other side into a string first, and an object turned into a string is the useless text `[object Object]`.
@@ -57,11 +70,19 @@ console.log("Checked every student.");
 
 A score over 100 is a mistake in the data, so it is an **error**; a failing score is real but worth noticing, so it is a **warning**; a fine score is a detail you want only while debugging, so it is **debug**.
 
-Predict before you run: Diana's line is printed with `console.error`, so does the console show `Checked every student.` after it, or does the loop stop at Diana?
+```predict
+Diana's line is printed with `console.error`; does `Checked every student.` still print?
+= Yes, last, after Diana's error line
+- No, the loop stops at Diana
+- No, and a red uncaught line appears
+```
+
 Run it.
 Alice and Charlie print with a **debug** badge, Bob with a **warning** badge, Diana with an **error** badge, and `Checked every student.` prints last.
 `console.error` only prints a line in red; it does not throw, so the loop and the script carry on.
 That is the difference from the last two steps: `throw` changes what the code does next, and `console.error` only tells you something.
+
+## Read more
 
 The levels exist so that you can find the line that matters among a hundred that do not.
 In the browser's own console, each level gets its own color and icon, and the **levels** filter at the top hides the ones you do not want; Chrome hides **debug**, which it calls **Verbose**, until you turn it on, while the lab shows all five.
@@ -87,6 +108,14 @@ If no debug lines appear, check that the last branch calls `console.debug`, spel
 **Check:** Run the code.
 The console shows `Gradebook loaded: 4 students` at the info level, the first student as an object, `Alice is fine with 95` and `Charlie is fine with 88` at the debug level, `Bob is failing with 54` as a warning, `Diana has an impossible score: 140` as an error, and `Checked every student.`
 Press **Run checks** to confirm.
+
+```quiz
+Which of these prints a line in the lab's console pane?
+- `console.table(students)`
+= `console.debug("detail")`
+- `console.count("checked")`
+> The lab shows the five levels, `log`, `info`, `warn`, `error`, and `debug`; `table`, `group`, `count`, and `time` print only in the browser's own console.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

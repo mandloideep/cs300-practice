@@ -7,6 +7,13 @@ This last step says where the lab keeps your work, how to take a step home to yo
 Read it once now and come back to it when you first change computers or browsers.
 Nothing here needs the editor.
 
+```predict
+You finish three steps on a lab computer and open the lab on your laptop that evening; how many of those steps does the laptop show as complete?
+- All three, because the lab remembers you
+= None, unless you exported your progress and imported it on the laptop
+- Only the last one
+```
+
 ## Where your progress lives
 
 The lab has no accounts and no server, so your progress is kept in this browser and nowhere else.
@@ -50,17 +57,24 @@ A local step has its own download, the project the step tells you to run, and it
 Every page of the lab has its own address, so a link to a step opens that step.
 The links your instructor posts in D2L open a week's unit, which lists the topics for that week in order.
 
-Predict before you leave: if you finish three steps on a lab computer and open the lab on your laptop that evening, how many of those steps will the laptop show as complete?
-None, unless you exported your progress on the lab computer and imported it on the laptop.
+## Read more
 
-## What comes next
-
-You have now used every part of the step page that the first weeks need.
-Go back to your week's unit from the home page and start its first topic.
-
-**Check:** You can say, in one sentence each, where your progress is kept, how to move it to another browser, and what to run in a downloaded React workspace.
-Then press **Mark this step as read**, and this topic is complete.
+The lab has no accounts on purpose: nothing about you or your work leaves your browser, and no one, including your instructor, can see your progress unless you send them the exported file.
+That is also why an export is the only backup; keep a recent one before you clear your browser or change computers.
 
 **If it breaks:** If the home page shows no progress after you completed steps, check that you are in the same browser and not in a private window.
 If an imported file is refused, it was exported by a newer version of the lab or is not a progress file; export it again from the browser that has your work.
 If `npm install` fails in a downloaded project, Node is missing; the Vite topic shows how to install it.
+
+**Check:** You can say, in one sentence each, where your progress is kept, how to move it to another browser, and what to run in a downloaded React workspace.
+Then press **Mark this step as read**, and this topic is complete.
+
+You have now used every part of the step page that the first weeks need; go back to your week's unit from the home page and start its first topic.
+
+```quiz
+You downloaded a React step's workspace and unzipped it; what do you run in its folder?
+- Open `index.html` by double-clicking it
+= `npm install` and then `npm run dev`
+- `node src/main.jsx`
+> A React workspace downloads as a Vite project, so it needs its packages installed and the Vite server running; a plain HTML step is the one you open directly.
+```

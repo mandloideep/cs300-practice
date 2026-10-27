@@ -11,6 +11,9 @@ Watch which function the trace names first, and which line the bug really lives 
 
 **We used this in:** [JavaScript basics](#/topic/javascript-basics) ended with a table of error messages and the advice to read the first red line; this topic reads all of it.
 
+```demo name="call-stack"
+```
+
 Press **Run** and the console shows three report lines: `Alice: 91.7`, `Bob: 74.0`, and `Charlie: 86.0`.
 Three functions do the work: `printReport` loops over the list, `reportLine` builds one line, and `average` adds up one student's scores.
 `toFixed(1)` turns a number into a string with one digit after the point, which is why `74` prints as `74.0`.
@@ -23,7 +26,13 @@ Put a comma after Charlie's object, since every item of an array but the last ne
   { name: "Diana" }
 ```
 
-Predict before you run: does the console show four report lines, three report lines and then an error, or only an error?
+```predict
+With Diana added, what does the console show when you run it?
+- Four report lines, with `Diana: NaN` last
+= Three report lines and then an error
+- Only an error, with no report lines
+```
+
 Run it.
 Three report lines print, and at the top of the console a red line with an **uncaught** badge says `TypeError: Cannot read properties of undefined (reading 'length')`.
 Alice, Bob, and Charlie were fine; Diana's object has no `scores` key, so `student.scores` is `undefined`, and `average` tried to read `.length` from it.
@@ -35,7 +44,13 @@ Add one more line at the very end of the file.
 console.log("The script reached its last line.");
 ```
 
-Predict before you run: does the console show `The script reached its last line.` after the error, or not at all?
+```predict
+Does the console show `The script reached its last line.`?
+= No, it never prints
+- Yes, after the red line
+- Yes, before the report lines
+```
+
 Run it, and the line is missing.
 An uncaught error stops the script at the line that threw, so nothing after it runs: not Diana's line, not the last line, nothing.
 
@@ -51,7 +66,13 @@ try {
 }
 ```
 
-Predict before you run: which function does the first `at` line of the trace name, `printReport`, `reportLine`, or `average`?
+```predict
+Which function does the first `at` line of the logged trace name?
+- `printReport`
+- `reportLine`
+= `average`
+```
+
 Run it.
 The red line is gone, the last line now prints, and between them is one log entry with five lines:
 
@@ -67,6 +88,8 @@ The first line is the type and the message, the same text the red line showed.
 Each `at` line is one **frame**: a function that was running, the file, the line, and the column.
 The frames are listed innermost first, so `average` is on top because it was running when the error happened, `reportLine` had called it, `printReport` had called `reportLine`, and the last frame, with no function name, is the top level of `src/main.js`, which called `printReport` on line 28.
 Column 30 of line 10 is where `length` starts, the exact property that could not be read.
+
+## Read more
 
 Read the first line for **what** went wrong and the top frame for **where** it was noticed, then walk down the frames to find **why**.
 The top frame is often not where the bug lives.
@@ -89,6 +112,14 @@ If the last line still does not print, the `console.log(error.stack)` line is ou
 **Check:** Run the code.
 The console shows the three report lines, the five line trace naming `average`, `reportLine`, and `printReport` in that order, and `The script reached its last line.`
 Press **Run checks** to confirm.
+
+```quiz
+If a trace's first `at` line names `average` and the next names `reportLine`, what does that tell you?
+- The bug is certainly inside `average`
+= `average` was running when the error happened, and `reportLine` had called it
+- `reportLine` ran after `average` finished
+> Frames are listed innermost first, so the top one is where the error was noticed, and the cause can sit further down the trace or in the data.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

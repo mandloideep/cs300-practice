@@ -17,8 +17,17 @@ Read `classify` before you add to it.
 It makes a fresh three-item cart, and `cart.join(",")` turns the cart into one string, `"Pens,Notebook,Backpack"`, so that the before and after can be compared with `===` as text; comparing the arrays themselves would always say "same array".
 Then it calls the method on the cart through the callback `use`, and if the text changed, the method changed the array.
 
+```demo name="mutation-vs-copy"
+```
+
 Add the methods from Steps 2 and 3 and the copying partner of each, after the `map` line.
-Predict before you run: does the console show `Changes the array: ["push","sort","splice"]`, `Changes the array: ["push","sort","splice","slice"]`, or `Changes the array: ["push","sort","toSorted","splice","toSpliced"]`?
+
+```predict
+After the first edit, which methods does the console list as changing the array?
+- `Changes the array: ["push","sort","toSorted","splice","toSpliced"]`
+= `Changes the array: ["push","sort","splice"]`
+- `Changes the array: ["push","sort","splice","slice"]`
+```
 
 ```js file="src/main.js" action="insert-after" anchor='classify("map", (cart) => cart.map((item) => item.toUpperCase()));'
 classify("sort", (cart) => cart.sort());
@@ -47,7 +56,11 @@ The console now shows `Changes the array: ["push","sort","splice","pop","reverse
 
 Now the reason this matters.
 When React state holds an array, React decides whether to draw the page again by comparing the old state with the new one, using `Object.is`, which for arrays and objects is the same question as `===`: is it the same array?
-Predict before you run: after `push`, does `push, re-render?` show `true` or `false`?
+```predict
+After a `push`, would React draw the page again?
+= `push, re-render? false`
+- `push, re-render? true`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -78,6 +91,8 @@ Here is the whole sorting in one table, with a few methods this topic did not ru
 `forEach` returns nothing, and changes the array only if your callback does.
 
 You will lean on the second column in [Events and lifting state](#/topic/events-and-lifting-state), where a form adds a product to a list in the parent with `setItems([...items, product])`, and in [Controlled forms](#/topic/controlled-forms), whose step "Add to the list without mutating it" has you type the `push` mistake on purpose, watch the list fail to update, and fix it with a spread.
+## Read more
+
 Methods from the first column are still fine on an array you just made yourself and nobody else holds, such as the result of a `filter` or the `tally` object in the reduce step.
 
 **If it breaks:** If `toSorted` or `toSpliced` lands in the first group, the line calls `sort` or `splice` instead; read the method name in the callback, not the label.
@@ -87,6 +102,21 @@ If `spread, re-render?` shows `false`, the second argument is `items` instead of
 **Check:** Run the code.
 The console shows `Changes the array: ["push","sort","splice","pop","reverse"]`, `Returns a new one: ["map","toSorted","slice","toSpliced","filter","toReversed","concat"]`, `push, re-render? false`, and `spread, re-render? true`.
 Press **Run checks** to confirm.
+
+```quiz
+Which update lets React see that the list in state changed?
+- `items.push(product); setItems(items);`
+= `setItems([...items, product]);`
+> The spread makes a new array, and React compares the old and new state by reference, so only a new array counts as a change.
+```
+
+```quiz
+Which of these changes the array it is called on?
+- `toReversed`
+= `reverse`
+- `slice`
+> `reverse` turns the array around in place; `toReversed` and `slice` return a new array and leave the original alone.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

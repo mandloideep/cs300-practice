@@ -3,6 +3,10 @@ title: Run it later with setTimeout
 mode: edit
 entry: index.html
 required: [break-after-the-file, zero-delay-waits, named-callback-later]
+links:
+  - kind: reference
+    title: "MDN: setTimeout"
+    url: https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout
 ---
 
 Every callback so far ran while the function you handed it to was still running: `countWhere` called its test during its loop and then returned.
@@ -11,16 +15,24 @@ Watch the order of the lines in the console, because a timer's callback runs onl
 
 Press **Run** and the console shows two lines of a study session: `Study timer set.` and `Reading the chapter.`
 
+```demo name="event-loop"
+```
+
 `setTimeout` takes a function and a delay in milliseconds, and asks the browser to call the function once the delay is over.
 Set a short break timer right after the first line.
+
+```predict
+After the next edit, where does `Break time.` appear in the console?
+- Before `Reading the chapter.`
+- Nowhere
+= After `Reading the chapter.`
+```
 
 ```js file="src/main.js" action="insert-after" anchor='console.log("Study timer set.");'
 setTimeout(() => {
   console.log("Break time.");
 }, 200);
 ```
-
-Predict before you run: does `Break time.` print before `Reading the chapter.`, after it, or never?
 
 Run the code, and `Break time.` comes last, a fifth of a second after the other two.
 `setTimeout` does not wait.
@@ -29,6 +41,12 @@ When the 200 milliseconds are up, the browser calls the function you gave it.
 
 What if the delay is zero?
 
+```predict
+After the next edit, where does `Zero delay, still after the file.` appear?
+= After `Last line of the file.`
+- Before `Last line of the file.`
+```
+
 ```js file="src/main.js" action="append"
 
 setTimeout(() => {
@@ -36,8 +54,6 @@ setTimeout(() => {
 }, 0);
 console.log("Last line of the file.");
 ```
-
-Predict before you run: does `Zero delay, still after the file.` print before `Last line of the file.` or after it?
 
 Run it.
 The order is `Study timer set.`, `Reading the chapter.`, `Last line of the file.`, then `Zero delay, still after the file.`, then `Break time.`
@@ -61,6 +77,8 @@ This is Step 5 again: `setTimeout(endSession, 300)` hands over the function, and
 
 The checks for this step wait until the last timer has fired before they read the console, so give them a moment after **Run**.
 
+## Read more
+
 `setTimeout` is your first callback that runs **later**, after your code has finished, and that idea runs through the rest of the course.
 The DOM topic hands a function to the browser with `button.addEventListener("click", handleClick)`, and the browser calls it whenever the user clicks, which may be never or a hundred times.
 React does the same with `onClick={handleClick}` on a button: you hand over the function, React calls it on each click.
@@ -81,6 +99,22 @@ If the session line prints before the zero-delay line, `endSession` has parenthe
 **Check:** Run the code and wait half a second.
 The console shows `Study timer set.`, `Reading the chapter.`, `Last line of the file.`, `Zero delay, still after the file.`, `Break time.`, and `Session over. Good work.`, in that order.
 Press **Run checks** to confirm.
+
+```quiz
+In what order do these lines print: `console.log("A"); setTimeout(() => console.log("B"), 0); console.log("C");`?
+- `A`, `B`, `C`
+= `A`, `C`, `B`
+- `B`, `A`, `C`
+> A zero delay still waits until the code that is running now has finished, so `C` prints before the timer callback.
+```
+
+```quiz
+What does `setTimeout(endSession(), 300)` do?
+- Runs `endSession` after 300 milliseconds
+- Throws a `TypeError` after 300 milliseconds
+= Runs `endSession` at once, and nothing runs after 300 milliseconds
+> The parentheses call `endSession` on the spot and hand `setTimeout` its return value, `undefined`, instead of the function.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

@@ -3,6 +3,10 @@ title: The common messages
 mode: edit
 entry: index.html
 required: [course-and-count, seats-left, first-student, waitlist]
+links:
+  - kind: reference
+    title: "MDN: JavaScript error reference"
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors
 ---
 
 Most of the errors you will meet this semester are one of five messages, and each one points at a particular kind of mistake.
@@ -11,8 +15,18 @@ Fix them one at a time, read each message before you fix it, and then break the 
 
 **We used this in:** [JavaScript basics](#/topic/javascript-basics) listed these five messages in a table in its last step; here you cause each one and read it in the lab.
 
+```demo name="error-decoder"
+```
+
 `src/main.js` describes a course: an object with a code, a title, and a list of students, a seat limit, and a function that works out the seats left.
-Predict before you run: the starter has four mistakes, so how many red lines does the console show, one, four, or none?
+
+```predict
+The starter has four mistakes; how many red lines does the console show when you run it?
+- Four, one per mistake
+= One
+- None, because the page still loads
+```
+
 Press **Run**.
 The console shows `Course: Web Development` and one red line, `ReferenceError: couse is not defined`, with the link `src/main.js:13`.
 One, because the script stopped at line 13, and the three mistakes below it never ran.
@@ -24,7 +38,13 @@ The name in the message is spelled exactly as the code spelled it, so compare it
 console.log("Enrolled:", course.students.length);
 ```
 
-Predict before you run: what does the console show after `Enrolled: 3`, `Seats left: 27`, a `ReferenceError`, or a `TypeError`?
+```predict
+With the name fixed, what does the console show after `Enrolled: 3`?
+- `Seats left: 27`
+- Another `ReferenceError`
+= A `TypeError`
+```
+
 Run it.
 `Enrolled: 3` prints, and the red line is now `TypeError: course.students.length is not a function`, on line 14.
 
@@ -47,7 +67,12 @@ A misspelled property gives `undefined` quietly, with no error, and the error co
 const first = course.students[0];
 ```
 
-Predict before you run: does the console now show `Waitlist: 2`, or one more red line?
+```predict
+With `students` spelled right, does the console now reach `Waitlist: 2`?
+- Yes, every line prints
+= No, one more red line appears
+```
+
 Run it.
 `First student: ALICE` prints, and the last red line is `TypeError: Assignment to constant variable.`, on line 20.
 
@@ -68,6 +93,8 @@ The browser's own console words it as `SyntaxError: missing ) after argument lis
 The line it names is where the parser gave up, which is sometimes a line or two after the missing bracket or quote, so look at the line above too.
 Put the `)` back and run.
 
+## Read more
+
 Each of these messages names its cause if you read it word by word.
 `not defined` is about a **name**, so look at spelling and at where the name was declared.
 `not a function` is about **parentheses**, so look at what is being called.
@@ -83,6 +110,22 @@ If nothing prints at all, the `)` on line 12 is still missing.
 **Check:** Run the code.
 The console shows `Course: Web Development`, `Enrolled: 3`, `Seats left: 27`, `First student: ALICE`, and `Waitlist: 2`, with no red line.
 Press **Run checks** to confirm.
+
+```quiz
+What does `TypeError: Cannot read properties of undefined (reading 'name')` tell you?
+- The variable `name` was never declared
+= The value just before `.name` is `undefined`
+- `name` is misspelled in the object
+> The word in the parentheses is the property being read, so look one step to the left and ask where that `undefined` came from.
+```
+
+```quiz
+Which of the five errors keeps every line of the file from running, even the ones above it?
+- `ReferenceError: x is not defined`
+- `TypeError: Assignment to constant variable.`
+= A syntax error
+> A file with a syntax error never parses, so nothing runs; the other four stop the script only at the line that throws.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

@@ -12,6 +12,15 @@ Watch how many times `settings.js ran` appears, and whether the rows change.
 Press **Run**.
 The page and the console are the same as at the end of Step 3: four lines, ending with `main.js ran`.
 
+When this step is done, both `main.js` and `format.js` import `settings.js`, and `main.js` sets `settings.curve` to `5` before the rows render.
+
+```predict
+What do the console and the rows show then?
+- `settings.js ran` twice, and rows with no curve
+- `settings.js ran` once, and rows with no curve
+= `settings.js ran` once, and rows with the curve
+```
+
 Replace the placeholder in `src/settings.js` with one exported object.
 
 ```js file="src/settings.js" action="create"
@@ -48,8 +57,6 @@ And it sets the curve before it renders.
 settings.curve = 5;
 ```
 
-Predict before you run: two files import `settings.js`, and `main.js` changes `settings.curve` in its copy.
-Does the console show `settings.js ran` twice with rows that have no curve, once with rows that have the curve, or once with rows that have no curve?
 Run the code.
 The console shows `settings.js ran` once, and the rows read `Alice: 100 (A)`, `Bob: 78 (C)`, `Charlie: 93 (A)`, `Diana: 67 (D)`, and `Frank: 50 (F)`: every score has the curve, and Charlie moved from a B to an A.
 
@@ -57,6 +64,9 @@ A module runs once per page, however many files import it.
 The first import runs it and the browser remembers the result under the file's address; every later import of the same file gets the same exports without running it again.
 So there is not a copy of `settings` in each file: there is one object, and `main.js` and `format.js` both hold it.
 When `main.js` sets `curve` to `5`, `formatRow` reads `5` from the same object a moment later, when `renderGradebook` calls it.
+
+## Read more
+
 Two `<script type="module">` tags on one page that load files importing `settings.js` would share it the same way.
 
 This is how a whole application shares one thing, such as its settings, a list of saved items, or a connection to a server, without passing it through every function.
@@ -74,6 +84,22 @@ If a score reads `955` instead of `100`, the curve was typed as the string `"5"`
 **Check:** Run the code.
 The console shows `settings.js ran` once and no red lines, and the five rows show the curved scores, from `Alice: 100 (A)` to `Frank: 50 (F)`.
 Press **Run checks** to confirm.
+
+```quiz
+If `main.js`, `format.js`, and `render.js` all import `settings.js`, how many times does `settings.js ran` print?
+- Three times, once per import
+= Once
+- Four times, counting the page itself
+> The browser runs a module the first time any file imports it and hands every later import the same exports, so all three files share one `settings` object.
+```
+
+```quiz
+What happens when an importing file runs `settings = { curve: 10 };`?
+- Every file sees the new object
+- The file gets a private copy with a curve of 10
+= `TypeError: Assignment to constant variable.`
+> An imported name is read-only like a `const`; change a property of the shared object, as `settings.curve = 5` does, instead of the name.
+```
 
 <details>
 <summary>src/main.js after this step</summary>
