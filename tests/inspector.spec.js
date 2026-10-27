@@ -1,10 +1,19 @@
 // Inspector tests: the hook's commits for every React step, the overlay inside the result iframe,
 // the runtime wrappers, the inspector pane on the step page, and the editor-to-result link.
 
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { expect, test } from "@playwright/test";
 import { editSteps, openHarness, resultFrame, run, runStep, topicsDir } from "./support/harness.js";
+
+// A solution that imports react-router runs only once the Phase 3 runtime branch (PHASE3
+// milestone 1) adds public/runtime/wrap/react-router.js, which maps BrowserRouter onto a memory
+// history; on the sandboxed about:srcdoc document the real BrowserRouter throws on its URL.
+const ROUTER_WRAPPER = existsSync(
+  path.join(import.meta.dirname, "..", "public", "runtime", "wrap", "react-router.js"),
+);
+const NEEDS_RUNTIME_ROUTER =
+  "needs the Phase 3 runtime branch: public/runtime/wrap/react-router.js (PHASE3 milestone 1)";
 
 const ofType = (result, type) => result.messages.filter((message) => message.type === type);
 const lastCommit = (result) => ofType(result, "inspector").at(-1)?.commit ?? null;
@@ -32,11 +41,19 @@ function expectedComponents(files) {
   return [...names].sort();
 }
 
+// A routed solution mounts only the page its initial route matches, so the other pages' components
+// are declared and used as JSX without appearing in the commit.
+const usesRouter = (files) =>
+  Object.entries(files).some(
+    ([path, source]) => /\.(jsx?|mjs)$/.test(path) && /from\s*["']react-router["']/.test(source),
+  );
+
 const reactSteps = editSteps().filter((step) => isReact(step.solution));
 
 test.describe("inspector commits for every React step's solution", () => {
   for (const step of reactSteps) {
     test(step.id, async ({ page }) => {
+      test.fixme(usesRouter(step.solution) && !ROUTER_WRAPPER, NEEDS_RUNTIME_ROUTER);
       await openHarness(page);
       const result = await runStep(page, step.id, "solution");
       expect(result.diagnostics).toEqual([]);
@@ -44,7 +61,11 @@ test.describe("inspector commits for every React step's solution", () => {
       const commit = lastCommit(result);
       expect(commit, "an inspector commit arrived").toBeTruthy();
       const names = new Set(commit.components.map((component) => component.name));
-      for (const name of expectedComponents(step.solution)) {
+      const declared = expectedComponents(step.solution);
+      const expected = usesRouter(step.solution)
+        ? declared.filter((name) => name === "App" || names.has(name))
+        : declared;
+      for (const name of expected) {
         expect(names, `the commit lists ${name}`).toContain(name);
         const instance = commit.components.find((component) => component.name === name);
         expect(instance.declaredAt, `${name} declaredAt`).toEqual({

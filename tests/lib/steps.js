@@ -48,6 +48,23 @@ function checkDependencies(source) {
   return ["inspector", "network"].filter((name) => new RegExp(`\\b${name}\\b`).test(parameters));
 }
 
+// Whether any file under the step's solution/ imports react-router: those solutions run only
+// once the runtime maps BrowserRouter onto a memory history inside the iframe (PHASE3 milestone 1).
+function usesRouter(stepDir) {
+  const solutionDir = path.join(stepDir, "solution");
+  if (!existsSync(solutionDir)) return false;
+  const files = [];
+  const walk = (directory) => {
+    for (const entry of readdirSync(directory, { withFileTypes: true })) {
+      const full = path.join(directory, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (/\.(jsx?|mjs)$/.test(entry.name)) files.push(full);
+    }
+  };
+  walk(solutionDir);
+  return files.some((file) => /\bfrom\s+["']react-router["']/.test(readFileSync(file, "utf8")));
+}
+
 export function allSteps() {
   const steps = [];
   for (const topic of readdirSync(topicsDir).sort()) {
@@ -70,6 +87,7 @@ export function allSteps() {
         checkIds: check ? checkIds(check) : [],
         checkDependsOn: check ? checkDependencies(check) : [],
         hasLocal: existsSync(path.join(stepDir, "local")),
+        usesRouter: usesRouter(stepDir),
       });
     });
   }

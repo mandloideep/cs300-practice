@@ -1,0 +1,10 @@
+{
+  "id": "route-data-and-custom-hooks",
+  "title": "Route data and custom hooks",
+  "area": "routing",
+  "summary": "Reuse the useFetch hook on a list page and on a detail page whose request is keyed on the id from useParams, so every route owns its own loading, success, and error state. You will tell a product the server no longer has from a failed request, write a useLocalStorage hook that remembers saved products across runs, and read how custom hooks relate to the built-in ones.",
+  "prerequisites": ["routing"],
+  "minutes": 60,
+  "updated": "2026-10-26",
+  "changeNote": "First version."
+}
