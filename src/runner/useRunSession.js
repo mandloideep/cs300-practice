@@ -35,8 +35,19 @@ const EMPTY = {
   networkRequests: [],
   flowTraces: [],
   location: null,
+  domSnapshot: null,
+  ready: false,
+  frameWidth: null,
   runId: null,
 };
+
+// A `resize` message is for the result pane, not the iframe (docs/CONTRACTS.md section 4.4):
+// a width in CSS pixels narrows the frame and null restores the pane's width.
+function normalizeWidth(width) {
+  if (width === null || width === undefined) return null;
+  const value = Math.round(Number(width));
+  return Number.isFinite(value) && value > 0 ? value : null;
+}
 
 export function useRunSession({ step, files, apiSource, fixtureControls }) {
   const iframeRef = useRef(null);
@@ -51,8 +62,18 @@ export function useRunSession({ step, files, apiSource, fixtureControls }) {
 
   const send = useCallback((message) => {
     const run = currentRun.current;
+    if (!run) return;
+    if (message?.type === "resize") {
+      const frameWidth = normalizeWidth(message.width);
+      setState((previous) =>
+        previous.runId === run.runId && previous.frameWidth !== frameWidth
+          ? { ...previous, frameWidth }
+          : previous,
+      );
+      return;
+    }
     const target = iframeRef.current?.contentWindow;
-    if (!run || !target) return;
+    if (!target) return;
     target.postMessage({ ...message, source: "cs300-lab", runId: run.runId }, "*");
   }, []);
 
@@ -111,6 +132,12 @@ export function useRunSession({ step, files, apiSource, fixtureControls }) {
       setState((previous) => {
         if (previous.runId !== message.runId) return previous;
         switch (message.type) {
+          case "ready":
+            return { ...previous, ready: true };
+          case "resize-request": {
+            const frameWidth = normalizeWidth(message.width);
+            return previous.frameWidth === frameWidth ? previous : { ...previous, frameWidth };
+          }
           case "console":
             return {
               ...previous,
@@ -166,6 +193,8 @@ export function useRunSession({ step, files, apiSource, fixtureControls }) {
             };
           case "flow":
             return { ...previous, flowTraces: [...previous.flowTraces, message.trace] };
+          case "dom":
+            return { ...previous, domSnapshot: message.snapshot ?? null };
           case "location":
             return {
               ...previous,
@@ -241,6 +270,9 @@ export function useRunSession({ step, files, apiSource, fixtureControls }) {
     networkRequests: state.networkRequests,
     flowTraces: state.flowTraces,
     location: state.location,
+    domSnapshot: state.domSnapshot,
+    ready: state.ready,
+    frameWidth: state.frameWidth,
     send,
     runId: state.runId,
   };

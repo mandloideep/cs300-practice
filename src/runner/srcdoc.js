@@ -72,6 +72,27 @@ function locate(html, needle) {
   return lineAndColumn(html, Math.max(index, 0));
 }
 
+// A classic script runs where the parser meets it, while module, async, and non-JavaScript
+// scripts run later or not at all.
+function isClassicScript(script) {
+  const type = (script.getAttribute("type") ?? "").trim().toLowerCase();
+  if (script.hasAttribute("async")) return false;
+  return type === "" || type === "text/javascript" || type === "application/javascript";
+}
+
+// Two inline scripts around a classic workspace script tell the DOM part of the bridge which
+// elements the parser had created before the script ran and which the script created itself,
+// so that the DOM view can map markup elements to their lines in index.html. Each one removes
+// itself, so the student's script and the finished page see no extra element.
+function markRun(doc, script) {
+  const before = doc.createElement("script");
+  before.textContent = "globalThis.__LAB__?.markup.before()";
+  const after = doc.createElement("script");
+  after.textContent = "globalThis.__LAB__?.markup.after()";
+  script.before(before);
+  script.after(after);
+}
+
 // options:
 //   html            the workspace index.html, or undefined
 //   files           the workspace file map
@@ -121,6 +142,7 @@ export function buildSrcdoc({
       script.remove();
       continue;
     }
+    if (isClassicScript(script)) markRun(doc, script);
     const src = script.getAttribute("src");
     if (src === null || isExternal(src)) continue;
     const path = resolvePath(src, "index.html");
@@ -145,6 +167,8 @@ export function buildSrcdoc({
     )
     .join("");
 
+  // The DOM part of the bridge recognizes this script by its entryEvaluated call and leaves it
+  // out of the body tree.
   const entryScript = entryUrl
     ? `<script type="module">import ${JSON.stringify(entryUrl)};\nglobalThis.__LAB__.entryEvaluated();</script>\n`
     : "";

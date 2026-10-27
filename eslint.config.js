@@ -64,6 +64,13 @@ export default [
     },
   },
   {
+    // Workspace fixtures under tests/ run inside the result iframe, not in Node.
+    files: ["tests/fixtures/**/*.js"],
+    languageOptions: {
+      globals: globals.browser,
+    },
+  },
+  {
     // The bridge parts are concatenated into one classic script inside the result iframe.
     files: ["src/runner/bridge/**/*.js"],
     languageOptions: {

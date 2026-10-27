@@ -47,6 +47,82 @@ function syntaxDiagnostic(file, error) {
 const DECLARATION =
   /^(?:export\s+(?:default\s+)?)?(?:async\s+)?function\s*\*?\s*([A-Za-z_$][\w$]*)|^(?:export\s+)?const\s+([A-Za-z_$][\w$]*)\s*=/;
 
+// Elements the parser never places in the body, so their tags are left out of the markup map
+// when the document has no <body> tag of its own.
+const HEAD_ONLY = new Set(["html", "head", "meta", "title", "link", "base"]);
+
+// Elements whose content the parser reads as text, not markup, until the matching end tag.
+const RAW_TEXT = new Set(["script", "style", "textarea", "title", "template"]);
+
+// The DOM view's map from a live element back to the markup: the start tags of index.html's
+// body in document order, each with its 1-based line, as [{ tag, line }]. The bridge pairs them
+// with the elements the parser created (docs/CONTRACTS.md section 4.3, declaredAt). A tokenizer
+// over the source is enough because the pairing happens by order among those elements, so only
+// the sequence of start tags and their lines matter; comments, end tags, and the contents of
+// raw text elements are skipped.
+export function findMarkupLines(html) {
+  const source = String(html ?? "");
+  const hasBody = /<body[\s>]/i.test(source);
+  const tags = [];
+  let inBody = !hasBody;
+  let index = 0;
+  let line = 1;
+
+  const advance = (to) => {
+    for (let i = index; i < to; i += 1) if (source.charCodeAt(i) === 10) line += 1;
+    index = to;
+  };
+  const skipPast = (needle) => {
+    const found = source.toLowerCase().indexOf(needle, index);
+    advance(found === -1 ? source.length : found + needle.length);
+  };
+
+  while (index < source.length) {
+    const open = source.indexOf("<", index);
+    if (open === -1) break;
+    advance(open);
+    if (source.startsWith("<!--", index)) {
+      skipPast("-->");
+      continue;
+    }
+    if (source[index + 1] === "!" || source[index + 1] === "?") {
+      skipPast(">");
+      continue;
+    }
+    if (source[index + 1] === "/") {
+      skipPast(">");
+      continue;
+    }
+    const match = /^<([a-zA-Z][^\s/>]*)/.exec(source.slice(index, index + 200));
+    if (!match) {
+      advance(index + 1);
+      continue;
+    }
+    const tag = match[1].toLowerCase();
+    const tagLine = line;
+    let cursor = index + match[0].length;
+    let quote = null;
+    while (cursor < source.length) {
+      const char = source[cursor];
+      if (quote) {
+        if (char === quote) quote = null;
+      } else if (char === '"' || char === "'") {
+        quote = char;
+      } else if (char === ">") {
+        break;
+      }
+      cursor += 1;
+    }
+    advance(Math.min(cursor + 1, source.length));
+    if (tag === "body") inBody = true;
+    const include =
+      inBody && !(tag === "html" || tag === "head") && !(!hasBody && HEAD_ONLY.has(tag));
+    if (include && tag !== "template") tags.push({ tag, line: tagLine });
+    if (RAW_TEXT.has(tag)) skipPast(`</${tag}`);
+  }
+  return tags;
+}
+
 // Returns { [name]: line } with 1-based lines, first declaration wins.
 export function findDeclarations(source) {
   const declarations = {};

@@ -15,6 +15,17 @@
 //   router                   { attach(controller), report(location) }; the react-router wrapper
 //                            reports each location, posted as a `location` message, and the
 //                            attached controller takes the parent's `navigate` messages
+//   resize(width)            asks the parent to show the result at `width` CSS pixels, or at the
+//                            pane's own width for null, by posting a `resize-request` message;
+//                            a check uses it to show a narrow layout
+//   onSettled(callback)      runs `callback` once the run has settled (at once when it already has)
+//   hasSettled()             whether the run has settled
+//   overlay.shadow()         the shadow root of the one fixed overlay layer above the page, the
+//                            <lab-inspector-overlay> element, attached on first use; the inspector
+//                            hook draws boundary boxes in it and the DOM part draws the highlight
+//   markupLines              the start tags of index.html's body with their lines, from the
+//                            compile step; the DOM part pairs them with the parser's elements
+//                            and defines markup.before and markup.after for the runner's sentinels
 // and globalThis.__LAB_ENV__, which compiled workspace code reads in place of import.meta.env.
 //
 // The document shares the site's origin, so window.localStorage and window.sessionStorage are
@@ -171,12 +182,14 @@ function constructorName(value) {
   }
 }
 
-// Primitives as is, functions as "[Function name]", DOM nodes as "<tag#id.class>", errors as
+// Primitives as is except that NaN, Infinity, -Infinity, and undefined become those words as
+// strings, since JSON has no form for them; functions as "[Function name]", DOM nodes as "<tag#id.class>", errors as
 // { name, message, stack }, and objects and arrays to `depth` levels with cycles cut.
 function serialize(value, depth = 3, ancestors = []) {
   const type = typeof value;
-  if (value === null || type === "string" || type === "number" || type === "boolean") return value;
-  if (type === "undefined") return undefined;
+  if (value === null || type === "string" || type === "boolean") return value;
+  if (type === "number") return Number.isFinite(value) ? value : String(value);
+  if (type === "undefined") return "undefined";
   if (type === "bigint") return `${value}n`;
   if (type === "symbol") return value.toString();
   if (type === "function") return `[Function ${value.name || "anonymous"}]`;
@@ -231,6 +244,23 @@ function serialize(value, depth = 3, ancestors = []) {
   return result;
 }
 
+// The serialized forms of the values JSON cannot carry; they print without quotes, as a browser
+// console does.
+const SPECIAL_WORDS = new Set(["NaN", "Infinity", "-Infinity", "undefined"]);
+
+// JSON.stringify's compact form, except that the words above print bare.
+function print(value) {
+  if (typeof value === "string") return SPECIAL_WORDS.has(value) ? value : JSON.stringify(value);
+  if (Array.isArray(value)) return `[${value.map(print).join(",")}]`;
+  if (value && typeof value === "object") {
+    const entries = Object.entries(value).map(
+      ([key, item]) => `${JSON.stringify(key)}:${print(item)}`,
+    );
+    return `{${entries.join(",")}}`;
+  }
+  return JSON.stringify(value) ?? String(value);
+}
+
 function display(value) {
   if (typeof value === "string") return value;
   if (value === undefined) return "undefined";
@@ -238,7 +268,7 @@ function display(value) {
   const serialized = serialize(value);
   if (typeof serialized === "string") return serialized;
   try {
-    return JSON.stringify(serialized) ?? String(value);
+    return print(serialized);
   } catch {
     return String(value);
   }
@@ -301,10 +331,31 @@ const router = {
   },
 };
 
+// One fixed, pointer-transparent layer above everything, drawn inside this document so that it
+// follows scrolling; its shadow root keeps the inspector's and the DOM view's styles apart.
+let overlayShadow = null;
+const overlay = {
+  shadow() {
+    if (!overlayShadow) {
+      const host = document.createElement("lab-inspector-overlay");
+      host.setAttribute("aria-hidden", "true");
+      host.style.cssText =
+        "all: initial !important; position: fixed !important; inset: 0 !important; z-index: 2147483647 !important; pointer-events: none !important; display: block !important;";
+      overlayShadow = host.attachShadow({ mode: "open" });
+      const style = document.createElement("style");
+      style.textContent = ":host { all: initial; }";
+      overlayShadow.append(style);
+    }
+    if (!overlayShadow.host.isConnected) document.documentElement.append(overlayShadow.host);
+    return overlayShadow;
+  },
+};
+
 const lab = {
   runId: boot.runId,
   env,
   declarations: boot.declarations,
+  markupLines: Array.isArray(boot.markup) ? boot.markup : [],
   moduleUrls: boot.moduleUrls,
   fixtures: boot.fixtures,
   fixtureControls: boot.fixtureControls,
@@ -318,6 +369,11 @@ const lab = {
   mapUrls,
   originalConsole,
   router,
+  overlay,
+  resize(width) {
+    const value = width === null || width === undefined ? null : Math.round(Number(width));
+    post({ type: "resize-request", width: Number.isFinite(value) && value > 0 ? value : null });
+  },
 };
 globalThis.__LAB__ = lab;
 
@@ -394,14 +450,25 @@ function afterFrame(callback) {
   setTimeout(once, 250);
 }
 
+const settledListeners = [];
+let hasSettled = false;
+
 function settle() {
   if (settled) return;
   settled = true;
   afterFrame(() => {
     post({ type: "settled" });
+    hasSettled = true;
+    for (const listener of settledListeners.splice(0)) listener();
     if (boot.checkUrl) queueChecks();
   });
 }
+
+lab.onSettled = (callback) => {
+  if (hasSettled) callback();
+  else settledListeners.push(callback);
+};
+lab.hasSettled = () => hasSettled;
 
 lab.entryEvaluated = () => {
   entryState = "done";

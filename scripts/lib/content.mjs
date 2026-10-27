@@ -13,7 +13,7 @@ import { createMarkdown, LANGUAGES } from "./render.mjs";
 import { rulesFor } from "./style.mjs";
 
 export const MODES = ["edit", "read", "local"];
-export const VIEWS = ["boundaries", "flash", "tree", "flow", "network"];
+export const VIEWS = ["boundaries", "flash", "tree", "flow", "network", "dom"];
 const REACT_VIEWS = ["boundaries", "flash", "tree"];
 const STEP_DIR = /^(\d{2})-([a-z0-9]+(?:-[a-z0-9]+)*)$/;
 const markdown = createMarkdown();

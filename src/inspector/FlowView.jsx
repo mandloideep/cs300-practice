@@ -6,7 +6,9 @@ const HISTORY_LENGTH = 8;
 
 function formatValue(value) {
   if (typeof value === "string") {
-    return /^(?:<.*>|\[(?:Function|Array|Object|Circular|Map|Set|Event).*\])$/.test(value)
+    return /^(?:<.*>|\[(?:Function|Array|Object|Circular|Map|Set|Event).*\]|NaN|-?Infinity|undefined)$/.test(
+      value,
+    )
       ? value
       : JSON.stringify(value);
   }

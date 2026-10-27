@@ -228,11 +228,15 @@ async function answerFromFixtures(method, url, signal) {
   });
 }
 
+// Reading the body takes a few tasks, so the open flow trace is held until it is done and the
+// setter that follows `await response.json()` still lands in it.
 function watchJson(record, response) {
   const readJson = response.json.bind(response);
   response.json = async function json() {
+    const reading = readJson();
+    lab.flow?.hold(reading);
     try {
-      return await readJson();
+      return await reading;
     } catch (error) {
       if (error?.name === "SyntaxError") {
         record.state = "parse-error";

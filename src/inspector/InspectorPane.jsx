@@ -1,20 +1,29 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import DomView from "./DomView.jsx";
 import FlowView from "./FlowView.jsx";
 import { jumpTarget } from "./jump.js";
 import LiveRegion from "../ui/LiveRegion.jsx";
+import { isReactWorkspace } from "../runner/useRunSession.js";
 import "./inspector.css";
 
-const VIEWS = [
+// The React views need the inspector hook, which the runner installs only for a workspace that
+// imports React; the DOM view works for every workspace and is the only view a vanilla
+// workspace shows beside the network pane (docs/CONTRACTS.md section 4.3).
+const REACT_VIEWS = [
   { id: "boundaries", label: "Boundaries" },
   { id: "flash", label: "Re-render flash" },
   { id: "tree", label: "Tree and state" },
   { id: "flow", label: "Flow trace" },
 ];
-const DEFAULT_VIEWS = ["boundaries", "flash", "tree"];
+const DOM_VIEW = { id: "dom", label: "DOM" };
+const DEFAULT_REACT_VIEWS = ["boundaries", "flash", "tree"];
+const DEFAULT_VANILLA_VIEWS = ["dom"];
 
 function formatValue(value) {
   if (typeof value === "string") {
-    return /^(?:<.*>|\[(?:Function|Array|Object|Circular|Map|Set).*\])$/.test(value)
+    return /^(?:<.*>|\[(?:Function|Array|Object|Circular|Map|Set).*\]|NaN|-?Infinity|undefined)$/.test(
+      value,
+    )
       ? value
       : JSON.stringify(value);
   }
@@ -164,8 +173,13 @@ export default function InspectorPane({ session, step, onJumpToCode, announce })
     runId,
     status,
     send,
+    ready = false,
+    domSnapshot = null,
   } = session;
-  const [views, setViews] = useState(() => step.inspector?.views ?? DEFAULT_VIEWS);
+  const react = useMemo(() => isReactWorkspace(step.workspace), [step.workspace]);
+  const [views, setViews] = useState(
+    () => step.inspector?.views ?? (react ? DEFAULT_REACT_VIEWS : DEFAULT_VANILLA_VIEWS),
+  );
   const [selected, setSelected] = useState({ runId: null, id: null });
   const [ownMessage, setOwnMessage] = useState(null);
   const ownCounter = useRef(0);
@@ -184,9 +198,11 @@ export default function InspectorPane({ session, step, onJumpToCode, announce })
     jumpRef.current = onJumpToCode;
   });
 
+  // The bridge listens from the moment it posts `ready`, so the open views reach it before the
+  // first commit and before the DOM observer would have anything to report.
   useEffect(() => {
-    if (hasCommits) send({ type: "inspector-config", views });
-  }, [hasCommits, runId, views, send]);
+    if (ready) send({ type: "inspector-config", views });
+  }, [ready, runId, views, send]);
 
   useEffect(() => {
     function onMessage(event) {
@@ -233,11 +249,13 @@ export default function InspectorPane({ session, step, onJumpToCode, announce })
   );
 
   const rowProps = { previousById, selectedId, onHighlight: highlight, onJumpToCode };
-  const showTree = views.includes("tree");
-  const showFlow = views.includes("flow");
+  const showTree = react && views.includes("tree");
+  const showFlow = react && views.includes("flow");
+  const showDom = views.includes("dom");
+  const toggles = react ? [...REACT_VIEWS, DOM_VIEW] : [DOM_VIEW];
 
   let empty = null;
-  if (!hasCommits) {
+  if (react && !hasCommits) {
     if (status === "idle" || status === "compiling" || status === "running") {
       empty = "Run the code to see its components.";
     } else if (status === "compile-error") {
@@ -248,19 +266,34 @@ export default function InspectorPane({ session, step, onJumpToCode, announce })
     }
   }
 
+  let meta;
+  if (react) {
+    meta = hasCommits
+      ? `${components.length} ${components.length === 1 ? "component" : "components"} · commit ${latestCommit.seq}`
+      : "No components yet";
+  } else if (domSnapshot) {
+    const count = domSnapshot.nodes.filter((node) => node.changed !== "removed").length;
+    meta = `${count} ${count === 1 ? "element" : "elements"} · snapshot ${domSnapshot.seq}`;
+  } else {
+    meta = "No elements yet";
+  }
+
+  const domSection = showDom && (
+    <section className="inspector-dom" aria-label="DOM">
+      {react && <h3 className="inspector-subheading">DOM</h3>}
+      <DomView snapshot={domSnapshot} status={status} send={send} onJumpToCode={onJumpToCode} />
+    </section>
+  );
+
   return (
     <section ref={paneRef} className="pane pane--inspector" aria-labelledby="inspector-heading">
       <div className="pane__header">
         <h2 id="inspector-heading">Inspector</h2>
-        <span className="meta">
-          {hasCommits
-            ? `${components.length} ${components.length === 1 ? "component" : "components"} · commit ${latestCommit.seq}`
-            : "No components yet"}
-        </span>
+        <span className="meta">{meta}</span>
       </div>
 
       <div className="inspector-views" role="group" aria-label="Inspector views">
-        {VIEWS.map((view) => (
+        {toggles.map((view) => (
           <button
             key={view.id}
             type="button"
@@ -285,13 +318,27 @@ export default function InspectorPane({ session, step, onJumpToCode, announce })
         </span>
       </div>
 
-      {empty ? (
-        <p className="meta inspector-empty">{empty}</p>
+      {!react ? (
+        showDom ? (
+          domSection
+        ) : (
+          <p className="meta inspector-empty">
+            Turn on DOM to see the elements of the page as the browser holds them.
+          </p>
+        )
+      ) : empty ? (
+        <>
+          <p className="meta inspector-empty">{empty}</p>
+          {domSection}
+        </>
       ) : !showTree && !showFlow ? (
-        <p className="meta inspector-empty">
-          Turn on Tree and state to see each component with its props and state, or Flow trace to
-          follow what a click sets in motion.
-        </p>
+        <>
+          <p className="meta inspector-empty">
+            Turn on Tree and state to see each component with its props and state, or Flow trace to
+            follow what a click sets in motion.
+          </p>
+          {domSection}
+        </>
       ) : (
         <>
           {showFlow && (
@@ -336,6 +383,7 @@ export default function InspectorPane({ session, step, onJumpToCode, announce })
               </p>
             </>
           )}
+          {domSection}
         </>
       )}
       {!announce && <LiveRegion message={ownMessage} />}
