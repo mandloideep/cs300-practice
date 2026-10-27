@@ -5,12 +5,13 @@
 import { execFileSync, spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { UsageError } from "./cli.mjs";
 
 export const PACKAGES = ["react", "react-dom", "react-router"];
 const EXACT_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
 
-export class UsageError extends Error {}
 export class UpgradeError extends Error {}
+export { UsageError };
 
 export const USAGE =
   "Usage: npm run upgrade:runtime -- <react-version> <react-router-version> [--dry-run]\n" +

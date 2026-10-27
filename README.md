@@ -43,6 +43,8 @@ npm run preview
 | `npm run verify:runtime` | Loads the vendored runtime in headless Chromium and checks that it acts as one React instance |
 | `npm run upgrade:runtime -- <react> <react-router>` | Pins the exact versions, rebuilds and verifies the runtime, and prints the commit message; `--dry-run` only prints the steps |
 | `npm run validate` | Validates `content/` without writing anything, with `scripts/validate-content.mjs` |
+| `npm run new:topic -- <id> --area <area> --title "<title>"` | Scaffolds a topic with its first step from `scripts/templates/` |
+| `npm run new:step -- <topic-id> "<title>"` | Adds the next numbered step to a topic, starting from the previous step's solution |
 | `npm run lint` | Runs ESLint over `src`, `scripts`, and `tests` |
 | `npm run format` | Formats the code with Prettier |
 | `npm run format:check` | Checks the formatting with Prettier |
@@ -88,6 +90,24 @@ content/topics/<topic-id>/
     local/            local steps only: a workspace students download and run with npm
   02-<slug>/
 ```
+
+Start a topic from the templates under `scripts/templates/` rather than from an empty folder:
+
+```sh
+npm run new:topic -- lists-and-keys --area react --title "Lists and keys"
+```
+
+This writes `topic.json` and a first edit step, `01-first-step/`, with a `step.md` that already has one working edit block, a `workspace/`, a matching `solution/`, and a `check.js`, then prints what to fill in.
+The starter workspace is a React page for most areas and a plain page with an `index.html` entry for the `html`, `css`, `javascript`, `dom`, and `fetch` areas; `--kind react` or `--kind vanilla` overrides that choice, and `--step "<title>"` names the first step.
+Add the next step with its title:
+
+```sh
+npm run new:step -- lists-and-keys "Stable keys"
+```
+
+The new step is numbered after the last one, and its `workspace/` and `solution/` start as copies of the previous edit step's `solution/`, with that step's `entry`, `inspector`, `api`, and `fixtures/` carried over, so you change `solution/` and write the edit blocks that get there.
+Neither command overwrites anything that exists, and neither touches `content/paths/`, so add the topic to a unit yourself.
+The scaffolded files validate as they are, and `npm run test:scripts` keeps it that way.
 
 `topic.json` has every one of these fields:
 

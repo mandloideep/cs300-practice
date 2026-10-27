@@ -11,6 +11,7 @@ export default [
       "dist-d2l/",
       "public/content/",
       "public/runtime/*.js",
+      "scripts/templates/",
       "test-results/",
       "playwright-report/",
     ],
