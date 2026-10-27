@@ -169,6 +169,66 @@ test.describe("the dom-events list survives a run that keeps saved data", () => 
   });
 });
 
+// The CourseHub storage step: a bookmark survives a preserving run, and broken text in storage
+// shows the warning while the page keeps working, which an in-iframe check cannot set up because
+// the workspace reads storage only once, when it starts.
+test.describe("the CourseHub bookmarks survive a run that keeps saved data", () => {
+  const STEP = "app-architecture/05-remember-bookmarks-safely";
+  const KEY = "cs300-lab:sandbox:coursehub-bookmarks";
+  const bookmarkButtons = (frame) => frame.locator("#results button[data-action='bookmark']");
+
+  test.beforeEach(async ({ page }) => {
+    await openHarness(page);
+    await page.evaluate((key) => localStorage.removeItem(key), KEY);
+  });
+
+  test("step 5 solution: a bookmark saved before a preserving run is still pressed", async ({
+    page,
+  }) => {
+    const first = await runStep(page, STEP, "solution");
+    expect(first.diagnostics).toEqual([]);
+    const frame = resultFrame(page);
+    await bookmarkButtons(frame).first().click();
+    await expect(bookmarkButtons(frame).first()).toHaveAttribute("aria-pressed", "true");
+
+    const second = await runStep(page, STEP, "solution", { preserveStorage: true });
+    expect(second.diagnostics).toEqual([]);
+    const kept = resultFrame(page);
+    await expect(bookmarkButtons(kept).first()).toHaveAttribute("aria-pressed", "true");
+    await expect(bookmarkButtons(kept).first()).toHaveText("Saved - remove");
+    await expect(kept.locator("#storage-warning")).toBeHidden();
+
+    await runStep(page, STEP, "solution");
+    await expect(bookmarkButtons(resultFrame(page)).first()).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
+  });
+
+  test("step 5 solution: broken text in storage shows the warning and the next save clears it", async ({
+    page,
+  }) => {
+    await page.evaluate((key) => localStorage.setItem(key, "broken"), KEY);
+    // Without the step's check, whose first click would save and clear the warning.
+    const result = await runStep(page, STEP, "solution", { preserveStorage: true, check: null });
+    expect(result.diagnostics).toEqual([]);
+    expect(
+      result.messages
+        .filter((message) => message.type === "error" || message.type === "rejection")
+        .map((message) => message.message),
+    ).toEqual([]);
+
+    const frame = resultFrame(page);
+    await expect(frame.locator("#storage-warning")).toBeVisible();
+    await expect(frame.locator("#storage-warning")).toContainText("could not be loaded");
+    await expect(bookmarkButtons(frame)).toHaveCount(3);
+    await bookmarkButtons(frame).first().click();
+    await expect(frame.locator("#storage-warning")).toBeHidden();
+    const stored = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)), KEY);
+    expect(stored).toHaveLength(1);
+  });
+});
+
 // The flow trace of a lifting-state interaction, read from the bridge's `flow` messages the way
 // the inspector tests read `inspector` commits (CONTRACTS 4.3).
 test.describe("the flow trace of a lifting-state interaction", () => {

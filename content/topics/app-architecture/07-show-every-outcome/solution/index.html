@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CourseHub | CS300</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="shell header-row">
+        <div>
+          <p class="eyebrow">CS300 / Our cumulative build</p>
+          <h1>CourseHub<span class="brand-dot">.</span></h1>
+        </div>
+        <nav aria-label="Main navigation">
+          <button type="button" data-view="browse" aria-current="page">Browse</button>
+          <button type="button" data-view="bookmarks">Bookmarks</button>
+        </nav>
+      </div>
+    </header>
+    <main id="app" class="shell" tabindex="-1">
+      <section class="intro" aria-labelledby="view-title">
+        <p class="eyebrow">A small library for curious minds</p>
+        <h2 id="view-title" tabindex="-1">Find your next read.</h2>
+        <p id="view-description">Search for a topic, then keep the books you want to revisit.</p>
+      </section>
+      <form id="search-form">
+        <div class="search-row">
+          <div class="field">
+            <label for="query">Book title or topic</label>
+            <input id="query" name="query" type="search" maxlength="120" placeholder="Try JavaScript" aria-describedby="query-help" />
+          </div>
+          <button type="submit">Search books</button>
+        </div>
+        <p id="query-help" class="muted">Enter a few words. We search when you submit, not on every keystroke.</p>
+      </form>
+      <p id="storage-warning" class="warning" role="status" hidden></p>
+      <p id="message" role="status" aria-live="polite">Search for books to get started.</p>
+      <section id="results" class="book-grid" aria-label="Books" aria-busy="false"></section>
+    </main>
+    <footer class="shell site-footer">
+      <p>Built with HTML, CSS, and JavaScript. One small step at a time.</p>
+      <a href="https://openlibrary.org/" target="_blank" rel="noopener">Book data: Open Library</a>
+    </footer>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
