@@ -457,10 +457,12 @@ test.describe("stale and duplicate requests", () => {
     const result = page.frameLocator("iframe.result-frame");
     const latency = page.getByLabel("Latency (ms)");
 
-    await latency.fill("400");
+    // The slow request must still be pending when the fast one is sent, even on a loaded
+    // machine, so the latency is well above the time the steps between the two clicks take.
+    await latency.fill("2500");
     await expect
       .poll(() => frame.evaluate(() => globalThis.__LAB__.fixtureControls.latencyMs))
-      .toBe(400);
+      .toBe(2500);
     await result.locator("#load").click();
     await expect(page.locator(".network-row--pending")).toHaveCount(1);
 

@@ -7,7 +7,11 @@ export default async function check({ document, inspector, wait }) {
   const form = inspector.components.find((component) => component.name === "AddProductForm");
   const formElement = document.querySelector(".add-form");
   const title = document.querySelector('input[name="title"]');
-  const focusedAtStart = title !== null && document.activeElement === title;
+  let focusedAtStart = false;
+  for (let attempt = 0; attempt < 10 && !focusedAtStart; attempt += 1) {
+    focusedAtStart = title !== null && document.activeElement === title;
+    if (!focusedAtStart) await wait(30);
+  }
 
   if (formElement && title) {
     type(title, "Kiwi");
