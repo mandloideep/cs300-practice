@@ -9,7 +9,7 @@ This step copies a number into a second variable, then copies an object the same
 The two cases look identical on the page and behave differently, and that difference explains most of the surprises in this topic and many of the React bugs later in the course.
 Watch which original changes and which does not.
 
-**We used this in:** [JavaScript basics](#/topic/javascript-basics), where `alice.grade = ...` changed an object in place and `map` built new objects instead.
+**We used this in:** [JavaScript basics](#/topic/javascript-basics), where `alice.grade = ...` changed an object in place and `map` built new objects instead, and [Scope and closures](#/topic/scope-and-closures), where a variable was a name for a value in a scope.
 
 Press **Run**.
 The console shows `score: 85` and `student: {"name":"Alice","score":85}`, one number and one object with the same score.

@@ -9,7 +9,7 @@ An object can hold a function too, and a function stored on an object is a **met
 Inside a method, the word `this` means the object the method was called on, and this step shows that "called on" is decided at the moment of the call, not where the function was written.
 Watch what happens when the same method is called on its cart, on another cart, and on nothing at all.
 
-**We used this in:** [JavaScript basics](#/topic/javascript-basics), where `scores.map(double)` handed a function over without calling it; this step does the same with a method and finds out what it loses.
+**We used this in:** [Functions and callbacks](#/topic/functions-and-callbacks/5), where a function was handed over without calling it; this step does the same with a method and finds out what it loses.
 
 Press **Run**.
 The console shows `Items in the cart: 2`.
