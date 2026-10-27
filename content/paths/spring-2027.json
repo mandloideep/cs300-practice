@@ -44,6 +44,14 @@
         {
           "id": "javascript-basics",
           "required": true
+        },
+        {
+          "id": "functions-and-callbacks",
+          "required": true
+        },
+        {
+          "id": "scope-and-closures",
+          "required": true
         }
       ],
       "localNotes": []
