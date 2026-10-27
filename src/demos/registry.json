@@ -292,7 +292,7 @@
   {
     "id": "strict-mode-double",
     "title": "Strict Mode renders twice",
-    "description": "A component rendered twice in development with the second render discarded."
+    "description": "A component called twice in development, with one of the two results thrown away."
   },
   {
     "id": "ref-vs-state",
@@ -302,7 +302,7 @@
   {
     "id": "router-match",
     "title": "Route matching",
-    "description": "A URL matched against routes top to bottom, with the parameters pulled out of the winning one."
+    "description": "A URL checked against every route, the most specific match winning, with the parameters pulled out of the winning one."
   },
   {
     "id": "url-as-state",

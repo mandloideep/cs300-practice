@@ -290,7 +290,7 @@ test.describe("address bar on the step page", () => {
     const back = bar.getByRole("button", { name: "Back" });
     const forward = bar.getByRole("button", { name: "Forward" });
     const result = page.frameLocator("iframe.result-frame");
-    const status = page.locator('[role="status"]');
+    const status = page.locator(".live-region");
 
     await expect(field).toHaveValue("/");
     await expect(back).toBeDisabled();

@@ -2,7 +2,12 @@
 // pauses; keying the text by message id makes a repeated message announce again.
 export default function LiveRegion({ message }) {
   return (
-    <div className="visually-hidden" role="status" aria-live="polite" aria-atomic="true">
+    <div
+      className="visually-hidden live-region"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    >
       {message && <span key={message.id}>{message.text}</span>}
     </div>
   );

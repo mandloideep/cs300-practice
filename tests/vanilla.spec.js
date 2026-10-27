@@ -298,7 +298,7 @@ test.describe("the vanilla fixture on the step page", () => {
     expect(readme).toContain("Open `index.html` in your browser");
     expect(readme).toContain("serve the folder");
     expect(readme).not.toContain("npm install");
-    await expect(page.getByRole("status").last()).toContainText("open its index.html");
+    await expect(page.locator(".live-region")).toContainText("open its index.html");
   });
 
   test("a check narrows the result through __LAB__.resize and the pane can restore it", async ({
