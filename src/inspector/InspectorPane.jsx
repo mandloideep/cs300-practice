@@ -21,7 +21,9 @@ const DEFAULT_VANILLA_VIEWS = ["dom"];
 
 function formatValue(value) {
   if (typeof value === "string") {
-    return /^(?:<.*>|\[(?:Function|Array|Object|Circular|Map|Set).*\])$/.test(value)
+    return /^(?:<.*>|\[(?:Function|Array|Object|Circular|Map|Set).*\]|NaN|-?Infinity|undefined)$/.test(
+      value,
+    )
       ? value
       : JSON.stringify(value);
   }

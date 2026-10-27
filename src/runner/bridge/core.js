@@ -182,12 +182,14 @@ function constructorName(value) {
   }
 }
 
-// Primitives as is, functions as "[Function name]", DOM nodes as "<tag#id.class>", errors as
+// Primitives as is except that NaN, Infinity, -Infinity, and undefined become those words as
+// strings, since JSON has no form for them; functions as "[Function name]", DOM nodes as "<tag#id.class>", errors as
 // { name, message, stack }, and objects and arrays to `depth` levels with cycles cut.
 function serialize(value, depth = 3, ancestors = []) {
   const type = typeof value;
-  if (value === null || type === "string" || type === "number" || type === "boolean") return value;
-  if (type === "undefined") return undefined;
+  if (value === null || type === "string" || type === "boolean") return value;
+  if (type === "number") return Number.isFinite(value) ? value : String(value);
+  if (type === "undefined") return "undefined";
   if (type === "bigint") return `${value}n`;
   if (type === "symbol") return value.toString();
   if (type === "function") return `[Function ${value.name || "anonymous"}]`;
@@ -242,6 +244,23 @@ function serialize(value, depth = 3, ancestors = []) {
   return result;
 }
 
+// The serialized forms of the values JSON cannot carry; they print without quotes, as a browser
+// console does.
+const SPECIAL_WORDS = new Set(["NaN", "Infinity", "-Infinity", "undefined"]);
+
+// JSON.stringify's compact form, except that the words above print bare.
+function print(value) {
+  if (typeof value === "string") return SPECIAL_WORDS.has(value) ? value : JSON.stringify(value);
+  if (Array.isArray(value)) return `[${value.map(print).join(",")}]`;
+  if (value && typeof value === "object") {
+    const entries = Object.entries(value).map(
+      ([key, item]) => `${JSON.stringify(key)}:${print(item)}`,
+    );
+    return `{${entries.join(",")}}`;
+  }
+  return JSON.stringify(value) ?? String(value);
+}
+
 function display(value) {
   if (typeof value === "string") return value;
   if (value === undefined) return "undefined";
@@ -249,7 +268,7 @@ function display(value) {
   const serialized = serialize(value);
   if (typeof serialized === "string") return serialized;
   try {
-    return JSON.stringify(serialized) ?? String(value);
+    return print(serialized);
   } catch {
     return String(value);
   }

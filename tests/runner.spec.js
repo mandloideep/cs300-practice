@@ -373,6 +373,43 @@ console.debug("d");
     expect(lab.network).toEqual([]);
   });
 
+  test("NaN, Infinity, and undefined survive serialization as words, as a browser prints them", async ({
+    page,
+  }) => {
+    const result = await run(page, {
+      entry: "src/main.js",
+      files: {
+        "index.html": reactIndex,
+        "src/main.js": `console.log(Number("abc"));
+console.log(1 / 0, -1 / 0, undefined);
+console.log([NaN, undefined, Infinity], { missing: undefined, nothing: null, ratio: -Infinity });
+console.log("%d items", NaN);
+`,
+      },
+    });
+    expect(result.diagnostics).toEqual([]);
+    const logs = ofType(result, "console");
+    expect(logs.map((m) => m.text)).toEqual([
+      "NaN",
+      "Infinity -Infinity undefined",
+      '[NaN,undefined,Infinity] {"missing":undefined,"nothing":null,"ratio":-Infinity}',
+      "NaN items",
+    ]);
+    expect(logs.map((m) => m.args)).toEqual([
+      ["NaN"],
+      ["Infinity", "-Infinity", "undefined"],
+      [
+        ["NaN", "undefined", "Infinity"],
+        { missing: "undefined", nothing: null, ratio: "-Infinity" },
+      ],
+      ["%d items", "NaN"],
+    ]);
+    const captured = await resultFrame(page).evaluate(() =>
+      globalThis.__LAB__.console.map((entry) => entry.text),
+    );
+    expect(captured).toEqual(logs.map((m) => m.text));
+  });
+
   test("import.meta.env reads the run's env and set-api updates it", async ({ page }) => {
     const result = await run(page, {
       entry: "src/main.js",
