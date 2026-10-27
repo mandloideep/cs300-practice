@@ -12,13 +12,18 @@ required: [missing-product-reads-well, no-retry-for-a-missing-product]
 
 **We used this in:** [Lists and keys](#/topic/lists-and-keys), where an empty result got a message of its own instead of the error message, because it is not an error.
 
-Run the starter, press **Products**, and open **Dior J'adore**, the last product.
-Our fixtures have no detail for product 8, as if it had been removed from the catalog after the list was loaded, which happens in every real shop.
-The page says `Could not load product 8. The server answered with status 404.` and offers **Retry**.
-Both are wrong for a shopper: nothing failed, the product is gone, and retrying will not bring it back.
+This step teaches the detail page to tell a product the server no longer has from a request that failed.
+A 404 is an answer, not a failure, so watch the status code: the error state needs it to tell the two apart.
 
-A 404 is an answer, not a failure.
-To tell it apart from a 500 or a dropped connection, the error state needs the status code, and right now the hook keeps only the message.
+```predict
+Run the starter, press Products, and open Dior J'adore, the last product; what does the page show?
+- The heading No product has the id 8, with no Retry button
+= `Could not load product 8. The server answered with status 404.` and a Retry button
+- The Page not found page, because no route matches product 8
+```
+
+Our fixtures have no detail for product 8, as if it had been removed from the catalog after the list was loaded, which happens in every real shop.
+Run the starter, press **Products**, and open **Dior J'adore** to see what the page says for it now.
 
 ## Keep the status with the error
 
@@ -65,12 +70,24 @@ The block starts with the `status === "error"` line and ends with its closing `)
 ```
 
 The missing product gets a heading and an explanation, with the **Back to the products** link below as the way out, and no retry.
+
+## Read more
+
+Before this step the page says `Could not load product 8. The server answered with status 404.` and offers **Retry**.
+Both are wrong for a shopper: nothing failed, the product is gone, and retrying will not bring it back.
+To tell a 404 apart from a 500 or a dropped connection, the error state needs the status code, and the starter's hook keeps only the message.
+
 Every other failure keeps the alert and the retry button, because a 503 or a dropped connection may well succeed the second time.
+A dropped connection never reaches `loadJson`'s status line, so its error has no `status` at all, and `undefined !== 404` sends it to the alert too.
 
 This app now has three kinds of not found, and each reads differently.
 An address that matches no route renders `NotFoundPage`.
 A product the server does not have renders the heading above.
 A request that could not be completed renders the alert with **Retry**.
+
+**If it breaks:** If the detail page goes blank and the console says `Objects are not valid as a React child`, a branch still renders `{error}`; render `{error.message}`.
+If the 404 still shows the alert, `error.status` is `undefined`, which means `loadJson` throws before attaching the status, or the hook stores `error.message`.
+If the console says `Cannot read properties of null (reading 'status')`, a branch reads `error.status` outside the `status === "error"` condition, where `error` is `null`.
 
 **Check:** Run the code, press **Products**, and open **Dior J'adore**.
 The page says no product has the id 8, with the explanation and the way back, and no **Retry** button.
@@ -78,9 +95,13 @@ Open **Powder Canister** and set **HTTP error** to `503 Service Unavailable` in 
 Set the HTTP error back to **None**, press **Retry** once more, and the product loads.
 Press **Run checks** with **Fixtures** selected; a real server such as DummyJSON has a product 8.
 
-**If it breaks:** If the detail page goes blank and the console says `Objects are not valid as a React child`, a branch still renders `{error}`; render `{error.message}`.
-If the 404 still shows the alert, `error.status` is `undefined`, which means `loadJson` throws before attaching the status, or the hook stores `error.message`.
-If the console says `Cannot read properties of null (reading 'status')`, a branch reads `error.status` outside the `status === "error"` condition, where `error` is `null`.
+```quiz
+The request for a product answers with status 503; which branch of the detail page renders?
+- The missing-product heading, because every error means the product is gone
+= The alert with Retry, because `error.status` is 503 and not 404
+- Neither, because only a 404 gives the error a `status`
+> `loadJson` attaches the status of every answer that is not ok, so a 503 carries `status` 503 and takes the branch for other errors, where Retry may succeed.
+```
 
 <details>
 <summary>src/api.js after this step</summary>

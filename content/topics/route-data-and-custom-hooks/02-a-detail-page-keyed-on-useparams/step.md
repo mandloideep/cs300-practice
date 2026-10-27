@@ -12,6 +12,14 @@ required: [detail-page-requests-the-product, detail-renders-from-the-response, n
 
 The detail page still reads the constant, and the constant knows six products while the server knows thousands.
 Give `ProductPage` its own request: `productUrl(id)` builds `/products/3` from the id that `useParams` read out of the address, and `useFetch` does the rest.
+Watch the **Network** view when the id in the address changes while the page stays mounted.
+
+```predict
+After this step, you open a product and press Next product; what does the Network view show?
+= A new request for the next product, and the page redraws from its answer
+- No new request, because `ProductPage` is already mounted and its effect ran once
+- A new request to `/products` for the whole list
+```
 
 ## Swap the constant for a request
 
@@ -34,7 +42,6 @@ The block starts with the `products.find` line and ends with the closing brace o
 ```
 
 The `Number(id)` conversion is gone with the lookup: the id goes into a URL, where it was text all along.
-A product the server does not have comes back as a 404, which the hook turns into the error state; the next step makes that case read well.
 
 Then draw the page from the status, with a link to the next product so that you can watch the request change.
 
@@ -58,23 +65,36 @@ Then draw the page from the status, with a link to the next product so that you 
 ```
 
 The fragment `<>...</>` groups the success markup without adding an element, as in JSX rules.
+Run the code, open a product, press **Next product**, and watch the **Network** view.
 
-## Why the id is the key
+## Read more
 
-Press **Next product** and watch the **Network** view: a new request goes to `/products/2`, the loading message shows, and the page redraws from the new answer.
+A product the server does not have comes back as a 404, which the hook turns into the error state; the next step makes that case read well.
+
+### Why the id is the key
+
+Press **Next product** and a new request goes to `/products/2`, the loading message shows, and the page redraws from the new answer.
 `ProductPage` did not unmount; the router gave it a new `id`, the component rendered again, `productUrl(id)` produced a different string, and the hook's effect, which depends on `[url, attempt]`, ran again with the new URL.
 That dependency is what keys the request on the route parameter.
 Without it the page would keep showing product 1 under the address of product 2, which is the "updating state after the requested identity changed" failure from the Week 13 notes.
 Press **Back** in the address bar and the same thing happens in reverse: the id changes, the URL changes, the effect runs.
+
+**If it breaks:** If the detail page shows the error state with status 404 for every product, `productUrl` is given something other than the id, such as the whole `params` object.
+If **Next product** changes the address but not the page, the hook is called with a fixed string instead of `productUrl(id)`.
+If the console says `product is not defined`, a line in the success branch still reads `product.` instead of `data.`.
 
 **Check:** Run the code, press **Products**, and open **Powder Canister**.
 The address bar shows `/products/3`, `Loading product 3...` shows, then the title, category, price, and description from the response.
 Press **Next product** twice and then **Back** twice; each press is one row in the Network view.
 Press **Run checks**, then try the **DummyJSON** preset, where every product has a page.
 
-**If it breaks:** If the detail page shows the error state with status 404 for every product, `productUrl` is given something other than the id, such as the whole `params` object.
-If **Next product** changes the address but not the page, the hook is called with a fixed string instead of `productUrl(id)`.
-If the console says `product is not defined`, a line in the success branch still reads `product.` instead of `data.`.
+```quiz
+`ProductPage` stays mounted when you press Next product; why does it still send a new request?
+- The router unmounts and remounts the page on every address change
+- `useParams` sends a request whenever the id changes
+= `productUrl(id)` returns a new string, and the hook's effect depends on `url`
+> A dependency that changes makes the effect run again after the render, so the request follows the id in the address without a new component.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>
