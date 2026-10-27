@@ -423,7 +423,7 @@ test.describe("inspector pane on the step page", () => {
     // The step's check clicks the button once, which records trace 1; the click below is trace 2.
     await page.getByRole("button", { name: "Show solution" }).click();
     await page.getByRole("button", { name: "Load solution" }).click();
-    await expect(page.locator(".status-pill")).toHaveText("Ready", { timeout: 15_000 });
+    await expect(page.locator(".pane--result .status-pill")).toHaveText("Ready", { timeout: 15_000 });
     const timeline = pane.getByRole("list", { name: /^Flow trace \d+$/ });
     await expect(timeline.getByRole("button").nth(1)).toHaveText(/from 0 to 1/);
 
