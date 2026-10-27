@@ -10,15 +10,21 @@ required: [screen-matches-storage-on-load, screen-matches-storage-after-toggle]
 
 The ids are written, and nothing reads them.
 The place to read them is the initial value of the state, because that is the one moment the component decides what it starts with.
+Watch which products are marked after a run that keeps the saved data, and what the page does when nothing is stored at all.
 
-`useState([])` starts from an empty array on every load.
-We could write `useState(JSON.parse(localStorage.getItem("saved-for-later")))`, and it would work the first time, but it has two problems.
-The argument is computed on every render, because JavaScript evaluates arguments before the call, even though `useState` only looks at it on the first render; reading and parsing storage on every keystroke is waste.
-And when nothing is stored yet, `getItem` returns `null`, `JSON.parse(null)` is `null`, and `savedIds.length` in the lead sentence crashes with `Cannot read properties of null (reading 'length')`.
+```demo name="storage-across-reload"
+```
 
 `useState` accepts a function instead of a value, and it calls that function once, on the first render only, to get the initial value.
 That is a **lazy initial state**.
 Replace the state line with one.
+
+```predict
+After this change you press **Run**, which starts with empty storage; what does the lead sentence say?
+= `0 of 6 products saved for later.`
+- `Cannot read properties of null (reading 'length')` in the console, and no page
+- The products you saved in the last step, still marked
+```
 
 ```jsx file="src/App.jsx" action="replace" anchor="  const [savedIds, setSavedIds] = useState([]);"
   const [savedIds, setSavedIds] = useState(() => {
@@ -28,23 +34,40 @@ Replace the state line with one.
 ```
 
 Read it as a tiny function: fetch the string, and if there is one, parse it, otherwise start empty.
-`JSON.parse` undoes the `JSON.stringify` of the last step, so the array comes back as an array of numbers, the same shape the effect wrote.
-The write effect does not change; it still runs after the first render and writes back what was just read, which is now the right value.
 
 Run the code and save two products.
 Then press **Run, keeping saved data**, which runs the code again without clearing the result's storage, the way a real page reload keeps it.
 The two products are still marked and the lead sentence still says `2 of 6`.
 In the inspector tree, `App` holds those two ids from the first commit on; nothing clicked them, the initializer read them.
 
+## Read more
+
+`useState([])` starts from an empty array on every load.
+We could write `useState(JSON.parse(localStorage.getItem("saved-for-later")))`, and it would work the first time, but it has two problems.
+The argument is computed on every render, because JavaScript evaluates arguments before the call, even though `useState` only looks at it on the first render; reading and parsing storage on every keystroke is waste.
+And when nothing is stored yet, `getItem` returns `null`, `JSON.parse(null)` is `null`, and `savedIds.length` in the lead sentence crashes with `Cannot read properties of null (reading 'length')`.
+The `stored ? ... : []` fallback in the initializer is what keeps a first visit, with nothing stored, from that crash.
+
+`JSON.parse` undoes the `JSON.stringify` of the last step, so the array comes back as an array of numbers, the same shape the effect wrote.
+The write effect does not change; it still runs after the first render and writes back what was just read, which is now the right value.
+
 This pair, a lazy initial state that reads and an effect that writes, is the whole of persistence, and it is the pattern every Assignment 4 option uses.
+
+**If it breaks:** If the console says `Cannot read properties of null (reading 'length')`, the initializer returns `null` when nothing is stored; keep the `stored ? ... : []` fallback.
+If the products come back unmarked after a reload, the function is missing its `return`, or `useState` is called with the result of the function instead of the function itself.
+If the console warns that the initial state changed between renders, the parse runs outside the arrow function.
 
 **Check:** Run the code, save two products, and run it again with the storage kept.
 The same two products are marked.
 Press **Run checks**: the checks compare the marked products with the stored ids on load and after a toggle, and the lab's own test reloads the page to confirm the ids survive.
 
-**If it breaks:** If the console says `Cannot read properties of null (reading 'length')`, the initializer returns `null` when nothing is stored; keep the `stored ? ... : []` fallback.
-If the products come back unmarked after a reload, the function is missing its `return`, or `useState` is called with the result of the function instead of the function itself.
-If the console warns that the initial state changed between renders, the parse runs outside the arrow function.
+```quiz
+Why does `useState` get an arrow function here instead of `JSON.parse(localStorage.getItem("saved-for-later"))`?
+- An arrow function makes `localStorage` load faster
+= `useState` calls the function once, on the first render, while an argument written out is computed on every render
+- `useState` cannot take an array as its initial value
+> JavaScript evaluates an argument before every call, so the written-out version reads and parses storage on every render and crashes on `null` when nothing is stored; the function runs once and can fall back to `[]`.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>
