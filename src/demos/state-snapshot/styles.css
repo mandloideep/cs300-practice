@@ -1,0 +1,55 @@
+figure.demo-frame .state-snapshot__code {
+  flex: 3 1 20rem;
+}
+
+figure.demo-frame .state-snapshot__code .demo-panel__title {
+  font-family: var(--font-mono);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+figure.demo-frame .state-snapshot__clock {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+
+figure.demo-frame .state-snapshot__renders {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+figure.demo-frame .state-snapshot__render {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .state-snapshot__render .demo-box__label {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+figure.demo-frame .state-snapshot__page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+}
+
+.state-snapshot {
+  container-type: inline-size;
+}
+
+@container (max-width: 30rem) {
+  figure.demo-frame .state-snapshot .demo-code {
+    font-size: var(--text-xs);
+  }
+}

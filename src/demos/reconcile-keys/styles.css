@@ -1,0 +1,135 @@
+figure.demo-frame .reconcile-keys__change {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .reconcile-keys__press {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-sunken);
+  color: var(--color-text);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+}
+
+figure.demo-frame .reconcile-keys__press:hover {
+  border-color: var(--color-accent);
+}
+
+figure.demo-frame .reconcile-keys__press[aria-pressed="true"] {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+figure.demo-frame .reconcile-keys__elements,
+figure.demo-frame .reconcile-keys__rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .reconcile-keys__elements li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  min-height: 2.5rem;
+  padding: var(--space-1) 0;
+}
+
+figure.demo-frame .reconcile-keys__elements li + li {
+  border-top: 1px solid var(--color-border);
+}
+
+figure.demo-frame .reconcile-keys__elements .demo-chip {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}
+
+figure.demo-frame .reconcile-keys__match {
+  width: 100%;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+figure.demo-frame .reconcile-keys__row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 3.75rem;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 2.5rem;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease;
+}
+
+figure.demo-frame .reconcile-keys__row.is-right {
+  border-left-color: var(--color-success);
+  background: var(--color-success-soft);
+}
+
+figure.demo-frame .reconcile-keys__row.is-wrong {
+  border-left-color: var(--color-danger);
+  background: var(--color-danger-soft);
+}
+
+figure.demo-frame .reconcile-keys__node {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-sunken);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .reconcile-keys__item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-2);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+figure.demo-frame .reconcile-keys__title {
+  min-width: 0;
+  font-weight: var(--weight-medium);
+}
+
+figure.demo-frame .reconcile-keys__price {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+figure.demo-frame .reconcile-keys__item .demo-chip {
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+}
+
+figure.demo-frame .reconcile-keys__input {
+  width: 100%;
+  min-height: 2rem;
+  padding: var(--space-1);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}

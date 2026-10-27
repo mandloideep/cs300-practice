@@ -1,0 +1,39 @@
+figure.demo-frame .jsx-to-calls__result {
+  margin-top: var(--space-2);
+}
+
+figure.demo-frame .jsx-to-calls__elements {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .jsx-to-calls__elements li {
+  display: flex;
+  gap: var(--space-2);
+  align-items: baseline;
+}
+
+figure.demo-frame .jsx-to-calls__elements li + li {
+  margin-left: var(--space-3);
+}
+
+figure.demo-frame .jsx-to-calls__at {
+  flex: none;
+  min-width: 2.25rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+}
+
+.jsx-to-calls {
+  container-type: inline-size;
+}
+
+@container (max-width: 30rem) {
+  figure.demo-frame .jsx-to-calls .demo-code {
+    font-size: var(--text-xs);
+  }
+}
