@@ -35,22 +35,22 @@ npm run preview
 
 | Script | What it does |
 | --- | --- |
-| `npm run dev` | Compiles the content, then starts the Vite dev server |
-| `npm run build` | Compiles the content, then builds the site into `dist/` |
+| `npm run dev` | Compiles all the content with `--all`, then starts the Vite dev server |
+| `npm run build` | Compiles the content released as of today, then builds the site into `dist/`; set `LAB_BUILD_DATE` to build as of another date |
 | `npm run preview` | Serves `dist/` locally |
-| `npm run build:content` | Compiles `content/` into `public/content/` with `scripts/build-content.mjs` |
+| `npm run build:content` | Compiles `content/` into `public/content/` with `scripts/build-content.mjs`, leaving out the units that have not opened as of `LAB_BUILD_DATE` or today; `-- --all` compiles everything |
 | `npm run build:runtime` | Rebuilds the vendored React runtime in `public/runtime/` with `scripts/build-runtime.mjs` |
 | `npm run verify:runtime` | Loads the vendored runtime in headless Chromium and checks that it acts as one React instance |
 | `npm run upgrade:runtime -- <react> <react-router>` | Pins the exact versions, rebuilds and verifies the runtime, and prints the commit message; `--dry-run` only prints the steps |
-| `npm run validate` | Validates `content/` without writing anything, with `scripts/validate-content.mjs` |
+| `npm run validate` | Validates all of `content/`, whatever the `opens` dates say, without writing anything, with `scripts/validate-content.mjs` |
 | `npm run new:topic -- <id> --area <area> --title "<title>"` | Scaffolds a topic with its first step from `scripts/templates/` |
 | `npm run new:step -- <topic-id> "<title>"` | Adds the next numbered step to a topic, starting from the previous step's solution |
 | `npm run lint` | Runs ESLint over `src`, `scripts`, and `tests` |
 | `npm run format` | Formats the code with Prettier |
 | `npm run format:check` | Checks the formatting with Prettier |
 | `npm run test:scripts` | Runs the Node tests for the scripts, under `scripts/test/`, without a browser |
-| `npm test` | Runs the Playwright tests against the Vite dev server; set `PLAYWRIGHT_PORT` when another checkout's server already holds port 4173 |
-| `npm run export:d2l -- <path-id>` | Writes a Brightspace page per unit of a path into `dist-d2l/` |
+| `npm test` | Compiles all the content with `--all`, then runs the Playwright tests against the Vite dev server; set `PLAYWRIGHT_PORT` when another checkout's server already holds port 4173 |
+| `npm run export:d2l -- <path-id>` | Writes a Brightspace page per open unit of a path into `dist-d2l/` |
 
 Prettier does not touch Markdown or `content/`.
 Markdown keeps one sentence per physical line, and the edit blocks in each `step.md` must match their workspace files byte for byte.
@@ -58,6 +58,7 @@ Markdown keeps one sentence per physical line, and the edit blocks in each `step
 ## How the site is organized
 
 - `src/app/` holds the routes, the site header, and the pages.
+- `src/demos/` holds the interactive explainers that steps place with a `demo` fence, their registry, and the frame they share.
 - `src/styles/tokens.css` holds the design tokens, and `src/styles/global.css` holds the base styles.
 - `content/` holds the topics, paths, areas, and API presets as plain files.
 - `src/runner/` compiles a workspace with Sucrase, links its modules as blob URLs, and builds the document for the sandboxed result iframe, including the bridge script that reports console output, errors, and check results.
@@ -79,12 +80,23 @@ Two workflows live in `.github/workflows/`.
 It installs with `npm ci`, then runs lint, the format check, content validation, the build, and the script tests.
 It needs no browser and finishes in under a minute.
 
-`deploy.yml` runs only when it is started by hand, from the Actions tab or with `gh workflow run deploy.yml`.
-Its build job repeats the checks and uploads `dist/` as the Pages artifact.
+`deploy.yml` runs every Monday at 12:00 UTC, which is 7:00 in Chicago in summer time and 6:00 in winter, and whenever it is started by hand, from the Actions tab or with `gh workflow run deploy.yml`.
+Its build job repeats the checks, runs `npm run build` as of that day, and uploads `dist/` as the Pages artifact.
 Its test job restores the cached Chromium build, runs the runtime check, and runs the Playwright suite in three parallel shards.
 Its deploy job publishes the artifact to GitHub Pages once the build and every shard are green.
 The run takes two inputs, both on by default: `tests` skips the suite when off, and `deploy` skips publishing when off.
-Start it at the end of a phase or at any milestone worth publishing.
+A scheduled run has no inputs and behaves as a manual run with both on.
+Start it by hand at the end of a phase or at any milestone worth publishing.
+
+The weekly run is how a semester opens one unit at a time.
+`npm run build` compares each unit's `opens` date with the build date and compiles a unit that has not opened as its title and date only, and a topic that is in no open unit of an active path is left out of the deployed files, so its page does not exist until its week.
+On the Monday a unit opens, the scheduled run builds it in, runs the suite, and publishes only when every shard is green; a failed run reaches the instructor as the usual Actions failure notification, and the site stays as it was.
+`npm run dev`, `npm run validate`, and `npm test` always use `--all`, so authors and the suite see the whole site.
+To see the site as students will on a given day, build as of that date and serve it:
+
+```bash
+LAB_BUILD_DATE=2027-03-01 npm run build && npm run preview
+```
 
 ## Adding a topic
 
@@ -264,6 +276,119 @@ Besides the format rules above, it holds `content/` to these style rules, and ea
 `npm run build:content` runs the same checks and then writes `public/content/`.
 Finally, run `npm run dev` and walk the new topic in the browser.
 
+## Predict, quiz, Read more, and links
+
+A step opens with a lead of two to four sentences, then an explainer or a predict block, then the edit blocks, then the longer explanation under "Read more", then the `**Check:**` paragraph.
+[docs/PHASE6.md](docs/PHASE6.md) explains the order; the fences and fields below are how a step says it.
+
+A `predict` fence asks what the console or the page will show before the student runs the code.
+Its first line is the question, then two to four options that each start with `- `, except the one answer, which starts with `= `:
+
+````markdown
+```predict
+What does the console show after one click on Add to cart?
+- Nothing until the second click
+= Rendering Essence Mascara with quantity 1
+- Six lines, one per card
+```
+````
+
+The step page shows the options as a radio group and keeps the pick in progress.
+On an edit step the answer is revealed when the student next runs the code, so the console confirms or corrects the guess; on a read or local step it is revealed on the pick.
+
+A `quiz` fence has the same shape and may end with one or more explanation lines that start with `> `.
+Its answer is revealed on the pick, with the explanation, and the topic page shows how many of the topic's quizzes are answered and how many are right.
+
+````markdown
+```quiz
+Which call adds three?
+- setCount(count + 1), three times
+= setCount((c) => c + 1), three times
+> The updater form reads the latest pending value each time.
+```
+````
+
+Each block gets the id `predict-1`, `predict-2`, `quiz-1`, and so on in body order, which names its record in progress; give one a fixed name with `id="<slug>"` in the info string if it might move.
+Options and explanations may use inline code in backticks.
+The validator names the line of a block with no answer, more than one answer, fewer than two or more than four options, or an explanation in a predict.
+
+A level-two heading whose text is exactly `Read more` starts the folded part of a step.
+Everything from that heading to the `**Check:**` paragraph is closed by default; put the background, the comparison with an earlier week, and the `**If it breaks:**` paragraph there.
+A step has at most one such heading, the `**Check:**` paragraph must follow it, and a step without it validates as before.
+A student who prefers to read first can tick "Keep explanations open", which opens every Read more on every step.
+
+`topic.json` and a step's front matter may carry `links`, each a lecture, a reading, or a reference with a title and an `https` URL:
+
+```json
+"links": [
+  { "kind": "lecture", "title": "Week 5 Session 1 slides", "url": "https://..." },
+  { "kind": "reading", "title": "javascript.info: Functions", "url": "https://javascript.info/function-basics" }
+]
+```
+
+```yaml
+links:
+  - kind: reference
+    title: "MDN: Array.prototype.map"
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
+```
+
+The step page lists the topic's links and then the step's under the step title, labeled by kind, and the unit page lists each topic's lecture links.
+
+## Adding an explainer
+
+An explainer is a small React component that shows one idea moving inside a step's explanation.
+[docs/EXPLAINERS.md](docs/EXPLAINERS.md) lists every explainer the lab plans, and a new one goes there first.
+Every id in that file also has an entry in `src/demos/registry.json` with its title and a one-sentence description:
+
+```json
+{ "id": "event-loop", "title": "Event loop", "description": "The call stack, ..." }
+```
+
+A step places an explainer with a `demo` fence whose body is empty or one JSON object of props:
+
+````markdown
+```demo name="event-loop"
+{ "timers": 2 }
+```
+````
+
+The validator rejects an id that is not in the registry and a body that is not a JSON object.
+The build turns the fence into a placeholder that holds the title and the description as text, and the step page mounts the component into it.
+A registered id with no component yet keeps that text, so a step can place an explainer before it is built.
+
+The component lives in `src/demos/<id>/index.jsx`, with any styles of its own in `src/demos/<id>/styles.css`, and exports three things:
+
+```jsx
+export const id = "event-loop";
+
+export function stepCount(props) {
+  return 7;
+}
+
+export default function EventLoop({ props, step }) {
+  return <Caption>Stage {step + 1}</Caption>;
+}
+```
+
+`src/demos/DemoFrame.jsx` draws the title, the description, and the Play, Pause, Back, Step, and Reset controls, and passes the component the stage to draw as `step`, from `0` to `stepCount(props) - 1`.
+The component only draws that stage; it never starts a timer of its own.
+It also receives `reducedMotion` and `goTo(stage)` for an explainer that moves itself when the student clicks inside it.
+Build it from the pieces in `src/demos/kit.jsx`, such as `Caption`, `CodeView`, `ConsoleView`, `Panel`, `Chip`, and `Choice`, so that every explainer reads the same.
+
+Every explainer keeps the contract in [docs/CONTRACTS.md](docs/CONTRACTS.md) section 7.1:
+
+- It never plays on its own, and the frame's controls work from the keyboard.
+- Under `prefers-reduced-motion` the frame opens on the last stage, and Back, Step, and Reset still work.
+- Each stage ends with a `Caption` that says in words what the picture shows.
+- It draws only with the tokens in `src/styles/tokens.css` and fits a 320 pixel column.
+- It takes the step's own values from its props where that makes sense, and works with no props.
+- The code it shows carries no explanatory comments; the caption explains.
+
+With `npm run dev` running, `/cs300-react-lab/src/demos/harness/index.html` lists every explainer, and `?id=<id>&width=320` shows one at phone width with optional `&props=<json>`.
+`tests/demos.spec.js` mounts every built explainer on that page, steps it from the first stage to the last from the keyboard, checks the 320 pixel column, and runs axe in light and dark with motion allowed and reduced.
+When an explainer is built, set its Status in [docs/EXPLAINERS.md](docs/EXPLAINERS.md) to `built`.
+
 ## Adding a path
 
 A path is one JSON file in `content/paths/`, named after its id, that orders existing topics into units for one semester.
@@ -273,6 +398,7 @@ It never copies topic content, so improving a topic improves every path that use
 {
   "id": "spring-2027",
   "title": "Spring 2027",
+  "active": true,
   "units": [
     {
       "id": "week-10",
@@ -282,13 +408,18 @@ It never copies topic content, so improving a topic improves every path that use
         { "id": "react-mental-model", "required": true },
         { "id": "lists-and-keys", "required": false }
       ],
-      "localNotes": ["What students run on their own computer this week."]
+      "localNotes": ["What students run on their own computer this week."],
+      "opens": "2027-01-25"
     }
   ]
 }
 ```
 
 Every topic id must exist under `content/topics/`, every `required` is `true` or `false`, and `localNotes` is a list of sentences.
+Two optional fields control when students see the path, as the "Deployment" section explains.
+`opens` on a unit is the date it is released, written as `YYYY-MM-DD`; set it to the Monday of the unit's week so the scheduled deploy opens it that morning, and leave it out for a unit that is open from the start.
+`active` on the path is `true` by default; set it to `false` when a semester is over and the path is kept only for its history, and the deployed site leaves it out along with every topic that no active path releases.
+Validation still requires every topic to be in some path, whatever the dates and `active` say.
 The unit page is `#/path/<path-id>/<unit-id>`, which is the link to post in D2L.
 Run `npm run validate` after editing.
 

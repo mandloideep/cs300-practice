@@ -20,7 +20,7 @@ Each one takes its data from the fence body where that makes sense, so the same 
 | Id | Shows | Serves | Phase | Status |
 | --- | --- | --- | --- | --- |
 | `page-tour` | The step page in miniature with each pane labeled; selecting a pane says what it is for and when to look at it | *using-the-lab* | 6 | planned |
-| `edit-run-loop` | The cycle of edit, Run, result, console, and checks as one loop the student advances a stage at a time | *using-the-lab* | 6 | planned |
+| `edit-run-loop` | The cycle of edit, Run, result, console, and checks as one loop the student advances a stage at a time | *using-the-lab* | 6 | built |
 | `inspector-tour` | A three-component tree with boundaries, a re-render flash, and the state panel, driven by a Click button inside the explainer | *using-the-lab*, react-mental-model | 6 | planned |
 
 ## HTML

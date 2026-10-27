@@ -6,8 +6,16 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { transform } from "sucrase";
+import { parseOptions, UsageError } from "./cli.mjs";
 import { unifiedDiff } from "./diff.mjs";
 import { ACTIONS, ANCHORED_ACTIONS, applyEdits, editsFromTokens, parseInfo } from "./edits.mjs";
+import {
+  compiledLinks,
+  fenceKind,
+  fencesFromTokens,
+  linkProblems,
+  readMoreSection,
+} from "./fences.mjs";
 import { isDirectory, listDirectories, readJson, readTree } from "./files.mjs";
 import { createMarkdown, LANGUAGES } from "./render.mjs";
 import { rulesFor } from "./style.mjs";
@@ -194,7 +202,7 @@ function loadStep(topicDir, dirName, index, context, problems) {
   const offset = raw.split("\n").length - body.split("\n").length;
   const tokens = markdown.parse(body, {});
   for (const token of tokens) {
-    if (token.type !== "fence") continue;
+    if (token.type !== "fence" || fenceKind(token.info)) continue;
     const { lang } = parseInfo(token.info);
     if (!LANGUAGES.includes(lang)) {
       problems.add(
@@ -207,6 +215,37 @@ function loadStep(topicDir, dirName, index, context, problems) {
     if (!context.topicIds.includes(link[1]))
       problems.add(stepFile, `links to unknown topic ${link[1]}`);
   }
+
+  const fences = fencesFromTokens(tokens);
+  for (const demo of fences.demos) {
+    if (demo.error) problems.add(stepFile, `line ${demo.line + offset}: demo fence ${demo.error}`);
+  }
+  const questionIds = new Set();
+  for (const question of fences.questions) {
+    const where = `line ${question.line + offset}: ${question.kind} fence`;
+    if (question.error) problems.add(stepFile, `${where} ${question.error}`);
+    else if (questionIds.has(question.id))
+      problems.add(stepFile, `${where} uses the id ${question.id} twice in this step`);
+    questionIds.add(question.id);
+  }
+  const readMore = readMoreSection(tokens);
+  if (readMore.headings.length > 1) {
+    const line = (tokens[readMore.headings[1]].map?.[0] ?? 0) + 1 + offset;
+    problems.add(stepFile, `line ${line}: a step has at most one ## Read more heading`);
+  } else if (readMore.headings.length === 1 && readMore.check === -1) {
+    const line = (tokens[readMore.headings[0]].map?.[0] ?? 0) + 1 + offset;
+    problems.add(
+      stepFile,
+      `line ${line}: ## Read more needs a **Check:** paragraph after it, which stays outside the folded part`,
+    );
+  } else if (readMore.lateIfItBreaks !== -1) {
+    const line = (tokens[readMore.lateIfItBreaks].map?.[0] ?? 0) + 1 + offset;
+    problems.add(
+      stepFile,
+      `line ${line}: the **If it breaks:** paragraph belongs inside Read more, before **Check:**`,
+    );
+  }
+  for (const reason of linkProblems(front.links)) problems.add(stepFile, `front matter ${reason}`);
 
   const edits = editsFromTokens(tokens).map((edit) => ({ ...edit, line: edit.line + offset }));
   edits.forEach((edit, i) => {
@@ -310,6 +349,18 @@ function loadStep(topicDir, dirName, index, context, problems) {
         : inspector,
     api,
     required,
+    demos: fences.demos.filter((demo) => !demo.error).map((demo) => demo.id),
+    questions: fences.questions
+      .filter((question) => !question.error)
+      .map(({ id, kind, question, options, answer, explanation }) => ({
+        id,
+        kind,
+        question,
+        options,
+        answer,
+        explanation,
+      })),
+    links: compiledLinks(front.links),
     edits: edits.map(({ file, action, anchor, code, lang }) => ({
       file,
       action,
@@ -374,13 +425,15 @@ function loadTopic(topicsDir, id, context, problems) {
     problems.add(topicFile, "changeNote must be a sentence that says what changed");
   }
 
+  for (const reason of linkProblems(meta.links)) problems.add(topicFile, reason);
+
   const dirs = listDirectories(topicDir);
   if (dirs.length === 0) problems.add(topicDir, "topic has no step directories");
   const steps = dirs
     .map((dir, index) => loadStep(topicDir, dir, index, context, problems))
     .filter(Boolean);
   const metaOut = Object.fromEntries(TOPIC_FIELDS.map((field) => [field, meta[field] ?? null]));
-  return { ...metaOut, steps };
+  return { ...metaOut, links: compiledLinks(meta.links), steps };
 }
 
 function loadList(file, problems, label) {
@@ -434,6 +487,8 @@ function loadPaths(pathsDir, topicIds, problems) {
     }
     if (value.id !== name.replace(/\.json$/, ""))
       problems.add(file, "id must equal the file name without .json");
+    if (value.active !== undefined && typeof value.active !== "boolean")
+      problems.add(file, "active must be true or false");
     if (!Array.isArray(value.units)) {
       problems.add(file, "must have a units array");
       continue;
@@ -443,6 +498,8 @@ function loadPaths(pathsDir, topicIds, problems) {
       for (const field of ["id", "title", "intro"]) {
         if (typeof unit[field] !== "string") problems.add(file, `${where} needs a ${field} string`);
       }
+      if (unit.opens !== undefined && !isDate(unit.opens))
+        problems.add(file, `${where} opens must be a date written as YYYY-MM-DD`);
       if (!Array.isArray(unit.topics)) {
         problems.add(file, `${where} needs a topics array`);
         continue;
@@ -460,6 +517,57 @@ function loadPaths(pathsDir, topicIds, problems) {
     paths.push(value);
   }
   return paths;
+}
+
+// True for a real calendar date written as YYYY-MM-DD, so 2027-02-30 is rejected.
+function isDate(value) {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+}
+
+// The release options of docs/CONTRACTS.md section 7.5 from the build's arguments and environment:
+// --all, and LAB_BUILD_DATE, which defaults to today in UTC.
+// releaseOptions(["--all"], { LAB_BUILD_DATE: "2027-03-01" }) -> { all: true, buildDate: "2027-03-01" }
+export function releaseOptions(argv, env, now = new Date()) {
+  const { positional, options } = parseOptions(argv, [], ["all"]);
+  if (positional.length > 0) throw new UsageError(`unexpected argument ${positional[0]}`);
+  const buildDate = env.LAB_BUILD_DATE || now.toISOString().slice(0, 10);
+  if (!isDate(buildDate)) {
+    throw new UsageError(
+      `LAB_BUILD_DATE ${JSON.stringify(buildDate)} must be a date written as YYYY-MM-DD`,
+    );
+  }
+  return { all: options.all === true, buildDate };
+}
+
+function releaseUnit(unit, open) {
+  const opens = unit.opens ?? null;
+  if (open) return { ...unit, opens, closed: false };
+  return { id: unit.id, title: unit.title, opens, closed: true };
+}
+
+// Applies docs/CONTRACTS.md section 7.5 to a valid content model. Without all, a unit that opens
+// after buildDate keeps only its id, title, and date; an inactive path is left out, since it
+// releases nothing; and a topic in no open unit of an active path is dropped. With all, every
+// path, unit, and topic is kept, and every unit is marked open.
+export function releaseContent(content, { all, buildDate }) {
+  const paths = content.paths
+    .filter((item) => all || item.active !== false)
+    .map((item) => ({
+      ...item,
+      active: item.active !== false,
+      units: item.units.map((unit) =>
+        releaseUnit(unit, all || unit.opens === undefined || unit.opens <= buildDate),
+      ),
+    }));
+  if (all) return { ...content, paths };
+  const released = new Set(
+    paths.flatMap((item) =>
+      item.units.filter((unit) => !unit.closed).flatMap((unit) => unit.topics.map(({ id }) => id)),
+    ),
+  );
+  return { ...content, paths, topics: content.topics.filter((topic) => released.has(topic.id)) };
 }
 
 function readDirFiles(dir) {

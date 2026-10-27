@@ -6,7 +6,7 @@ import PageTitle from "./PageTitle.jsx";
 import ProgressNote from "../progress/ProgressNote.jsx";
 import TopicProgress from "../progress/TopicProgress.jsx";
 import { isStepComplete, useProgress } from "../progress/store.js";
-import { countLabel } from "./format.js";
+import { countLabel, formatDate } from "./format.js";
 
 export default function UnitPage() {
   const { pathId, unit: unitId } = useParams();
@@ -30,6 +30,23 @@ export default function UnitPage() {
           .
         </p>
       </NotFoundNotice>
+    );
+  }
+
+  if (unit.closed) {
+    return (
+      <>
+        <PageTitle>{`${unit.title} · ${path.title}`}</PageTitle>
+        <div className="page-intro">
+          <p className="eyebrow">
+            <Link to={`/path/${path.id}`}>{path.title}</Link>
+          </p>
+          <h1>{unit.title}</h1>
+          <p>
+            This unit opens on <OpensDate date={unit.opens} />. Its topics appear here that week.
+          </p>
+        </div>
+      </>
     );
   }
 
@@ -141,11 +158,35 @@ function TopicLinks({ id, heading, topics, topicsById, progress }) {
                   </p>
                 )}
                 {topic && <TopicProgress topic={topic} progress={progress} />}
+                <LectureLinks topic={topic} />
               </article>
             </li>
           );
         })}
       </ol>
     </section>
+  );
+}
+
+// A unit's open date as a time element; a closed unit with no date reads "a later week".
+export function OpensDate({ date }) {
+  if (!date) return "a later week";
+  return <time dateTime={date}>{formatDate(date)}</time>;
+}
+
+function LectureLinks({ topic }) {
+  const lectures = (topic?.links ?? []).filter((link) => link.kind === "lecture");
+  if (lectures.length === 0) return null;
+  return (
+    <ul className="lecture-links" aria-label={`Lectures for ${topic.title}`}>
+      {lectures.map((link, index) => (
+        <li key={index}>
+          <a href={link.url} target="_blank" rel="noreferrer">
+            {link.title}
+            <span className="visually-hidden"> (lecture, opens in a new tab)</span>
+          </a>
+        </li>
+      ))}
+    </ul>
   );
 }
