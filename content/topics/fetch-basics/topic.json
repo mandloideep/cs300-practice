@@ -5,6 +5,28 @@
   "summary": "Trace synchronous and asynchronous code, then wait for promises with then and with async and await. You will fetch JSON from an API source you can switch between fixtures and a real server, show the loading, success, empty, and error states on the page, build a search URL from user input, and cause every failure on purpose with the fixture controls.",
   "prerequisites": ["dom-events"],
   "minutes": 80,
-  "updated": "2026-10-26",
-  "changeNote": "First version."
+  "updated": "2026-10-27",
+  "changeNote": "Rewritten so each step opens with an explainer or a prediction, folds the background under Read more, and ends with a quiz.",
+  "links": [
+    {
+      "kind": "reading",
+      "title": "javascript.info: Async/await",
+      "url": "https://javascript.info/async-await"
+    },
+    {
+      "kind": "reading",
+      "title": "javascript.info: Fetch",
+      "url": "https://javascript.info/fetch"
+    },
+    {
+      "kind": "reading",
+      "title": "MDN: Using the Fetch API",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch"
+    },
+    {
+      "kind": "reference",
+      "title": "MDN: encodeURIComponent()",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent"
+    }
+  ]
 }
