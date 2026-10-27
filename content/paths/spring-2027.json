@@ -90,6 +90,10 @@
         {
           "id": "app-architecture",
           "required": true
+        },
+        {
+          "id": "modules-and-imports",
+          "required": true
         }
       ],
       "localNotes": [

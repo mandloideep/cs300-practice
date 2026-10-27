@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CS300 gradebook</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="module" src="/src/main.js"></script>
+  </head>
+  <body>
+    <main>
+      <h1>CS300 gradebook</h1>
+      <p id="summary">The gradebook has not rendered yet.</p>
+      <ul id="grades"></ul>
+      <p id="updated">Not updated yet.</p>
+    </main>
+    <script type="module">
+      import { format } from "date-fns";
+      document.querySelector("#updated").textContent = "Updated " + format(new Date(), "MMMM d");
+    </script>
+  </body>
+</html>
