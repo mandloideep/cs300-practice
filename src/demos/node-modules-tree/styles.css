@@ -1,0 +1,83 @@
+figure.demo-frame .node-modules-tree__graph {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+figure.demo-frame .node-modules-tree__package {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .node-modules-tree__name {
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .node-modules-tree__why {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+figure.demo-frame .node-modules-tree__needs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+figure.demo-frame .node-modules-tree__folder {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+figure.demo-frame .node-modules-tree__entry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 1.9rem;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  overflow-wrap: anywhere;
+  transition: background-color 200ms ease;
+}
+
+figure.demo-frame .node-modules-tree__entry--1 {
+  margin-left: var(--space-2);
+  border-left: 1px solid var(--color-border-strong);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+figure.demo-frame .node-modules-tree__entry--2 {
+  margin-left: var(--space-2);
+  padding-left: calc(var(--space-5) + var(--space-2));
+  border-left: 1px solid var(--color-border-strong);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+figure.demo-frame .node-modules-tree__entry.is-new {
+  background: var(--color-accent-soft);
+}
+
+figure.demo-frame .node-modules-tree__locked {
+  margin-bottom: var(--space-2);
+}
+
+figure.demo-frame .node-modules-tree__ci {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .node-modules-tree__file .demo-panel__title {
+  font-family: var(--font-mono);
+  letter-spacing: 0;
+  text-transform: none;
+}

@@ -127,11 +127,11 @@ Each one takes its data from the fence body where that makes sense, so the same 
 
 | Id | Shows | Serves | Phase | Status |
 | --- | --- | --- | --- | --- |
-| `terminal` | A scripted command session the student advances one command at a time, with each command's output | *tooling-from-scratch*, vite-project-anatomy/create-the-project, *testing-client-apps* | 6 | planned |
-| `bare-import-fail` | A browser trying to load `import "react"` with nothing to resolve it, and the bundler that fills the gap | *tooling-from-scratch*, *modules-and-imports* | 6 | planned |
-| `dev-server-vs-build` | A request served by the dev server, transformed on demand, beside the same page served from `dist/` | *tooling-from-scratch*, vite-project-anatomy/build-for-production | 6 | planned |
-| `package-json-explorer` | A `package.json` with each field named when selected, and the script that `npm run dev` expands to | *tooling-from-scratch* | 6 | planned |
-| `node-modules-tree` | A dependency pulling in its own dependencies, the tree that results, and the lockfile that pins it | *tooling-from-scratch* | 6 | planned |
+| `terminal` | A scripted command session the student advances one command at a time, with each command's output | *tooling-from-scratch*, vite-project-anatomy/create-the-project, *testing-client-apps* | 6 | built |
+| `bare-import-fail` | A browser trying to load `import "react"` with nothing to resolve it, and the bundler that fills the gap | *tooling-from-scratch*, *modules-and-imports* | 6 | built |
+| `dev-server-vs-build` | A request served by the dev server, transformed on demand, beside the same page served from `dist/` | *tooling-from-scratch*, vite-project-anatomy/build-for-production | 6 | built |
+| `package-json-explorer` | A `package.json` with each field named when selected, and the script that `npm run dev` expands to | *tooling-from-scratch* | 6 | built |
+| `node-modules-tree` | A dependency pulling in its own dependencies, the tree that results, and the lockfile that pins it | *tooling-from-scratch* | 6 | built |
 | `hot-module-replacement` | A file saved and only its module swapped in the running page, with state preserved | *tooling-from-scratch* | 7 | planned |
 | `env-at-build` | `import.meta.env` replaced by its value at build time, and why a secret in it ends up in the bundle | *building-for-production*, *security-for-client-apps* | 8 | planned |
 | `library-fit` | A problem, the hand-written solution, and the library call that replaces it, for each library the tour covers | *widely-used-libraries* | 7 | planned |

@@ -1,0 +1,73 @@
+figure.demo-frame .dev-server-vs-build__side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+figure.demo-frame .dev-server-vs-build__server {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--space-2);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .dev-server-vs-build__requests {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+figure.demo-frame .dev-server-vs-build__side .demo-panel__title {
+  font-family: var(--font-mono);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+figure.demo-frame .dev-server-vs-build__request {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-sunken);
+  font-size: var(--text-sm);
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease;
+}
+
+figure.demo-frame .dev-server-vs-build__request.is-new {
+  border-left-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+figure.demo-frame .dev-server-vs-build__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--space-2);
+}
+
+figure.demo-frame .dev-server-vs-build__url {
+  min-width: 0;
+}
+
+figure.demo-frame .dev-server-vs-build__request.is-new .dev-server-vs-build__url {
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .dev-server-vs-build__from {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  line-height: 1.45;
+}
+
+figure.demo-frame .dev-server-vs-build__note {
+  padding: var(--space-2);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+}
