@@ -8,8 +8,16 @@ inspector:
 required: [error-while-typing, button-disabled-until-valid, validation-is-derived]
 ---
 
-In Week 5 we validated a form when it was submitted, by reading each field and checking it.
 With the title in state we can check it on every keystroke, because the component re-renders on every keystroke and can compute anything it likes from the value.
+This step adds a length rule, a message under the field, and a button that waits for a valid title.
+Watch the inspector tree while you type: the rule changes what the page shows without adding anything to state.
+
+```predict
+After you add the `titleTooShort` line and run, how many state values does the inspector show on `AddProductForm`?
+- Two: `title` and `titleTooShort`
+= One: `title`
+- None, because the rule replaced the state
+```
 
 Add the rule under the state line.
 
@@ -17,10 +25,7 @@ Add the rule under the state line.
   const titleTooShort = title.trim().length < 3;
 ```
 
-This is a plain `const`, not state.
-It is **derived** from the state: when `title` changes, the component re-renders, this line runs again, and `titleTooShort` is computed fresh.
-Storing it in a second `useState` would mean keeping two values in step by hand, which is the bug we could never quite fix in the Week 8 CourseHub when several parts of the page each kept their own copy.
-If a value can be computed from state or props, compute it; only store what cannot be computed.
+This is a plain `const`, not state: it is **derived** from the state and computed fresh on every render.
 
 Show a message under the Title field when the rule fails.
 The anchor is the first `</label>` in the form, the one that closes the Title field.
@@ -29,10 +34,7 @@ The anchor is the first `</label>` in the form, the one that closes the Title fi
       {title !== "" && titleTooShort && <p className="form-error">The title needs at least 3 characters.</p>}
 ```
 
-Read the condition left to right.
-While the field is empty, say nothing, because the shopper has not started.
-When it has text that is too short, show the message.
-Otherwise the expression is `false`, and React renders nothing for `false`, the `&&` pattern we used for empty lists in Week 10.
+While the field is empty the message stays away, and once there is text that is too short, it shows.
 
 Disable the button while the rule fails.
 
@@ -45,15 +47,37 @@ Type `Ki`: the message appears and the button goes grey.
 Type one more letter: the message disappears and the button comes back.
 The tree still shows one state value, because nothing new was stored; the message and the button are both described from `title`.
 
+## Read more
+
+In Week 5 we validated a form when it was submitted, by reading each field and checking it.
+A controlled field lets us check it on every keystroke instead.
+
+When `title` changes, the component re-renders, the `titleTooShort` line runs again, and the rule is computed fresh.
+Storing it in a second `useState` would mean keeping two values in step by hand, which is the bug we could never quite fix in the Week 8 CourseHub when several parts of the page each kept their own copy.
+If a value can be computed from state or props, compute it; only store what cannot be computed.
+
+Read the message's condition left to right.
+While the field is empty, say nothing, because the shopper has not started.
+When it has text that is too short, show the message.
+Otherwise the expression is `false`, and React renders nothing for `false`, the `&&` pattern we used for empty lists in Week 10.
+
+**If it breaks:** If the message shows before you type, the `title !== ""` guard is missing from the condition.
+If the button never enables, the comparison in `titleTooShort` is reversed, or `disabled` is set to something other than `titleTooShort`.
+If the message never appears, the paragraph sits inside the label, or the condition joins its parts with `||` instead of `&&`.
+
 **Check:** Run the code.
 With the field empty, there is no message and the button is disabled.
 Type `Ki`: the message appears and the button stays disabled.
 Type `Kiwi`: the message disappears and the button is enabled.
 Press **Run checks** to confirm.
 
-**If it breaks:** If the message shows before you type, the `title !== ""` guard is missing from the condition.
-If the button never enables, the comparison in `titleTooShort` is reversed, or `disabled` is set to something other than `titleTooShort`.
-If the message never appears, the paragraph sits inside the label, or the condition joins its parts with `||` instead of `&&`.
+```quiz
+With the Title field empty, `titleTooShort` is `true`; why is there no error message?
+- The message appears only after the first submit
+= The condition starts with `title !== ""`, which is `false`, and React renders nothing for `false`
+- `titleTooShort` is not computed until the shopper types
+> `&&` stops at the first `false` part, so the whole expression is `false` while the field is empty, and React draws nothing for it; the button still reads `titleTooShort` directly, which is why it is disabled.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>

@@ -8,8 +8,17 @@ inspector:
 required: [submit-is-prevented, submit-sends-product, form-resets]
 ---
 
-Run the starter, type a title and a price, and press **Add product**.
-The result goes blank for a moment and comes back with an empty form.
+The form holds every field in state, and this step submits it from that state: stop the browser's page load, hand the product up to `App`, and empty the fields.
+Run the starter first, type a title and a price, and press **Add product**: the result goes blank for a moment and comes back with an empty form.
+Watch the flow view after the fix, and which components render once the product is sent.
+
+```predict
+When this step is done and you submit `Kiwi` at `2.49`, what happens on the page?
+- A seventh card, Kiwi, appears at the end of the list
+= The console logs the product, the form clears, and the list keeps its six cards
+- The result goes blank and comes back with an empty form, as in the starter
+```
+
 The browser submitted the form the way it did before JavaScript existed, by loading a new page, and the state went away with the old one.
 A React form needs a submit handler for the same reason the Week 5 form did: to stop that navigation and do the work itself.
 
@@ -33,11 +42,7 @@ The block starts with `handleChange`, which is already there, so you type the ne
   }
 ```
 
-Three things happen, in order.
-`event.preventDefault()` stops the page from reloading, exactly as in Week 5 and in the last topic.
-The product is built from state: there is no `form.elements`, no `querySelector`, and no reading the DOM, because the values were in `fields` all along; `trim` drops stray spaces and `Number` turns the price text into a number.
-`onAdd` is the callback prop from [Events and lifting state](#/topic/events-and-lifting-state), so the product travels up to `App`, and then `setFields` puts the initial object back, which empties every field, because the inputs show whatever the state holds.
-There is no `form.reset()` to call; resetting the state is resetting the form.
+The handler stops the page load, builds the product from `fields`, sends it up with `onAdd`, and puts the initial object back, which empties every field.
 
 Attach the handler to the form, not to the button.
 
@@ -46,21 +51,38 @@ Attach the handler to the form, not to the button.
 ```
 
 `onSubmit` on the form runs whether the shopper clicks the button or presses Enter in a field.
-An `onClick` on the button would miss the Enter key, and the browser would reload the page.
 
 Run the code, type `Kiwi` and `2.49`, choose **Groceries**, and press **Add product**.
 The console logs the product object, the form clears, and the page stays put.
 Read the flow view: the submit event in `AddProductForm`, the `onAdd` call that `App` passed down, and the `setFields` call that cleared the form, followed by a render of `AddProductForm` alone.
 `App` only logged the product, so nothing in `App` changed and the list did not render; Step 5 fixes that.
 
-**Check:** Run the code, fill in the three fields, and press **Add product**.
-The page does not reload, the console shows `New product:` with your title, and the fields are empty again.
-Press **Run checks** to confirm; the first check watches whether the submit event was prevented.
+## Read more
+
+Three things happen in `handleSubmit`, in order.
+`event.preventDefault()` stops the page from reloading, exactly as in Week 5 and in the last topic.
+The product is built from state: there is no `form.elements`, no `querySelector`, and no reading the DOM, because the values were in `fields` all along; `trim` drops stray spaces and `Number` turns the price text into a number.
+`onAdd` is the callback prop from [Events and lifting state](#/topic/events-and-lifting-state), so the product travels up to `App`, and then `setFields` puts the initial object back, which empties every field, because the inputs show whatever the state holds.
+There is no `form.reset()` to call; resetting the state is resetting the form.
+
+An `onClick` on the button would miss the Enter key, and the browser would reload the page.
 
 **If it breaks:** If the result goes blank and comes back, `event.preventDefault()` is missing, or the handler is on the button's `onClick` instead of the form's `onSubmit`.
 If the console says `onAdd is not a function`, the form no longer destructures `{ onAdd }` from its props.
 If the product logs `price: NaN`, the price is read from the wrong key, or the field's `name` is not `price`.
 If the fields keep their text after the submit, `setFields` is called with something other than the initial object.
+
+**Check:** Run the code, fill in the three fields, and press **Add product**.
+The page does not reload, the console shows `New product:` with your title, and the fields are empty again.
+Press **Run checks** to confirm; the first check watches whether the submit event was prevented.
+
+```quiz
+Why does the handler go on the form's `onSubmit` instead of the button's `onClick`?
+- `onClick` cannot call `event.preventDefault()`
+= `onSubmit` also runs when the shopper presses Enter in a field
+- A button inside a form ignores `onClick`
+> The browser submits a form from the button and from the Enter key alike, and `onSubmit` sees both; an `onClick` on the button would miss Enter, and the page would reload.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>

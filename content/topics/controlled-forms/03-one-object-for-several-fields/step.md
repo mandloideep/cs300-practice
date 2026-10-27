@@ -9,8 +9,15 @@ required: [one-object-state, fields-keep-each-other, select-is-controlled]
 ---
 
 The Price and Category fields are still uncontrolled: the browser owns them, and React has no idea what they hold.
-We could give each one its own `useState` and its own handler, and for two or three fields that is a fine way to write a form.
-This form will grow, so we keep every field in one object and write one handler that serves them all.
+This form will grow, so this step keeps every field in one object and writes one handler that serves them all.
+Watch the inspector tree at the end: each keystroke changes one key of the object and leaves the others alone.
+
+```predict
+When this step is done and you type a title and a price, what does the inspector tree show as the state of `AddProductForm`?
+- Three state values, one per field
+= One object with the keys `title`, `price`, and `category`
+- Only the title; the price stays in the input, where the browser keeps it
+```
 
 Replace the title state and its rule with the object and a handler.
 The block starts with the state line and ends with the rule, both already there.
@@ -25,14 +32,7 @@ The block starts with the state line and ends with the rule, both already there.
   }
 ```
 
-Read `handleChange` from the inside out.
-`...fields` spreads a copy of every current field into a new object.
-`[event.target.name]` is a **computed property name**: the key is not typed in the code but read from the input's `name` attribute when the handler runs, so a keystroke in the field named `price` writes the `price` key.
-`event.target.value` is the new text.
-The result is a new object with every field as it was and one field changed, and that new object is what we hand to `setFields`.
-
-We never write `fields.title = ...`.
-Assigning to a property of the object React already holds would leave it the same object, and React would skip the render; Step 5 shows that mistake on screen.
+`handleChange` copies every current field with `...fields` and then sets the one key named by the input's `name` to the new text.
 
 Now point the note and the three inputs at the object.
 The inputs already carry `name="title"`, `name="price"`, and `name="category"`, which is what makes the one handler work.
@@ -58,7 +58,6 @@ The inputs already carry `name="title"`, `name="price"`, and `name="category"`, 
 ```
 
 A `<select>` is controlled the same way as a text input: `value` on the `select` element names the chosen option, and `onChange` reports a new choice.
-A checkbox is the one exception; it uses `checked` and `event.target.checked`, because a checkbox has no text.
 
 The button now waits for a price as well.
 
@@ -70,14 +69,38 @@ Run the code with the **Tree and state** view open and select `AddProductForm`.
 The state is one object with three keys.
 Type a title, then a price, then choose a category: each keystroke changes one key and leaves the other two alone, because the spread copied them.
 
+## Read more
+
+We could give each field its own `useState` and its own handler, and for two or three fields that is a fine way to write a form.
+One object pays off when the fields always change together and travel together, as they will when the form is submitted in Step 4.
+
+Read `handleChange` from the inside out.
+`...fields` spreads a copy of every current field into a new object.
+`[event.target.name]` is a **computed property name**: the key is not typed in the code but read from the input's `name` attribute when the handler runs, so a keystroke in the field named `price` writes the `price` key.
+`event.target.value` is the new text.
+The result is a new object with every field as it was and one field changed, and that new object is what we hand to `setFields`.
+
+We never write `fields.title = ...`.
+Assigning to a property of the object React already holds would leave it the same object, and React would skip the render; Step 5 shows that mistake on screen.
+
+A checkbox is the one exception to controlling a field with `value`; it uses `checked` and `event.target.checked`, because a checkbox has no text.
+
+**If it breaks:** If the first keystroke makes the result go blank and the console says `Cannot read properties of undefined (reading 'trim')`, the spread `...fields` is missing from `handleChange`, so the new object has only one key and `fields.title` is gone.
+If typing in a field does nothing, that field has no `name` attribute, or its `name` does not match a key in the object.
+If the console warns about a component changing an input from controlled to uncontrolled, a key is missing from the initial object, so `fields.price` is `undefined` on the first render.
+
 **Check:** Run the code and type `Kiwi` as the title and `2.49` as the price, then choose **Groceries**.
 All three fields keep their values, the note reads `Adding Kiwi`, and the button is enabled.
 In the inspector tree, `AddProductForm` holds one object whose `title`, `price`, and `category` match the fields.
 Press **Run checks** to confirm.
 
-**If it breaks:** If the first keystroke makes the result go blank and the console says `Cannot read properties of undefined (reading 'trim')`, the spread `...fields` is missing from `handleChange`, so the new object has only one key and `fields.title` is gone.
-If typing in a field does nothing, that field has no `name` attribute, or its `name` does not match a key in the object.
-If the console warns about a component changing an input from controlled to uncontrolled, a key is missing from the initial object, so `fields.price` is `undefined` on the first render.
+```quiz
+If `handleChange` called `setFields({ [event.target.name]: event.target.value })` without `...fields`, what would one keystroke in Price leave in state?
+- Every field as it was, with the new price
+= An object with only the `price` key, so `fields.title` is gone
+- The old object, because React merges the new key into it
+> A setter replaces the state with exactly the value it is given, and `useState` never merges; the spread is what copies the other keys into the new object.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>

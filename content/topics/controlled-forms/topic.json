@@ -5,6 +5,28 @@
   "summary": "Make React own what the shopper types by pairing value with onChange, validate as they type, keep several fields in one object, and submit from state. You will see the read-only input mistake and the mutation mistake, both as they look on the screen, and finish by walking the four questions of Thinking in React against the Week 10 product page.",
   "prerequisites": ["events-and-lifting-state"],
   "minutes": 60,
-  "updated": "2026-10-26",
-  "changeNote": "First version."
+  "updated": "2026-10-27",
+  "changeNote": "Rewritten so each step opens with an explainer or a prediction, folds the background under Read more, and ends with a quiz.",
+  "links": [
+    {
+      "kind": "reading",
+      "title": "react.dev: Thinking in React",
+      "url": "https://react.dev/learn/thinking-in-react"
+    },
+    {
+      "kind": "reading",
+      "title": "react.dev: Updating objects in state",
+      "url": "https://react.dev/learn/updating-objects-in-state"
+    },
+    {
+      "kind": "reference",
+      "title": "react.dev: The input component",
+      "url": "https://react.dev/reference/react-dom/components/input"
+    },
+    {
+      "kind": "reference",
+      "title": "MDN: HTMLFormElement submit event",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit_event"
+    }
+  ]
 }
