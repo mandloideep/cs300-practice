@@ -92,6 +92,14 @@
         {
           "id": "fetch-basics",
           "required": true
+        },
+        {
+          "id": "errors-and-debugging",
+          "required": true
+        },
+        {
+          "id": "async-and-the-event-loop",
+          "required": true
         }
       ],
       "localNotes": [

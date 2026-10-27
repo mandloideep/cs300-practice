@@ -25,6 +25,8 @@ const usesRouter = (files) =>
 const EXPECTED_CONSOLE_ERRORS = {
   // Step 1 renders the list without keys and its text points at React's key warning; step 2 adds keys.
   "lists-and-keys/01-render-with-map": [/unique "key" prop/],
+  // The step teaches console.error by reporting an impossible score at the error level.
+  "errors-and-debugging/04-console-beyond-log": [/^Diana has an impossible score: 140$/],
 };
 
 function describeProblems(result, stepId) {
