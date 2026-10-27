@@ -11,6 +11,9 @@ This step imports a package by its name, the way every React file imports `react
 Then it imports the same package by the path of its file, which the browser accepts, and that difference is the reason bundlers exist.
 Watch the console for the browser's own error message, word for word.
 
+```demo name="bare-import-fail"
+```
+
 The workspace pretends that `npm install` has already run: next to `src/` there is a `node_modules` folder with one small package in it, `study-format`, with its own `package.json` and an `index.js` that exports a function, `formatMinutes`.
 Press **Run**: the console shows `Study sessions in minutes: [25,50,90]`.
 
@@ -23,7 +26,13 @@ Open `index.html` and add a second module script, written right in the page, tha
     </script>
 ```
 
-Predict before you run: does the console show `1 h 30 min`, nothing at all from the new script, or a red error that names `study-format`?
+```predict
+You run the page with the new inline script; what does the console show from it?
+- `1 h 30 min`
+= A red error that names `study-format`
+- Nothing at all from the new script
+```
+
 Run it.
 The console shows an **uncaught** error from the browser itself:
 
@@ -66,7 +75,9 @@ for (const minutes of sessions) {
 
 Run it: `25 minutes is 25 min`, `50 minutes is 50 min`, and `90 minutes is 1 h 30 min`.
 
-## What a bundler does about it
+## Read more
+
+### What a bundler does about it
 
 Nobody writes `../node_modules/study-format/index.js` in a real project, for three reasons.
 The path depends on where the importing file sits, so every file would spell it differently.
@@ -86,6 +97,22 @@ If it says `formatMinutes is not defined`, the import line is missing from the t
 **Check:** Run the code.
 The console shows the sessions line and the three formatted lines, with no red line at the top, and `index.html` has only the one script tag it started with.
 The three checks pass.
+
+```quiz
+Which of these import specifiers can a browser follow on its own?
+- `"study-format"`
+= `"../node_modules/study-format/index.js"`
+- `"react"`, because every page knows React
+> A browser follows addresses only, ones that start with `/`, `./`, or `../`; a bare name needs a bundler or an import map to become an address.
+```
+
+```quiz
+In development, what does Vite do with `import { formatMinutes } from "study-format"`?
+- It sends the file to the browser unchanged and lets the browser find the package
+= It rewrites the name into a path under `/node_modules/.vite/deps/` before the browser sees the file
+- It refuses the import and asks for a relative path
+> Vite resolves the bare name the way Node does and writes an address in its place, so the browser only ever sees paths.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

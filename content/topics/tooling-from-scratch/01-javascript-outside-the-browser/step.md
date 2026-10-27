@@ -11,6 +11,9 @@ This step asks the code where it is running, by printing the type of three names
 JavaScript is one language with more than one home: the browser is one, and Node.js, which runs JavaScript in a terminal, is another.
 Watch which names exist in the lab, and then compare with what the same file prints in Node.
 
+```demo name="terminal"
+```
+
 Press **Run**: the console shows `Hello from JavaScript` and `Largest score: 96`.
 Nothing in those two lines depends on where the code runs: strings, arrays, `Math`, and `console` are part of the language and of every place that runs it.
 
@@ -32,7 +35,13 @@ Node gives its programs a different name, `process`, which describes the running
 console.log("typeof process:", typeof process);
 ```
 
-Predict before you run: does the console show `typeof process: object`, `typeof process: undefined`, or a red `ReferenceError`?
+```predict
+What does the console show for `typeof process` in the lab?
+- `typeof process: object`
+- A red `ReferenceError: process is not defined`
+= `typeof process: undefined`
+```
+
 It shows `undefined`, with no error, because the lab runs your code in a browser page, which has no `process`.
 
 The last edit uses the answer to decide, the way real code that runs in both places does.
@@ -45,7 +54,9 @@ console.log(`This file is running in ${where}.`);
 
 Run it: `This file is running in a browser.`
 
-## The same file in Node
+## Read more
+
+### The same file in Node
 
 Node is a program you install on your computer, and it runs a JavaScript file from the terminal with `node` and the file's name.
 If you have Node installed already, download this workspace, open a terminal in the unzipped folder, and run the file there.
@@ -80,6 +91,14 @@ If `node src/main.js` on your computer says `command not found`, Node is not ins
 **Check:** Run the code.
 The console shows the two starter lines, `typeof window: object`, `typeof document: object`, `typeof process: undefined`, and `This file is running in a browser.`
 The three checks pass.
+
+```quiz
+Which line runs the same in a browser and in Node?
+- `document.querySelector("h1")`
+- `console.log(process.argv)`
+= `console.log(Math.max(3, 9, 4))`
+> `Math` and `console` belong to the language and to every place that runs it, while `document` exists only on a page and `process` only in Node.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

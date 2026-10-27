@@ -9,6 +9,9 @@ This step reads a project's `package.json` from JavaScript and prints what it sa
 `package.json` is the file every JavaScript project on a computer starts from: it names the project, lists the commands you run, and lists the packages it needs.
 Watch how each field you add becomes something npm will do for you.
 
+```demo name="package-json-explorer"
+```
+
 The workspace has a new file, `package.json`, beside `index.html`.
 `src/main.js` imports it, which the lab allows, as Vite does: a module that imports a `.json` file gets its value as an object.
 Press **Run**: the console shows `Project: study-timer 1.0.0`, read from the `name` and `version` fields.
@@ -38,8 +41,14 @@ Add it after `build`; the line above it gains a comma, because JSON needs a comm
     "preview": "vite preview"
 ```
 
-Predict before you run: does the console now show two `npm run` lines, three, or a red error about `package.json`?
-It shows three, because the loop reads whatever the file says; you changed what the project can do without touching the code that prints it.
+```predict
+After you add `preview`, how many `npm run` lines does the console show?
+- Two, because the loop was written before `preview` existed
+= Three
+- None, and a red error about `package.json`
+```
+
+Run it: three lines, because the loop reads whatever the file says; you changed what the project can do without touching the code that prints it.
 Now try the mistake everyone makes once: delete the comma after `"vite build"` and run.
 The result pane says **Did not compile** and names `package.json`, with a message such as `Expected ',' or '}' after property value in JSON` and the line and column where reading stopped.
 npm refuses such a file the same way, so every `npm` command in that folder fails until the comma is back; put it back.
@@ -68,7 +77,9 @@ console.log("Only the tools need:", Object.keys(project.devDependencies));
 
 Run it: `The page needs: ["ms"]` and `Only the tools need: ["vite"]`.
 
-## Versions and the caret
+## Read more
+
+### Versions and the caret
 
 Each package name is paired with a version **range**, not one version.
 `^8.2.4` means "8.2.4 or any newer 8.x release", because packages number their releases as major, minor, and patch, and a release that keeps the major number promises not to break the code that used the one before.
@@ -86,6 +97,22 @@ If the last line throws `Cannot convert undefined or null to object`, the `devDe
 **Check:** Run the code.
 The console shows the project line, three `npm run` lines for `dev`, `build`, and `preview`, then `The page needs: ["ms"]` and `Only the tools need: ["vite"]`.
 The three checks pass.
+
+```quiz
+`package.json` lists `"vite": "^8.2.4"`; which version may `npm install` choose?
+- Only 8.2.4
+= 8.2.4 or any newer 8.x release, such as 8.3.5
+- Any version at all, including 9.0.0
+> The caret allows newer minor and patch releases with the same major number, which promise not to break the code that used the one before.
+```
+
+```quiz
+Which package belongs in `devDependencies`?
+- `react`, because you use it while you develop
+= `vite`, because only the tools that build the page use it
+- `ms`, because it formats numbers
+> `dependencies` are what the page itself runs; the tools that turn your files into the page, such as Vite, are development dependencies.
+```
 
 <details>
 <summary>package.json after this step</summary>

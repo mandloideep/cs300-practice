@@ -4,6 +4,23 @@
   "area": "tooling",
   "summary": "Meet the tools that turn a folder of files into a site: Node, npm and package.json, node_modules and the lockfile, the bundler, and what Vite and esbuild do with your code. You will watch a bare import fail in the browser, read a real lockfile, and then install, run, and build a project on your own computer.",
   "prerequisites": ["modules-and-imports"],
+  "links": [
+    {
+      "kind": "reading",
+      "title": "Node.js: Introduction to Node.js",
+      "url": "https://nodejs.org/learn/getting-started/introduction-to-nodejs"
+    },
+    {
+      "kind": "reading",
+      "title": "npm Docs: package.json",
+      "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-json/"
+    },
+    {
+      "kind": "reading",
+      "title": "Vite: Getting started",
+      "url": "https://vite.dev/guide/"
+    }
+  ],
   "minutes": 60,
   "updated": "2026-10-27",
   "changeNote": "First version."
