@@ -19,8 +19,10 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "playwright test --pass-with-no-tests",
+    "test:scripts": "node --test \"scripts/test/**/*.test.mjs\"",
     "export:d2l": "node scripts/export-d2l.mjs",
-    "verify:runtime": "node scripts/verify-runtime.mjs"
+    "verify:runtime": "node scripts/verify-runtime.mjs",
+    "upgrade:runtime": "node scripts/upgrade-runtime.mjs"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.20.4",
