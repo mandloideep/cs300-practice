@@ -1,10 +1,25 @@
 // Runner tests. They drive the dev-only harness at src/runner/harness/index.html, which builds runs
 // with buildRun from src/runner/ and mounts them in the sandboxed result iframe.
 
+import { existsSync } from "node:fs";
+import path from "node:path";
 import { expect, test } from "@playwright/test";
 import { editSteps, openHarness, resultFrame, run, runStep } from "./support/harness.js";
 
 const ofType = (result, type) => result.messages.filter((message) => message.type === type);
+
+// A workspace that imports react-router runs only once the Phase 3 runtime branch (PHASE3
+// milestone 1) adds public/runtime/wrap/react-router.js, which maps BrowserRouter onto a memory
+// history; on the sandboxed about:srcdoc document the real BrowserRouter throws on its URL.
+const ROUTER_WRAPPER = existsSync(
+  path.join(import.meta.dirname, "..", "public", "runtime", "wrap", "react-router.js"),
+);
+const NEEDS_RUNTIME_ROUTER =
+  "needs the Phase 3 runtime branch: public/runtime/wrap/react-router.js (PHASE3 milestone 1)";
+const usesRouter = (files) =>
+  Object.entries(files).some(
+    ([file, source]) => /\.(jsx?|mjs)$/.test(file) && /from\s*["']react-router["']/.test(source),
+  );
 
 // Console errors a solution produces on purpose, because the step teaches them.
 const EXPECTED_CONSOLE_ERRORS = {
@@ -28,6 +43,7 @@ const steps = editSteps();
 test.describe("solution of every edit step", () => {
   for (const step of steps) {
     test(step.id, async ({ page }) => {
+      test.fixme(usesRouter(step.solution) && !ROUTER_WRAPPER, NEEDS_RUNTIME_ROUTER);
       await openHarness(page);
       const result = await runStep(page, step.id, "solution");
 
@@ -58,6 +74,7 @@ test.describe("solution of every edit step", () => {
 test.describe("starter of every edit step", () => {
   for (const step of steps) {
     test(step.id, async ({ page }) => {
+      test.fixme(usesRouter(step.solution) && !ROUTER_WRAPPER, NEEDS_RUNTIME_ROUTER);
       await openHarness(page);
       const result = await runStep(page, step.id, "workspace");
       expect(result.diagnostics).toEqual([]);

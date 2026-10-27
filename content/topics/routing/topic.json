@@ -1,0 +1,10 @@
+{
+  "id": "routing",
+  "title": "Routing",
+  "area": "routing",
+  "summary": "Turn one page into several with React Router: Routes and Route choose a page from the address, Link and NavLink move between pages without a reload, and useParams reads an id out of the URL for a detail page. You will add a catch-all route for addresses that match nothing and send the shopper to a new product's page from code after a form submit.",
+  "prerequisites": ["fetching-and-request-states"],
+  "minutes": 60,
+  "updated": "2026-10-26",
+  "changeNote": "First version."
+}

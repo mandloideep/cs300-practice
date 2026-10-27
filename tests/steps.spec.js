@@ -1,6 +1,8 @@
 // Step page tests. They drive the real site at #/topic/<id>/<n>, the way a student uses it:
 // load the solution, run it, and read the check panel and console pane.
 
+import { existsSync } from "node:fs";
+import path from "node:path";
 import { expect, test } from "@playwright/test";
 import { allSteps, stepById } from "./lib/steps.js";
 import { openHarness, resultFrame, runStep } from "./support/harness.js";
@@ -9,6 +11,15 @@ import { openHarness, resultFrame, runStep } from "./support/harness.js";
 const EXPECTED_CONSOLE_ERRORS = {
   "lists-and-keys/01-render-with-map": [/unique "key" prop/],
 };
+
+// Solutions that import react-router run only once the Phase 3 runtime branch (PHASE3 milestone 1)
+// adds public/runtime/wrap/react-router.js, which maps BrowserRouter onto a memory history inside
+// the sandboxed iframe; until then BrowserRouter sees the location "srcdoc" and matches no route.
+const ROUTER_WRAPPER = existsSync(
+  path.join(import.meta.dirname, "..", "public", "runtime", "wrap", "react-router.js"),
+);
+const NEEDS_RUNTIME_ROUTER =
+  "needs the Phase 3 runtime branch: public/runtime/wrap/react-router.js (PHASE3 milestone 1)";
 
 // The toggle label of each inspector view the pane renders.
 const VIEW_LABELS = {
@@ -38,6 +49,7 @@ async function openStep(page, step) {
 test.describe("edit steps run their solution on the step page", () => {
   for (const step of steps.filter((candidate) => candidate.mode === "edit")) {
     test(step.id, async ({ page }) => {
+      test.fixme(step.usesRouter && !ROUTER_WRAPPER, NEEDS_RUNTIME_ROUTER);
       await openStep(page, step);
       const status = page.locator(".pane--result .status-pill");
       await expect(status).toHaveText("Ready", { timeout: 15_000 });
@@ -149,5 +161,83 @@ test.describe("the flow trace of a lifting-state interaction", () => {
     expect(trace.rendered).toEqual(expect.arrayContaining(["App", "ProductList"]));
     expect(trace.commitSeq).toEqual(expect.any(Number));
     await expect(frame.locator(".product").last().locator("h3")).toHaveText("Kiwi");
+  });
+});
+
+// The routing topics' solutions, driven through the harness: what a Link click renders is read
+// from the DOM, because the result pane's address bar and the `location` message (CONTRACTS 4.3)
+// arrive with the Phase 3 runtime branch.
+test.describe("routing solutions in the iframe", () => {
+  const locations = async (page) =>
+    (await page.evaluate(() => globalThis.__harness.messages())).filter(
+      (message) => message.type === "location",
+    );
+
+  test("routing step 1 solution: clicking the Products link renders the other route's content", async ({
+    page,
+  }) => {
+    test.fixme(!ROUTER_WRAPPER, NEEDS_RUNTIME_ROUTER);
+    const step = stepById("routing/01-two-pages-with-routes-and-link");
+    await openHarness(page);
+    const result = await runStep(page, step.id, "solution");
+    expect(result.diagnostics).toEqual([]);
+
+    const frame = resultFrame(page);
+    await expect(frame.locator("main h1")).toHaveText("Welcome to the shop");
+    await frame.getByRole("link", { name: "Products" }).click();
+    await expect(frame.locator("main h1")).toHaveText("Products");
+    await expect(frame.locator(".product-list li")).toHaveCount(6);
+    await frame.getByRole("link", { name: "Home" }).click();
+    await expect(frame.locator("main h1")).toHaveText("Welcome to the shop");
+  });
+
+  test("routing step 4 solution: an address that matches no route renders NotFoundPage", async ({
+    page,
+  }) => {
+    test.fixme(!ROUTER_WRAPPER, NEEDS_RUNTIME_ROUTER);
+    const step = stepById("routing/04-a-catch-all-route");
+    await openHarness(page);
+    const result = await runStep(page, step.id, "solution");
+    expect(result.diagnostics).toEqual([]);
+
+    const frame = resultFrame(page);
+    await frame.getByRole("link", { name: "Deals" }).click();
+    await expect(frame.locator("main h1")).toHaveText("Page not found");
+    await frame.getByRole("link", { name: "Go to the home page" }).click();
+    await expect(frame.locator("main h1")).toHaveText("Welcome to the shop");
+  });
+
+  // The bridge posts no `location` message yet: it is added by the Phase 3 runtime branch
+  // (public/runtime/wrap/react-router.js, PHASE3 milestone 1). Drop the fixme once it is merged.
+  test.fixme("routing step 1 solution: the Link click posts a location message for /products", async ({
+    page,
+  }) => {
+    const step = stepById("routing/01-two-pages-with-routes-and-link");
+    await openHarness(page);
+    const result = await runStep(page, step.id, "solution");
+    expect(result.diagnostics).toEqual([]);
+    const before = (await locations(page)).length;
+    await resultFrame(page).getByRole("link", { name: "Products" }).click();
+    await expect.poll(async () => (await locations(page)).length).toBeGreaterThan(before);
+    expect((await locations(page)).at(-1)).toMatchObject({ pathname: "/products", search: "" });
+  });
+
+  // Same dependency on the runtime branch's `location` message.
+  test.fixme("url-state step 2 solution: the search and the category are written to the location", async ({
+    page,
+  }) => {
+    const step = stepById("url-state/02-a-category-filter-that-survives-back");
+    await openHarness(page);
+    const result = await runStep(page, step.id, "solution");
+    expect(result.diagnostics).toEqual([]);
+    const frame = resultFrame(page);
+    await frame.getByRole("link", { name: "Products" }).click();
+    await expect(frame.locator(".product-list li")).toHaveCount(8);
+    await frame.getByRole("combobox").selectOption("fragrances");
+    await frame.getByRole("searchbox").fill("coco");
+    await expect(frame.locator(".product-list li")).toHaveCount(1);
+    await expect
+      .poll(async () => (await locations(page)).at(-1)?.search)
+      .toBe("?category=fragrances&q=coco");
   });
 });

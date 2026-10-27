@@ -1,0 +1,8 @@
+{
+  "routes": [
+    { "method": "GET", "path": "/products/category/beauty", "status": 200, "delay": 1500, "body": "beauty.json" },
+    { "method": "GET", "path": "/products/category/fragrances", "status": 200, "delay": 300, "body": "fragrances.json" },
+    { "method": "GET", "path": "/products/category/groceries", "status": 200, "delay": 300, "body": "groceries.json" },
+    { "method": "GET", "path": "/products/category/furniture", "status": 200, "delay": 300, "body": "furniture.json" }
+  ]
+}

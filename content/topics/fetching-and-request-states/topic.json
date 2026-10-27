@@ -1,0 +1,10 @@
+{
+  "id": "fetching-and-request-states",
+  "title": "Fetching and request states",
+  "area": "fetch",
+  "summary": "Keep a request's loading, success, and error states in one status value, fetch inside an effect that cleans up after itself, and watch the network pane expose a stale response and a duplicate request. You will add a retry button and then extract the whole pattern into a useFetch hook that the routing topics reuse.",
+  "prerequisites": ["events-and-lifting-state"],
+  "minutes": 75,
+  "updated": "2026-10-26",
+  "changeNote": "First version."
+}
