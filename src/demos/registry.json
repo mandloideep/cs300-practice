@@ -1,0 +1,342 @@
+[
+  {
+    "id": "page-tour",
+    "title": "The step page",
+    "description": "The step page in miniature with each pane labeled; selecting a pane says what it is for and when to look at it."
+  },
+  {
+    "id": "edit-run-loop",
+    "title": "Edit, run, check",
+    "description": "The cycle of edit, Run, result, console, and checks as one loop you advance a stage at a time."
+  },
+  {
+    "id": "inspector-tour",
+    "title": "The inspector",
+    "description": "A three-component tree with boundaries, a re-render flash, and the state panel, driven by a Click button inside the explainer."
+  },
+  {
+    "id": "nesting-and-repair",
+    "title": "Nesting and repair",
+    "description": "Markup typed with tags out of order and the tree the browser repairs it into."
+  },
+  {
+    "id": "landmarks-map",
+    "title": "Landmarks",
+    "description": "A page with header, nav, main, aside, and footer regions lit one at a time, with the list a screen reader reads."
+  },
+  {
+    "id": "label-for",
+    "title": "Labels and inputs",
+    "description": "A label and an input; clicking the label focuses the input only when for and id match, which you toggle."
+  },
+  {
+    "id": "alt-text",
+    "title": "Alternative text",
+    "description": "An image that fails to load, with and without alt, and what a screen reader says in each case."
+  },
+  {
+    "id": "structure-not-style",
+    "title": "Structure, not style",
+    "description": "The same document with default styles, no styles, and a stylesheet, switched with one control."
+  },
+  {
+    "id": "selector-matcher",
+    "title": "Selector matcher",
+    "description": "A selector you edit and the elements of a small page that light up to match it."
+  },
+  {
+    "id": "cascade-resolver",
+    "title": "The cascade",
+    "description": "Two rules that disagree, with specificity and source order weighed, and the winner marked as you edit either rule."
+  },
+  {
+    "id": "box-model",
+    "title": "The box model",
+    "description": "Sliders for margin, border, and padding on one box, with the measured width under content-box and border-box."
+  },
+  {
+    "id": "flex-axes",
+    "title": "Flex axes",
+    "description": "A row of items with direction, justify, align, wrap, and gap as controls, and the main and cross axes drawn."
+  },
+  {
+    "id": "grid-tracks",
+    "title": "Grid tracks",
+    "description": "A grid with editable column and row templates and items you place by line number."
+  },
+  {
+    "id": "breakpoint-slider",
+    "title": "Breakpoints",
+    "description": "A layout under a viewport width you drag, with the active media query shown."
+  },
+  {
+    "id": "value-vs-reference",
+    "title": "Values and references",
+    "description": "Assigning a number makes a second box; assigning an object makes a second arrow to the same box; changing one shows which cases change both."
+  },
+  {
+    "id": "type-coercion",
+    "title": "Type coercion",
+    "description": "A small expression you edit, with the coercion steps == and + perform and the result."
+  },
+  {
+    "id": "truthy-falsy",
+    "title": "Truthy and falsy",
+    "description": "Values dropped into an if, with the eight falsy values marked."
+  },
+  {
+    "id": "string-immutability",
+    "title": "Strings do not change",
+    "description": "A string method called on a variable, the new string it returns, and the original unchanged until the result is assigned back."
+  },
+  {
+    "id": "array-index-walk",
+    "title": "Walking an array",
+    "description": "A loop stepping an index across an array, including the step past the last index that reads undefined."
+  },
+  {
+    "id": "map-filter-reduce",
+    "title": "Map, filter, and reduce",
+    "description": "Elements flowing one at a time through a callback into a new array or a running total."
+  },
+  {
+    "id": "object-shape",
+    "title": "The shape of an object",
+    "description": "An object as a table of keys and values, with dot and bracket access, adding, and deleting."
+  },
+  {
+    "id": "function-call",
+    "title": "A function call",
+    "description": "A call binding arguments to parameters, running the body in a frame, and returning a value to the caller."
+  },
+  {
+    "id": "callback",
+    "title": "Callbacks",
+    "description": "A function handed to another function and run later, beside the version with parentheses that runs it at once."
+  },
+  {
+    "id": "arrow-equivalence",
+    "title": "Arrow functions",
+    "description": "A function expression and its arrow form, with each part of one highlighted in the other as you switch."
+  },
+  {
+    "id": "scope-chain",
+    "title": "The scope chain",
+    "description": "Nested scopes as nested boxes and a variable lookup walking outward until it finds the name."
+  },
+  {
+    "id": "closure",
+    "title": "Closures",
+    "description": "A function that keeps the variables around it, three counters made from one factory, and the loop-variable classic with var and let."
+  },
+  {
+    "id": "call-stack",
+    "title": "The call stack",
+    "description": "Frames pushed and popped through nested calls, and the stack trace an error prints read from that stack."
+  },
+  {
+    "id": "this-binding",
+    "title": "What this is",
+    "description": "A method called on its object and the same function called detached, with what this is in each."
+  },
+  {
+    "id": "mutation-vs-copy",
+    "title": "Change or copy",
+    "description": "push changing the array in place beside the spread that makes a new one, with React's equality check deciding whether to re-render."
+  },
+  {
+    "id": "spread-and-destructure",
+    "title": "Spread and destructuring",
+    "description": "Spread copying into a new object or array and destructuring pulling names out of one."
+  },
+  {
+    "id": "json-roundtrip",
+    "title": "JSON round trip",
+    "description": "An object stringified and parsed back, with the parts JSON cannot carry marked as lost."
+  },
+  {
+    "id": "equality",
+    "title": "Equality",
+    "description": "=== and == on primitives, and two equal-looking objects that are not the same object."
+  },
+  {
+    "id": "array-methods",
+    "title": "Array methods",
+    "description": "find, some, every, sort, slice, and splice applied to one array, with which ones change it."
+  },
+  {
+    "id": "optional-chaining",
+    "title": "Optional chaining",
+    "description": "A nested path walked with ?. and a fallback supplied by ??, with the step where a missing value stops the walk."
+  },
+  {
+    "id": "error-propagation",
+    "title": "Error propagation",
+    "description": "A throw unwinding frames until a catch takes it, and what happens when none does."
+  },
+  {
+    "id": "error-decoder",
+    "title": "Error messages",
+    "description": "The common messages, x is not defined, cannot read properties of undefined, x is not a function, each with the line that causes it."
+  },
+  {
+    "id": "event-loop",
+    "title": "Event loop",
+    "description": "The call stack, the timer and event queues, and the order in which plain code, setTimeout, a click, and a promise reaction run."
+  },
+  {
+    "id": "promise-states",
+    "title": "Promise states",
+    "description": "A promise moving from pending to fulfilled or rejected, with then, catch, and finally attached and fired."
+  },
+  {
+    "id": "async-await-unroll",
+    "title": "Async and await",
+    "description": "An async function and its then chain side by side, advanced one await at a time."
+  },
+  {
+    "id": "fetch-timeline",
+    "title": "A fetch, in time",
+    "description": "A request leaving, the wait, the response arriving, json() parsing it, and the four request states along the way."
+  },
+  {
+    "id": "stale-response",
+    "title": "A stale response",
+    "description": "Two requests racing, the first answered last, and the flag that ignores it."
+  },
+  {
+    "id": "abort-controller",
+    "title": "Aborting a request",
+    "description": "A request in flight cancelled by its controller and the rejection that follows."
+  },
+  {
+    "id": "module-graph",
+    "title": "The module graph",
+    "description": "Files that import each other drawn as a graph, with an export followed to every import."
+  },
+  {
+    "id": "promise-all",
+    "title": "Promise.all",
+    "description": "Several promises started together and the single result that waits for the slowest."
+  },
+  {
+    "id": "event-propagation",
+    "title": "Event propagation",
+    "description": "A click on nested boxes passing through capture, target, and bubble, with stopPropagation as a toggle."
+  },
+  {
+    "id": "delegation",
+    "title": "Event delegation",
+    "description": "One listener on a list and event.target lighting the item that was clicked."
+  },
+  {
+    "id": "preventdefault",
+    "title": "preventDefault",
+    "description": "A form submitted with and without preventDefault, showing the reload that the page would do."
+  },
+  {
+    "id": "storage-across-reload",
+    "title": "Storage across a reload",
+    "description": "A key written to localStorage, the page reloaded, and the key read back, beside a variable that does not survive."
+  },
+  {
+    "id": "http-anatomy",
+    "title": "A request and a response",
+    "description": "A request and a response with method, URL, headers, status, and body, each part named when selected."
+  },
+  {
+    "id": "render-cycle",
+    "title": "The render cycle",
+    "description": "A state change, React calling the component function again, the diff, and the commit to the DOM."
+  },
+  {
+    "id": "jsx-to-calls",
+    "title": "JSX to function calls",
+    "description": "JSX and the function calls it compiles to, switched with one control."
+  },
+  {
+    "id": "props-flow",
+    "title": "Data down, events up",
+    "description": "Data flowing down a three-level tree and an event flowing up, animated from your click."
+  },
+  {
+    "id": "lifting-state",
+    "title": "Lifting state",
+    "description": "Two siblings that cannot share a value until the state moves to their parent."
+  },
+  {
+    "id": "state-snapshot",
+    "title": "State as a snapshot",
+    "description": "Each render as a snapshot of state, and a setTimeout inside an old render reading the old value."
+  },
+  {
+    "id": "setter-batching",
+    "title": "Batched updates",
+    "description": "Three setCount(count + 1) calls in one handler adding one, and the updater form adding three."
+  },
+  {
+    "id": "reconcile-keys",
+    "title": "Keys and reconciliation",
+    "description": "A list rendered with index keys and with stable keys, reordered, with inputs keeping the wrong values in one case."
+  },
+  {
+    "id": "controlled-input",
+    "title": "A controlled input",
+    "description": "The loop between an input's value and the state that owns it, with the keystroke that the state rejects."
+  },
+  {
+    "id": "effect-timeline",
+    "title": "The effect timeline",
+    "description": "Render, commit, effect, cleanup, and re-run laid on a timeline as dependencies change."
+  },
+  {
+    "id": "strict-mode-double",
+    "title": "Strict Mode renders twice",
+    "description": "A component rendered twice in development with the second render discarded."
+  },
+  {
+    "id": "ref-vs-state",
+    "title": "Refs and state",
+    "description": "A ref changed without a render beside state changed with one."
+  },
+  {
+    "id": "router-match",
+    "title": "Route matching",
+    "description": "A URL matched against routes top to bottom, with the parameters pulled out of the winning one."
+  },
+  {
+    "id": "url-as-state",
+    "title": "The URL as state",
+    "description": "Search parameters and the UI that reads them, changed from either side."
+  },
+  {
+    "id": "custom-hook-extract",
+    "title": "Extracting a custom hook",
+    "description": "Stateful code inside a component folded into a hook, with the same calls shown in both places."
+  },
+  {
+    "id": "terminal",
+    "title": "Terminal",
+    "description": "A scripted command session you advance one command at a time, with each command's output."
+  },
+  {
+    "id": "bare-import-fail",
+    "title": "A bare import",
+    "description": "A browser trying to load import \"react\" with nothing to resolve it, and the bundler that fills the gap."
+  },
+  {
+    "id": "dev-server-vs-build",
+    "title": "Dev server and build",
+    "description": "A request served by the dev server, transformed on demand, beside the same page served from dist/."
+  },
+  {
+    "id": "package-json-explorer",
+    "title": "package.json",
+    "description": "A package.json with each field named when selected, and the script that npm run dev expands to."
+  },
+  {
+    "id": "node-modules-tree",
+    "title": "node_modules",
+    "description": "A dependency pulling in its own dependencies, the tree that results, and the lockfile that pins it."
+  }
+]

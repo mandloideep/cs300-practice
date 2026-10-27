@@ -8,6 +8,7 @@ import matter from "gray-matter";
 import { transform } from "sucrase";
 import { unifiedDiff } from "./diff.mjs";
 import { ACTIONS, ANCHORED_ACTIONS, applyEdits, editsFromTokens, parseInfo } from "./edits.mjs";
+import { fenceKind, fencesFromTokens } from "./fences.mjs";
 import { isDirectory, listDirectories, readJson, readTree } from "./files.mjs";
 import { createMarkdown, LANGUAGES } from "./render.mjs";
 import { rulesFor } from "./style.mjs";
@@ -194,7 +195,7 @@ function loadStep(topicDir, dirName, index, context, problems) {
   const offset = raw.split("\n").length - body.split("\n").length;
   const tokens = markdown.parse(body, {});
   for (const token of tokens) {
-    if (token.type !== "fence") continue;
+    if (token.type !== "fence" || fenceKind(token.info) === "demo") continue;
     const { lang } = parseInfo(token.info);
     if (!LANGUAGES.includes(lang)) {
       problems.add(
@@ -206,6 +207,11 @@ function loadStep(topicDir, dirName, index, context, problems) {
   for (const link of body.matchAll(/\]\(#\/topic\/([^)/#\s]+)[^)]*\)/g)) {
     if (!context.topicIds.includes(link[1]))
       problems.add(stepFile, `links to unknown topic ${link[1]}`);
+  }
+
+  const fences = fencesFromTokens(tokens);
+  for (const demo of fences.demos) {
+    if (demo.error) problems.add(stepFile, `line ${demo.line + offset}: demo fence ${demo.error}`);
   }
 
   const edits = editsFromTokens(tokens).map((edit) => ({ ...edit, line: edit.line + offset }));
@@ -310,6 +316,7 @@ function loadStep(topicDir, dirName, index, context, problems) {
         : inspector,
     api,
     required,
+    demos: fences.demos.filter((demo) => !demo.error).map((demo) => demo.id),
     edits: edits.map(({ file, action, anchor, code, lang }) => ({
       file,
       action,

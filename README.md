@@ -58,6 +58,7 @@ Markdown keeps one sentence per physical line, and the edit blocks in each `step
 ## How the site is organized
 
 - `src/app/` holds the routes, the site header, and the pages.
+- `src/demos/` holds the interactive explainers that steps place with a `demo` fence, their registry, and the frame they share.
 - `src/styles/tokens.css` holds the design tokens, and `src/styles/global.css` holds the base styles.
 - `content/` holds the topics, paths, areas, and API presets as plain files.
 - `src/runner/` compiles a workspace with Sucrase, links its modules as blob URLs, and builds the document for the sandboxed result iframe, including the bridge script that reports console output, errors, and check results.
@@ -263,6 +264,60 @@ Besides the format rules above, it holds `content/` to these style rules, and ea
 
 `npm run build:content` runs the same checks and then writes `public/content/`.
 Finally, run `npm run dev` and walk the new topic in the browser.
+
+## Adding an explainer
+
+An explainer is a small React component that shows one idea moving inside a step's explanation.
+[docs/EXPLAINERS.md](docs/EXPLAINERS.md) lists every explainer the lab plans, and a new one goes there first.
+Every id in that file also has an entry in `src/demos/registry.json` with its title and a one-sentence description:
+
+```json
+{ "id": "event-loop", "title": "Event loop", "description": "The call stack, ..." }
+```
+
+A step places an explainer with a `demo` fence whose body is empty or one JSON object of props:
+
+````markdown
+```demo name="event-loop"
+{ "timers": 2 }
+```
+````
+
+The validator rejects an id that is not in the registry and a body that is not a JSON object.
+The build turns the fence into a placeholder that holds the title and the description as text, and the step page mounts the component into it.
+A registered id with no component yet keeps that text, so a step can place an explainer before it is built.
+
+The component lives in `src/demos/<id>/index.jsx`, with any styles of its own in `src/demos/<id>/styles.css`, and exports three things:
+
+```jsx
+export const id = "event-loop";
+
+export function stepCount(props) {
+  return 7;
+}
+
+export default function EventLoop({ props, step }) {
+  return <Caption>Stage {step + 1}</Caption>;
+}
+```
+
+`src/demos/DemoFrame.jsx` draws the title, the description, and the Play, Pause, Back, Step, and Reset controls, and passes the component the stage to draw as `step`, from `0` to `stepCount(props) - 1`.
+The component only draws that stage; it never starts a timer of its own.
+It also receives `reducedMotion` and `goTo(stage)` for an explainer that moves itself when the student clicks inside it.
+Build it from the pieces in `src/demos/kit.jsx`, such as `Caption`, `CodeView`, `ConsoleView`, `Panel`, `Chip`, and `Choice`, so that every explainer reads the same.
+
+Every explainer keeps the contract in [docs/CONTRACTS.md](docs/CONTRACTS.md) section 7.1:
+
+- It never plays on its own, and the frame's controls work from the keyboard.
+- Under `prefers-reduced-motion` the frame opens on the last stage, and Back, Step, and Reset still work.
+- Each stage ends with a `Caption` that says in words what the picture shows.
+- It draws only with the tokens in `src/styles/tokens.css` and fits a 320 pixel column.
+- It takes the step's own values from its props where that makes sense, and works with no props.
+- The code it shows carries no explanatory comments; the caption explains.
+
+With `npm run dev` running, `/cs300-react-lab/src/demos/harness/index.html` lists every explainer, and `?id=<id>&width=320` shows one at phone width with optional `&props=<json>`.
+`tests/demos.spec.js` mounts every built explainer on that page, steps it from the first stage to the last from the keyboard, checks the 320 pixel column, and runs axe in light and dark with motion allowed and reduced.
+When an explainer is built, set its Status in [docs/EXPLAINERS.md](docs/EXPLAINERS.md) to `built`.
 
 ## Adding a path
 
