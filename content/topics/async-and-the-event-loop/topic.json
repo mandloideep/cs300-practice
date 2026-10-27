@@ -1,0 +1,10 @@
+{
+  "id": "async-and-the-event-loop",
+  "title": "Async and the event loop",
+  "area": "javascript",
+  "summary": "See why a timer or a promise never interrupts running code: the call stack, the timer queue, and the microtask queue, traced with an order that is prepared and shipped and a course page that loads three things at once. You will make your own promises from timers, chain them with then, catch, and finally, rewrite the chain with async and await, and predict the output of ordering puzzles before the console shows it.",
+  "prerequisites": ["errors-and-debugging"],
+  "minutes": 70,
+  "updated": "2026-10-27",
+  "changeNote": "First version."
+}
