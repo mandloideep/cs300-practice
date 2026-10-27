@@ -1,0 +1,10 @@
+{
+  "id": "tooling-from-scratch",
+  "title": "Tooling from scratch",
+  "area": "tooling",
+  "summary": "Meet the tools that turn a folder of files into a site: Node, npm and package.json, node_modules and the lockfile, the bundler, and what Vite and esbuild do with your code. You will watch a bare import fail in the browser, read a real lockfile, and then install, run, and build a project on your own computer.",
+  "prerequisites": ["javascript-basics"],
+  "minutes": 60,
+  "updated": "2026-10-27",
+  "changeNote": "First version."
+}

@@ -104,6 +104,10 @@
         {
           "id": "fetch-basics",
           "required": true
+        },
+        {
+          "id": "tooling-from-scratch",
+          "required": true
         }
       ],
       "localNotes": [
