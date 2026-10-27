@@ -3,11 +3,18 @@ title: Several at once
 mode: edit
 entry: index.html
 required: [one-by-one-adds-up, together-overlaps, all-rejects-on-the-first-failure, settled-reports-each]
+links:
+  - kind: reference
+    title: "MDN: Promise.all()"
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
 ---
 
 A course page needs three things before it can show anything: the course list, today's schedule, and the announcements.
 This step loads them one after another with three `await` lines, then all at once with `Promise.all`, and times both; then it lets one of them fail and compares `Promise.all` with `Promise.allSettled`.
 Watch the milliseconds: when the waits overlap, the total is the slowest wait, not the sum.
+
+```demo name="promise-all"
+```
 
 `load` returns a promise that fulfills with a value after some milliseconds, and `fail` returns one that rejects after some milliseconds; they stand in for three requests to a server.
 `oneByOne` awaits the three loads in turn and logs how long that took.
@@ -39,7 +46,13 @@ And call it from `main`, after the first one has finished.
 `Promise.all` takes an array of promises and returns one promise that fulfills when every one of them has, with an array of their values.
 All three `load` calls run while the array is being built, so all three timers start in the same millisecond.
 
-Predict before you run: about how long does `Together` take, about 450 ms, about 200 ms, or about 100 ms?
+```predict
+About how long does `Together` take?
+- About 450 ms
+= About 200 ms
+- About 100 ms
+```
+
 Run it.
 `Together:` prints about 200 ms, the time of the slowest load, because the three waits overlapped instead of following each other.
 The values come back in the order of the array, `["3 courses","2 classes today","1 announcement"]`, even though the announcement arrived first; `Promise.all` keeps each value in its place.
@@ -62,7 +75,13 @@ async function oneFails() {
   await oneFails();
 ```
 
-Predict before you run: does the console show `All:` with the courses, a warning that `Promise.all` rejected, or a red uncaught line?
+```predict
+What does `oneFails` print?
+- `All:` with the courses
+- A red uncaught line
+= A warning, `Promise.all rejected: News is down`
+```
+
 Run it.
 A warning, `Promise.all rejected: News is down`, about 100 ms after `Together`, without waiting for the courses.
 `Promise.all` rejects as soon as any one promise rejects, with that promise's error, and the values of the others are lost, so a page that uses it shows nothing if any part fails.
@@ -87,10 +106,18 @@ async function settleEach() {
   await settleEach();
 ```
 
-Predict before you run: after about 200 ms, does `settleEach` print one line, two lines, or a warning?
+```predict
+After about 200 ms, what does `settleEach` print?
+- One line, `fulfilled: 3 courses`
+= Two lines, one fulfilled and one rejected
+- A warning that a promise rejected
+```
+
 Run it.
 Two lines: `fulfilled: 3 courses` and `rejected: News is down`.
 `Promise.allSettled` never rejects; it waits for every promise to settle and fulfills with one object per promise, `{ status: "fulfilled", value }` or `{ status: "rejected", reason }`, so the page can show the courses and a message where the announcements would be.
+
+## Read more
 
 Choose by what the page needs.
 Use `Promise.all` when the parts only make sense together, such as a total that needs every number, and catch its rejection.
@@ -109,6 +136,22 @@ If `settleEach` prints `rejected: undefined`, it reads `result.reason` without `
 The console shows `One by one:` at about 450 ms, `Together:` at about 200 ms with the three values in order, the warning `Promise.all rejected: News is down`, `fulfilled: 3 courses`, and `rejected: News is down`.
 The checks wait for the last line, about a second after the run, before they read the console.
 Press **Run checks** to confirm.
+
+```quiz
+In what order does `Promise.all` return its values?
+- The order in which the promises finished
+= The order of the array you passed in
+- No fixed order
+> Each value keeps the place of its promise in the array, so the slowest load can still come first in the result.
+```
+
+```quiz
+`Promise.all` gets three promises and the second rejects at 100 ms; what happens?
+- It waits for all three and then fulfills with two values
+= It rejects at about 100 ms with the second promise's error
+- It fulfills with `undefined` in the second place
+> `Promise.all` fails fast on the first rejection; use `Promise.allSettled` when you want every outcome.
+```
 
 <details>
 <summary>src/main.js after this step</summary>
