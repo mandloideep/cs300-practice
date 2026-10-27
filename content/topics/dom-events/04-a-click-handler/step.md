@@ -7,27 +7,26 @@ inspector:
 required: [handler-waits-for-click, click-filters, second-click-restores]
 ---
 
-Everything so far ran once, when the script loaded.
-A page becomes interactive when some of its code runs later, in response to something the user does.
-That something is an **event**: a click, a key press, a form submission.
-The pattern has three parts: select an element, listen for an event on it, and give the browser a function to run when the event happens.
+Everything so far ran once, when the script loaded; this step makes code run later, when the user clicks a button.
+The starter carries the most common mistake with `addEventListener`, so watch the console before any click and again after one.
+
+```demo name="callback"
+```
 
 The workspace grew between steps.
-The loop from Step 3 now lives in a function, `renderProjects`, which empties the list with `replaceChildren` and builds it again from the array, so we can call it whenever the data changes.
-A variable `doneOnly` decides whether the function shows every project or only the finished ones, and `toggleDoneOnly` flips it and renders again.
+The loop from Step 3 now lives in a function, `renderProjects`, which empties the list with `replaceChildren` and builds it again from the array.
+A variable `doneOnly` decides whether it shows every project or only the finished ones, and `toggleDoneOnly` flips it and renders again.
 The page has a button, **Show finished only**, and the last lines of the script connect it to the function.
 
 Run the starter before changing anything.
 The status line says `1 of 3 projects shown.` before you click anything, the console already says `doneOnly is now true`, and clicking the button does nothing.
-That is the most common mistake with `addEventListener`, and it is in the last lines of the file:
+The mistake is in the last lines of the file:
 
 ```js
 filterButton.addEventListener("click", toggleDoneOnly());
 ```
 
-The parentheses call `toggleDoneOnly` right now, while the script is loading.
-The function runs once, flips `doneOnly`, and returns `undefined`, and `undefined` is what gets registered as the listener, so clicks have nothing to run.
-`addEventListener` needs the function itself, not its result.
+The parentheses call `toggleDoneOnly` right now, while the script is loading, and its result, `undefined`, is what gets registered.
 Remove the parentheses.
 
 ```js file="app.js" action="replace" anchor='filterButton.addEventListener("click", toggleDoneOnly());'
@@ -35,8 +34,6 @@ filterButton.addEventListener("click", toggleDoneOnly);
 ```
 
 Read it as "save this function, and call it back when the button is clicked".
-`toggleDoneOnly` without parentheses is a value, the function object, and we hand that value to the browser.
-A function passed this way is called a **callback**, and the same idea is behind `forEach`, `map`, and `filter`.
 
 The button has an `aria-pressed` attribute in the HTML, which tells assistive technology that it is a toggle and whether it is on.
 Keep it in step with the variable.
@@ -45,19 +42,53 @@ Keep it in step with the variable.
   filterButton.setAttribute("aria-pressed", String(doneOnly));
 ```
 
-`setAttribute` writes any attribute; attributes are strings, so we convert the boolean first.
-The stylesheet has a rule for `button[aria-pressed="true"]`, which is why the button changes color when it is on.
+Attributes are strings, so we convert the boolean first.
 
 Finally, add one log at the very end of the file.
+
+```predict
+After you add the log and run, what does the console show before any click?
+- `doneOnly is now true`, then `Script finished. Waiting for clicks.`
+= Only `Script finished. Waiting for clicks.`
+- Nothing until the first click
+```
 
 ```js file="app.js" action="append"
 console.log("Script finished. Waiting for clicks.");
 ```
 
-Run the code and watch the console.
-`Script finished` prints immediately, and nothing from `toggleDoneOnly` prints until you click, even though that function is written above the log.
+Run the code and watch the console: nothing from `toggleDoneOnly` prints until you click, even though that function is written above the log.
+
+## Read more
+
+### Events
+
+A page becomes interactive when some of its code runs later, in response to something the user does.
+That something is an **event**: a click, a key press, a form submission.
+The pattern has three parts: select an element, listen for an event on it, and give the browser a function to run when the event happens.
+`renderProjects` can be called whenever the data changes, which is what the listener will do.
+
+### The parentheses mistake
+
+With `toggleDoneOnly()`, the function runs once while the script loads, flips `doneOnly`, and returns `undefined`, and `undefined` is what gets registered as the listener, so clicks have nothing to run.
+`addEventListener` needs the function itself, not its result.
+`toggleDoneOnly` without parentheses is a value, the function object, and we hand that value to the browser.
+A function passed this way is called a **callback**, and the same idea is behind `forEach`, `map`, and `filter`.
+
+### `aria-pressed`
+
+`setAttribute` writes any attribute; attributes are strings, so `String(doneOnly)` turns `true` into `"true"`.
+The stylesheet has a rule for `button[aria-pressed="true"]`, which is why the button changes color when it is on.
+
+### Registering is not running
+
+`Script finished` prints immediately, and nothing from `toggleDoneOnly` prints until you click.
 Registering a listener does not run it.
 The browser keeps the function and calls it each time the event happens, which can be once, many times, or never.
+
+**If it breaks:** If the console prints `doneOnly is now true` before any click, the parentheses are still there.
+If clicking does nothing and the console shows no error, the listener was added to a different element than `#filter-button`, or the event name is not exactly `"click"`.
+If the button never changes color, `setAttribute` is writing `aria-pressed` outside `toggleDoneOnly`, so it runs once instead of on every click.
 
 **Check:** Run the code.
 The status line reads `3 of 3 projects shown.`, the console shows only `Script finished`, and the button is not pressed.
@@ -65,9 +96,13 @@ Click **Show finished only**: the console prints `doneOnly is now true`, one pro
 Click again to see all three.
 Press **Run checks**; the checks click the button for you and put it back.
 
-**If it breaks:** If the console prints `doneOnly is now true` before any click, the parentheses are still there.
-If clicking does nothing and the console shows no error, the listener was added to a different element than `#filter-button`, or the event name is not exactly `"click"`.
-If the button never changes color, `setAttribute` is writing `aria-pressed` outside `toggleDoneOnly`, so it runs once instead of on every click.
+```quiz
+Which line runs `save` each time the button is clicked, and not before?
+- `button.addEventListener("click", save())`
+= `button.addEventListener("click", save)`
+- `button.addEventListener(save, "click")`
+> `save` without parentheses hands the function to the browser to call on each click; `save()` calls it once while the script loads and registers whatever it returns.
+```
 
 <details>
 <summary>app.js after this step</summary>

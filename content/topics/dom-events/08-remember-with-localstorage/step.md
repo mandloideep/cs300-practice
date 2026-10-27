@@ -7,13 +7,15 @@ inspector:
 required: [storage-matches-the-list, add-saves, remove-saves]
 ---
 
-Add a project, press **Run**, and it is gone.
-Every change we made lives in a JavaScript array in memory, and a reload starts the script from the beginning with the array as it was typed.
-In Week 7 we fixed this with **localStorage**, a small store the browser keeps for each site, which survives reloads and restarts until the user or the script clears it.
+Add a project, press **Run**, and it is gone, because every change lives in an array in memory and a run starts the script from the beginning.
+This step saves the list to **localStorage**, which the browser keeps for each site across reloads, and loads it back when the script starts.
+Watch what a kept run brings back, and remember that localStorage stores strings only.
 
-localStorage has one rule that shapes everything: it stores strings only.
-`setItem(key, value)` saves a string under a name, `getItem(key)` returns the string or `null` when nothing was saved under that name, and arrays and objects go through `JSON.stringify` on the way in and `JSON.parse` on the way out.
+```demo name="storage-across-reload"
+```
 
+`setItem(key, value)` saves a string under a name, and `getItem(key)` returns the string or `null` when nothing was saved under that name.
+Arrays and objects go through `JSON.stringify` on the way in and `JSON.parse` on the way out.
 Start by loading the saved list, or the starter list when nothing is saved.
 
 ```js file="app.js" action="replace" anchor='const projects = [\n  { id: 1, title: "Profile card", category: "HTML", done: true },\n  { id: 2, title: "Landing page", category: "CSS", done: false },\n  { id: 3, title: "Reading list", category: "JavaScript", done: false }\n];'
@@ -26,10 +28,7 @@ const starterProjects = [
 const projects = JSON.parse(localStorage.getItem(STORAGE_KEY)) || starterProjects;
 ```
 
-The key is a constant so that saving and loading can never disagree about its spelling.
-On the first run `getItem` returns `null`, `JSON.parse(null)` is `null`, and `null || starterProjects` picks the typed list.
-After a save, `getItem` returns the JSON text, `JSON.parse` turns it back into an array of objects, and that array wins.
-This is the safe load pattern from Week 7, with the starter list in place of `[]`.
+On the first run nothing is saved, so `JSON.parse(null)` is `null` and `||` picks the starter list.
 
 Now a function that saves.
 
@@ -40,8 +39,7 @@ function saveProjects() {
 }
 ```
 
-`JSON.stringify` turns the array into text such as `[{"id":1,"title":"Profile card",...}]`, which is what gets stored.
-Nothing calls this function yet, and that is the whole discipline of persistence: **call save after every change to the data**.
+Nothing calls it yet: the rule is to **call save after every change to the data**.
 There are two changes in this script, the submit and the remove.
 
 ```js file="app.js" action="insert-after" anchor='  projects.push({ id: Date.now(), title, category: "New", done: false });'
@@ -53,19 +51,46 @@ There are two changes in this script, the submit and the remove.
 ```
 
 Each change now follows the same three beats: change the array, save it, render it.
-The toggle and the category filter do not save, because they change what is shown rather than what the list contains.
 
 The lab's **Run** button clears the result's storage before it runs, so that every run starts clean.
 To see persistence, use **Run, keeping saved data**, which runs the code again without clearing, the way a real reload keeps what the page saved.
+
+## Read more
+
+### Week 7's fix
+
+In Week 7 we fixed the lost list with **localStorage**, a small store the browser keeps for each site, which survives reloads and restarts until the user or the script clears it.
+It has one rule that shapes everything: it stores strings only.
+
+### The safe load pattern
+
+The key is a constant so that saving and loading can never disagree about its spelling.
+On the first run `getItem` returns `null`, `JSON.parse(null)` is `null`, and `null || starterProjects` picks the typed list.
+After a save, `getItem` returns the JSON text, `JSON.parse` turns it back into an array of objects, and that array wins.
+This is the safe load pattern from Week 7, with the starter list in place of `[]`.
+
+### What gets saved, and when
+
+`JSON.stringify` turns the array into text such as `[{"id":1,"title":"Profile card",...}]`, which is what gets stored.
+A save function that nothing calls saves nothing, and that is the whole discipline of persistence.
+The toggle and the category filter do not save, because they change what is shown rather than what the list contains.
+
+**If it breaks:** If the list is always the starter list after a kept run, `saveProjects` is never called, or the key in `setItem` differs from the key in `getItem`.
+If the console says `Unexpected token` from `JSON.parse`, something other than JSON was stored under the key; press **Run** to clear it.
+If new projects save but the starter list never shows, the `||` fallback is missing and `projects` is `null` on the first run.
 
 **Check:** Run the code, add a project, and remove `Profile card`.
 Press **Run, keeping saved data**: the list comes back as you left it, with the new project and without `Profile card`.
 Press **Run** and the starter list is back, because the storage was cleared.
 Press **Run checks**; the checks compare the stored JSON with the list after an add and a remove.
 
-**If it breaks:** If the list is always the starter list after a kept run, `saveProjects` is never called, or the key in `setItem` differs from the key in `getItem`.
-If the console says `Unexpected token` from `JSON.parse`, something other than JSON was stored under the key; press **Run** to clear it.
-If new projects save but the starter list never shows, the `||` fallback is missing and `projects` is `null` on the first run.
+```quiz
+Which line saves the projects so that `JSON.parse` can turn them back into an array later?
+- `localStorage.setItem(STORAGE_KEY, projects)`
+= `localStorage.setItem(STORAGE_KEY, JSON.stringify(projects))`
+- `localStorage.setItem(JSON.stringify(projects), STORAGE_KEY)`
+> localStorage stores strings only, so an array passed as it is becomes the text `[object Object],[object Object],[object Object]`; `JSON.stringify` writes text that `JSON.parse` can read back, and the key comes first.
+```
 
 <details>
 <summary>app.js after this step</summary>

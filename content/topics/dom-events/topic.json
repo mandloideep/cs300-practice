@@ -5,6 +5,28 @@
   "summary": "Select elements from the page, change their text and classes, create and remove elements, and respond to clicks and form submissions. You will reproduce the parentheses mistake in addEventListener, handle a whole list with one delegated listener, carry data on elements with data attributes, and keep the list across a reload with localStorage.",
   "prerequisites": ["javascript-basics"],
   "minutes": 90,
-  "updated": "2026-10-26",
-  "changeNote": "First version."
+  "updated": "2026-10-27",
+  "changeNote": "Rewritten so each step opens with an explainer or a prediction, folds the background under Read more, and ends with a quiz.",
+  "links": [
+    {
+      "kind": "reading",
+      "title": "javascript.info: Document",
+      "url": "https://javascript.info/document"
+    },
+    {
+      "kind": "reading",
+      "title": "javascript.info: Introduction to Events",
+      "url": "https://javascript.info/events"
+    },
+    {
+      "kind": "reading",
+      "title": "MDN: DOM scripting introduction",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/DOM_scripting"
+    },
+    {
+      "kind": "reference",
+      "title": "MDN: Window.localStorage",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage"
+    }
+  ]
 }
