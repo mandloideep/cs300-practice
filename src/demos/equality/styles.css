@@ -1,0 +1,86 @@
+figure.demo-frame .equality__now {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+figure.demo-frame .equality__label {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .equality__chain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  font-size: var(--text-lg);
+}
+
+figure.demo-frame .equality__chain li + li::before {
+  margin-right: var(--space-2);
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  content: "→";
+}
+
+figure.demo-frame .equality__chain .demo-chip {
+  font-size: var(--text-base);
+}
+
+figure.demo-frame .equality__table td:last-child,
+figure.demo-frame .equality__table th:last-child {
+  width: 6.5rem;
+}
+
+figure.demo-frame .equality__memory {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+figure.demo-frame .equality__refs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .equality__ref {
+  display: flex;
+  gap: var(--space-2);
+  padding: 0 var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+}
+
+figure.demo-frame .equality__ref.is-read {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+figure.demo-frame .equality__name {
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .equality__arrow {
+  color: var(--color-text-muted);
+}
+
+figure.demo-frame .equality__objects {
+  display: flex;
+  flex: 1 1 10rem;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+figure.demo-frame .equality__object {
+  border-width: 1px;
+}
+
+figure.demo-frame .equality .demo-box.demo-box--accent {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}

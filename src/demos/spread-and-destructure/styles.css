@@ -1,0 +1,52 @@
+.spread-and-destructure {
+  container-type: inline-size;
+}
+
+figure.demo-frame .spread-and-destructure__vars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+figure.demo-frame .spread-and-destructure__var {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease;
+}
+
+figure.demo-frame .spread-and-destructure__var--fresh {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+figure.demo-frame .spread-and-destructure__name {
+  min-width: 4rem;
+  font-family: var(--font-mono);
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .spread-and-destructure__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+figure.demo-frame .spread-and-destructure__value {
+  flex: 1 1 100%;
+  min-width: 0;
+}
+
+@container (min-width: 28rem) {
+  figure.demo-frame .spread-and-destructure__var {
+    display: grid;
+    grid-template-columns: 4.5rem 8.5rem minmax(0, 1fr);
+  }
+}

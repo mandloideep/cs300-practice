@@ -69,10 +69,10 @@ Each one takes its data from the fence body where that makes sense, so the same 
 
 | Id | Shows | Serves | Phase | Status |
 | --- | --- | --- | --- | --- |
-| `mutation-vs-copy` | `push` changing the array in place beside the spread that makes a new one, with React's equality check deciding whether to re-render | *arrays-in-depth*, controlled-forms/add-without-mutating, *why-react-behaves-this-way* | 6 | planned |
-| `spread-and-destructure` | Spread copying into a new object or array and destructuring pulling names out of one | *objects-and-references* | 6 | planned |
-| `json-roundtrip` | An object stringified and parsed back, with the parts JSON cannot carry marked as lost | *objects-and-references*, persistence/version-the-stored-shape | 6 | planned |
-| `equality` | `===` and `==` on primitives, and two equal-looking objects that are not the same object | *objects-and-references* | 6 | planned |
+| `mutation-vs-copy` | `push` changing the array in place beside the spread that makes a new one, with React's equality check deciding whether to re-render | *arrays-in-depth*, controlled-forms/add-without-mutating, *why-react-behaves-this-way* | 6 | built |
+| `spread-and-destructure` | Spread copying into a new object or array and destructuring pulling names out of one | *objects-and-references* | 6 | built |
+| `json-roundtrip` | An object stringified and parsed back, with the parts JSON cannot carry marked as lost | *objects-and-references*, persistence/version-the-stored-shape | 6 | built |
+| `equality` | `===` and `==` on primitives, and two equal-looking objects that are not the same object | *objects-and-references* | 6 | built |
 | `array-methods` | `find`, `some`, `every`, `sort`, `slice`, and `splice` applied to one array, with which ones change it | *arrays-in-depth* | 6 | planned |
 | `optional-chaining` | A nested path walked with `?.` and a fallback supplied by `??`, with the step where a missing value stops the walk | *objects-and-references* | 6 | planned |
 
