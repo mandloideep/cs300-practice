@@ -8,7 +8,7 @@ The site is deployed to GitHub Pages at <https://mandloideep.github.io/cs300-rea
 Everything runs in the visitor's browser: there is no server, no account, no database, and no analytics.
 
 The design of record is [docs/DESIGN.md](docs/DESIGN.md).
-The Phase 1 scope is in [docs/KICKOFF.md](docs/KICKOFF.md), the plans for Phases 2 to 5 are in [docs/PHASE2.md](docs/PHASE2.md), [docs/PHASE3.md](docs/PHASE3.md), [docs/PHASE4.md](docs/PHASE4.md), and [docs/PHASE5.md](docs/PHASE5.md), and the interfaces shared by every part of the code are in [docs/CONTRACTS.md](docs/CONTRACTS.md).
+The Phase 1 scope is in [docs/KICKOFF.md](docs/KICKOFF.md), the plans for Phases 2 to 5 are in [docs/PHASE2.md](docs/PHASE2.md), [docs/PHASE3.md](docs/PHASE3.md), [docs/PHASE4.md](docs/PHASE4.md), and [docs/PHASE5.md](docs/PHASE5.md), the semester-to-semester tasks are in [docs/MAINTENANCE.md](docs/MAINTENANCE.md), and the interfaces shared by every part of the code are in [docs/CONTRACTS.md](docs/CONTRACTS.md).
 
 ## Local setup
 
@@ -64,6 +64,10 @@ Markdown keeps one sentence per physical line, and the edit blocks in each `step
 - `src/runner/harness/index.html` is a development-only page that runs any step from `content/` and prints every bridge message; with `npm run dev` it is at `/cs300-react-lab/src/runner/harness/index.html`.
 - `public/runtime/` holds the vendored React runtime that the result iframe loads through an import map.
 - `scripts/` holds the content, runtime, and export build scripts.
+
+A step page shows the explanation, the editor with file tabs, the result, the console, the inspector (boundaries, re-render flash, tree and state, flow trace, and the DOM view for plain pages), the network pane on fetching steps, the check panel, and step navigation.
+Every edit step has "Download this workspace", which writes a Vite project for a React workspace or a plain folder for an HTML, CSS, and JavaScript one, and a step whose code saves to `localStorage` gets a second "Run, keeping saved data" button that runs without clearing the result's storage.
+Progress stays in the browser and can be exported and imported on the home page.
 
 Routes use hash routing so that deep links work on GitHub Pages: `#/`, `#/topics`, `#/topic/<id>`, `#/topic/<id>/<n>`, `#/path/<pathId>`, and `#/path/<pathId>/<unit>`.
 
@@ -148,7 +152,7 @@ required: [one-products-request, uses-api-base, products-render]
 | `title` | yes | The step heading and its name in navigation |
 | `mode` | yes | `edit`, `read`, or `local` |
 | `entry` | edit steps | The workspace file the runner executes, such as `src/main.jsx`, or `index.html` for a page with no module entry |
-| `inspector.views` | no | Views that start open: `boundaries`, `flash`, `tree`, `flow`, `network` |
+| `inspector.views` | no | Views that start open: `boundaries`, `flash`, `tree`, `flow`, `network`, `dom`; a React workspace defaults to `[boundaries, flash, tree]` and a plain HTML, CSS, and JavaScript workspace to `[dom]` |
 | `inspector.watch` | no | Component names pinned at the top of the inspector tree |
 | `api.default` | no | `fixtures`, `custom`, or a preset id; include it only when the workspace fetches |
 | `required` | no | Check ids that must pass; the default is every check `check.js` returns |
