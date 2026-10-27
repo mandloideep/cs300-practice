@@ -74,7 +74,7 @@ A real project does want packages by name, though: thousands of them, installed 
 The browser still cannot read `"date-fns"` from there, because it has no idea that folder exists.
 So how does a real project's `import { format } from "date-fns"` ever work?
 A tool reads your files before the browser does, finds `date-fns` in `node_modules`, and rewrites the import to an address the browser can load, the same job the lab did for your `./` imports all through this topic.
-That tool is a **bundler**, Vite is the one we use, and the Tooling from scratch topic takes it apart.
+That tool is a **bundler**, Vite is the one we use, and [Tooling from scratch](#/topic/tooling-from-scratch) takes it apart.
 
 **If it breaks:** If the console still shows `Failed to resolve module specifier "date-fns"`, part of the inline script is still in `index.html`; delete everything from `<script type="module">` to its `</script>`, and keep the tag in the `<head>`.
 If the result pane says it cannot import `"dates.js"`, the import in `src/main.js` is missing its `./`.

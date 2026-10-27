@@ -5,6 +5,8 @@ entry: index.html
 required: [sessions-listed, no-bare-import-on-the-page, formatted-by-path]
 ---
 
+**We used this in:** [Modules and imports](#/topic/modules-and-imports/6) watched a bare import fail in the lab; this step asks where a package lives on disk and who turns its name into a path.
+
 This step imports a package by its name, the way every React file imports `react`, and watches the browser refuse.
 Then it imports the same package by the path of its file, which the browser accepts, and that difference is the reason bundlers exist.
 Watch the console for the browser's own error message, word for word.
