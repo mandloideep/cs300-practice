@@ -1,0 +1,10 @@
+{
+  "id": "javascript-basics",
+  "title": "JavaScript basics",
+  "area": "javascript",
+  "summary": "Write JavaScript whose only output is the console: variables and types, string methods, operators and the coercion surprises, arrays and loops, map and filter, and objects. You will trace a loop past its last index, see why a string method leaves the original alone, and build the Week 6 roster dashboard from an array of objects.",
+  "prerequisites": ["html-structure"],
+  "minutes": 75,
+  "updated": "2026-10-26",
+  "changeNote": "First version."
+}
