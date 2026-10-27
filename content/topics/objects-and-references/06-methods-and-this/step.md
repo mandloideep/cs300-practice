@@ -14,6 +14,9 @@ Watch what happens when the same method is called on its cart, on another cart, 
 Press **Run**.
 The console shows `Items in the cart: 2`.
 
+```demo name="this-binding"
+```
+
 Give the cart a method.
 The closing bracket of `items` gets a comma, and the method goes after it.
 
@@ -28,7 +31,12 @@ The closing bracket of `items` gets a comma, and the method goes after it.
 `describe() { ... }` is the short way to write `describe: function () { ... }`, a key whose value is a function.
 Inside it, `this.owner` and `this.items` read properties of whatever object `describe` is called on.
 
-Predict before you run the next edit: does the console show `Alice has 2 items in the cart`, `undefined has undefined items in the cart`, or an error?
+```predict
+What does the console show for `cart.describe()`?
+- `undefined has undefined items in the cart`
+= `Alice has 2 items in the cart`
+- `TypeError: Cannot read properties of undefined (reading 'owner')`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -39,7 +47,13 @@ Run the code, and the console shows `Alice has 2 items in the cart`.
 `cart.describe()` calls the method **on** `cart`, the object before the dot, so inside the call `this` is `cart`.
 
 Now hand the same function to a second cart.
-Predict before you run: does the console show `Alice has 2 items in the cart`, `Bob has 0 items in the cart`, or an error?
+
+```predict
+What does the console show for `bobsCart.describe()`?
+- `Alice has 2 items in the cart`
+= `Bob has 0 items in the cart`
+- `TypeError: describe is not a function`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -53,7 +67,13 @@ The console shows `Bob has 0 items in the cart`.
 The function does not remember which object it was written in; `this` comes from the call.
 
 Last, take the method off its object and call it on its own.
-Predict before you run: does the console show `Later: Alice has 2 items in the cart`, `Later: undefined has 0 items in the cart`, or `TypeError: Cannot read properties of undefined (reading 'owner')`?
+
+```predict
+What does the console show for `describeLater()`?
+- `Later: Alice has 2 items in the cart`
+= `TypeError: Cannot read properties of undefined (reading 'owner')`
+- `Later: undefined has 0 items in the cart`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -76,6 +96,8 @@ Run the code, and the console shows `Later: Alice has 2 items in the cart`.
 `describeLater` is now an arrow function that, whenever it is called, calls `cart.describe()` with `cart` before the dot, so `this` is `cart` every time.
 In React you will write the same shape for a click: `onClick={() => cart.describe()}`.
 
+## Read more
+
 Another fix you will see is `cart.describe.bind(cart)`, which makes a copy of the function with `this` fixed to `cart`; the arrow wrapper says the same thing in a way that is easier to read.
 
 Arrow functions themselves have no `this` of their own, which is why you should not write a method as one.
@@ -91,6 +113,22 @@ If `Later:` still shows the red `TypeError`, the line still reads `cart.describe
 **Check:** Run the code.
 The console shows `Items in the cart: 2`, `Alice has 2 items in the cart`, `Bob has 0 items in the cart`, and `Later: Alice has 2 items in the cart`, with no red line.
 Press **Run checks** to confirm.
+
+```quiz
+Inside a method, what is `this`?
+- The object the method was written in
+= The object before the dot at the moment of the call
+- Always the browser window
+> `bobsCart.describe()` described Bob with a function written inside Alice's cart, because `this` comes from the call.
+```
+
+```quiz
+Which value can you hand to `setTimeout` so that `describe` still reads Alice's cart when it runs later?
+- `cart.describe`
+- `cart.describe()`
+= `() => cart.describe()`
+> The arrow calls `describe` with `cart` before the dot each time; `cart.describe` loses its object, and `cart.describe()` runs right away.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

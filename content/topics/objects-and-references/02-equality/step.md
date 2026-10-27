@@ -12,6 +12,9 @@ Watch for the line that says `false` when everything on the screen says it shoul
 Press **Run**.
 The console shows `cartA` and `cartB` as the same text, `{"item":"Notebook","quantity":2}`, because they were written with the same keys and values.
 
+```demo name="equality"
+```
+
 Compare what is inside first.
 
 ```js file="src/main.js" action="append"
@@ -26,7 +29,13 @@ Both lines show `true`.
 That is the `===` you met in JavaScript basics, where `5 === "5"` was `false` because the types differ.
 
 Now compare the carts.
-Predict before you run: does the console show `cartA === cartB: true`, `cartA === cartB: false`, or an error?
+
+```predict
+What does the console show for the two carts that hold the same notebook?
+- `cartA === cartB: true`
+= `cartA === cartB: false`
+- `TypeError: cannot compare objects`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -66,6 +75,8 @@ console.log("includes cartB?", savedCarts.includes(cartB));
 `savedCarts` holds an arrow to `cartA`, so `includes(cartA)` finds it and `includes(cartB)` does not, even though the console prints `cartB` exactly like the cart in the array.
 To find an object by its contents, you need a method that takes a callback, such as `find` or `some`, and the next topic, Arrays in depth, starts with those two.
 
+## Read more
+
 Arrays follow the same rule, since they are objects: `[1, 2] === [1, 2]` is `false`.
 Try it: add `console.log("Two arrays:", [1, 2] === [1, 2]);`, run, see `false`, and delete the line.
 A shortcut you will see online is to compare `JSON.stringify(cartA) === JSON.stringify(cartB)`; it works for small plain objects, but two objects with the same keys in a different order give different text, so write the comparison yourself when it matters.
@@ -80,6 +91,21 @@ If `includes cartB?` shows `true`, the line passes `cartA` twice.
 **Check:** Run the code.
 The console shows `true` for the item and the quantity, `cartA === cartB: false`, `cartA === cartC: true`, `Same contents? true`, `includes cartA? true`, and `includes cartB? false`.
 Press **Run checks** to confirm.
+
+```quiz
+What is `[1, 2] === [1, 2]`?
+- `true`
+= `false`
+> The two pairs of brackets make two separate arrays, and `===` on objects asks whether both sides are the same one.
+```
+
+```quiz
+Which line finds a cart that holds the same item as `cartB` in an array of carts?
+- `carts.includes(cartB)`
+- `carts.indexOf(cartB) !== -1`
+= `carts.some((cart) => cart.item === cartB.item)`
+> `includes` and `indexOf` compare references, and only a callback can compare what is inside.
+```
 
 <details>
 <summary>src/main.js after this step</summary>
