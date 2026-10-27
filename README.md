@@ -41,10 +41,14 @@ npm run preview
 | `npm run build:content` | Compiles `content/` into `public/content/` with `scripts/build-content.mjs` |
 | `npm run build:runtime` | Rebuilds the vendored React runtime in `public/runtime/` with `scripts/build-runtime.mjs` |
 | `npm run verify:runtime` | Loads the vendored runtime in headless Chromium and checks that it acts as one React instance |
+| `npm run upgrade:runtime -- <react> <react-router>` | Pins the exact versions, rebuilds and verifies the runtime, and prints the commit message; `--dry-run` only prints the steps |
 | `npm run validate` | Validates `content/` without writing anything, with `scripts/validate-content.mjs` |
+| `npm run new:topic -- <id> --area <area> --title "<title>"` | Scaffolds a topic with its first step from `scripts/templates/` |
+| `npm run new:step -- <topic-id> "<title>"` | Adds the next numbered step to a topic, starting from the previous step's solution |
 | `npm run lint` | Runs ESLint over `src`, `scripts`, and `tests` |
 | `npm run format` | Formats the code with Prettier |
 | `npm run format:check` | Checks the formatting with Prettier |
+| `npm run test:scripts` | Runs the Node tests for the scripts, under `scripts/test/`, without a browser |
 | `npm test` | Runs the Playwright tests against the Vite dev server; set `PLAYWRIGHT_PORT` when another checkout's server already holds port 4173 |
 | `npm run export:d2l -- <path-id>` | Writes a Brightspace page per unit of a path into `dist-d2l/` |
 
@@ -86,6 +90,24 @@ content/topics/<topic-id>/
     local/            local steps only: a workspace students download and run with npm
   02-<slug>/
 ```
+
+Start a topic from the templates under `scripts/templates/` rather than from an empty folder:
+
+```sh
+npm run new:topic -- lists-and-keys --area react --title "Lists and keys"
+```
+
+This writes `topic.json` and a first edit step, `01-first-step/`, with a `step.md` that already has one working edit block, a `workspace/`, a matching `solution/`, and a `check.js`, then prints what to fill in.
+The starter workspace is a React page for most areas and a plain page with an `index.html` entry for the `html`, `css`, `javascript`, `dom`, and `fetch` areas; `--kind react` or `--kind vanilla` overrides that choice, and `--step "<title>"` names the first step.
+Add the next step with its title:
+
+```sh
+npm run new:step -- lists-and-keys "Stable keys"
+```
+
+The new step is numbered after the last one, and its `workspace/` and `solution/` start as copies of the previous edit step's `solution/`, with that step's `entry`, `inspector`, `api`, and `fixtures/` carried over, so you change `solution/` and write the edit blocks that get there.
+Neither command overwrites anything that exists, and neither touches `content/paths/`, so add the topic to a unit yourself.
+The scaffolded files validate as they are, and `npm run test:scripts` keeps it that way.
 
 `topic.json` has every one of these fields:
 
@@ -216,6 +238,16 @@ npm run validate
 ```
 
 The validator names the file and the rule for every problem, and prints a unified diff when the edit blocks do not reproduce the solution.
+Besides the format rules above, it holds `content/` to these style rules, and each message names the file and the line:
+
+- Every `.md` file outside `local/` keeps one sentence per physical line.
+  The check is a heuristic: a line of prose with a sentence end followed by a space and a capital letter, read outside code fences, front matter, tables, inline code, link text, and HTML tags and after any list, heading, or blockquote marker.
+  Rephrase a line that trips it on an abbreviation.
+- No file under `content/` contains the em dash character.
+- No file under `workspace/`, `solution/`, or `local/` has a line that starts a comment with `//`, `/*`, or `<!--`; a `#` in CSS is a color or a selector and is fine.
+- `topic.json` has `updated` as a date and `changeNote` as a sentence.
+- Every topic is in a unit of at least one path under `content/paths/`.
+
 `npm run build:content` runs the same checks and then writes `public/content/`.
 Finally, run `npm run dev` and walk the new topic in the browser.
 
@@ -296,30 +328,20 @@ The script bundles every entry in one esbuild run with code splitting, so the pa
 The script replaces only the files it generates, so `public/runtime/wrap/` is left alone.
 
 The versions follow the course technical baseline in the Fall operations ledger.
-To upgrade:
+To upgrade, start from a clean working tree and run one command with the exact versions, keeping `react` and `react-dom` on the same version:
 
-1. Bump the exact pins, keeping `react` and `react-dom` on the same version:
+```sh
+npm run upgrade:runtime -- 19.2.8 8.3.0
+```
 
-   ```sh
-   npm install --save-exact react@19.2.x react-dom@19.2.x react-router@8.x.y
-   ```
+The script refuses to run while a tracked file has uncommitted changes, so that the upgrade is the only change in the working tree and is easy to undo.
+It then runs `npm install --save-exact` for `react`, `react-dom`, and `react-router`, rebuilds the runtime with `npm run build:runtime`, and verifies it with `npm run verify:runtime`.
+The verification serves `public/runtime/` behind the same import map the runner uses and loads it in headless Chromium.
+It renders a `MemoryRouter` tree built with `jsxDEV` and `jsx` through `createRoot`, calls `useState` and `useLocation`, clicks a button to update state, and fails on any console warning, console error, or page error.
+If an entry carried its own copy of React, this fails with "Invalid hook call".
+Run `npx playwright install chromium` once if Playwright has no browser yet.
 
-2. Rebuild the runtime:
+When every step passes, the script prints the commit message to use and the one check it cannot make for you: run `npm run dev` and look at a React step with the inspector open, then run `npm run lint`, `npm run build`, and `npm test`.
+Commit `package.json`, `package-lock.json`, and everything under `public/runtime/` in one commit with the printed message.
 
-   ```sh
-   npm run build:runtime
-   ```
-
-3. Verify it in a browser:
-
-   ```sh
-   npm run verify:runtime
-   ```
-
-   The check serves `public/runtime/` behind the same import map the runner uses and loads it in headless Chromium.
-   It renders a `MemoryRouter` tree built with `jsxDEV` and `jsx` through `createRoot`, calls `useState` and `useLocation`, clicks a button to update state, and fails on any console warning, console error, or page error.
-   If an entry carried its own copy of React, this fails with "Invalid hook call".
-   Run `npx playwright install chromium` once if Playwright has no browser yet.
-
-4. Run `npm run lint`, `npm run build`, and `npm test`, then look at a React step in the browser with the inspector open.
-5. Commit `package.json`, `package-lock.json`, and everything under `public/runtime/` in one commit that names the new versions.
+`npm run upgrade:runtime -- 19.2.8 8.3.0 --dry-run` makes the same checks and prints the commands and the commit message without running them.

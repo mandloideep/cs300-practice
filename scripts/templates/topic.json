@@ -1,0 +1,10 @@
+{
+  "id": "{{id}}",
+  "title": "{{title}}",
+  "area": "{{area}}",
+  "summary": "Say in two sentences at most what the student builds and what they can do afterwards.",
+  "prerequisites": [],
+  "minutes": 30,
+  "updated": "{{date}}",
+  "changeNote": "First version."
+}
