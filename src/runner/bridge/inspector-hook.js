@@ -338,10 +338,33 @@ function installInspector() {
         commitSeq: null,
       };
       open = trace;
-      afterFrame(() => {
-        if (open === trace) close([], null);
-      });
+      afterFrame(() => closeIdle(trace));
       return trace;
+    }
+
+    // Closes `trace` when nothing committed, unless a response body opened under it is still
+    // being read: then the read's end schedules the close again, so that the setter the student
+    // calls after `await response.json()` lands in this trace rather than after it.
+    let holds = 0;
+
+    function closeIdle(trace) {
+      if (open !== trace || holds > 0) return;
+      close([], null);
+    }
+
+    function hold(promise) {
+      if (!open) return;
+      const trace = open;
+      holds += 1;
+      promise.then(
+        () => release(trace),
+        () => release(trace),
+      );
+    }
+
+    function release(trace) {
+      holds -= 1;
+      if (open === trace && holds === 0) afterFrame(() => closeIdle(trace));
     }
 
     function close(rendered, commitSeq) {
@@ -441,7 +464,7 @@ function installInspector() {
       );
     }
 
-    return { enter, exit, onCommit, request, response };
+    return { enter, exit, onCommit, request, response, hold };
   })();
   lab.flow = flow;
 
