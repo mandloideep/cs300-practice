@@ -1,0 +1,5 @@
+{
+  "routes": [
+    { "method": "GET", "path": "/products", "status": 200, "delay": 400, "body": "products.json" }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "products": [
+    {
+      "id": 16,
+      "title": "Apple",
+      "category": "groceries",
+      "price": 1.99,
+      "rating": 4.19,
+      "stock": 9
+    },
+    {
+      "id": 17,
+      "title": "Beef Steak",
+      "category": "groceries",
+      "price": 12.99,
+      "rating": 4.47,
+      "stock": 96
+    },
+    {
+      "id": 18,
+      "title": "Cat Food",
+      "category": "groceries",
+      "price": 8.99,
+      "rating": 3.13,
+      "stock": 13
+    },
+    {
+      "id": 19,
+      "title": "Chicken Meat",
+      "category": "groceries",
+      "price": 9.99,
+      "rating": 3.19,
+      "stock": 69
+    }
+  ],
+  "total": 27,
+  "skip": 0,
+  "limit": 4
+}
