@@ -12,6 +12,15 @@ Watch the order of the lines in the console, because it shows which file runs fi
 Press **Run**.
 The page is the same as at the end of Step 1, and the console shows `students.js ran` and `main.js ran`.
 
+When this step is done, `main.js` imports `students.js` on its first line and `format.js` on its second, and it logs on its last line.
+
+```predict
+In what order will the three file logs appear in the console?
+- `main.js ran`, then `students.js ran`, then `format.js ran`
+- `format.js ran`, then `students.js ran`, then `main.js ran`
+= `students.js ran`, then `format.js ran`, then `main.js ran`
+```
+
 `src/format.js` holds the placeholder `export {};`; replace all of it with the two functions.
 
 ```js file="src/format.js" action="create"
@@ -47,12 +56,12 @@ import { formatRow } from "./format.js";
 The braces hold the names you want, and each must match an `export` in that file exactly, capital letters included.
 The path starts with `./`, which means "next to this file", and ends with `.js`, because the browser loads exactly the file you name.
 
-Predict before you run: `main.js` imports `students.js` on its first line and `format.js` on its second, and it logs on its last line.
-Does the console show `main.js ran` first, `students.js ran` then `format.js ran` then `main.js ran`, or `format.js ran` first?
 Run the code.
 The console shows `students.js ran`, `format.js ran`, `main.js ran`, in that order, and the page is unchanged.
 Before the browser runs a single line of `main.js`, it reads its `import` lines, loads those files, and runs each one to the end, in the order the imports are written.
 Only then does the body of `main.js` run, so by the time the loop calls `formatRow`, the function exists.
+
+## Read more
 
 The `import` lines therefore always sit at the top of a file, and it does not matter which line of the file a value is first used on.
 An `export` can go in front of `const`, `let`, `function`, or `class`; put it on the things other files need and nowhere else, so that a file's exports are a short list of what it offers.
@@ -70,6 +79,22 @@ If it says `Identifier 'formatRow' has already been declared`, the function is s
 **Check:** Run the code.
 The page shows the same five rows and summary, and the console shows `students.js ran`, `format.js ran`, and `main.js ran`, in that order, with no red lines.
 Press **Run checks** to confirm.
+
+```quiz
+`letterGrade` in `src/format.js` has no `export` in front of it, so can `main.js` call it?
+- Yes, because `formatRow` calls it
+= No, it is private to `format.js`
+- Yes, if `main.js` imports it by name
+> Only exported names leave a file; importing a name that is not exported stops the page with a `SyntaxError` before any file runs.
+```
+
+```quiz
+Which line imports the named export `formatRow`?
+- `import formatRow from "./format.js";`
+= `import { formatRow } from "./format.js";`
+- `import "./format.js";`
+> Braces ask for a named export by its exact name; without braces the line asks for the default export, and a bare `import "./format.js"` only runs the file.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

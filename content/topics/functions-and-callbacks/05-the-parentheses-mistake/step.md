@@ -12,7 +12,12 @@ Then it shows the fix for the case that seems to need parentheses: a callback th
 The starter has a study reminder and `runTwice`, a function that calls the task it is given two times.
 The call on the second-to-last line hands it `remindToStretch()`, with parentheses.
 
-Predict before you run: does the console show `Time to stretch.` twice, once followed by an error, or not at all?
+```predict
+When you run the starter, what does the console show?
+- `Time to stretch.` twice, then `After runTwice.`
+= `Time to stretch.` once, then a `TypeError`
+- Nothing but `Before runTwice.` and `After runTwice.`
+```
 
 Press **Run**.
 The console shows `Before runTwice.`, then `Time to stretch.` once, then a red line at the top with an **uncaught** badge: `TypeError: task is not a function`.
@@ -34,7 +39,12 @@ Now `runTwice` receives the function itself and calls it when it decides to, whi
 
 The same difference shows when you store the two forms in variables.
 
-Predict before you run: after the next edit, how many more times does `Time to stretch.` print, zero, one, or two?
+```predict
+After the next edit, how many more times does `Time to stretch.` print?
+- Zero
+- Two
+= One
+```
 
 ```js file="src/main.js" action="append"
 
@@ -66,6 +76,8 @@ Writing it does not run `remind`; it makes a new function that will, when someon
 `runTwice` calls that wrapper twice, and each time the wrapper calls `remind` with the message, so the console shows `Reminder: Drink some water.` two times.
 
 Here is the rule in one line: when you hand over a function, write its name without parentheses, or wrap the call in `() => ...` when it needs arguments.
+## Read more
+
 You will meet this mistake again in two places that look different and are the same.
 In the DOM topic, `button.addEventListener("click", save())` runs `save` once while the page loads and never on a click.
 In React, `onClick={removeItem(id)}` runs during every render instead of on the click, and `onClick={() => removeItem(id)}` is the fix, the same wrapper you just wrote.
@@ -82,6 +94,21 @@ If the water reminder prints once, the wrapper is missing: the argument to `runT
 **Check:** Run the code.
 The console shows `Time to stretch.` twice between `Before runTwice.` and `After runTwice.`, once more after it, the two `holds:` lines, and `Reminder: Drink some water.` twice, with no red line.
 Press **Run checks** to confirm.
+
+```quiz
+In `runTwice(remind("Hi"))`, when does `remind` run?
+- Twice, inside `runTwice`
+= Once, before `runTwice` starts
+- Never
+> Arguments are worked out before the call they belong to, so `remind("Hi")` runs first and `runTwice` gets its return value.
+```
+
+```quiz
+A React button should remove one item when it is clicked; which handler is right?
+= `onClick={() => removeItem(id)}`
+- `onClick={removeItem(id)}`
+> The wrapper is a function React can call on the click; `removeItem(id)` with parentheses would run during the render instead.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

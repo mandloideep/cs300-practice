@@ -12,7 +12,14 @@ Watch the last edit closely, because spread copies only one level, and the level
 Press **Run**.
 The console shows Alice's object with three keys and the array `[85,92,73]`.
 
-Predict before you run: after the first edit, does the console show `student after spread:` with a score of `85` or a score of `90`?
+```demo name="spread-and-destructure"
+```
+
+```predict
+After the first edit, what does the console show for the original student?
+- `student after spread: {"name":"Alice","score":90,"major":"Computer Science"}`
+= `student after spread: {"name":"Alice","score":85,"major":"Computer Science"}`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -54,7 +61,13 @@ With square brackets it reads by position instead: `firstScore` is element `0` a
 You will meet both on nearly every page of React: `const [count, setCount] = useState(0)` destructures an array, and a component written as `function Card({ title })` destructures an object.
 
 Now the limit.
-Predict before you run: after the copy is changed, does `advisee` show `{"name":"Bob","advisor":{"name":"Lee","office":"Room 204"}}`, `{"name":"Robert","advisor":{"name":"Lee","office":"Room 310"}}`, or `{"name":"Bob","advisor":{"name":"Lee","office":"Room 310"}}`?
+
+```predict
+After the copy's name and its advisor's office are changed, what does the console show for `advisee`?
+- `advisee: {"name":"Bob","advisor":{"name":"Lee","office":"Room 204"}}`
+= `advisee: {"name":"Bob","advisor":{"name":"Lee","office":"Room 310"}}`
+- `advisee: {"name":"Robert","advisor":{"name":"Lee","office":"Room 310"}}`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -82,6 +95,8 @@ console.log("moved:", moved.advisor.office, "advisee:", advisee.advisor.office);
 The outer spread copies Bob, and the inner braces make a new advisor object with Lee's properties and a new office, so `moved` shows `Room 118` and `advisee` keeps `Room 310`.
 Each level you want to change needs its own spread; levels you leave alone can stay shared, and that is fine as long as nobody changes them in place.
 
+## Read more
+
 Two things to try.
 Move the spread to the end, `{ score: student.score + 5, ...student }`, run, and see `curved` with `85`: the copied score came later, so it won; put the spread first again.
 Then rename while destructuring with `const { name: studentName } = student;`, which makes a variable `studentName` from the property `name`, handy when a `name` already exists.
@@ -96,6 +111,20 @@ If `moved` and `advisee` show the same office, the inner object is missing its o
 **Check:** Run the code.
 The console shows `curved` with `90` beside `student after spread` with `85` and `Same object? false`, the four and the three scores, `Alice studies Computer Science`, `first two scores: 85 92`, Bob with `Room 310` and `Same advisor? true`, and `moved: Room 118 advisee: Room 310`.
 Press **Run checks** to confirm.
+
+```quiz
+With `student.score` at `85`, what score does `{ score: 90, ...student }` have?
+- `90`
+= `85`
+> When a key appears twice, the later one wins, and here the spread comes after `score: 90`.
+```
+
+```quiz
+After `const copy = { ...original }`, what is `copy.advisor === original.advisor`?
+= `true`
+- `false`
+> Spread copies one level, so the value of `advisor`, an arrow to one object, is copied and both outer objects share it.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

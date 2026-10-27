@@ -11,9 +11,19 @@ Watch which function finishes first, and which names are missing from the timer'
 
 **We used this in:** [Errors and debugging](#/topic/errors-and-debugging) read the stack trace of an error, and [Fetch basics](#/topic/fetch-basics) saw a zero delay timer run after the rest of the script; this step shows why both look the way they do.
 
+```demo name="call-stack"
+```
+
 Three functions call each other: `placeOrder` calls `prepare`, and `prepare` calls `pack`.
 Each one logs when it starts and when it ends.
-Predict before you run: after `start pack`, does the console show `end placeOrder`, `end prepare`, or `end pack`?
+
+```predict
+Which line does the console show right after `start pack`?
+- `end placeOrder`
+- `end prepare`
+= `end pack`
+```
+
 Press **Run**.
 The console shows `start placeOrder`, `start prepare`, `start pack`, `end pack`, `end prepare`, `end placeOrder`.
 
@@ -28,7 +38,13 @@ Print the stack from inside `pack`.
   console.log(new Error("Stack inside pack").stack);
 ```
 
-Predict before you run: how many `at` lines does the picture have, one, three, or four?
+```predict
+How many `at` lines does the stack printed inside `pack` have?
+- One
+= Four
+- Three
+```
+
 Run it.
 Four, read from the top down:
 
@@ -62,7 +78,14 @@ Add these lines inside `placeOrder`, after the call to `prepare`.
 ```
 
 The function given to `setTimeout` has a name, `ship`, so that it shows up by name in the stack.
-Predict before you run: where does `start ship` appear, right after `end prepare`, right after `end placeOrder`, or after `script done`?
+
+```predict
+Where does `start ship` appear in the console?
+- Right after `end prepare`
+- Right after `end placeOrder`
+= After `script done`
+```
+
 Run it.
 `start ship` comes after `script done`, and the stack printed inside it has a single line:
 
@@ -78,6 +101,8 @@ That is the whole rule this topic builds on.
 JavaScript runs one frame at a time on one stack, and nothing can interrupt the frame on top.
 A callback that is waiting for a timer, a click, or a promise can only run once the stack is **empty**, when the current script or callback has finished completely.
 The next step looks at where those callbacks wait in the meantime.
+
+## Read more
 
 The empty stack has a consequence for errors that surprises everyone once, so try it on purpose.
 Add `throw new Error("The truck is late");` as the last line inside `ship`, and wrap the whole `setTimeout(...)` call, all four lines, in `try {` and `} catch (error) { console.log("caught:", error.message); }`.
@@ -96,6 +121,22 @@ If nothing prints at all, look for a missing `)` after the `0` at the end of the
 **Check:** Run the code.
 The console shows the six start and end lines nested as above, the four frame stack from inside `pack`, `script done`, and last `start ship` with a one frame stack.
 Press **Run checks** to confirm.
+
+```quiz
+When does a callback passed to `setTimeout(callback, 0)` run?
+- Immediately, before the next line
+= Once the stack is empty, after the current script has finished
+- Exactly one millisecond later, even in the middle of a function
+> Nothing interrupts the frame on top of the stack, so a timer's callback waits until the script or callback that is running has finished completely.
+```
+
+```quiz
+A `try` and `catch` wraps a `setTimeout` call whose callback throws; what does the console show?
+- The `catch` logs the error
+= A red uncaught error
+- Nothing, because errors inside timers are ignored
+> The `try` was on the stack only while `setTimeout` was being called, and it had finished long before the callback ran and threw.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

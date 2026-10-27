@@ -7,6 +7,9 @@ This step runs the whole topic for real, on your own computer: you install a pro
 The project is the study timer from the earlier steps, and its one script imports the `ms` package by its bare name, which the lab could not do.
 Watch each command create the files the earlier steps read: `node_modules`, `package-lock.json`, and `dist`.
 
+```demo name="terminal"
+```
+
 This step happens in a terminal, not in the lab.
 Open Visual Studio Code, open a terminal with `` Ctrl+` `` or **Terminal > New Terminal**, and keep this page beside it.
 
@@ -46,7 +49,12 @@ added 16 packages, and audited 17 packages in 902ms
 found 0 vulnerabilities
 ```
 
-Predict before you look at the folder: `package.json` names two packages, so how many folders does `node_modules` hold now, two, about fifteen, or forty-one?
+```predict
+`package.json` names two packages; how many folders does `node_modules` hold after `npm install`?
+- Two
+= About fifteen
+- Forty-one, one for every package in the lockfile
+```
 About fifteen: the packages Vite needs and the one platform package of Rolldown and of Lightning CSS that matches your computer, which is why the count in the summary depends on your system.
 `package-lock.json` now exists too; open it and search for `"node_modules/rolldown"`, and you will find the same kind of entry you read in the lab, this time with the download address and the checksum.
 
@@ -104,7 +112,9 @@ npm run preview
 
 Open the address it prints, usually `http://localhost:4173/`, and the page looks exactly as it did under `npm run dev`, now made of the finished files.
 
-## Where this goes next
+## Read more
+
+### Where this goes next
 
 You have now run every tool this topic described: Node runs npm and Vite, npm turns `package.json` into `node_modules` and a lockfile, and Vite solves bare imports while you work and bundles everything when you build.
 A React project is the same project with two more packages, `react` and `react-dom`, a plugin for JSX, and `.jsx` files, and [Vite project anatomy](#/topic/vite-project-anatomy) starts there, by creating one with `npm create vite`.
@@ -118,3 +128,11 @@ If the page is blank, open DevTools and read the red line in the **Console** tab
 
 **Check:** `npm run dev` prints a **Local** address and the page there shows three sessions and `Planned today: 3 hours`, the Network tab shows a request for `ms.js` under `/node_modules/.vite/deps/`, and `npm run build` writes a `dist` folder with one `.js` file in `assets`.
 Then press **I did this on my computer**.
+
+```quiz
+After `npm run build`, which folder do you put on a web host?
+- The project folder, with `node_modules`
+= `dist`
+- `src`, because it holds your code
+> `dist` holds the finished, bundled site; the host needs nothing else, not Node, not npm, and not `node_modules`.
+```

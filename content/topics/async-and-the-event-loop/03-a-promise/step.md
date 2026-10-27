@@ -11,6 +11,9 @@ Watch which lines print immediately, which wait, and what a promise looks like w
 
 **We used this in:** [Fetch basics](#/topic/fetch-basics) waited on promises that `fetch` and a ready-made `delay` function made; here you make the promise yourself, so you can see what is inside one.
 
+```demo name="promise-states"
+```
+
 The starter has a catalog of three courses.
 Press **Run** and the console shows `Catalog has 3 courses`.
 
@@ -38,7 +41,13 @@ const request = loadCourses();
 console.log("Right away:", request);
 ```
 
-Predict before you run: what does the second line show, `Right away: ["CS200","CS300","CS315"]`, `Right away: [Promise]`, or `Right away: undefined`?
+```predict
+What does the `Right away:` line show?
+- `Right away: ["CS200","CS300","CS315"]`
+= `Right away: [Promise]`
+- `Right away: undefined`
+```
+
 Run it.
 The console shows `Request sent` and then `Right away: [Promise]`.
 `loadCourses` returned at once with the promise itself, not with the courses, which do not exist yet; the lab prints any promise as `[Promise]`, while the browser's own console shows `Promise {<pending>}`.
@@ -58,7 +67,12 @@ request.then((courses) => {
 console.log("Waiting for the course list...");
 ```
 
-Predict before you run: does `Loaded:` print before or after `Waiting for the course list...`?
+```predict
+Which prints first?
+- `Loaded: ["CS200","CS300","CS315"]`
+= `Waiting for the course list...`
+```
+
 Run it.
 After: `Waiting for the course list...` prints at once, and about 150 ms later `Loaded: ["CS200","CS300","CS315"]`.
 `then` only registers the callback and returns; the callback runs when the promise is fulfilled, with the value passed to `resolve`.
@@ -74,11 +88,19 @@ setTimeout(() => {
 }, 300);
 ```
 
-Predict before you run: at 300 ms the promise was fulfilled long ago, so does the new `then` callback run with the courses, run with `undefined`, or never run?
+```predict
+At 300 ms the promise was fulfilled long ago; what does the new `then` callback do?
+- It never runs
+- It runs with `undefined`
+= It runs with the courses
+```
+
 Run it.
 `Still there later: 3 courses` prints.
 A promise keeps its value once it is settled, and a `then` attached afterwards still runs, soon, with that same value.
 That is what makes a promise better than a plain callback: anyone can ask it for the value, before or after it arrives, and every one of them gets it.
+
+## Read more
 
 Compare it with the timers of the last step.
 A timer runs one callback once, and if you were not there with your callback when it was set, you missed it.
@@ -97,6 +119,22 @@ If `Loaded:` prints `undefined`, `resolve` was called with nothing; it should re
 The console shows `Catalog has 3 courses`, `Request sent`, `Right away: [Promise]`, `Waiting for the course list...`, then `Loaded: ["CS200","CS300","CS315"]`, and last `Still there later: 3 courses`.
 The checks wait for the last line before they read the console.
 Press **Run checks** to confirm.
+
+```quiz
+When does the executor passed to `new Promise` run?
+- When `then` is called on the promise
+= Immediately, inside `new Promise`, before it returns
+- When `resolve` is called
+> The executor runs at once, which is why `Request sent` prints before `Right away: [Promise]`; only the `then` callbacks wait.
+```
+
+```quiz
+An executor calls `resolve("first")` and later `resolve("second")`; what does `then` receive?
+= `"first"`
+- `"second"`
+- Both, one call each
+> The first call to `resolve` settles the promise, and a settled promise never changes, so the later call is ignored.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

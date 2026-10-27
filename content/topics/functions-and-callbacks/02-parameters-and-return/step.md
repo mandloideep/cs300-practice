@@ -11,6 +11,9 @@ Watch two things: how the values in a call land in the function's names, and the
 
 Press **Run** and the console shows `Quiz: 18 out of 20`.
 
+```demo name="function-call"
+```
+
 Declare the function with two **parameters**, the names inside its parentheses.
 
 ```js file="src/main.js" action="append"
@@ -23,7 +26,12 @@ function toPercent(points, outOf) {
 `points` and `outOf` are like variables that exist only inside this function, and they have no values yet.
 `return` ends the function and hands the value after it back to whoever called it.
 
-Predict before you run: after the next edit, does the console show `Quiz percent: 90`, `Quiz percent: undefined`, or `Quiz percent: 18`?
+```predict
+After the next edit, what does the console show for the quiz?
+- `Quiz percent: 18`
+= `Quiz percent: 90`
+- `Quiz percent: undefined`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -41,7 +49,12 @@ The second call starts over with fresh values, `42` and `50`, and is used direct
 
 Now a function that looks almost the same but prints its answer instead of returning it.
 
-Predict before you run: does the last line show `logPercent returned: 90`, `logPercent returned: undefined`, or an error?
+```predict
+What does the last line of the console show after the next edit?
+- `logPercent returned: 90`
+- An error
+= `logPercent returned: undefined`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -57,6 +70,8 @@ Run it, and the console shows `90` on a line of its own and then `logPercent ret
 `logPercent` printed the number while it ran, but it has no `return`, and a function without `return` hands back `undefined`.
 Printing is for you to read; returning is for the rest of the program to use.
 `toPercent` is the useful one, because its result can be stored, compared, or passed on, and the console line that prints it is a separate choice.
+
+## Read more
 
 The values a function needs should come in through its parameters, and the value it produces should go out through `return`.
 That keeps the function honest about what it depends on, and it means you can call it with any quiz, not just the one in the variables at the top.
@@ -74,6 +89,22 @@ If the number is wrong, check the order of the arguments: points first, then the
 **Check:** Run the code.
 The console shows `Quiz percent: 90`, `Lab percent: 84`, a bare `90` from `logPercent`, and `logPercent returned: undefined`.
 Press **Run checks** to confirm.
+
+```quiz
+After `function gap(a, b) { return a - b; }`, what is `gap(2, 10)`?
+- `8`
+= `-8`
+- `NaN`
+> Arguments are matched to parameters by position, so `a` is `2` and `b` is `10`.
+```
+
+```quiz
+What does a function with no `return` hand back to its caller?
+- `0`
+= `undefined`
+- `null`
+> Printing inside the function is not returning; without `return`, the call is worth `undefined`.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

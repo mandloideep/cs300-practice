@@ -13,9 +13,16 @@ Press **Run** and the console shows `CS300 section 2 meets in Room 201.`
 Inside `describeSection`, three names are used: `section` is its parameter, `room` is declared in its body, and `course` is declared in neither place.
 JavaScript did not find `course` inside the function, so it looked in the scope around it, the file, and found it there.
 
+```demo name="scope-chain"
+```
+
 Add a function inside `describeSection`, just before its closing brace, and call it there.
 
-Predict before you run: the new function declares only `seat`, so does its line show `Seat 14: CS300, section 2, Room 201.`, or `ReferenceError: section is not defined`?
+```predict
+The new function declares only `seat`; what does its line show?
+- `ReferenceError: section is not defined`
+= `Seat 14: CS300, section 2, Room 201.`
+```
 
 ```js file="src/main.js" action="insert-before" anchor="}"
 
@@ -35,7 +42,11 @@ This path from the inside out is the **scope chain**, and it runs in one directi
 
 Now put a second `room` in the outermost box, at the top of the file, and print it from there at the end.
 
-Predict before you run: there are now two variables named `room`, so does the seat line say `Room 201` or `Main hall`?
+```predict
+With a second `room` at the top of the file, which room does the seat line name after the next two edits?
+- `Main hall`
+= `Room 201`
+```
 
 ```js file="src/main.js" action="insert-after" anchor='const course = "CS300";'
 const room = "Main hall";
@@ -49,6 +60,8 @@ Run the code.
 The section and seat lines still say `Room 201`, and the last line says `At the top level, room is Main hall`.
 The lookup stops at the **first** `room` it meets on the way out, which is the one in `describeSection`, so the one in the file is never reached from inside.
 From the file itself, the lookup starts in the outermost box, where the only `room` is `Main hall`; the inner `room` is inside a box it cannot look into.
+
+## Read more
 
 What decides the chain is where the code is **written**, not where it is called from.
 `describeSeat` sees `section` and `room` because its text sits inside `describeSection`, and that would stay true if some other function ended up calling it.
@@ -66,6 +79,21 @@ If the section line says `Main hall`, the `const room = "Room 201";` line inside
 **Check:** Run the code.
 The console shows `CS300 section 2 meets in Room 201.`, `Seat 14: CS300, section 2, Room 201.`, and `At the top level, room is Main hall`.
 Press **Run checks** to confirm.
+
+```quiz
+Can `describeSection` read the `seat` parameter of `describeSeat`, the function inside it?
+- Yes, because `describeSeat` is inside it
+= No, because the lookup only walks outward
+> An inner function sees the scopes around it, and nothing outside can see into the inner one.
+```
+
+```quiz
+Two variables named `room` are on the chain of the seat line; which one does it use?
+- The one in the file, the outermost
+= The nearest one on the way out
+- Whichever was declared last
+> The lookup stops at the first `room` it meets, so the one in `describeSection` hides the one in the file.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

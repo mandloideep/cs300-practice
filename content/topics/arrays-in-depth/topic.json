@@ -4,6 +4,18 @@
   "area": "javascript",
   "summary": "Go past map and filter: find one item, ask whether some or every item passes, sort without the classic surprise, cut with slice and splice, and total with reduce. You will finish by sorting every method into the ones that change an array and the ones that return a new one, which is the line React state depends on.",
   "prerequisites": ["objects-and-references"],
+  "links": [
+    {
+      "kind": "reading",
+      "title": "javascript.info: Array methods",
+      "url": "https://javascript.info/array-methods"
+    },
+    {
+      "kind": "reading",
+      "title": "MDN: Array",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array"
+    }
+  ],
   "minutes": 60,
   "updated": "2026-10-27",
   "changeNote": "First version."

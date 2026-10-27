@@ -3,18 +3,31 @@ title: What esbuild does
 mode: edit
 entry: index.html
 required: [badge-compiled, list-compiled, element-is-an-object]
+links:
+  - kind: reference
+    title: "esbuild: the documentation"
+    url: https://esbuild.github.io/
 ---
 
 This step prints a component the way the browser receives it, after a transformer has rewritten the JSX you typed.
 Transforming is one of the two jobs a tool like esbuild does, and bundling, from two steps ago, is the other.
 Watch what each tag you write turns into.
 
+```demo name="jsx-to-calls"
+```
+
 The workspace is a plain page whose script is `src/main.jsx`, a file with one small component, `Badge`, and one line that prints the function as text with `String(Badge)`.
 In the lab, as in Vite, a `.jsx` file is transformed before it runs, so what prints is the function after the transform.
 
-Predict before you run: does the console show the function with `<p className="badge">` as you wrote it, the function with a call such as `_jsxDEV('p', ...)` where the tag was, or a red `SyntaxError` because browsers cannot read JSX?
+```predict
+What does `console.log(String(Badge))` print in the lab?
+- The function with `<p className="badge">` as you wrote it
+- A red `SyntaxError`, because browsers cannot read JSX
+= The function with a call such as `_jsxDEV('p', ...)` where the tag was
+```
+
 Press **Run**.
-The console shows the second: the tag became a call, with the tag name as its first argument and an object of props as its second, `{ className: "badge", children: ["Now studying ", course] }`.
+The console shows the function with a call in place of the tag: the tag became a call, with the tag name as its first argument and an object of props as its second, `{ className: "badge", children: ["Now studying ", course] }`.
 The text and the `{course}` inside the tag became the `children` list, in order.
 The extra arguments after the props, `void 0, true, {fileName: ..., lineNumber: 2}`, are there only in development: they tell React which file and line made the element, which is how its warnings, and the lab's inspector, can point you at your own code.
 
@@ -65,7 +78,9 @@ Run it: `type: p` and `props: {"className":"badge","children":["Now studying ","
 The call made an ordinary object that describes a paragraph; nothing is on the page yet.
 React takes objects like this one from every component and decides what to put on the page, which is where [The React mental model](#/topic/react-mental-model) begins.
 
-## esbuild, Oxc, Rolldown, and Sucrase
+## Read more
+
+### esbuild, Oxc, Rolldown, and Sucrase
 
 **esbuild** is a bundler and transformer written in Go and released in 2020, and it was many times faster than the JavaScript tools before it.
 It does both jobs from one command, which is a good picture of each:
@@ -91,6 +106,22 @@ If `props` prints with `undefined` in it, the call passed `{ name: "CS300" }` or
 **Check:** Run the code.
 The console shows `Badge` and `CourseList` as transformed functions with calls in place of tags, then `type: p` and the props object.
 The three checks pass.
+
+```quiz
+What does `<li key={course}>{course}</li>` become after the transform?
+- A string of HTML that React inserts into the page
+= A call with the tag name, the props, and the key passed on its own
+- The same JSX, which the browser reads directly
+> The transformer turns every tag into a function call; `key` leaves the props so that React can match list items without handing it to the component.
+```
+
+```quiz
+Which two jobs do esbuild, and Oxc with Rolldown in Vite 8, do?
+= Transform files, such as JSX into calls, and bundle them, following imports into a few files
+- Install packages and write the lockfile
+- Serve the page and reload the browser
+> Installing is npm's job and serving is the development server's; the transformer and the bundler turn your source into code a browser runs.
+```
 
 <details>
 <summary>src/main.jsx after this step</summary>

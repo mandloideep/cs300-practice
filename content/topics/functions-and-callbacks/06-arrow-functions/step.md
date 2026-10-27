@@ -3,6 +3,10 @@ title: Arrow functions
 mode: edit
 entry: index.html
 required: [same-total-three-ways, braces-need-return, map-and-object]
+links:
+  - kind: reference
+    title: "MDN: Arrow function expressions"
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions
 ---
 
 An **arrow function** is a shorter way to write a function expression, and it is the form you will see most in modern JavaScript and in every React file.
@@ -11,6 +15,9 @@ Watch what happens to `return` when the braces go.
 
 Press **Run** and the console shows `Function expression: 12`.
 `lineTotal` is a function expression, as in Step 3: it multiplies an item's price by its quantity, and the notebook line is `4 * 3`.
+
+```demo name="arrow-equivalence"
+```
 
 Rewrite it as an arrow function with braces.
 
@@ -42,7 +49,12 @@ The console shows `Arrow without braces: 12`, the same function written a third 
 
 The two shapes have one trap between them: braces with no `return`.
 
-Predict before you run: after the next edit, does the line `Braces without return:` show `12`, `undefined`, or an error?
+```predict
+After the next edit, what does the line `Braces without return:` show?
+- `12`
+= `undefined`
+- An error
+```
 
 ```js file="src/main.js" action="append"
 
@@ -78,6 +90,8 @@ The object is wrapped in parentheses, and that is not decoration.
 Right after `=>`, a `{` always opens a body in braces, so JavaScript would read the object's braces as a function body; the parentheses tell it that the braces are a value.
 The console shows `Summary: {"title":"USB drive","total":24}`.
 
+## Read more
+
 For the code in this course the two forms do the same job; the one difference that will matter is the keyword `this`, which a later topic on objects explains.
 Two habits this course follows: keep the parentheses around a single parameter, as in `(item) =>`, even though JavaScript allows `item =>`, and write an empty pair, `() =>`, when there are no parameters, as in the wrapper from Step 5.
 Whether a named function is a declaration or an arrow in a `const` is mostly a matter of taste, but a callback is almost always an arrow.
@@ -96,6 +110,22 @@ If `Line totals` shows `[NaN,NaN,NaN]`, the function multiplies something other 
 **Check:** Run the code.
 The console shows `12` three times, once per form, then `Braces without return: undefined`, `Line totals: [12,6,24]`, and the summary of the USB drive.
 Press **Run checks** to confirm.
+
+```quiz
+What does `const twice = (x) => { x * 2; };` return for `twice(4)`?
+- `8`
+- An error
+= `undefined`
+> With braces the body is a list of statements, and without `return` the function hands back `undefined`.
+```
+
+```quiz
+Why is the object in `(item) => ({ title: item.title })` wrapped in parentheses?
+- It is only a style choice
+= So that the braces are read as an object, not as a function body
+- So that the arrow runs at once
+> Right after `=>`, a `{` always opens a body; the parentheses make it a value.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

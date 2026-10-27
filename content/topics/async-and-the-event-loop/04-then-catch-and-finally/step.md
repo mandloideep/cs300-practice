@@ -11,6 +11,9 @@ Watch where a rejection goes when nothing catches it, and how one `catch` at the
 
 **We used this in:** [Errors and debugging](#/topic/errors-and-debugging) caught an error with `try` and `catch`; a promise chain has its own `catch` for errors that happen later.
 
+```demo name="promise-states"
+```
+
 `prepare` and `ship` each return a promise that settles after 100 ms.
 `ship` calls `reject` with an error when the order has no address, which is how an executor reports a failure.
 `track` prepares one order and logs it.
@@ -28,7 +31,13 @@ Return the shipping promise from the first `then`, and add a second `then` for t
     });
 ```
 
-Predict before you run: when does the second `then` run, immediately after the first, about 100 ms after the first, or never?
+```predict
+When does the second `then` run?
+- Immediately after the first
+= About 100 ms after the first
+- Never
+```
+
 Run it.
 `Order 101 prepared` prints after about 100 ms and `Order 101 shipped` about 100 ms after that.
 Every `then` returns a new promise, so you can call `then` on the result again; and when a callback returns a promise, the next `then` waits for that promise and receives its value.
@@ -40,7 +49,13 @@ Now track the second order, which has no address.
 track(second);
 ```
 
-Predict before you run: what does the console show for order 102, `Order 102 shipped`, nothing at all, or a red line?
+```predict
+After `Order 102 prepared`, what does the console show for order 102?
+- `Order 102 shipped`
+- Nothing at all
+= A red line
+```
+
 Run it.
 `Order 102 prepared` prints, and then a red line with an **uncaught** badge: `Error: Order 102 has no address`.
 `ship` rejected, the second `then` was skipped because it handles only fulfilled values, and nothing in the chain handled the rejection, so the browser reports it as an **unhandled rejection**, the promise version of an uncaught error.
@@ -70,11 +85,19 @@ Last, a `finally` for work that should happen either way, such as updating the o
     });
 ```
 
-Predict before you run: which orders print a `done` line, only 101, only 102, or both?
+```predict
+Which orders print a `done` line?
+- Only 101
+= Both
+- Only 102
+```
+
 Run it.
 Both: the console shows `Order 101 prepared`, `Order 102 prepared`, `Order 101 shipped`, `Order 101 done`, the warning for 102, and `Order 102 done`.
 `finally` runs whether the chain was fulfilled or rejected, and its callback receives no value, because it is not meant to care which.
 The two orders ran side by side, which is why their lines interleave: both were prepared at about 100 ms, and both shipping timers came due at about 200 ms.
+
+## Read more
 
 A `then` callback that throws is turned into a rejection too, so a bug inside a stage reaches the same `catch` as a failed request.
 That is also why every chain needs a `catch` somewhere: a rejection that nothing handles is reported in red, and the work after it silently never happens.
@@ -91,6 +114,22 @@ If the console shows `SyntaxError` or the code does not compile, check that only
 The console shows `Order 101 prepared`, `Order 102 prepared`, `Order 101 shipped`, `Order 101 done`, a warning `Problem: Order 102 has no address`, and `Order 102 done`, with no red line.
 The checks wait for the last line before they read the console.
 Press **Run checks** to confirm.
+
+```quiz
+The first stage of a chain rejects; what happens to the `then` callbacks below it?
+- They all run with `undefined`
+= They are skipped until the chain reaches a `catch`
+- The chain stops silently, with nothing in the console
+> A rejection passes over every `then` until a `catch` takes it, the way a `throw` skips the rest of a function.
+```
+
+```quiz
+What does a `finally` callback receive?
+- The fulfilled value
+- The error
+= Nothing
+> `finally` runs whether the chain was fulfilled or rejected and is not told which, so it suits clean-up such as updating the order screen.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

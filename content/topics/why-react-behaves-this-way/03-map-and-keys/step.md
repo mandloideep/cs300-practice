@@ -14,13 +14,14 @@ This step removes the first task from a list and watches a "done" mark jump to a
 The list is built with `map`, which makes a new array of elements every render, and the bug is about how React matches the new array to the old one.
 Watch which row is crossed out after you remove one.
 
+```demo name="reconcile-keys"
+```
+
 Press **Run**: three tasks, each a `TaskRow` with its own **Mark done** button and its own `done` state, which you can see in the inspector's tree.
 The checks mark the first task done and then press **Remove the first task**, so by the time you look, two tasks are left, and one of them is already crossed out.
 
 Read that result: `Read the props chapter` was the task marked done, and it is gone, yet `Finish the cart lab` shows as done.
 Press **Reset to starter**, **Run**, and try it by hand to be sure: mark the first task, remove the first task.
-
-Predict before you read on: is the bug in `slice(1)`, in `useState(false)` inside `TaskRow`, or in `key={index}`?
 
 `tasks.slice(1)` is right: it returns a new array without the first task, and the inspector shows `tasks` with two items.
 The problem is the key.
@@ -31,6 +32,13 @@ State belongs to a component at a position in the tree, and the key is how React
 
 Key each row by something that belongs to the task instead of to its place.
 
+```predict
+With `key={task.id}`, you mark the first task done and remove it; which remaining tasks show as done?
+- `Finish the cart lab`
+= None of them
+- Both of them
+```
+
 ```jsx file="src/App.jsx" action="replace" anchor="        {tasks.map((task, index) => (\n          <TaskRow key={index} task={task} />"
         {tasks.map((task) => (
           <TaskRow key={task.id} task={task} />
@@ -40,7 +48,9 @@ Run it, mark the first task, and remove it.
 The done task disappears, and the other two are not crossed out.
 Now the new keys are `102` and `103`, React sees that `101` is gone, and it removes exactly that `TaskRow`, state and all.
 
-## Why React works this way
+## Read more
+
+### Why React works this way
 
 `map` knows nothing about React; it returns a fresh array of elements every render, just as it returned a fresh array of numbers in [JavaScript basics](#/topic/javascript-basics/5).
 From one render to the next, React needs to know which element in the new array is the same thing as which element in the old one, so that it can keep state, focus, and typed text where they belong, and move or remove only what changed.
@@ -56,6 +66,14 @@ If `index is not defined` appears, the callback lost its `index` parameter but t
 
 **Check:** Run the code.
 Marking the first task done marks only that row, and removing it leaves two tasks that are both unmarked.
+
+```quiz
+Which key keeps each row's state with its task when the list is sorted or an item is removed?
+- `key={index}`
+- `key={Math.random()}`
+= `key={task.id}`
+> An id travels with the item, so React matches each element to the same component after any change; the index stays with the position, and a random key makes every row new on every render.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>

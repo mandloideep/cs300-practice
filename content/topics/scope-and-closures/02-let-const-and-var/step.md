@@ -3,6 +3,10 @@ title: let, const, and var
 mode: edit
 entry: index.html
 required: [var-leaves-the-block, var-is-hoisted, loop-counter-leaks]
+links:
+  - kind: reference
+    title: "MDN: var"
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/var
 ---
 
 JavaScript has three ways to declare a variable, and you have used two of them: `const` for a value that is not reassigned and `let` for one that is.
@@ -15,7 +19,12 @@ Reassigning the `const`, as you saw in JavaScript basics, is a `TypeError: Assig
 
 First difference: `var` ignores blocks.
 
-Predict before you run: after the next edit, does the last line show `var after the block: Quiz 1`, `var after the block: undefined`, or a `ReferenceError` like the one in Step 1?
+```predict
+After the next edit, what does the last line of the console show?
+- `var after the block: undefined`
+= `var after the block: Quiz 1`
+- `ReferenceError: lastQuiz is not defined`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -31,7 +40,12 @@ A `var` belongs to the whole function it is in, or to the whole file when it is 
 
 Second difference: a `var` exists before its own line.
 
-Predict before you run: the first new line reads `courseCode` before the line that declares it, so does it show `Before its line: CS300`, `Before its line: undefined`, or an error?
+```predict
+The first new line reads `courseCode` above the line that declares it; what does it show?
+- `Before its line: CS300`
+- `ReferenceError: courseCode is not defined`
+= `Before its line: undefined`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -47,7 +61,12 @@ A `let` or `const` read before its line is an error instead, `ReferenceError: Ca
 
 Third difference: a `var` loop counter outlives the loop.
 
-Predict before you run: after the next edit, does the last line show `week after the loop: 3`, `week after the loop: 4`, or an error?
+```predict
+After the next edit, what does the last line of the console show?
+= `week after the loop: 4`
+- `week after the loop: 3`
+- `ReferenceError: week is not defined`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -60,6 +79,8 @@ console.log("week after the loop:", week);
 Run it: `Week 1`, `Week 2`, `Week 3`, and then `week after the loop: 4`.
 The loop stops when `week <= 3` is false, which first happens when `week` is `4`, and because a `var` is not tied to the loop, that `4` is still there afterwards.
 There is only one `week` for the whole loop, shared by every pass, and the last step of this topic shows what that does to callbacks created inside the loop.
+
+## Read more
 
 So which one do you write?
 Use `const` by default, because most values in a program never need reassigning, and a `const` tells the reader that they never will.
@@ -81,6 +102,22 @@ If `week after the loop` is missing, the counter is declared with `let`.
 **Check:** Run the code.
 The console shows `var after the block: Quiz 1`, `Before its line: undefined`, `After its line: CS300`, the three weeks, and `week after the loop: 4`.
 Press **Run checks** to confirm.
+
+```quiz
+Which keyword declares a variable that ignores the braces of an `if` or a loop?
+- `let`
+= `var`
+- `const`
+> A `var` belongs to its whole function, or to the file, so a block does not contain it.
+```
+
+```quiz
+What happens when a line reads a `let` variable above the line that declares it?
+- It reads `undefined`
+= It throws `ReferenceError: Cannot access before initialization`
+- It reads the value from the declaration
+> Only a `var` exists early with `undefined`; a `let` or `const` read too early is an error that points at the problem.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

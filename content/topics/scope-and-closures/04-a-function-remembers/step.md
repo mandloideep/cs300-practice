@@ -5,13 +5,16 @@ entry: index.html
 required: [remembers-the-line, two-checkers, reads-the-current-value]
 ---
 
+**We used this in:** [Functions and callbacks](#/topic/functions-and-callbacks) passed a test function to `countWhere` and to `filter`; here a function builds those test functions for you.
+
 Step 3 called the inner function while the outer one was still running.
 This step returns the inner function instead, so that it is called **after** the outer function has finished, and asks whether it can still see the outer function's variables.
 It can, and a function together with the variables it keeps from around it is called a **closure**.
 
-**We used this in:** [Functions and callbacks](#/topic/functions-and-callbacks) passed a test function to `countWhere` and to `filter`; here a function builds those test functions for you.
-
 Press **Run** and the console shows the five scores.
+
+```demo name="closure"
+```
 
 Write a function that makes and returns a test, instead of running one.
 
@@ -26,7 +29,12 @@ function makeAtLeast(line) {
 `makeAtLeast` does not compare anything.
 It creates an arrow function, `check`, whose body uses `line`, a parameter of `makeAtLeast`, and then returns that arrow function without calling it.
 
-Predict before you run: by the time `atLeast80(85)` runs, `makeAtLeast` has already returned, so does the console show `true`, `false`, or `ReferenceError: line is not defined`?
+```predict
+By the time `atLeast80(85)` runs, `makeAtLeast` has already returned; what does the line `Is 85 at least 80?` show?
+- `false`
+- `ReferenceError: line is not defined`
+= `true`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -55,7 +63,12 @@ Both go straight into `filter` as callbacks, because each is a function that tak
 
 A closure keeps the **variable**, not a copy of its value at the time the function was made.
 
-Predict before you run: `withCurve` is created while `curve` is `0`, and `curve` changes to `5` before the call, so does the console show `78`, `83`, or `NaN`?
+```predict
+`withCurve` is made while `curve` is `0`, and `curve` becomes `5` before the call; what does `78 with the curve:` show?
+- `78`
+= `83`
+- `NaN`
+```
 
 ```js file="src/main.js" action="append"
 
@@ -68,6 +81,8 @@ console.log("78 with the curve:", withCurve(78));
 Run it: `78 with the curve: 83`.
 The function did not save `0` when it was created; it reads `curve` each time it runs, and at that moment `curve` is `5`.
 Keep this in mind for the last step of the topic, where several callbacks share one changing variable.
+
+## Read more
 
 Closures are how a function carries information into a place where it will be called later without you passing it in.
 `filter` calls `atLeast80` with one score and nothing else, and the closure supplies the `80`.
@@ -86,6 +101,21 @@ If the curve line shows `78`, the assignment `curve = 5;` comes after the `conso
 **Check:** Run the code.
 The console shows `atLeast80 holds [Function check]`, `Is 85 at least 80? true`, the two filtered arrays, and `78 with the curve: 83`.
 Press **Run checks** to confirm.
+
+```quiz
+After `const atLeast70 = makeAtLeast(70);`, what is `atLeast70(65)`?
+- `true`
+= `false`
+- A `ReferenceError`, because `makeAtLeast` has returned
+> The returned function keeps the `line` of the call that made it, `70`, and `65 >= 70` is false.
+```
+
+```quiz
+When does a closure read the value of a variable it keeps?
+- Once, when the function is created
+= Each time the function runs
+> A closure keeps the variable itself, so it sees whatever the variable holds at the moment of the call.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

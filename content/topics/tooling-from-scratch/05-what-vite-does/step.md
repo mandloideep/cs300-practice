@@ -7,6 +7,9 @@ This step says what Vite, the tool every React project in this course runs on, d
 It has two commands, and each answers the problem from the last step in its own way.
 Read it with the last step's bare import in mind: every job below exists because the browser follows only addresses and reads only JavaScript.
 
+```demo name="dev-server-vs-build"
+```
+
 ## Two commands
 
 A Vite project's `package.json` has the three scripts you added two steps ago.
@@ -34,15 +37,24 @@ Each file is transformed only when the browser asks for it, so the server starts
 When you save a file, Vite notices, transforms just that file again, and tells the open page over a live connection to swap in the new version.
 This is **hot module replacement**, the `HMR` on the Vite welcome page: with the React plugin, the component on the screen changes and keeps its state, with no reload.
 
-Predict before you read on: you change one line of `App.jsx` and save while `npm run dev` is running; does Vite rebuild the whole project, send the page only the new `App.jsx`, or wait for you to reload the page?
-It sends only the new `App.jsx`, which is why the change appears almost before your hand leaves the keyboard.
+```predict
+You change one line of `App.jsx` and save while `npm run dev` is running; what does Vite do?
+- It rebuilds the whole project into `dist/` and reloads the page
+= It transforms only `App.jsx` again and sends the page the new version
+- Nothing, until you reload the page yourself
+```
+
+Vite sends only the new `App.jsx`, which is why the change appears almost before your hand leaves the keyboard.
 
 ## The build
 
 The development server is not a way to put a site online: it needs your computer, it transforms on every request, and a real page with hundreds of modules would make hundreds of requests.
 
 `npm run build` does the other job, once.
-It starts at `index.html`, follows every import through your files and through the packages they use, transforms them, joins them into a few files, removes the spaces and shortens the names, and writes the result to `dist/`.
+It starts at `index.html`, follows every import through your files and through the packages they use, the **module graph** in the picture below, transforms them, joins them into a few files, removes the spaces and shortens the names, and writes the result to `dist/`.
+
+```demo name="module-graph"
+```
 
 ```text
 dist/
@@ -55,14 +67,16 @@ dist/
 The odd letters in each name are a **hash** of the file's contents, so a changed file gets a new name and a browser that cached the old one cannot show it by mistake.
 `dist/` is plain HTML, CSS, and JavaScript with no JSX, no bare imports, and no `node_modules`; any static host, such as GitHub Pages, which hosts this lab, can serve it.
 
-## The tools inside Vite
+## Read more
+
+### The tools inside Vite
 
 Vite is a coordinator, and the work is done by tools it installs as its own dependencies, the ones you counted in the lockfile.
 In Vite 8, the version this course uses, **Rolldown** bundles, both for the build and for preparing the packages in `node_modules/.vite/deps/`, and **Oxc** transforms JSX and TypeScript; both are written in Rust, which is why they arrive as the platform packages you found in the lockfile.
 Earlier versions of Vite used **esbuild** for the transforms and the preparation and another bundler, Rollup, for the build, and you will meet both names in tutorials; the next step says what esbuild does, because it set the standard these tools follow.
 A project's `vite.config.js` chooses plugins, such as `@vitejs/plugin-react`, which adds the React parts of the transform and the state-keeping hot replacement.
 
-## The lab does the development job too
+### The lab does the development job too
 
 This lab is a development server that runs inside your browser instead of on your computer.
 When you press **Run**, it transforms each file of the workspace with a small transformer called Sucrase, gives each module an address of its own, maps the bare names `react`, `react-dom`, and `react-router` to copies of React it ships with, and loads the result into the result pane.
@@ -74,3 +88,19 @@ If a change does not appear after you save, check that the terminal running `npm
 
 **Check:** You can say, in one sentence each, what `npm run dev` does when the browser asks for a `.jsx` file, and what `npm run build` writes into `dist/`.
 Then press **Mark this step as read**.
+
+```quiz
+Why does `npm run dev` start fast even in a large project?
+- It skips the transform and sends JSX to the browser
+= It transforms each file only when the browser asks for it, and prepares only the packages ahead of time
+- It reuses the `dist/` folder from the last build
+> The development server works on demand, one module per request, so its start time does not grow with the number of files you wrote.
+```
+
+```quiz
+What is in `dist/` after `npm run build`?
+- Your source files with JSX, ready for a server to transform
+= Plain HTML, CSS, and JavaScript in a few files with hashed names
+- A copy of `node_modules` for the server to use
+> The build follows the module graph, transforms and joins everything, and writes files any static host can serve without Node or npm.
+```
