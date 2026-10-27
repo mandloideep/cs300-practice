@@ -1,0 +1,90 @@
+figure.demo-frame .abort-controller {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+figure.demo-frame .abort-controller .demo-choice,
+figure.demo-frame .abort-controller .demo-caption {
+  margin: 0;
+}
+
+figure.demo-frame .abort-controller__rejection {
+  margin-top: var(--space-3);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .abort-controller__rejection .demo-mono {
+  color: var(--color-danger);
+}
+
+figure.demo-frame .abort-controller__error {
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .abort-controller__lanes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+figure.demo-frame .abort-controller__label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-2);
+  margin-bottom: var(--space-1);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .abort-controller__track {
+  position: relative;
+  height: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-sunken);
+  overflow: hidden;
+}
+
+figure.demo-frame .abort-controller__bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  transition: background-color 200ms ease;
+}
+
+figure.demo-frame .abort-controller__bar--applied {
+  background: var(--color-success);
+}
+
+figure.demo-frame .abort-controller__bar--aborted {
+  background: var(--color-warning);
+}
+
+figure.demo-frame .abort-controller__times {
+  margin-top: var(--space-1);
+}
+
+figure.demo-frame .abort-controller__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: var(--space-2);
+  align-items: start;
+}
+
+figure.demo-frame .abort-controller__select {
+  margin-bottom: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+
+figure.demo-frame .abort-controller__products {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
+  font-size: var(--text-sm);
+}

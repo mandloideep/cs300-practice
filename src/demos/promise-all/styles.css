@@ -1,0 +1,62 @@
+figure.demo-frame .promise-all {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+figure.demo-frame .promise-all .demo-choice,
+figure.demo-frame .promise-all .demo-caption {
+  margin: 0;
+}
+
+figure.demo-frame .promise-all__lanes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+figure.demo-frame .promise-all__lanes > li:last-child {
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+}
+
+figure.demo-frame .promise-all__label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-2);
+  margin-bottom: var(--space-1);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .promise-all__track {
+  position: relative;
+  height: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-sunken);
+  overflow: hidden;
+}
+
+figure.demo-frame .promise-all__bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  transition: background-color 200ms ease;
+}
+
+figure.demo-frame .promise-all__bar--fulfilled {
+  background: var(--color-success);
+}
+
+figure.demo-frame .promise-all__bar--rejected {
+  background: var(--color-danger);
+}
+
+figure.demo-frame .promise-all__bar--late {
+  background: var(--color-text-muted);
+}
