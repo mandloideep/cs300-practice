@@ -11,7 +11,14 @@ Watch for the difference between a guard that handles a case and a guard that hi
 
 The starter computes averages for four students from an import.
 Bob's scores came from a form, so they are strings; Diana has just joined, so her list is empty; and Frank's scores were pasted as one string instead of a list.
-Predict before you run: Bob's scores are `"73"`, `"80"`, and `"69"`, so does the console show `Bob: 74.0`, an error, or some other number?
+
+```predict
+Bob's scores are `"73"`, `"80"`, and `"69"`; what does the console show for Bob?
+- `Bob: 74.0`
+- A red `TypeError`
+= Some other number
+```
+
 Press **Run**.
 The console shows `Alice: 91.7`, `Bob: 246023.0`, `Diana: NaN`, and `Frank: NaN`, and not one red line.
 `0 + "73"` is the string `"073"`, because `+` with a string joins instead of adding, so Bob's total became `"0738069"`, and dividing that by 3 turned it back into a number.
@@ -42,7 +49,13 @@ Now guard the two other cases at the top of `average`, before any arithmetic.
 An empty list is a real situation, a student with no scores yet, so the function answers it with `null`, "no average", rather than inventing a number.
 A string where a list belongs is not a situation the gradebook should ever be in, so the function throws a `TypeError`, the built-in error type for a value of the wrong type, and says what it got.
 
-Predict before you run: what does the console show for Diana now, `Diana: NaN`, `Diana: 0.0`, or a red line?
+```predict
+What does the console show for Diana now?
+- `Diana: NaN`
+- `Diana: 0.0`
+= A red line
+```
+
 Run it.
 A red line: `TypeError: Cannot read properties of null (reading 'toFixed')`.
 `average` now says "no average" with `null`, and the loop still tries to format it as a number.
@@ -64,10 +77,18 @@ Replace the two lines inside the loop.
   }
 ```
 
-Predict before you run: what happens to Frank, a line that says `Frank: NaN`, a warning that names the problem, or nothing at all?
+```predict
+What does the console show for Frank?
+- `Frank: NaN`
+= A warning that names the problem
+- Nothing at all
+```
+
 Run it.
 The console shows `Alice: 91.7`, `Bob: 74.0`, `Diana: no scores yet`, and a warning, `Frank skipped: expected an array of scores, got string`.
 Every student gets an honest line, and the one with broken data says exactly what is broken.
+
+## Read more
 
 The line between defending and hiding is whether the guard tells the truth.
 Try the tempting shortcut on purpose: change `return null;` to `return 0;` and run.
@@ -77,7 +98,7 @@ So handle quietly only the cases that can really happen, an empty list or a numb
 
 Try one more on purpose: add `{ name: "Eve" }`, with no `scores` key at all, to the array and run.
 The warning `Eve skipped: expected an array of scores, got undefined` appears, because a missing key reads as `undefined`, which is not an array.
-That is the right answer: a missing key is often a typo upstream, like the `score` for `scores` in the last step, and turning it into "no scores yet" would hide the typo.
+That is the right answer: a missing key is often a typo upstream, such as `score` written for `scores`, and turning it into "no scores yet" would hide the typo.
 Delete Eve again when you have seen it.
 
 Put guards where data enters your code, in the function that receives the import or the form or the response, and then trust the data inside.
@@ -91,6 +112,22 @@ If Frank shows a red line instead of a warning, the `try` does not wrap the call
 **Check:** Run the code.
 The console shows `Alice: 91.7`, `Bob: 74.0`, `Diana: no scores yet`, and a warning that says `Frank skipped: expected an array of scores, got string`.
 Press **Run checks** to confirm.
+
+```quiz
+Why does the guard use `Array.isArray(scores)` rather than `typeof scores === "array"`?
+- `Array.isArray` is faster
+= `typeof []` is `"object"`, so the `typeof` test is never true
+- `typeof` cannot be used inside an `if`
+> `typeof` has no `"array"` answer; an array is an object, and `Array.isArray` is the test that tells the two apart.
+```
+
+```quiz
+For a student with an empty score list, which answer is honest?
+- `return 0;`, so the line prints `0.0`
+= `return null;`, and the caller prints `no scores yet`
+- `throw new TypeError(...)`, so the student is skipped with a warning
+> An empty list is a real situation, so it deserves a real answer; `0` would look like a failing grade, and a warning would treat a new student as broken data.
+```
 
 <details>
 <summary>src/main.js after this step</summary>

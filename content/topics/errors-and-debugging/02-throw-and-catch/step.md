@@ -9,6 +9,9 @@ The gradebook from the last step stops at Diana with a message about `length` th
 This step makes `reportLine` **throw** an error of its own that says what is wrong in words, then **catches** it inside the loop so that one bad record skips one line instead of ending the report.
 Watch where each error lands: a thrown error travels up through the functions that called it until a `catch` takes it.
 
+```demo name="error-propagation"
+```
+
 Press **Run** and the console shows the three report lines, the five line trace from the last step, and `The script reached its last line.`
 
 Add a fifth student after Diana, so you can see whether the report gets past her.
@@ -18,7 +21,13 @@ Add a fifth student after Diana, so you can see whether the report gets past her
   { name: "Eve", scores: [91, 85, 97] }
 ```
 
-Predict before you run: does the console show `Eve: 91.0`, or does the report end at Diana?
+```predict
+With Eve added after Diana, what does the report print for Eve?
+- `Eve: 91.0`, after the trace
+= Nothing, because the report ends at Diana
+- `Eve: 91.0`, before the trace
+```
+
 Run it, and Eve is missing.
 The error in `average` ended `reportLine`, then ended the loop in `printReport`, and was caught only by the `catch` at the bottom, so the loop never reached Eve.
 
@@ -33,7 +42,13 @@ Add these lines as the first lines inside `reportLine`.
 
 `new Error(message)` makes an error object with that message, and `throw` hands it to whoever is waiting to catch it, which ends `reportLine` on that line.
 
-Predict before you run: what is the first line of the logged trace now, `TypeError: Cannot read properties of undefined (reading 'length')`, `Error: Diana has no scores yet`, or no trace at all?
+```predict
+What is the first line of the logged trace now?
+- `TypeError: Cannot read properties of undefined (reading 'length')`
+= `Error: Diana has no scores yet`
+- There is no trace at all
+```
+
 Run it.
 The trace now starts with `Error: Diana has no scores yet`, and its top frame is `at reportLine (src/main.js:19:11)`, the `throw` line.
 `average` is not in the trace at all, because `reportLine` threw before calling it.
@@ -50,7 +65,13 @@ Replace the line inside the loop of `printReport`.
     }
 ```
 
-Predict before you run: after `Charlie: 86.0`, does the console show `Skipped: Diana has no scores yet` and then `Eve: 91.0`, or the trace from the bottom `catch`?
+```predict
+What does the console show after `Charlie: 86.0`?
+- The trace from the `catch` at the bottom
+- `Skipped: Diana has no scores yet` and nothing else
+= `Skipped: Diana has no scores yet`, then `Eve: 91.0`
+```
+
 Run it.
 The console shows `Skipped: Diana has no scores yet`, then `Eve: 91.0`, then the last line, and no trace.
 The inner `catch` took the error first, the loop went on to Eve, and the `catch` at the bottom had nothing to do.
@@ -59,6 +80,8 @@ A `throw` leaves the function it is in at once, and then the function that calle
 The nearest `catch` wins.
 If no frame has one, the error is **uncaught**: the browser prints it in red and the script stops, which is what happened in the last step before you added the first `try`.
 So the question is never "should I catch this" but "where": catch an error in the place that knows what to do next, here the loop, which can skip one student and carry on.
+
+## Read more
 
 Inside a `catch`, the error has a `name` (`Error`, `TypeError`, and so on), a `message`, and a `stack`.
 A `try` can also end with a `finally` block, which runs whether or not anything was thrown; you will meet it again with promises in the next topic.
@@ -76,6 +99,22 @@ If every student is skipped, the `if` reads `student.score` without the `s`, whi
 **Check:** Run the code.
 The console shows `Alice: 91.7`, `Bob: 74.0`, `Charlie: 86.0`, `Skipped: Diana has no scores yet`, `Eve: 91.0`, and `The script reached its last line.`, with no trace.
 Press **Run checks** to confirm.
+
+```quiz
+An error is thrown inside `reportLine`, and both `printReport` and the code at the bottom have a `try` and `catch` around the call; which `catch` takes it?
+- The one at the bottom, because it is the outermost
+= The one in `printReport`, because it is the nearest on the stack
+- Both, one after the other
+> A thrown error leaves one frame at a time and stops at the first `catch` it meets, so the nearest one wins and the others never see it.
+```
+
+```quiz
+What does `catch (error) { console.log(error.message); }` print after `throw "no scores";`?
+- `no scores`
+- `Error: no scores`
+= `undefined`
+> A string has no `message` property and no stack, which is why you throw `new Error(...)` instead.
+```
 
 <details>
 <summary>src/main.js after this step</summary>
