@@ -1,0 +1,70 @@
+figure.demo-frame .selector-matcher__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0 var(--space-3);
+}
+
+figure.demo-frame .selector-matcher__controls .demo-field {
+  flex: 1 1 12rem;
+}
+
+figure.demo-frame .selector-matcher__count {
+  margin-bottom: var(--space-3);
+}
+
+figure.demo-frame .selector-matcher__tree {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+figure.demo-frame .selector-matcher__row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-2);
+  min-width: 0;
+  padding: 1px var(--space-1);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease;
+}
+
+figure.demo-frame .selector-matcher__row.is-match {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+figure.demo-frame .selector-matcher__mark {
+  flex: 0 0 1ch;
+  color: var(--color-accent);
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .selector-matcher__tag {
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .selector-matcher__attrs {
+  flex: 0 1 auto;
+  min-width: 0;
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  overflow-wrap: anywhere;
+}
+
+figure.demo-frame .selector-matcher__text {
+  flex: 1 1 0;
+  min-width: 2rem;
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

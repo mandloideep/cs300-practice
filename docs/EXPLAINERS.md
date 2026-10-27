@@ -37,12 +37,12 @@ Each one takes its data from the fence body where that makes sense, so the same 
 
 | Id | Shows | Serves | Phase | Status |
 | --- | --- | --- | --- | --- |
-| `selector-matcher` | A selector the student edits and the elements of a small page that light up to match it | css-layout/selectors-and-the-cascade | 6 | planned |
-| `cascade-resolver` | Two rules that disagree, with specificity and source order weighed, and the winner marked as the student edits either rule | css-layout/selectors-and-the-cascade | 6 | planned |
-| `box-model` | Sliders for margin, border, and padding on one box, with the measured width under `content-box` and `border-box` | css-layout/the-box-model | 6 | planned |
-| `flex-axes` | A row of items with direction, justify, align, wrap, and gap as controls, and the main and cross axes drawn | css-layout/a-flex-row, a-flex-card-layout | 6 | planned |
-| `grid-tracks` | A grid with editable column and row templates and items the student places by line number | css-layout/a-grid-page | 6 | planned |
-| `breakpoint-slider` | A layout under a viewport width the student drags, with the active media query shown | css-layout/a-responsive-breakpoint | 6 | planned |
+| `selector-matcher` | A selector the student edits and the elements of a small page that light up to match it | css-layout/selectors-and-the-cascade | 6 | built |
+| `cascade-resolver` | Two rules that disagree, with specificity and source order weighed, and the winner marked as the student edits either rule | css-layout/selectors-and-the-cascade | 6 | built |
+| `box-model` | Sliders for margin, border, and padding on one box, with the measured width under `content-box` and `border-box` | css-layout/the-box-model | 6 | built |
+| `flex-axes` | A row of items with direction, justify, align, wrap, and gap as controls, and the main and cross axes drawn | css-layout/a-flex-row, a-flex-card-layout | 6 | built |
+| `grid-tracks` | A grid with editable column and row templates and items the student places by line number | css-layout/a-grid-page | 6 | built |
+| `breakpoint-slider` | A layout under a viewport width the student drags, with the active media query shown | css-layout/a-responsive-breakpoint | 6 | built |
 | `utility-classes` | One card styled by a stylesheet and by utility classes side by side, with each class mapped to the declaration it stands for | *styling-with-tailwind* | 7 | planned |
 
 ## JavaScript: values, functions, and scope
