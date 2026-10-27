@@ -1,0 +1,57 @@
+figure.demo-frame .type-coercion__option {
+  white-space: pre;
+}
+
+figure.demo-frame .type-coercion__now {
+  margin-bottom: var(--space-3);
+}
+
+figure.demo-frame .type-coercion__current {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  white-space: pre-wrap;
+}
+
+figure.demo-frame .type-coercion__operands {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-2);
+}
+
+figure.demo-frame .type-coercion__operands li {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  min-width: 0;
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .type-coercion__side {
+  color: var(--color-text-muted);
+  font-weight: var(--weight-medium);
+}
+
+figure.demo-frame .type-coercion__literal {
+  font-weight: var(--weight-bold);
+  white-space: pre-wrap;
+}
+
+figure.demo-frame .type-coercion__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+figure.demo-frame .type-coercion__list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  min-width: 0;
+}
+
+figure.demo-frame .type-coercion__expr {
+  white-space: pre-wrap;
+}

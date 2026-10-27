@@ -1,0 +1,50 @@
+figure.demo-frame .value-vs-reference__memory {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--space-3);
+  align-items: start;
+  margin: var(--space-3) 0;
+}
+
+figure.demo-frame .value-vs-reference__vars {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 6.5rem), 1fr));
+  gap: var(--space-2);
+}
+
+figure.demo-frame .value-vs-reference__var {
+  height: 100%;
+}
+
+figure.demo-frame .value-vs-reference__value {
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .value-vs-reference__ref {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+}
+
+figure.demo-frame .value-vs-reference__object {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+figure.demo-frame .value-vs-reference__object > .demo-mono {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+figure.demo-frame .value-vs-reference__flag {
+  font-family: var(--font-sans);
+}
+
+figure.demo-frame .value-vs-reference__holders {
+  margin-top: var(--space-1);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}

@@ -19,9 +19,9 @@ Each one takes its data from the fence body where that makes sense, so the same 
 
 | Id | Shows | Serves | Phase | Status |
 | --- | --- | --- | --- | --- |
-| `page-tour` | The step page in miniature with each pane labeled; selecting a pane says what it is for and when to look at it | *using-the-lab* | 6 | planned |
+| `page-tour` | The step page in miniature with each pane labeled; selecting a pane says what it is for and when to look at it | *using-the-lab* | 6 | built |
 | `edit-run-loop` | The cycle of edit, Run, result, console, and checks as one loop the student advances a stage at a time | *using-the-lab* | 6 | built |
-| `inspector-tour` | A three-component tree with boundaries, a re-render flash, and the state panel, driven by a Click button inside the explainer | *using-the-lab*, react-mental-model | 6 | planned |
+| `inspector-tour` | A three-component tree with boundaries, a re-render flash, and the state panel, driven by a Click button inside the explainer | *using-the-lab*, react-mental-model | 6 | built |
 
 ## HTML
 
@@ -49,15 +49,15 @@ Each one takes its data from the fence body where that makes sense, so the same 
 
 | Id | Shows | Serves | Phase | Status |
 | --- | --- | --- | --- | --- |
-| `value-vs-reference` | Assigning a number makes a second box; assigning an object makes a second arrow to the same box; changing one shows which cases change both | javascript-basics/objects-and-arrays-of-objects, *objects-and-references* | 6 | planned |
-| `type-coercion` | A small expression the student edits, with the coercion steps `==` and `+` perform and the result | javascript-basics/operators-and-coercion | 6 | planned |
-| `truthy-falsy` | Values dropped into an `if`, with the eight falsy values marked | javascript-basics/operators-and-coercion | 6 | planned |
-| `string-immutability` | A string method called on a variable, the new string it returns, and the original unchanged until the result is assigned back | javascript-basics/string-methods | 6 | planned |
+| `value-vs-reference` | Assigning a number makes a second box; assigning an object makes a second arrow to the same box; changing one shows which cases change both | javascript-basics/objects-and-arrays-of-objects, *objects-and-references* | 6 | built |
+| `type-coercion` | A small expression the student edits, with the coercion steps `==` and `+` perform and the result | javascript-basics/operators-and-coercion | 6 | built |
+| `truthy-falsy` | Values dropped into an `if`, with the eight falsy values marked | javascript-basics/operators-and-coercion | 6 | built |
+| `string-immutability` | A string method called on a variable, the new string it returns, and the original unchanged until the result is assigned back | javascript-basics/string-methods | 6 | built |
 | `array-index-walk` | A loop stepping an index across an array, including the step past the last index that reads `undefined` | javascript-basics/arrays-and-loops | 6 | planned |
 | `map-filter-reduce` | Elements flowing one at a time through a callback into a new array or a running total | javascript-basics/map-and-filter, *arrays-in-depth* | 6 | planned |
 | `object-shape` | An object as a table of keys and values, with dot and bracket access, adding, and deleting | javascript-basics/objects-and-arrays-of-objects | 6 | planned |
 | `function-call` | A call binding arguments to parameters, running the body in a frame, and returning a value to the caller | *functions-and-callbacks* | 6 | planned |
-| `callback` | A function handed to another function and run later, beside the version with parentheses that runs it at once | *functions-and-callbacks*, dom-events/a-click-handler, state-usestate/a-click-handler-that-logs | 6 | planned |
+| `callback` | A function handed to another function and run later, beside the version with parentheses that runs it at once | *functions-and-callbacks*, dom-events/a-click-handler, state-usestate/a-click-handler-that-logs | 6 | built |
 | `arrow-equivalence` | A function expression and its arrow form, with each part of one highlighted in the other as the student switches | *functions-and-callbacks* | 6 | planned |
 | `scope-chain` | Nested scopes as nested boxes and a variable lookup walking outward until it finds the name | *scope-and-closures* | 6 | planned |
 | `closure` | A function that keeps the variables around it, three counters made from one factory, and the loop-variable classic with `var` and `let` | *scope-and-closures*, *why-react-behaves-this-way* | 6 | planned |

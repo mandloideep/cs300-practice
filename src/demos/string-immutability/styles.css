@@ -1,0 +1,36 @@
+figure.demo-frame .string-immutability__memory {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--space-3);
+  align-items: start;
+  margin: var(--space-3) 0;
+}
+
+figure.demo-frame .demo-mono.string-immutability__text {
+  font-size: var(--text-sm);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+figure.demo-frame .string-immutability__strings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+figure.demo-frame .string-immutability__strings li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  min-width: 0;
+}
+
+figure.demo-frame .string-immutability__lost .string-immutability__text {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+figure.demo-frame .string-immutability__console .demo-console li {
+  white-space: pre-wrap;
+}
