@@ -8,9 +8,12 @@ inspector:
 required: [state-lives-in-app, both-children-receive-it, page-agrees-with-app]
 ---
 
-When two components need the same value, the value moves up to the closest component that contains both of them.
-Here that is `App`, which renders `CategoryFilter` and `ProductList`.
+When two components need the same value, the value moves up to the closest component that contains both of them, and here that is `App`, which renders `CategoryFilter` and `ProductList`.
 `App` will own the state and pass it down to each child as a prop; React calls this **lifting state up**.
+Watch the inspector tree at the end: the state sits on `App`, and both children show the same value among their props.
+
+```demo name="lifting-state"
+```
 
 Start by taking the state out of the filter.
 Delete the `useState` line inside `CategoryFilter`.
@@ -47,7 +50,6 @@ function ProductList({ items, category }) {
 ```
 
 `visible` is computed from the props on every render, not stored anywhere.
-When the list only needs to derive something from values it already receives, a plain `const` is enough, and it can never fall out of step with the state it was derived from.
 
 Finally, create the state in `App` and pass it to both children.
 The block starts with the first line of `App`, which is already there.
@@ -55,6 +57,13 @@ The block starts with the first line of `App`, which is already there.
 ```jsx file="src/App.jsx" action="replace" anchor="export default function App() {"
 export default function App() {
   const [category, setCategory] = useState("all");
+```
+
+```predict
+After you pass `category` to both children and run, where does the inspector tree show it?
+- As state on `CategoryFilter`, where it started
+= As state on `App`, and as a prop on both `CategoryFilter` and `ProductList`
+- As state on all three components, one copy each
 ```
 
 ```jsx file="src/App.jsx" action="replace" anchor="      <CategoryFilter />\n      <ProductList items={products} />"
@@ -67,14 +76,27 @@ The tree shows the state on `App` now, and both children list `category` among t
 To prove that one value drives both, change the initial value in `App` to `useState("groceries")` and run again: the Groceries button fills in and the list shows Apple and Cooking Oil, with no change to either child.
 Put `"all"` back before moving on.
 
+## Read more
+
+When the list only needs to derive something from values it already receives, a plain `const` such as `visible` is enough, and it can never fall out of step with the state it was derived from.
+Storing the filtered list in a second piece of state would give React two values to keep in agreement, and sooner or later they would disagree.
+
+**If it breaks:** If the console says `setCategory is not defined`, the `onClick` is still on the button in `CategoryFilter`; remove it for this step.
+If the console says `category is not defined` in `ProductList`, the prop is destructured in `CategoryFilter` but not in `ProductList`, or `App` does not pass it to the list.
+If every button looks unpressed, `App` passes the prop under a different name than the child destructures.
+
 **Check:** Run the code.
 In the inspector tree, `App` has one state value, `CategoryFilter` has none, and `category` appears in the props of both `CategoryFilter` and `ProductList`.
 The pressed button and the list agree with `App`'s value.
 Press **Run checks** to confirm.
 
-**If it breaks:** If the console says `setCategory is not defined`, the `onClick` is still on the button in `CategoryFilter`; remove it for this step.
-If the console says `category is not defined` in `ProductList`, the prop is destructured in `CategoryFilter` but not in `ProductList`, or `App` does not pass it to the list.
-If every button looks unpressed, `App` passes the prop under a different name than the child destructures.
+```quiz
+`CategoryFilter` and `ProductList` both need `category`; where should the state live?
+- In `CategoryFilter`, because its buttons change the value
+- In `ProductList`, because it uses the value to filter
+= In `App`, the closest component that contains both of them
+> A value two components need moves up to the closest parent they share, which then passes it down to each of them as a prop.
+```
 
 <details>
 <summary>src/App.jsx after this step</summary>

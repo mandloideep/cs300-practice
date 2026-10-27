@@ -5,6 +5,23 @@
   "summary": "Move a value that two components need up to the parent that contains them, pass it down as a prop, and pass a function down so that a child can ask for a change. You will watch the inspector's flow view draw each click as event, callback prop, setter, and re-render, and add a product to a list in the parent from a child form.",
   "prerequisites": ["state-usestate"],
   "minutes": 60,
-  "updated": "2026-10-26",
-  "changeNote": "First version."
+  "updated": "2026-10-27",
+  "changeNote": "Rewritten so each step opens with an explainer or a prediction, folds the background under Read more, and ends with a quiz.",
+  "links": [
+    {
+      "kind": "reading",
+      "title": "react.dev: Sharing state between components",
+      "url": "https://react.dev/learn/sharing-state-between-components"
+    },
+    {
+      "kind": "reading",
+      "title": "react.dev: Updating arrays in state",
+      "url": "https://react.dev/learn/updating-arrays-in-state"
+    },
+    {
+      "kind": "reference",
+      "title": "MDN: Event.preventDefault()",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault"
+    }
+  ]
 }
