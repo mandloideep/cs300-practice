@@ -5,6 +5,28 @@
   "summary": "Keep a request's loading, success, and error states in one status value, fetch inside an effect that cleans up after itself, and watch the network pane expose a stale response and a duplicate request. You will add a retry button and then extract the whole pattern into a useFetch hook that the routing topics reuse.",
   "prerequisites": ["effects"],
   "minutes": 75,
-  "updated": "2026-10-26",
-  "changeNote": "First version."
+  "updated": "2026-10-27",
+  "changeNote": "Rewritten so each step opens with an explainer or a prediction, folds the background under Read more, and ends with a quiz.",
+  "links": [
+    {
+      "kind": "reading",
+      "title": "MDN: Using the Fetch API",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch"
+    },
+    {
+      "kind": "reading",
+      "title": "react.dev: Reusing logic with custom Hooks",
+      "url": "https://react.dev/learn/reusing-logic-with-custom-hooks"
+    },
+    {
+      "kind": "reading",
+      "title": "javascript.info: Fetch, abort",
+      "url": "https://javascript.info/fetch-abort"
+    },
+    {
+      "kind": "reference",
+      "title": "MDN: AbortController",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/AbortController"
+    }
+  ]
 }

@@ -12,15 +12,19 @@ required: [hook-state-lives-in-app, products-render, retry-still-works]
 
 **We used this in:** [Components and props](#/topic/components-and-props), where we pulled repeated markup out into a component so it could be written once and used many times.
 
-`App` now holds eighteen lines that have nothing to do with products: a status, a controller, a cleanup, and a retry counter.
-Every page that loads data needs the same eighteen lines.
-In Week 13 we solve that the way we solved repeated markup: pull the logic out into a function and call it from each component.
-A function that calls hooks is a **custom hook**, and its name starts with `use` so that React and you can tell it apart from an ordinary function.
+This step moves the request logic out of `App` into a **custom hook**, `useFetch`, that any page can call; nothing on the page changes, and the hook's state still shows up under `App`.
+Run the starter; it behaves exactly as it did at the end of the last step.
+
+```predict
+After `App` calls `useFetch` and you run, how many state values does **Tree and state** list for `App`?
+- One, the category, because the request state moved into the hook
+= Three: the category and the two values the hook declares
+- Five: the three `App` had before, plus the hook's two
+```
 
 We made two preparations so the request code no longer knows about products.
 `src/api.js` has `productsUrl(category)`, which builds the address, and `loadJson(url, signal)`, which fetches any URL and parses the body.
 The state stores the whole response as `data`, and `products` is read from it under the effect.
-Run the starter; it behaves exactly as it did at the end of the last step.
 
 ## Write the hook
 
@@ -58,10 +62,7 @@ export function useFetch(url) {
 }
 ```
 
-Compare it with `App` line by line.
-The state and the effect are the same, with `url` in place of `productsUrl(category)`, so the effect runs again whenever the caller passes a different URL.
-`retry` wraps the counter so that a caller never has to know the counter exists.
-The return value is a plain object, which the caller destructures the way it destructures props.
+Compare it with `App` line by line: the state and the effect are the same, with `url` in place of `productsUrl(category)`.
 
 ## Call it from the component
 
@@ -103,6 +104,25 @@ And draw the page from the destructured values; the button calls `retry` directl
 
 `App` is now a component that owns a category and draws a page; everything about requests lives in one file that any page can import.
 
+## Read more
+
+### Why a hook
+
+`App` held eighteen lines that had nothing to do with products: a status, a controller, a cleanup, and a retry counter.
+Every page that loads data needs the same eighteen lines.
+In Week 13 we solve that the way we solved repeated markup: pull the logic out into a function and call it from each component.
+A function that calls hooks is a **custom hook**, and its name starts with `use` so that React and you can tell it apart from an ordinary function.
+
+### Reading the hook
+
+Because `url` is in the dependency array, the effect runs again whenever the caller passes a different URL.
+`retry` wraps the counter so that a caller never has to know the counter exists.
+The return value is a plain object, which the caller destructures the way it destructures props.
+
+**If it breaks:** If the console says `useFetch is not a function` or shows the placeholder error, the hook file still holds the placeholder, or `App` imports it from the wrong path.
+If the console says `React Hook "useFetch" is called conditionally` or the hooks change order, the call is inside an `if` or after a `return`; a hook is called at the top of the component on every render.
+If the page shows `Could not load products. undefined`, the return object uses a different property name than the one `App` destructures; the four names must match on both sides.
+
 **Check:** Run the code.
 The products load, the categories switch, and Laptops still fails with a working **Retry**, because none of the behavior moved, only its address.
 Open **Tree and state** and select `App`.
@@ -110,9 +130,13 @@ It still lists three state values: `category`, and the two the hook declares.
 A custom hook has no state of its own; its `useState` calls belong to whichever component calls it, which is why `useFetch` can be used by two components at once without them sharing a request.
 Press **Run checks**, then choose the **DummyJSON** preset to confirm the hook works on a real server.
 
-**If it breaks:** If the console says `useFetch is not a function` or shows the placeholder error, the hook file still holds the placeholder, or `App` imports it from the wrong path.
-If the console says `React Hook "useFetch" is called conditionally` or the hooks change order, the call is inside an `if` or after a `return`; a hook is called at the top of the component on every render.
-If the page shows `Could not load products. undefined`, the return object uses a different property name than the one `App` destructures; the four names must match on both sides.
+```quiz
+Two components on one page each call `useFetch`; do they share one request?
+- Yes, because the state lives in `useFetch.js`
+= No, because the `useState` calls inside the hook belong to the component that calls it
+- Only when both pass the same URL
+> A custom hook is a function, not a store: every component that calls it gets its own `attempt` and `request`, which is why the inspector lists them under `App`.
+```
 
 <details>
 <summary>src/useFetch.js after this step</summary>
