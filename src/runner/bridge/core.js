@@ -15,6 +15,10 @@
 //   router                   { attach(controller), report(location) }; the react-router wrapper
 //                            reports each location, posted as a `location` message, and the
 //                            attached controller takes the parent's `navigate` messages
+//   resize(width)            asks the parent to show the result at `width` CSS pixels, or at the
+//                            pane's own width for null, by posting a `resize-request` message;
+//                            a check uses it to show a narrow layout
+//   onSettled(callback)      runs `callback` once the run has settled (at once when it already has)
 // and globalThis.__LAB_ENV__, which compiled workspace code reads in place of import.meta.env.
 //
 // The document shares the site's origin, so window.localStorage and window.sessionStorage are
@@ -318,6 +322,10 @@ const lab = {
   mapUrls,
   originalConsole,
   router,
+  resize(width) {
+    const value = width === null || width === undefined ? null : Math.round(Number(width));
+    post({ type: "resize-request", width: Number.isFinite(value) && value > 0 ? value : null });
+  },
 };
 globalThis.__LAB__ = lab;
 
@@ -394,14 +402,24 @@ function afterFrame(callback) {
   setTimeout(once, 250);
 }
 
+const settledListeners = [];
+let hasSettled = false;
+
 function settle() {
   if (settled) return;
   settled = true;
   afterFrame(() => {
     post({ type: "settled" });
+    hasSettled = true;
+    for (const listener of settledListeners.splice(0)) listener();
     if (boot.checkUrl) queueChecks();
   });
 }
+
+lab.onSettled = (callback) => {
+  if (hasSettled) callback();
+  else settledListeners.push(callback);
+};
 
 lab.entryEvaluated = () => {
   entryState = "done";

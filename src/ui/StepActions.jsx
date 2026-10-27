@@ -1,5 +1,6 @@
 import { isStepComplete, markStepComplete, useProgress } from "../progress/store.js";
 import {
+  isVanillaWorkspace,
   saveZip,
   workspaceProjectFiles,
   workspaceProjectName,
@@ -35,7 +36,8 @@ export function LocalDownload({ topic, step, announce }) {
   );
 }
 
-// The toolbar button of an edit step: the student's current files as a plain Vite project.
+// The toolbar button of an edit step: the student's current files as a plain Vite project, or
+// as a folder to open or serve when the workspace is plain HTML, CSS, and JavaScript.
 export function WorkspaceDownload({
   topic,
   step,
@@ -52,7 +54,11 @@ export function WorkspaceDownload({
       className={className}
       onClick={() => {
         downloadWorkspace(workspaceProjectFiles({ topic, step, files, api }), name);
-        announce(`Downloading ${name}.zip, a Vite project with your files for this step.`);
+        announce(
+          isVanillaWorkspace(step, files)
+            ? `Downloading ${name}.zip, a folder with your files for this step; open its index.html or serve the folder.`
+            : `Downloading ${name}.zip, a Vite project with your files for this step.`,
+        );
       }}
     >
       Download this workspace

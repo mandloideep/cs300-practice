@@ -1,14 +1,20 @@
 import { strToU8, zipSync } from "fflate";
 import { dependencies, devDependencies } from "../../package.json";
+import { isReactWorkspace } from "../runner/useRunSession.js";
 
 // Builds the plain Vite project a student downloads from an edit step, laid out as in
 // docs/CONTRACTS.md section 5.2: npm React at the runtime's pinned versions, never the vendored
-// runtime, the wrappers, the checks, the fixtures, or the solution.
+// runtime, the wrappers, the checks, the fixtures, or the solution. A vanilla workspace (entry
+// index.html, no React import) is just its files and a README, with no package.json.
 
 const ROUTER_IMPORT = /(?:from\s*|import\s*\(\s*|import\s+)["']react-router["']/;
 
 export function workspaceProjectName(topicId, n) {
   return `${topicId}-${n}`;
+}
+
+export function isVanillaWorkspace(step, files) {
+  return step.entry === "index.html" && !isReactWorkspace(files);
 }
 
 function usesRouter(files) {
@@ -101,10 +107,27 @@ npm run build
 ${apiNote}`;
 }
 
+function vanillaReadme(topic, step) {
+  return `# ${topic.title}: step ${step.n}, ${step.title}
+
+This folder is your workspace from CS300 Lab: plain HTML, CSS, and JavaScript, with nothing to install.
+
+Open \`index.html\` in your browser to see the page.
+To run it from a local address instead, which is what a browser needs for \`fetch\` and modules, serve the folder from a terminal opened in it and open the address it prints.
+
+\`\`\`sh
+npx serve .
+\`\`\`
+`;
+}
+
 // Returns { path: source } for the project, with the workspace files at their own paths.
 // `api` is { baseUrl, title, fromFixtures } for the API source to write into .env when a
 // workspace file reads import.meta.env.API_BASE, else null.
 export function workspaceProjectFiles({ topic, step, files, api = null }) {
+  if (isVanillaWorkspace(step, files)) {
+    return { "README.md": vanillaReadme(topic, step), ...files };
+  }
   const name = workspaceProjectName(topic.id, step.n);
   const withApiBase = Boolean(api) && readsApiBase(files);
   const project = {

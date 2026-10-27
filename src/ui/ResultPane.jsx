@@ -80,7 +80,7 @@ function AddressBar({ location, send }) {
 // `announce` is optional: when the step page passes its live-region function the pane shares
 // that region, and otherwise it renders a polite region of its own for address changes.
 export default function ResultPane({ session, onJumpToCode, announce }) {
-  const { status, diagnostics, iframeRef, location, send, runId } = session;
+  const { status, diagnostics, iframeRef, location, send, runId, frameWidth = null } = session;
   const failed = status === "compile-error";
   const [ownMessage, setOwnMessage] = useState(null);
   const ownCounter = useRef(0);
@@ -139,8 +139,25 @@ export default function ResultPane({ session, onJumpToCode, announce }) {
         title="Result of your code"
         className="result-frame"
         hidden={failed}
+        style={
+          frameWidth === null
+            ? undefined
+            : { width: `${frameWidth}px`, maxWidth: "100%", boxSizing: "content-box" }
+        }
         sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"
       />
+      {frameWidth !== null && !failed && (
+        <p className="meta result-width">
+          <span>Shown {frameWidth} pixels wide.</span>{" "}
+          <button
+            type="button"
+            className="link-button"
+            onClick={() => send({ type: "resize", width: null })}
+          >
+            Use the full width
+          </button>
+        </p>
+      )}
       {!announce && <LiveRegion message={ownMessage} />}
     </section>
   );

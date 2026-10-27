@@ -1,0 +1,25 @@
+body {
+  margin: 1rem;
+  font-family: system-ui, sans-serif;
+}
+
+.page {
+  max-width: 32rem;
+}
+
+#books {
+  padding: 0;
+  list-style: none;
+}
+
+.book {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #c8cfd8;
+  border-radius: 6px;
+}
+
+.compact .book {
+  margin-bottom: 0.25rem;
+  padding: 0.125rem 0.5rem;
+}
