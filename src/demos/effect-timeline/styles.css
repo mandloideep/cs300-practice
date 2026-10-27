@@ -1,0 +1,94 @@
+figure.demo-frame .effect-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+figure.demo-frame .effect-timeline .demo-caption {
+  margin-top: 0;
+}
+
+figure.demo-frame .effect-timeline__passes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+figure.demo-frame .effect-timeline__pass {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-left: var(--space-3);
+  border-left: 3px solid var(--color-border-strong);
+}
+
+figure.demo-frame .effect-timeline__when {
+  display: flex;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .effect-timeline__at {
+  min-width: 2.5em;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+figure.demo-frame .effect-timeline__events {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+}
+
+figure.demo-frame .effect-timeline__events li + li::before {
+  margin-right: var(--space-2);
+  color: var(--color-text-muted);
+  content: "→";
+}
+
+figure.demo-frame .effect-timeline__event {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  border-radius: var(--radius-pill);
+}
+
+figure.demo-frame .effect-timeline__event.is-fresh .demo-chip {
+  border-width: 2px;
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .effect-timeline__note {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .effect-timeline__row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--space-2);
+}
+
+figure.demo-frame .effect-timeline__deps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .effect-timeline__timers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .effect-timeline__timers li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}

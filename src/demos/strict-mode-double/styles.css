@@ -1,0 +1,55 @@
+figure.demo-frame .strict-mode-double {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+figure.demo-frame .strict-mode-double .demo-caption {
+  margin-top: 0;
+}
+
+figure.demo-frame .strict-mode-double__build {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+
+figure.demo-frame .strict-mode-double__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  gap: var(--space-2);
+}
+
+figure.demo-frame .strict-mode-double__calls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+figure.demo-frame .strict-mode-double__call {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .strict-mode-double__call-name {
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .strict-mode-double__call.is-discarded .strict-mode-double__call-name {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+figure.demo-frame .strict-mode-double__console .is-dimmed {
+  color: var(--color-text-muted);
+}
+
+figure.demo-frame .strict-mode-double__page {
+  font-size: var(--text-sm);
+}

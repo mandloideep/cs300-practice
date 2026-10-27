@@ -109,14 +109,14 @@ Each one takes its data from the fence body where that makes sense, so the same 
 | --- | --- | --- | --- | --- |
 | `render-cycle` | A state change, React calling the component function again, the diff, and the commit to the DOM | react-mental-model, state-usestate/what-the-setter-does, *why-react-behaves-this-way* | 6 | built |
 | `jsx-to-calls` | JSX and the function calls it compiles to, switched with one control | jsx-rules/expressions-in-braces, *tooling-from-scratch* | 6 | built |
-| `props-flow` | Data flowing down a three-level tree and an event flowing up, animated from the student's click | react-mental-model/data-down-events-up, events-and-lifting-state/data-down-actions-up | 6 | planned |
-| `lifting-state` | Two siblings that cannot share a value until the state moves to their parent | events-and-lifting-state/move-the-state-up | 6 | planned |
+| `props-flow` | Data flowing down a three-level tree and an event flowing up, animated from the student's click | react-mental-model/data-down-events-up, events-and-lifting-state/data-down-actions-up | 6 | built |
+| `lifting-state` | Two siblings that cannot share a value until the state moves to their parent | events-and-lifting-state/move-the-state-up | 6 | built |
 | `state-snapshot` | Each render as a snapshot of state, and a `setTimeout` inside an old render reading the old value | state-usestate/what-the-setter-does, *why-react-behaves-this-way* | 6 | built |
 | `setter-batching` | Three `setCount(count + 1)` calls in one handler adding one, and the updater form adding three | state-usestate/what-the-setter-does, *why-react-behaves-this-way* | 6 | built |
 | `reconcile-keys` | A list rendered with index keys and with stable keys, reordered, with inputs keeping the wrong values in one case | lists-and-keys/stable-keys | 6 | built |
-| `controlled-input` | The loop between an input's value and the state that owns it, with the keystroke that the state rejects | controlled-forms/a-controlled-input | 6 | planned |
-| `effect-timeline` | Render, commit, effect, cleanup, and re-run laid on a timeline as dependencies change | effects/the-effect-runs-after-the-render, the-dependency-array, cleanup-with-a-timer | 6 | planned |
-| `strict-mode-double` | A component rendered twice in development with the second render discarded | effects/strict-mode-and-computed-values | 6 | planned |
+| `controlled-input` | The loop between an input's value and the state that owns it, with the keystroke that the state rejects | controlled-forms/a-controlled-input | 6 | built |
+| `effect-timeline` | Render, commit, effect, cleanup, and re-run laid on a timeline as dependencies change | effects/the-effect-runs-after-the-render, the-dependency-array, cleanup-with-a-timer | 6 | built |
+| `strict-mode-double` | A component rendered twice in development with the second render discarded | effects/strict-mode-and-computed-values | 6 | built |
 | `ref-vs-state` | A ref changed without a render beside state changed with one | refs-and-browser-apis/a-ref-that-does-not-re-render | 6 | planned |
 | `router-match` | A URL matched against routes top to bottom, with the parameters pulled out of the winning one | routing/two-pages-with-routes-and-link, a-detail-page-with-useparams | 6 | planned |
 | `url-as-state` | Search parameters and the UI that reads them, changed from either side | url-state/a-search-field-in-the-url | 6 | planned |
