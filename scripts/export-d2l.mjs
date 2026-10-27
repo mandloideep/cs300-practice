@@ -1,14 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
-// Writes one Brightspace page per unit of a path to dist-d2l/<path-id>/<unit-id>.html, plus the
-// bare content block as <unit-id>.fragment.html for pasting into an existing D2L page.
+// Writes one Brightspace page per open unit of a path to dist-d2l/<path-id>/<unit-id>.html, plus
+// the bare content block as <unit-id>.fragment.html for pasting into an existing D2L page. A unit
+// the content build compiled as closed is skipped, and each topic lists its lecture links.
 // Usage: npm run export:d2l -- <path-id>   (after npm run build:content)
 
 const SITE_URL = "https://mandloideep.github.io/cs300-react-lab/";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const indexPath = path.join(root, "public/content/index.json");
+const contentDir = path.join(root, "public/content");
 const outRoot = path.join(root, "dist-d2l");
 
 // Copied from cs-300-content terms/fall-2026/operations/d2l-build-kit/templates/
@@ -369,6 +370,16 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;");
 }
 
+function lectureList(topic) {
+  const lectures = (topic?.links ?? []).filter((link) => link.kind === "lecture");
+  if (lectures.length === 0) return "";
+  const items = lectures.map(
+    (link) =>
+      `            <li>Lecture: <a href="${escapeHtml(link.url)}">${escapeHtml(link.title)}</a></li>`,
+  );
+  return `\n          <ul>\n${items.join("\n")}\n          </ul>\n        `;
+}
+
 function topicList(entries, topics) {
   const items = entries.map((entry) => {
     const topic = topics.get(entry.id);
@@ -376,7 +387,7 @@ function topicList(entries, topics) {
     const details = topic
       ? `<br>${escapeHtml(topic.summary)} About ${escapeHtml(topic.minutes)} minutes, ${topic.steps.length} steps.`
       : "";
-    return `        <li><a href="${url}">${escapeHtml(topic?.title ?? entry.id)}</a>${details}</li>`;
+    return `        <li><a href="${url}">${escapeHtml(topic?.title ?? entry.id)}</a>${details}${lectureList(topic)}</li>`;
   });
   return `      <ol>\n${items.join("\n")}\n      </ol>`;
 }
@@ -407,45 +418,79 @@ export function renderUnit(path, unit, topics) {
   return parts.filter(Boolean).join("\n");
 }
 
-function main() {
-  const pathId = process.argv[2];
-  if (!fs.existsSync(indexPath)) {
-    fail("public/content/index.json is missing; run npm run build:content first.");
-  }
-  const index = JSON.parse(fs.readFileSync(indexPath, "utf8"));
+export class ExportError extends Error {}
+
+// Returns { pages: [{ unit, page, fragment }], closed: [unit] } for the open and the closed units of
+// the path in a compiled index, or throws ExportError. readTopic(id) returns the compiled topic file, whose links the index may not carry.
+export function exportPath(index, pathId, readTopic) {
   const paths = index.paths ?? [];
+  const known = `Paths: ${paths.map((p) => p.id).join(", ") || "none"}.`;
   if (!pathId) {
-    fail(
-      `name a path id, for example npm run export:d2l -- ${paths[0]?.id ?? "fall-2026"}. Paths: ${paths.map((p) => p.id).join(", ") || "none"}.`,
+    throw new ExportError(
+      `name a path id, for example npm run export:d2l -- ${paths[0]?.id ?? "fall-2026"}. ${known}`,
     );
   }
   const labPath = paths.find((candidate) => candidate.id === pathId);
-  if (!labPath) fail(`no path "${pathId}". Paths: ${paths.map((p) => p.id).join(", ") || "none"}.`);
+  if (!labPath) {
+    throw new ExportError(
+      `no path "${pathId}". ${known} An inactive path is compiled only by npm run build:content -- --all.`,
+    );
+  }
 
-  const topics = new Map((index.topics ?? []).map((topic) => [topic.id, topic]));
-  for (const unit of labPath.units ?? []) {
+  const units = (labPath.units ?? []).filter((unit) => !unit.closed);
+  const topics = new Map();
+  for (const unit of units) {
     for (const entry of unit.topics ?? []) {
-      if (!topics.has(entry.id)) fail(`unit ${unit.id} names unknown topic ${entry.id}.`);
+      const listed = (index.topics ?? []).find((topic) => topic.id === entry.id);
+      if (!listed) throw new ExportError(`unit ${unit.id} names unknown topic ${entry.id}.`);
+      topics.set(entry.id, {
+        ...listed,
+        links: listed.links ?? readTopic(entry.id)?.links ?? null,
+      });
     }
   }
 
-  const outDir = path.join(outRoot, labPath.id);
-  fs.rmSync(outDir, { recursive: true, force: true });
-  fs.mkdirSync(outDir, { recursive: true });
-  for (const unit of labPath.units ?? []) {
+  const pages = units.map((unit) => {
     const content = renderUnit(labPath, unit, topics);
     const page = TEMPLATE.replace("{{PAGE_TITLE}}", escapeHtml(`${unit.title} | CS300 Lab`))
-      .replace("{{PAGE_CONTENT}}", content)
+      .replace("{{PAGE_CONTENT}}", () => content)
       .replace("{{FOOTER}}", escapeHtml(`CS300 ${labPath.title}`));
+    return { unit, page, fragment: content.replace(/^ {6}/gm, "") + "\n" };
+  });
+  return { pages, closed: (labPath.units ?? []).filter((unit) => unit.closed) };
+}
+
+function readCompiled(file) {
+  return JSON.parse(fs.readFileSync(path.join(contentDir, file), "utf8"));
+}
+
+function main() {
+  const pathId = process.argv[2];
+  if (!fs.existsSync(path.join(contentDir, "index.json"))) {
+    fail("public/content/index.json is missing; run npm run build:content first.");
+  }
+  const index = readCompiled("index.json");
+  let exported;
+  try {
+    exported = exportPath(index, pathId, (id) => readCompiled(`topics/${id}.json`));
+  } catch (error) {
+    if (error instanceof ExportError) fail(error.message);
+    throw error;
+  }
+
+  const outDir = path.join(outRoot, pathId);
+  fs.rmSync(outDir, { recursive: true, force: true });
+  fs.mkdirSync(outDir, { recursive: true });
+  for (const { unit, page, fragment } of exported.pages) {
     fs.writeFileSync(path.join(outDir, `${unit.id}.html`), page);
-    fs.writeFileSync(
-      path.join(outDir, `${unit.id}.fragment.html`),
-      content.replace(/^ {6}/gm, "") + "\n",
-    );
+    fs.writeFileSync(path.join(outDir, `${unit.id}.fragment.html`), fragment);
     console.log(
-      `export:d2l: wrote dist-d2l/${labPath.id}/${unit.id}.html and ${unit.id}.fragment.html`,
+      `export:d2l: wrote dist-d2l/${pathId}/${unit.id}.html and ${unit.id}.fragment.html`,
     );
+  }
+  for (const unit of exported.closed) {
+    console.log(`export:d2l: skipped ${unit.id}, which opens on ${unit.opens}`);
   }
 }
 
-main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main();
