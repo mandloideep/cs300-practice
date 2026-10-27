@@ -3,7 +3,7 @@
   "title": "DOM and events",
   "area": "dom",
   "summary": "Select elements from the page, change their text and classes, create and remove elements, and respond to clicks and form submissions. You will reproduce the parentheses mistake in addEventListener, handle a whole list with one delegated listener, carry data on elements with data attributes, and keep the list across a reload with localStorage.",
-  "prerequisites": [],
+  "prerequisites": ["javascript-basics"],
   "minutes": 90,
   "updated": "2026-10-26",
   "changeNote": "First version."

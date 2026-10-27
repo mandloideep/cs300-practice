@@ -3,9 +3,11 @@ title: Select the elements
 mode: edit
 entry: index.html
 inspector:
-  views: []
+  views: [dom]
 required: [status-selected, three-items-counted, missing-is-null]
 ---
+
+**We used this in:** [JavaScript basics](#/topic/javascript-basics), where we worked with arrays, objects, and callbacks in the console before touching the page.
 
 In Week 5 and Week 6 Session 1 our JavaScript worked with numbers, strings, arrays, and objects, and it printed its results to the console.
 The page did not change, because nothing connected the script to it.

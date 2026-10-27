@@ -3,7 +3,7 @@ title: Event delegation on the list
 mode: edit
 entry: index.html
 inspector:
-  views: []
+  views: [dom]
 required: [remove-button-on-every-item, one-listener-on-the-list, works-for-added-items]
 ---
 

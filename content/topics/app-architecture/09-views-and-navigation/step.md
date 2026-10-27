@@ -3,7 +3,7 @@ title: Views compose a screen, and a button chooses the view
 mode: edit
 entry: index.html
 inspector:
-  views: [network]
+  views: [network, dom]
 api:
   default: fixtures
 required: [bookmarks-view, browse-view-returns, current-button-marked]

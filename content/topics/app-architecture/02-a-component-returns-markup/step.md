@@ -3,7 +3,7 @@ title: A component is a function that returns markup
 mode: edit
 entry: index.html
 inspector:
-  views: []
+  views: [dom]
 required: [three-numbered-cards, titles-are-text, message-counts]
 ---
 

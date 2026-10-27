@@ -3,7 +3,7 @@ title: Change text and classes
 mode: edit
 entry: index.html
 inspector:
-  views: []
+  views: [dom]
 required: [status-text, first-item-done, counts-the-done-items]
 ---
 

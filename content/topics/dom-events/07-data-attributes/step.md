@@ -3,7 +3,7 @@ title: Data attributes
 mode: edit
 entry: index.html
 inspector:
-  views: []
+  views: [dom]
 required: [items-carry-data, remove-uses-the-id, filter-by-category]
 ---
 

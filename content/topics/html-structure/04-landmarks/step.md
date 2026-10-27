@@ -3,7 +3,7 @@ title: Landmarks instead of divs
 mode: edit
 entry: index.html
 inspector:
-  views: []
+  views: [dom]
 required: [four-landmarks, three-sections, no-wrapper-divs]
 ---
 

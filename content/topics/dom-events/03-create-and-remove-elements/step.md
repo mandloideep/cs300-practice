@@ -3,9 +3,11 @@ title: Create and remove elements
 mode: edit
 entry: index.html
 inspector:
-  views: []
+  views: [dom]
 required: [placeholder-removed, one-item-per-project, items-have-parts]
 ---
+
+**We used this in:** [JavaScript basics](#/topic/javascript-basics), where we worked with arrays, objects, and callbacks in the console before touching the page.
 
 So far the three projects were typed into the HTML.
 Real pages get their data from a file, a server, or the user, and the elements have to be made from that data.

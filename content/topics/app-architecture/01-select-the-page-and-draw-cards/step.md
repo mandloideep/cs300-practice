@@ -3,7 +3,7 @@ title: Select the page and draw cards from data
 mode: edit
 entry: index.html
 inspector:
-  views: []
+  views: [dom]
 required: [three-cards, cards-have-parts, message-counts]
 ---
 

@@ -3,7 +3,7 @@ title: A table for data
 mode: edit
 entry: index.html
 inspector:
-  views: []
+  views: [dom]
 required: [header-row, body-rows, cells-match-columns]
 ---
 
