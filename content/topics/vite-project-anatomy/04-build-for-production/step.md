@@ -51,6 +51,22 @@ dist/
     index-CjQ7w0Ld.css
 ```
 
+Step through the picture to see where `dist` sits in the project and what each file in it holds.
+
+```demo name="project-tree"
+stage: Before the build
+my-first-react/
+  index.html          The page you edited, which loads /src/main.jsx
+  src/                Your components, as JSX that no browser reads
+  node_modules/       React, Vite, and the packages they need
+stage: After npm run build
++ dist/               The built site a server hosts; rebuilt from src, never edited
++   index.html        The page, now loading the bundled files in assets
++   assets/
++     index-Bd5MmS7H.js   Your code and React, compiled, joined, and shortened
++     index-CjQ7w0Ld.css  The styles, gathered into one file
+```
+
 Open `dist/index.html` in your editor and compare it with the `index.html` you edited.
 
 ```html

@@ -63,7 +63,7 @@ For a course project, `HashRouter` is the simpler choice: one word in `main.jsx`
 
 This checklist is the whole topic in five lines; [Deploy a Vite project](#/topic/deploy-with-github-pages/5) repeats it.
 
-1. `base: "./"` in `vite.config.js`, so that the built page finds its assets at any address; the project this topic downloads already has it.
+1. `base: "./"` in `vite.config.js`, so that the built page finds its assets at any address; every project you download from this site already has it.
 2. The Pages source in the repository's **Settings > Pages**: **GitHub Actions** for a Vite project and **Deploy from a branch** for a plain page.
 3. `HashRouter` in place of `BrowserRouter`, or a `404.html` that copies `index.html`, in a project that uses React Router.
 4. A `.gitignore` with `node_modules` and `dist`, so that the installed packages and the built files are never committed.

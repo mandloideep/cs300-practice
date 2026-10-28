@@ -94,6 +94,23 @@ Leave the server running while you work, and stop it with `Ctrl+C` in the termin
 
 The workspace download on this step is the project we use for the rest of this topic, already set up so that you can skip the creator if it fails on your computer.
 Unzip it, open the folder in Visual Studio Code, and run `npm install` and then `npm run dev`.
+Step through the picture to see what the download holds and what `npm install` adds to it, and select a file to read what it is for.
+
+```demo name="project-tree"
+stage: In the download
+my-first-react/
+  .gitignore          Tells Git to leave node_modules and dist out of every commit
+  index.html          The page the browser opens; React draws inside its root div
+  package.json        The project's name, its scripts, and the packages it needs
+  styles.css          The page's styles, linked from index.html
+  vite.config.js      Vite's settings, with the plugin that lets it compile JSX
+  src/
+    App.jsx           The top component, with the heading and the counter
+    main.jsx          Finds the root div and renders App into it
+stage: After npm install
++ node_modules/       Every installed package; never edited, never committed
++ package-lock.json   The exact version npm chose for every package
+```
 
 ## Read more
 

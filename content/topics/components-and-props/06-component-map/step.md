@@ -37,7 +37,7 @@ Read it top to bottom as "App contains a SiteHeader, then the main region, then 
 Lines marked HTML are elements, not components, so the inspector does not show them as boxes.
 
 We created the two files for you, each holding a one-line placeholder component that draws nothing.
-Open the `src/SiteHeader.jsx` tab and replace the placeholder with the header.
+Open `src/SiteHeader.jsx` from the file tree, inside `src`, and replace the placeholder with the header.
 
 ```jsx file="src/SiteHeader.jsx" action="replace" anchor="export default function SiteHeader() {}"
 export default function SiteHeader({ siteName }) {
@@ -52,7 +52,7 @@ export default function SiteHeader({ siteName }) {
 
 The header takes the site name as a prop, so the same header could serve another department's catalog.
 
-Open the `src/SiteFooter.jsx` tab and replace its placeholder with the footer.
+Open `src/SiteFooter.jsx` from the file tree and replace its placeholder with the footer.
 
 ```jsx file="src/SiteFooter.jsx" action="replace" anchor="export default function SiteFooter() {}"
 export default function SiteFooter() {
@@ -106,7 +106,7 @@ The import path starts with `./` because the file sits in the same folder, and i
 Each piece can change on its own; editing `SiteFooter` cannot break a `CourseCard`.
 
 To practice the habit, move `Card` and `CourseCard` into files of their own in the same way and run again.
-The page and the tree should not change at all; only the file tabs do.
+The page and the inspector's component tree should not change at all; only the file tree gains two files.
 
 **If it breaks:** A diagnostic that says a file cannot be found means the import path and the file name differ; names are case sensitive, so `./siteHeader.jsx` does not find `SiteHeader.jsx`.
 If the console says `does not provide an export named 'default'`, the new file is missing `export default` before `function`.

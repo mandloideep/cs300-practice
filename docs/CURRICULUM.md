@@ -20,13 +20,13 @@ Every step has at least one predict block or quiz, so the student answers "what 
 | Topic | Steps | Explainers | Phase |
 | --- | --- | --- | --- |
 | javascript-basics | variables-and-types, string-methods, operators-and-coercion, arrays-and-loops, map-and-filter, objects-and-arrays-of-objects, the-console-as-a-tool | `type-coercion`, `truthy-falsy`, `string-immutability`, `array-index-walk`, `map-filter-reduce`, `object-shape`, `value-vs-reference` | 6 |
-| *functions-and-callbacks* | declare-and-call, parameters-and-return, functions-are-values, pass-a-function, the-parentheses-mistake, arrow-functions, run-it-later | `function-call`, `callback`, `arrow-equivalence`, `event-loop` | 6 |
-| *scope-and-closures* | block-scope, let-const-and-var, the-scope-chain, a-function-remembers, a-counter-factory, the-loop-variable-classic | `scope-chain`, `closure` | 6 |
-| *objects-and-references* | copy-a-number-copy-an-object, equality, spread-and-destructure, nested-data-and-optional-chaining, json-in-and-out, methods-and-this | `value-vs-reference`, `equality`, `spread-and-destructure`, `optional-chaining`, `json-roundtrip`, `this-binding` | 6 |
-| *arrays-in-depth* | find-some-and-every, sort-and-its-surprise, slice-versus-splice, reduce, chain-the-methods, change-or-copy | `array-methods`, `map-filter-reduce`, `mutation-vs-copy` | 6 |
-| *errors-and-debugging* | read-a-stack-trace, throw-and-catch, the-common-messages, console-beyond-log, breakpoints-in-devtools, defensive-code | `call-stack`, `error-propagation`, `error-decoder` | 6 |
-| *async-and-the-event-loop* | the-call-stack, timers-and-the-queue, a-promise, then-catch-and-finally, async-and-await, several-at-once, ordering-puzzles | `call-stack`, `event-loop`, `promise-states`, `async-await-unroll`, `promise-all` | 6 |
-| *modules-and-imports* | one-file-per-concern, export-and-import, default-and-named, a-module-runs-once, the-browser-needs-type-module, a-bare-import-fails | `module-graph`, `bare-import-fail` | 6 |
+| functions-and-callbacks | declare-and-call, parameters-and-return, functions-are-values, pass-a-function, the-parentheses-mistake, arrow-functions, run-it-later | `function-call`, `callback`, `arrow-equivalence`, `event-loop` | 6 |
+| scope-and-closures | block-scope, let-const-and-var, the-scope-chain, a-function-remembers, a-counter-factory, the-loop-variable-classic | `scope-chain`, `closure` | 6 |
+| objects-and-references | copy-a-number-copy-an-object, equality, spread-and-destructure, nested-data-and-optional-chaining, json-in-and-out, methods-and-this | `value-vs-reference`, `equality`, `spread-and-destructure`, `optional-chaining`, `json-roundtrip`, `this-binding` | 6 |
+| arrays-in-depth | find-some-and-every, sort-and-its-surprise, slice-versus-splice, reduce, chain-the-methods, change-or-copy | `array-methods`, `map-filter-reduce`, `mutation-vs-copy` | 6 |
+| errors-and-debugging | read-a-stack-trace, throw-and-catch, the-common-messages, console-beyond-log, breakpoints-in-devtools, defensive-code | `call-stack`, `error-propagation`, `error-decoder` | 6 |
+| async-and-the-event-loop | the-call-stack, timers-and-the-queue, a-promise, then-catch-and-finally, async-and-await, several-at-once, ordering-puzzles | `call-stack`, `event-loop`, `promise-states`, `async-await-unroll`, `promise-all` | 6 |
+| modules-and-imports | one-file-per-concern, export-and-import, default-and-named, a-module-runs-once, the-browser-needs-type-module, a-bare-import-fails | `module-graph`, `bare-import-fail` | 6 |
 | *classes-and-prototypes* | a-class-with-a-method, this-inside-a-method, the-prototype-chain, extends-and-super, when-you-meet-classes | `this-binding`, `prototype-chain` | later |
 | *modern-syntax-reference* | template-literals, ternary-and-short-circuit, nullish-and-optional-chaining, destructuring-in-parameters, rest-and-spread, tagged-reference | `optional-chaining`, `spread-and-destructure` | later |
 
@@ -69,22 +69,22 @@ Every React topic exists and is retrofitted in Phase 6 with the explainers liste
 | routing | two-pages-with-routes-and-link, show-the-current-page-with-navlink, a-detail-page-with-useparams, a-catch-all-route, navigate-after-a-submit | `router-match` | 6 |
 | route-data-and-custom-hooks | load-the-list-page-with-usefetch, a-detail-page-keyed-on-useparams, a-missing-product-and-a-failed-request, a-uselocalstorage-hook, custom-hooks-and-built-in-hooks | `custom-hook-extract` | 6 |
 | url-state | a-search-field-in-the-url, a-category-filter-that-survives-back, copy-a-shareable-link, walk-the-app-from-the-address-bar | `url-as-state` | 6 |
-| *why-react-behaves-this-way* | callbacks-and-onclick, closures-and-stale-state, map-and-keys, the-event-loop-and-batching, modules-and-components, identity-and-replacing-state | `callback`, `closure`, `state-snapshot`, `setter-batching`, `reconcile-keys`, `event-loop`, `module-graph`, `mutation-vs-copy` | 6 |
+| why-react-behaves-this-way | callbacks-and-onclick, closures-and-stale-state, map-and-keys, the-event-loop-and-batching, modules-and-components, identity-and-replacing-state | `callback`, `closure`, `state-snapshot`, `setter-batching`, `reconcile-keys`, `event-loop`, `module-graph`, `mutation-vs-copy` | 6 |
 
 ## Part 4: tooling and libraries
 
 | Topic | Steps | Explainers | Phase |
 | --- | --- | --- | --- |
-| *tooling-from-scratch* | javascript-outside-the-browser, npm-and-package-json, node-modules-and-the-lockfile, why-a-bundler, what-vite-does, what-esbuild-does, run-it-on-your-computer | `terminal`, `package-json-explorer`, `node-modules-tree`, `bare-import-fail`, `dev-server-vs-build`, `module-graph`, `jsx-to-calls` | 6 |
+| tooling-from-scratch | javascript-outside-the-browser, npm-and-package-json, node-modules-and-the-lockfile, why-a-bundler, what-vite-does, what-esbuild-does, run-it-on-your-computer | `terminal`, `package-json-explorer`, `node-modules-tree`, `bare-import-fail`, `dev-server-vs-build`, `module-graph`, `jsx-to-calls` | 6 |
 | *styling-with-tailwind* | a-card-in-plain-css, the-same-card-in-utilities, why-teams-choose-utilities, responsive-and-state-variants, dark-mode, extract-a-component-not-a-class, when-not-to | `utility-classes`, `breakpoint-slider` | 8 |
 | *widely-used-libraries* | what-a-library-is, how-to-judge-one, server-state-with-tanstack-query, validation-with-zod, dates-with-date-fns, class-names-with-clsx, app-state-with-zustand, components-from-radix-and-shadcn, motion-with-framer-motion | `library-fit`, `semver` | 8 |
 | *code-quality* | eslint-finds-the-bug, prettier-ends-the-argument, format-on-save, naming-and-small-functions, comments-that-earn-their-place | `lint-and-format` | 8 |
-| *git-basics* | why-keep-history, the-three-places, read-the-history, what-to-commit, undo-safely, a-branch-is-a-pointer, merge-a-branch, do-it-on-your-computer | `commit-graph`, `three-trees`, `project-tree`, `branch-and-merge`, `terminal` | 7 |
-| *git-collaboration* | what-a-conflict-is, resolve-a-conflict, a-remote-on-github, a-pull-request, code-review, the-daily-loop, when-things-go-wrong, ship-it-together | `merge-conflict`, `remote-sync`, `pull-request-flow`, `terminal` | 7 |
-| *deploy-with-github-pages* | what-a-static-host-serves, a-plain-page-from-a-branch, the-address-and-the-base, a-workflow-on-every-push, deploy-a-vite-project, update-and-roll-back | `static-deploy`, `ci-pipeline`, `terminal` | 7 |
+| git-basics | why-keep-history, the-three-places, read-the-history, what-to-commit, undo-safely, a-branch-is-a-pointer, merge-a-branch, do-it-on-your-computer | `commit-graph`, `three-trees`, `project-tree`, `branch-and-merge`, `terminal` | 7 |
+| git-collaboration | what-a-conflict-is, resolve-a-conflict, a-remote-on-github, a-pull-request, code-review, the-daily-loop, when-things-go-wrong, ship-it-together | `merge-conflict`, `remote-sync`, `pull-request-flow`, `terminal` | 7 |
+| deploy-with-github-pages | what-a-static-host-serves, a-plain-page-from-a-branch, the-address-and-the-base, a-workflow-on-every-push, deploy-a-vite-project, update-and-roll-back | `static-deploy`, `ci-pipeline`, `terminal` | 7 |
 | *tooling-choices* | vite-versus-the-rest, javascript-versus-typescript, when-a-framework-like-next-fits, what-to-read-next | none | later |
 
-The Git and deployment topics are written in Phase 7 as `PHASE7.md` plans them: Git runs only on the student's computer, the explainers model it, one edit step resolves a conflict in the site, and the local steps end with a repository, a merged pull request, and a project on GitHub Pages.
+The Git and deployment topics were written in Phase 7 as `PHASE7.md` plans them: Git runs only on the student's computer, the explainers model it, one edit step resolves a conflict in the site, and the local steps end with a repository, a merged pull request, and a project on GitHub Pages.
 The library tour explains what problem each library solves, shows one call, and says when not to reach for it.
 The Tailwind steps run inside this site through the vendored Tailwind browser build that [PHASE6.md](PHASE6.md) specifies; the other libraries are taught through explainers and local steps, because the runner resolves only the pinned React packages.
 
@@ -115,7 +115,7 @@ They use this repository as the worked example: its `check.yml` and `deploy.yml`
 | The language | 8 | 2 | 8 | 0 | 0 | 0 | 2 |
 | The browser | 5 | 3 | 5 | 0 | 1 | 0 | 2 |
 | React | 16 | 0 | 16 | 0 | 0 | 0 | 0 |
-| Tooling and libraries | 1 | 7 | 1 | 3 | 3 | 0 | 1 |
+| Tooling and libraries | 4 | 4 | 1 | 3 | 3 | 0 | 1 |
 | Production | 0 | 6 | 0 | 0 | 0 | 6 | 0 |
 | The site itself | 1 | 0 | 1 | 0 | 0 | 0 | 0 |
 

@@ -104,6 +104,25 @@ Everything else maps the same way.
 | `saveBookmarks` called inside the handler | `useEffect(() => { ... }, [bookmarks])` | Side effects |
 | Sections of one file | One `.jsx` file per component | Structure |
 
+The last row is the one you will see first in Week 10.
+Laid out as a Vite project, one way to split the sections of `app.js` into files is this; select a file to see which section it holds.
+
+```demo name="project-tree"
+coursehub-react/
+  index.html            The page; React draws inside its root div, which replaces the Elements section
+  styles.css            The same styles as the vanilla page
+  src/
+    main.jsx            Finds the root div and renders App into it
+    App.jsx             State, Views, and Navigation: the state, the actions, and the view to show
+    storage.js          Storage: loadBookmarks and saveBookmarks
+    api.js              Requests: requestBooks, which fetches, checks, and normalizes
+    components/
+      SearchForm.jsx    Events: the search form and its submit handler
+      BookCard.jsx      Components: one book, with its bookmark button
+      BookList.jsx      Components: a list of BookCard components
+      StatusMessage.jsx  Render: the loading, error, and empty messages
+```
+
 React removes the plumbing, not the concepts.
 The components, the state, the props, the events, the views, and the sections are exactly what you just built and read, and the names will already be familiar when they come back as files in a Vite project.
 

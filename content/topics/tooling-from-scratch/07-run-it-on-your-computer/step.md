@@ -32,6 +32,23 @@ Open a terminal there; it starts inside the project folder.
 
 Look at what is in the folder before anything is installed: `index.html`, `styles.css`, `src/main.js`, `package.json`, and a `.gitignore`.
 There is no `node_modules` and no `package-lock.json` yet.
+Step through the picture to see what each command in this step adds to the folder.
+
+```demo name="project-tree"
+stage: In the download
+tooling-from-scratch-step-7/
+  .gitignore          Tells Git to leave node_modules and dist out of every commit
+  index.html          The page; it loads src/main.js as a module
+  package.json        One dependency, ms, and one development dependency, vite
+  styles.css          The page's styles
+  src/
+    main.js           Imports ms by its bare name and lists the sessions
+stage: After npm install
++ node_modules/       ms, Vite, and the packages Vite needs; never edited, never committed
++ package-lock.json   The exact version, address, and checksum of every package
+stage: After npm run build
++ dist/               The built site: index.html and one bundled script with ms inside
+```
 Open `package.json`: one dependency, `"ms": "2.1.3"`, and one development dependency, `"vite": "8.2.4"`, both pinned to exact versions with no caret.
 Open `src/main.js`: its first line is `import ms from "ms";`, a bare specifier, which the browser cannot resolve on its own.
 

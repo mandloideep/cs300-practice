@@ -31,7 +31,7 @@ After the array is deleted from main.js and before any import, what does a run s
 ```
 
 Start with the data.
-`src/students.js` is already in the file list and holds only `export {};`, which is an empty module; replace all of it with the array.
+`src/students.js` is already in the file tree, inside `src`, and holds only `export {};`, which is an empty module; replace all of it with the array.
 
 ```js file="src/students.js" action="create"
 export const students = [
@@ -74,6 +74,22 @@ The five rows and the summary are back, and the console shows `students.js ran` 
 You may have typed lines like `import App from "./App.jsx"` before without being told what they do; this topic is the why.
 The Week 8 CourseHub build in [Application architecture](#/topic/app-architecture) kept one `app.js` and organized it into sections by responsibility.
 Modules take that one step further: a section becomes a file, and the `import` lines at the top of a file list exactly what it depends on.
+Step through the picture to see the files this topic splits `main.js` into, one step at a time.
+
+```demo name="project-tree"
+stage: Step 1
+src/
+  main.js        Imports the students and writes the rows and the summary
+  students.js    The student data, exported as students
+stage: Step 2
++ format.js      letterGrade and formatRow, exported for the files that show a row
+stage: Step 3
++ render.js      Writes the rows and the summary into the page
+stage: Step 4
++ settings.js    One settings object that every file importing it shares
+stage: Step 6
++ dates.js       Formats the date the page shows as its last update
+```
 
 Try one mistake on purpose.
 Change `"./students.js"` in the import to `"./student.js"`, without the `s`, and run.

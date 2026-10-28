@@ -5,9 +5,26 @@ mode: read
 
 Not every file in a project folder belongs in its history.
 A repository holds what a person wrote and what is needed to rebuild everything else, and nothing that a command recreates or that must stay secret.
-Step through the Vite project in the picture as it grows, and decide for each file whether you would commit it before reading the rule below.
+Step through the Vite project in the picture as it grows, and select each file to see whether it is committed, ignored, or never allowed in.
 
 ```demo name="project-tree"
+stage: After npm create vite
+my-first-react/
+  .gitignore          Commit: the list of what Git leaves out
+  index.html          Commit: the page you wrote
+  package.json        Commit: the packages the project needs and its scripts
+  styles.css          Commit: the styles you wrote
+  vite.config.js      Commit: how Vite builds this project
+  src/
+    App.jsx           Commit: your code
+    main.jsx          Commit: your code
+stage: After npm install
++ node_modules/       Ignored: npm install rebuilds it from the lockfile
++ package-lock.json   Commit: the exact versions everyone installs
+stage: After npm run build
++ dist/               Ignored: npm run build rebuilds it from src
+stage: After you save an API key
++ .env                Never: a secret anyone who can read the repository could use
 ```
 
 ## The rule
@@ -31,7 +48,7 @@ The lockfile row is the rule from [Tooling from scratch](#/topic/tooling-from-sc
 ## .gitignore
 
 A file named `.gitignore` at the top of the project lists what Git should not offer to commit, one pattern per line.
-The Vite projects you download from this site carry one:
+Every Vite project you download from this site carries one:
 
 ```text
 node_modules

@@ -13,7 +13,7 @@ Step through the picture of one run, and notice that the site changes only at th
 
 ## The file
 
-The workflow lives at `.github/workflows/deploy.yml`, and the project this topic downloads carries it.
+The workflow lives at `.github/workflows/deploy.yml`, and every Vite project you download from this site carries it.
 It is this site's own deploy workflow cut down to what a project without tests needs.
 The file is YAML, where indentation shows what belongs to what; read it a part at a time.
 

@@ -186,6 +186,7 @@ required: [one-products-request, uses-api-base, products-render]
 | `api.default` | no | `fixtures`, `custom`, or a preset id; include it only when the workspace fetches |
 | `required` | no | Check ids that must pass; the default is every check `check.js` returns |
 | `files` | no | On an edit step, a map from a workspace path to one sentence that says what the file is for; the tree shows it in place of the sentence from `src/editor/fileRoles.js` |
+| `starterCompiles` | no | `false` on an edit step whose starter is meant not to compile, such as `git-collaboration/resolve-a-conflict`, whose `src/App.jsx` holds conflict markers; the validator then compiles only the solution, rejects a conflict marker in it, and rejects the field when the starter compiles after all |
 
 The body follows the Week 8 pattern: a short explanation, small typed edits with an explanation beside each, a `**Check:**` paragraph, and an `**If it breaks:**` paragraph.
 Put each full sentence on its own line, and never use the em dash character.
