@@ -9,7 +9,7 @@ This file is the complete list of the explainers the lab needs, for the content 
 - **Id** is the name used in the `demo` fence, `demo name="<id>"`, and the folder under `src/demos/`.
 - **Shows** is the one idea the explainer makes visible and the control the student has over it.
 - **Serves** names the topics and, where it matters, the steps that place it; a topic in italics does not exist yet.
-- **Phase** is when it is built: 6 for the explainer framework and the JavaScript foundation, 7 for tooling and libraries, 8 for production, and later for anything after that.
+- **Phase** is when it is built: 6 for the explainer framework and the JavaScript foundation, 7 for the project tree, Git, and deployment, 8 for tooling and libraries, 9 for production, and later for anything after that.
 - **Status** is `planned`, `built`, or `in use`; a built explainer is in use once a step places it.
 
 Every explainer honors the one contract in [PHASE6.md](PHASE6.md): it never autoplays, it has Play, Pause, Step, and Reset controls that work from the keyboard, reduced motion shows the final state with Step still working, it carries a text description for assistive technology, and it draws only with the design tokens.
@@ -22,6 +22,7 @@ Each one takes its data from the fence body where that makes sense, so the same 
 | `page-tour` | The step page in miniature with each pane labeled; selecting a pane says what it is for and when to look at it | *using-the-lab* | 6 | in use |
 | `edit-run-loop` | The cycle of edit, Run, result, console, and checks as one loop the student advances a stage at a time | *using-the-lab* | 6 | in use |
 | `inspector-tour` | A three-component tree with boundaries, a re-render flash, and the state panel, driven by a Click button inside the explainer | *using-the-lab*, react-mental-model | 6 | in use |
+| `project-tree` | A project folder as a tree that grows a stage at a time from the fence body, after `npm create vite`, `npm install`, and `npm run build`, with each file's description when selected | *getting-started*, vite-project-anatomy, tooling-from-scratch, modules-and-imports, app-architecture, *git-basics* | 7 | planned |
 
 ## HTML
 
@@ -43,7 +44,7 @@ Each one takes its data from the fence body where that makes sense, so the same 
 | `flex-axes` | A row of items with direction, justify, align, wrap, and gap as controls, and the main and cross axes drawn | css-layout/a-flex-row, a-flex-card-layout | 6 | in use |
 | `grid-tracks` | A grid with editable column and row templates and items the student places by line number | css-layout/a-grid-page | 6 | in use |
 | `breakpoint-slider` | A layout under a viewport width the student drags, with the active media query shown | css-layout/a-responsive-breakpoint | 6 | in use |
-| `utility-classes` | One card styled by a stylesheet and by utility classes side by side, with each class mapped to the declaration it stands for | *styling-with-tailwind* | 7 | planned |
+| `utility-classes` | One card styled by a stylesheet and by utility classes side by side, with each class mapped to the declaration it stands for | *styling-with-tailwind* | 8 | planned |
 
 ## JavaScript: values, functions, and scope
 
@@ -100,7 +101,7 @@ Each one takes its data from the fence body where that makes sense, so the same 
 | `preventdefault` | A form submitted with and without `preventDefault`, showing the reload that the page would do | dom-events/the-event-object-and-preventdefault | 6 | in use |
 | `storage-across-reload` | A key written to `localStorage`, the page reloaded, and the key read back, beside a variable that does not survive | dom-events/remember-with-localstorage, persistence | 6 | in use |
 | `http-anatomy` | A request and a response with method, URL, headers, status, and body, each part named when selected | fetch-basics, *http-and-apis* | 6 | in use |
-| `cors-check` | A browser request to another origin, the preflight, and the header that allows or blocks it | *http-and-apis*, *security-for-client-apps* | 8 | planned |
+| `cors-check` | A browser request to another origin, the preflight, and the header that allows or blocks it | *http-and-apis*, *security-for-client-apps* | 9 | planned |
 | `keyboard-events` | `keydown`, `keypress`, and `keyup` firing for one key, with the event properties read off each | *events-in-depth*, refs-and-browser-apis/a-keyboard-shortcut | later | planned |
 
 ## React
@@ -121,7 +122,7 @@ Each one takes its data from the fence body where that makes sense, so the same 
 | `router-match` | A URL matched against routes top to bottom, with the parameters pulled out of the winning one | routing/two-pages-with-routes-and-link, a-detail-page-with-useparams | 6 | in use |
 | `url-as-state` | Search parameters and the UI that reads them, changed from either side | url-state/a-search-field-in-the-url | 6 | in use |
 | `custom-hook-extract` | Stateful code inside a component folded into a hook, with the same calls shown in both places | route-data-and-custom-hooks/custom-hooks-and-built-in-hooks | 6 | in use |
-| `error-boundary` | A component that throws, the boundary that catches it, and the fallback that renders | *resilience-in-production* | 8 | planned |
+| `error-boundary` | A component that throws, the boundary that catches it, and the fallback that renders | *resilience-in-production* | 9 | planned |
 
 ## Tooling and libraries
 
@@ -132,25 +133,36 @@ Each one takes its data from the fence body where that makes sense, so the same 
 | `dev-server-vs-build` | A request served by the dev server, transformed on demand, beside the same page served from `dist/` | *tooling-from-scratch*, vite-project-anatomy/build-for-production | 6 | in use |
 | `package-json-explorer` | A `package.json` with each field named when selected, and the script that `npm run dev` expands to | *tooling-from-scratch* | 6 | in use |
 | `node-modules-tree` | A dependency pulling in its own dependencies, the tree that results, and the lockfile that pins it | *tooling-from-scratch* | 6 | in use |
-| `hot-module-replacement` | A file saved and only its module swapped in the running page, with state preserved | *tooling-from-scratch* | 7 | planned |
-| `env-at-build` | `import.meta.env` replaced by its value at build time, and why a secret in it ends up in the bundle | *building-for-production*, *security-for-client-apps* | 8 | planned |
-| `library-fit` | A problem, the hand-written solution, and the library call that replaces it, for each library the tour covers | *widely-used-libraries* | 7 | planned |
-| `semver` | A version range in `package.json` and which releases it accepts | *how-teams-ship* | 8 | planned |
-| `lint-and-format` | Code with a lint error and a format difference, fixed by the tools one at a time | *code-quality* | 7 | planned |
+| `hot-module-replacement` | A file saved and only its module swapped in the running page, with state preserved | *tooling-from-scratch* | 8 | planned |
+| `env-at-build` | `import.meta.env` replaced by its value at build time, and why a secret in it ends up in the bundle | *building-for-production*, *security-for-client-apps* | 9 | planned |
+| `library-fit` | A problem, the hand-written solution, and the library call that replaces it, for each library the tour covers | *widely-used-libraries* | 8 | planned |
+| `semver` | A version range in `package.json` and which releases it accepts | *how-teams-ship* | 9 | planned |
+| `lint-and-format` | Code with a lint error and a format difference, fixed by the tools one at a time | *code-quality* | 8 | planned |
+
+## Git and deployment
+
+| Id | Shows | Serves | Phase | Status |
+| --- | --- | --- | --- | --- |
+| `three-trees` | The working tree, the staging area, and the repository as three columns; a file edited, added, and committed moves across them with the `git status` output for each state | *git-basics*/the-three-places, undo-safely | 7 | planned |
+| `commit-graph` | Commits as a chain from the fence body, each with a short hash, a message, and a parent arrow; selecting one shows the snapshot it holds and the diff from its parent | *git-basics*/why-keep-history, read-the-history | 7 | planned |
+| `branch-and-merge` | A `main` and a feature branch; Step commits on either, `HEAD` follows the switch, and the merge draws a fast-forward or a merge commit depending on whether `main` moved | *git-basics*/a-branch-is-a-pointer, merge-a-branch | 7 | planned |
+| `merge-conflict` | Two branches that change the same line, the merge that stops, the file with conflict markers, and the resolved file after a choice the student makes | *git-collaboration*/what-a-conflict-is, resolve-a-conflict | 7 | planned |
+| `remote-sync` | A local and a remote history side by side; `push`, `fetch`, and `pull` move commits between them, with ahead and behind counts and a rejected push when the remote has moved | *git-collaboration*/a-remote-on-github, the-daily-loop, when-things-go-wrong | 7 | planned |
+| `pull-request-flow` | A branch pushed, a pull request opened, review comments, the checks running, the merge, and the branch deleted, one stage at a time | *git-collaboration*/a-pull-request, code-review, the-daily-loop | 7 | planned |
+| `static-deploy` | `dist/` copied to a host, the address each file gets under `/<repo>/`, a route refreshed, and what the host answers with and without a `404.html` | *deploy-with-github-pages*/what-a-static-host-serves, the-address-and-the-base, *deploying-and-ci* | 7 | planned |
+| `ci-pipeline` | Push, install, build, and deploy as stages with the log of each, a failing build that stops the rest, and the site unchanged until a run is green | *deploy-with-github-pages*/a-workflow-on-every-push, update-and-roll-back, *deploying-and-ci* | 7 | planned |
 
 ## Production
 
 | Id | Shows | Serves | Phase | Status |
 | --- | --- | --- | --- | --- |
-| `test-runner` | A failing unit test, the fix, and the passing run, in the output shape of a real runner | *testing-client-apps* | 8 | planned |
-| `test-pyramid` | Unit, component, and end-to-end tests placed by what they cover and what they cost | *testing-client-apps* | 8 | planned |
-| `ci-pipeline` | Push, lint, test, build, and deploy as stages, with a failing stage stopping the rest | *deploying-and-ci* | 8 | planned |
-| `bundle-map` | A bundle as a treemap, with a route split into its own chunk that loads on demand | *building-for-production* | 8 | planned |
-| `static-deploy` | `dist/` copied to a host, hashed file names, and the cache that the hash makes safe | *deploying-and-ci* | 8 | planned |
-| `loading-waterfall` | The requests a page makes drawn in time, and what moving a script or splitting a chunk changes | *building-for-production* | 8 | planned |
-| `accessibility-tree` | The tree a screen reader reads for a small page, with a missing label or role shown as a gap | *resilience-in-production* | 8 | planned |
-| `xss-escape` | A string with markup rendered by React as text, and the same string injected as HTML | *security-for-client-apps* | 8 | planned |
-| `secrets-in-the-client` | A key placed in client code, found in the shipped bundle, and the server-side proxy that keeps it out | *security-for-client-apps* | 8 | planned |
+| `test-runner` | A failing unit test, the fix, and the passing run, in the output shape of a real runner | *testing-client-apps* | 9 | planned |
+| `test-pyramid` | Unit, component, and end-to-end tests placed by what they cover and what they cost | *testing-client-apps* | 9 | planned |
+| `bundle-map` | A bundle as a treemap, with a route split into its own chunk that loads on demand | *building-for-production* | 9 | planned |
+| `loading-waterfall` | The requests a page makes drawn in time, and what moving a script or splitting a chunk changes | *building-for-production* | 9 | planned |
+| `accessibility-tree` | The tree a screen reader reads for a small page, with a missing label or role shown as a gap | *resilience-in-production* | 9 | planned |
+| `xss-escape` | A string with markup rendered by React as text, and the same string injected as HTML | *security-for-client-apps* | 9 | planned |
+| `secrets-in-the-client` | A key placed in client code, found in the shipped bundle, and the server-side proxy that keeps it out | *security-for-client-apps* | 9 | planned |
 | `feature-flag` | One flag switching a feature for some users, with the rollout widened a step at a time | *how-teams-ship* | later | planned |
 
 ## Counts
@@ -158,8 +170,9 @@ Each one takes its data from the fence body where that makes sense, so the same 
 | Phase | Explainers |
 | --- | --- |
 | 6 | 68 |
-| 7 | 4 |
-| 8 | 13 |
+| 7 | 9 |
+| 8 | 4 |
+| 9 | 11 |
 | later | 3 |
 
 Phase 6 builds its explainers in the order the content needs them, as [PHASE6.md](PHASE6.md) lists: the lab and the JavaScript foundation first, then React, then HTML and CSS.

@@ -43,7 +43,7 @@ Left out on purpose: generators and iterators, WeakMap and WeakRef, Symbol, Prox
 | fetch-basics | synchronous-and-asynchronous, promises-then-async-and-await, fetch-and-json, four-request-states, a-search-form-and-query-parameters, handle-every-failure | `event-loop`, `promise-states`, `async-await-unroll`, `fetch-timeline`, `http-anatomy` | 6 |
 | app-architecture | the ten existing steps | `module-graph`, `mutation-vs-copy`, `render-cycle` | 6 |
 | *events-in-depth* | capture-and-bubble, keyboard-events, pointer-and-touch, custom-events, debounce-and-throttle | `event-propagation`, `keyboard-events` | later |
-| *http-and-apis* | methods-and-status-codes, headers, query-strings-and-bodies, rest-shapes, cors, tokens-and-keys | `http-anatomy`, `cors-check` | 7 |
+| *http-and-apis* | methods-and-status-codes, headers, query-strings-and-bodies, rest-shapes, cors, tokens-and-keys | `http-anatomy`, `cors-check` | 8 |
 | *browser-storage* | localstorage-and-sessionstorage, cookies-in-one-page, indexeddb-exists, what-belongs-where | `storage-across-reload` | later |
 
 The javascript.info chapters this part covers: Document, Introduction to events, UI events in part, Forms and controls in part, Network requests in part, and Storing data in the browser.
@@ -76,11 +76,15 @@ Every React topic exists and is retrofitted in Phase 6 with the explainers liste
 | Topic | Steps | Explainers | Phase |
 | --- | --- | --- | --- |
 | *tooling-from-scratch* | javascript-outside-the-browser, npm-and-package-json, node-modules-and-the-lockfile, why-a-bundler, what-vite-does, what-esbuild-does, run-it-on-your-computer | `terminal`, `package-json-explorer`, `node-modules-tree`, `bare-import-fail`, `dev-server-vs-build`, `module-graph`, `jsx-to-calls` | 6 |
-| *styling-with-tailwind* | a-card-in-plain-css, the-same-card-in-utilities, why-teams-choose-utilities, responsive-and-state-variants, dark-mode, extract-a-component-not-a-class, when-not-to | `utility-classes`, `breakpoint-slider` | 7 |
-| *widely-used-libraries* | what-a-library-is, how-to-judge-one, server-state-with-tanstack-query, validation-with-zod, dates-with-date-fns, class-names-with-clsx, app-state-with-zustand, components-from-radix-and-shadcn, motion-with-framer-motion | `library-fit`, `semver` | 7 |
-| *code-quality* | eslint-finds-the-bug, prettier-ends-the-argument, format-on-save, naming-and-small-functions, comments-that-earn-their-place, version-control-in-one-page | `lint-and-format` | 7 |
+| *styling-with-tailwind* | a-card-in-plain-css, the-same-card-in-utilities, why-teams-choose-utilities, responsive-and-state-variants, dark-mode, extract-a-component-not-a-class, when-not-to | `utility-classes`, `breakpoint-slider` | 8 |
+| *widely-used-libraries* | what-a-library-is, how-to-judge-one, server-state-with-tanstack-query, validation-with-zod, dates-with-date-fns, class-names-with-clsx, app-state-with-zustand, components-from-radix-and-shadcn, motion-with-framer-motion | `library-fit`, `semver` | 8 |
+| *code-quality* | eslint-finds-the-bug, prettier-ends-the-argument, format-on-save, naming-and-small-functions, comments-that-earn-their-place | `lint-and-format` | 8 |
+| *git-basics* | why-keep-history, the-three-places, read-the-history, what-to-commit, undo-safely, a-branch-is-a-pointer, merge-a-branch, do-it-on-your-computer | `commit-graph`, `three-trees`, `project-tree`, `branch-and-merge`, `terminal` | 7 |
+| *git-collaboration* | what-a-conflict-is, resolve-a-conflict, a-remote-on-github, a-pull-request, code-review, the-daily-loop, when-things-go-wrong, ship-it-together | `merge-conflict`, `remote-sync`, `pull-request-flow`, `terminal` | 7 |
+| *deploy-with-github-pages* | what-a-static-host-serves, a-plain-page-from-a-branch, the-address-and-the-base, a-workflow-on-every-push, deploy-a-vite-project, update-and-roll-back | `static-deploy`, `ci-pipeline`, `terminal` | 7 |
 | *tooling-choices* | vite-versus-the-rest, javascript-versus-typescript, when-a-framework-like-next-fits, what-to-read-next | none | later |
 
+The Git and deployment topics are written in Phase 7 as `PHASE7.md` plans them: Git runs only on the student's computer, the explainers model it, one edit step resolves a conflict in the site, and the local steps end with a repository, a merged pull request, and a project on GitHub Pages.
 The library tour explains what problem each library solves, shows one call, and says when not to reach for it.
 The Tailwind steps run inside the lab through the vendored Tailwind browser build that [PHASE6.md](PHASE6.md) specifies; the other libraries are taught through explainers and local steps, because the runner resolves only the pinned React packages.
 
@@ -88,12 +92,12 @@ The Tailwind steps run inside the lab through the vendored Tailwind browser buil
 
 | Topic | Steps | Explainers | Phase |
 | --- | --- | --- | --- |
-| *testing-client-apps* | why-tests, a-unit-test-with-vitest, a-component-test, an-end-to-end-test-with-playwright, what-to-test-and-what-not-to, tests-in-ci | `test-runner`, `test-pyramid`, `terminal` | 8 |
-| *building-for-production* | vite-build-and-dist, hashed-files-and-caching, code-splitting-and-lazy-routes, environment-variables, source-maps, measure-with-lighthouse | `dev-server-vs-build`, `bundle-map`, `env-at-build`, `loading-waterfall`, `static-deploy` | 8 |
-| *deploying-and-ci* | static-hosting, github-pages-netlify-and-vercel, a-pipeline-on-every-push, preview-deploys, the-lab-s-own-workflow | `ci-pipeline`, `static-deploy` | 8 |
-| *resilience-in-production* | error-boundaries, loading-and-empty-states, retries-and-timeouts, accessibility-as-a-check, performance-basics, logging-and-monitoring | `error-boundary`, `accessibility-tree`, `fetch-timeline` | 8 |
-| *security-for-client-apps* | nothing-secret-in-the-client, xss-and-why-react-escapes, dangerouslysetinnerhtml, cors-and-https, dependency-audits, the-supply-chain | `secrets-in-the-client`, `xss-escape`, `cors-check`, `env-at-build` | 8 |
-| *how-teams-ship* | repositories-branches-and-pull-requests, code-review, issues-and-planning, semantic-versioning-and-changelogs, releases-and-rollbacks, documentation | `semver`, `ci-pipeline`, `feature-flag` | 8 |
+| *testing-client-apps* | why-tests, a-unit-test-with-vitest, a-component-test, an-end-to-end-test-with-playwright, what-to-test-and-what-not-to, tests-in-ci | `test-runner`, `test-pyramid`, `terminal` | 9 |
+| *building-for-production* | vite-build-and-dist, hashed-files-and-caching, code-splitting-and-lazy-routes, environment-variables, source-maps, measure-with-lighthouse | `dev-server-vs-build`, `bundle-map`, `env-at-build`, `loading-waterfall`, `static-deploy` | 9 |
+| *deploying-and-ci* | static-hosting, preview-deploys, the-lab-s-own-workflow | `ci-pipeline`, `static-deploy` | 9 |
+| *resilience-in-production* | error-boundaries, loading-and-empty-states, retries-and-timeouts, accessibility-as-a-check, performance-basics, logging-and-monitoring | `error-boundary`, `accessibility-tree`, `fetch-timeline` | 9 |
+| *security-for-client-apps* | nothing-secret-in-the-client, xss-and-why-react-escapes, dangerouslysetinnerhtml, cors-and-https, dependency-audits, the-supply-chain | `secrets-in-the-client`, `xss-escape`, `cors-check`, `env-at-build` | 9 |
+| *how-teams-ship* | repositories-branches-and-pull-requests, code-review, issues-and-planning, semantic-versioning-and-changelogs, releases-and-rollbacks, documentation | `semver`, `ci-pipeline`, `feature-flag` | 9 |
 
 The production topics are read steps with explainers, local steps that download a project with its tests and workflow, and a few edit steps where the lab can show the idea, such as an error boundary or escaped markup.
 They use this repository as the worked example: its `check.yml` and `deploy.yml`, its Playwright suite, and its GitHub Pages deployment are the artifacts the steps read.
@@ -102,18 +106,18 @@ They use this repository as the worked example: its `check.yml` and `deploy.yml`
 
 | Topic | Steps | Explainers | Phase |
 | --- | --- | --- | --- |
-| *using-the-lab* | what-a-step-page-is, your-first-edit, read-the-console, use-a-check, meet-the-inspector, progress-downloads-and-shortcuts | `page-tour`, `edit-run-loop`, `error-decoder`, `inspector-tour` | 6 |
+| using-the-lab, `getting-started` after Phase 7 | what-a-step-page-is, your-first-edit, the-files-of-a-step, read-the-console, use-a-check, meet-the-inspector, progress-downloads-and-shortcuts | `page-tour`, `edit-run-loop`, `project-tree`, `error-decoder`, `inspector-tour` | 6 and 7 |
 
 ## Counts
 
-| Part | Topics that exist | Topics to write | Phase 6 | Phase 7 | Phase 8 | Later |
-| --- | --- | --- | --- | --- | --- | --- |
-| The language | 1 | 9 | 8 | 0 | 0 | 2 |
-| The browser | 5 | 3 | 5 | 1 | 0 | 2 |
-| React | 15 | 1 | 16 | 0 | 0 | 0 |
-| Tooling and libraries | 0 | 5 | 1 | 3 | 0 | 1 |
-| Production | 0 | 6 | 0 | 0 | 6 | 0 |
-| The lab itself | 0 | 1 | 1 | 0 | 0 | 0 |
+| Part | Topics that exist | Topics to write | Phase 6 | Phase 7 | Phase 8 | Phase 9 | Later |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| The language | 8 | 2 | 8 | 0 | 0 | 0 | 2 |
+| The browser | 5 | 3 | 5 | 0 | 1 | 0 | 2 |
+| React | 16 | 0 | 16 | 0 | 0 | 0 | 0 |
+| Tooling and libraries | 1 | 7 | 1 | 3 | 3 | 0 | 1 |
+| Production | 0 | 6 | 0 | 0 | 0 | 6 | 0 |
+| The lab itself | 1 | 0 | 1 | 0 | 0 | 0 | 0 |
 
-Phase 6 writes ten topics and retrofits twenty-one, Phase 7 writes four, Phase 8 writes six, and five wait for a later phase.
+Phase 6 wrote ten topics and retrofitted twenty-one, Phase 7 writes three and retouches the onboarding topic, Phase 8 writes four, Phase 9 writes six, and five wait for a later phase.
 A topic that is added later goes into this file first, with its steps, its explainers, and its phase, so the file stays the complete map.

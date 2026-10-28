@@ -338,5 +338,50 @@
     "id": "node-modules-tree",
     "title": "node_modules",
     "description": "A dependency pulling in its own dependencies, the tree that results, and the lockfile that pins it."
+  },
+  {
+    "id": "project-tree",
+    "title": "The project folder",
+    "description": "A project folder as a tree that grows a stage at a time, after npm create vite, npm install, and npm run build, with each file's description when selected."
+  },
+  {
+    "id": "three-trees",
+    "title": "Working tree, staging area, repository",
+    "description": "A file edited, added, and committed moving across the three places Git keeps it, with the git status output for each state."
+  },
+  {
+    "id": "commit-graph",
+    "title": "Commits",
+    "description": "Commits as a chain, each with a short hash, a message, and a parent; selecting one shows the snapshot it holds and the diff from its parent."
+  },
+  {
+    "id": "branch-and-merge",
+    "title": "Branches and merges",
+    "description": "A main and a feature branch, HEAD following the switch, and the merge drawn as a fast-forward or a merge commit depending on whether main moved."
+  },
+  {
+    "id": "merge-conflict",
+    "title": "A merge conflict",
+    "description": "Two branches that change the same line, the merge that stops, the file with conflict markers, and the resolved file."
+  },
+  {
+    "id": "remote-sync",
+    "title": "Local and remote",
+    "description": "A local and a remote history side by side, with push, fetch, and pull moving commits between them and a rejected push when the remote has moved."
+  },
+  {
+    "id": "pull-request-flow",
+    "title": "A pull request",
+    "description": "A branch pushed, a pull request opened, review comments, the checks running, the merge, and the branch deleted, one stage at a time."
+  },
+  {
+    "id": "static-deploy",
+    "title": "A static host",
+    "description": "dist/ copied to a host, the address each file gets under /<repo>/, a route refreshed, and what the host answers with and without a 404.html."
+  },
+  {
+    "id": "ci-pipeline",
+    "title": "A deploy workflow",
+    "description": "Push, install, build, and deploy as stages with the log of each, a failing build that stops the rest, and the site unchanged until a run is green."
   }
 ]

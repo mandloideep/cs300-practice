@@ -600,7 +600,7 @@ The `localStorage` key `cs300-lab:progress` and the exported file share one shap
 | Entry | Content |
 | --- | --- |
 | `package.json` | `name` is the folder name, `private: true`, `type: "module"`, scripts `dev`, `build`, `preview`, dependencies `react` and `react-dom` at the runtime's pinned versions, `react-router` when the workspace imports it, devDependencies `vite` and `@vitejs/plugin-react` at the versions in this repository's `package.json` |
-| `vite.config.js` | `defineConfig({ plugins: [react()] })`; when a workspace module reads `import.meta.env.API_BASE`, `envPrefix: ["VITE_", "API_"]` is added |
+| `vite.config.js` | `defineConfig({ plugins: [react()] })`; when a workspace module reads `import.meta.env.API_BASE`, `envPrefix: ["VITE_", "API_"]` is added; Phase 7 adds `base: "./"` and the entries in 8.5 |
 | `.env` | Only when a workspace module reads `import.meta.env.API_BASE`: `API_BASE=<base>` for the preset or custom base selected in the lab, or the first preset's base when the lab was on Fixtures, which exist only inside the lab; the README says which and why |
 | `index.html` | The workspace `index.html` when the workspace has one; otherwise a minimal page with `<div id="root"></div>` and `<script type="module" src="/<entry>"></script>` |
 | `README.md` | The topic title, step title, and the three commands to run |
@@ -719,6 +719,129 @@ Version 2 adds three fields to the shape in 5.1, each present and empty on upgra
 
 `revealedAt` is `null` until a predict is revealed by a run or a quiz by a pick.
 
+## 8. Phase 7 contracts
+
+Phase 7 ownership is in `docs/PHASE7.md`; the names it fixes are in 8.7.
+
+### 8.1 The `files` field and `fileNotes`
+
+An `edit` step's front matter may carry `files`, a map from a workspace path to one sentence that replaces the dictionary's sentence for that file in that step:
+
+```yaml
+files:
+  src/data/products.json: The twelve products the list renders, as the API would return them.
+```
+
+The validator rejects `files` on a `read` or `local` step, a key that is not a workspace path, and a value that is not a non-empty string.
+The compiled step gains `"fileNotes": { "<path>": "<sentence>" }`, `{}` when the field is absent.
+
+### 8.2 The project layout and the file tree
+
+`projectLayout(step, files, api)` in `src/ui/workspaceProject.js` is a pure function that returns the ordered entries of the project a step's download writes:
+
+```json
+[
+  { "path": "src", "name": "src", "depth": 0, "kind": "folder", "source": "workspace", "description": null, "createdBy": null },
+  { "path": "src/App.jsx", "name": "App.jsx", "depth": 1, "kind": "file", "source": "workspace", "description": "The top component; what appears inside the root div.", "createdBy": null },
+  { "path": "node_modules", "name": "node_modules", "depth": 0, "kind": "folder", "source": "download", "description": "Every installed package; never edited, never committed.", "createdBy": "npm install" }
+]
+```
+
+- Entries are in tree order: at each level folders first, then files, each sorted by name; a folder's entries follow it with `depth` one greater.
+- `source` is `workspace` for a file the editor holds and `download` for a file or folder only the download has; every `download` entry comes after every `workspace` entry.
+- `createdBy` is `null` or the command that creates the entry on the student's computer: `npm install` for `node_modules` and `package-lock.json`, `npm run build` for `dist`.
+- `description` is `fileNotes[path]` when the step has one, else the match in `src/editor/fileRoles.js`, else "A file of this step's project."; a folder's is `null` unless the dictionary names it.
+- The zip builder writes exactly the `workspace` files and the `download` entries of `kind: "file"`, so the tree and the download cannot differ; `node_modules` and `dist` are listed and never written.
+
+`src/editor/FileTree.jsx` takes `{ layout, activeFile, onSelect, modifiedFiles, showDownload, idPrefix }`, renders `role="tree"` with `role="treeitem"` nodes and `aria-expanded` on folders, follows the WAI-ARIA tree keyboard pattern (Up, Down, Left, Right, Home, End, Enter, Space, and type-ahead), marks the active file with `aria-selected`, and shows the selected entry's description in an element the tree's `aria-describedby` names.
+The `download` entries sit under one collapsed node, **On your computer**, that `showDownload: false` leaves out.
+It replaces `src/editor/FileTabs.jsx` in `CodeEditor.jsx` and `SolutionDiff.jsx`, and `FileTabs.jsx` is deleted.
+The editor's `jumpTo` and every console and inspector link keep their behavior.
+
+Progress gains `preferences.filesOpen`, a boolean that the Files toggle in the editor header writes; an absent key means `true`, and the progress version does not change.
+
+### 8.3 The `project-tree` fence body
+
+`project-tree` is the one explainer whose fence body is not JSON.
+Its body is an indented listing: one entry per line, a folder name ending in `/`, two spaces per level, and a description after two or more spaces; a line `stage: <label>` starts a stage; in a stage after the first, a line starting with `+ ` is an entry that appears at that stage, and other lines are rejected.
+
+````markdown
+```demo name="project-tree"
+stage: After npm create vite
+my-first-react/
+  index.html          The page the browser opens
+  src/
+    main.jsx          Finds the root div and renders App into it
+stage: After npm install
++ node_modules/       Every installed package; never edited, never committed
+```
+````
+
+`scripts/lib/fences.mjs` parses the body into the props the component receives, and the validator rejects an indentation that does not nest, a `+ ` line in the first stage, or an entry without a name:
+
+```json
+{
+  "stages": [
+    { "label": "After npm create vite", "entries": [
+      { "path": "my-first-react", "depth": 0, "kind": "folder", "description": null, "fresh": true },
+      { "path": "my-first-react/index.html", "depth": 1, "kind": "file", "description": "The page the browser opens", "fresh": true }
+    ] },
+    { "label": "After npm install", "entries": [ { "path": "my-first-react/node_modules", "depth": 1, "kind": "folder", "description": "Every installed package; never edited, never committed", "fresh": true } ] }
+  ]
+}
+```
+
+A `+ ` entry is placed by its indentation under the nearest folder of the stages before it, and `fresh` is `true` on the entries a stage adds.
+With no `stage:` line the body is one stage labeled `null`, and `stepCount` is the number of entries.
+With stages, `stepCount` is the number of stages, and stage `k` shows the entries of stages `0` to `k`.
+An empty body uses the component's `defaults`, the Vite project of `vite-project-anatomy`.
+
+### 8.4 The Git and deployment explainers
+
+The eight explainers take JSON props as 7.1 says; each has `defaults` that stand alone, and a step passes any subset.
+
+| Id | Props |
+| --- | --- |
+| `three-trees` | `{ "file": "App.jsx" }`: the file that is edited, added, and committed |
+| `commit-graph` | `{ "commits": [{ "hash": "a1b2c3d", "message": "Add the product list", "files": ["src/App.jsx"] }] }`, oldest first; `hash` is seven hex characters |
+| `branch-and-merge` | `{ "main": ["Initial page", "Add styles"], "branch": { "name": "cart", "commits": ["Add the cart"] }, "mainMovesAfterBranch": false }`: `false` draws a fast-forward, `true` a merge commit |
+| `merge-conflict` | `{ "file": "src/App.jsx", "base": ["<h1>Shop</h1>"], "ours": ["<h1>The Shop</h1>"], "theirs": ["<h1>Shop</h1>", "<p>Open daily</p>"] }`: three versions of the same lines |
+| `remote-sync` | `{ "scenario": "push" }`: one of `push`, `pull`, `rejected`, drawing a local and a remote history |
+| `pull-request-flow` | `{ "branch": "cart", "title": "Add the cart", "checks": ["lint", "test", "build"] }` |
+| `static-deploy` | `{ "repo": "my-first-react", "route": "/products/3", "notFoundPage": false }`: the address each file gets under `/<repo>/` and what a refresh at `route` returns |
+| `ci-pipeline` | `{ "stages": ["install", "build", "deploy"], "failAt": null }`: `failAt` is a stage index or `null` |
+
+### 8.5 The deployable download
+
+Section 5.2 changes for every React workspace download:
+
+| Entry | Content |
+| --- | --- |
+| `vite.config.js` | `defineConfig({ base: "./", plugins: [react()] })`, with `envPrefix` as before when the workspace reads `API_BASE` |
+| `.gitignore` | `node_modules` and `dist`, one per line |
+| `.github/workflows/deploy.yml` | The workflow in `docs/PHASE7.md` under "deploy-with-github-pages", byte for byte |
+| `README.md` | Gains a "Deploy to GitHub Pages" section with the five-item checklist from `docs/PHASE7.md`; a routing workspace's section says to use `HashRouter` or add a `404.html` |
+
+A vanilla download's `README.md` gains one sentence that says to set the Pages source to the branch.
+`projectLayout` lists `.gitignore`, `.github/workflows/deploy.yml`, `package.json`, `package-lock.json`, `vite.config.js`, `node_modules`, `dist`, and `.env` when written, as `download` entries, and `README.md` alone for a vanilla workspace.
+
+### 8.6 The Fall 2026 units
+
+`content/paths/fall-2026.json` gains a unit `git-and-github` after `foundations` with no `opens`, titled "Git and GitHub: version control, pull requests, and deployment", holding `git-basics`, `git-collaboration`, and `deploy-with-github-pages` with `required: false`; `week-11`, `week-12`, and `week-13` gain `opens` of `2026-11-02`, `2026-11-09`, and `2026-11-16`.
+`content/paths/spring-2027.json` gains `"active": false`.
+
+### 8.7 The names
+
+| Name | Value |
+| --- | --- |
+| The site | CS300 Practice |
+| A week's set of topics | Guided Practice |
+| The repository and the Pages base | `cs300-practice`, `base: "/cs300-practice/"` |
+| The onboarding topic | id `getting-started`, title "Using CS300 Practice" |
+| Kept as they are | the `cs300-lab` message source, the `cs300-lab:progress` and `cs300-lab:custom-base` storage keys, the `cs300-lab:sandbox:` storage scope, `__LAB__`, `LAB_BUILD_DATE` |
+
+Student-facing prose says "CS300 Practice" where it names the site and "this site" or "the browser" where it means the place the code runs; it never says "lab".
+
 ## Decisions log
 
 - 2026-10-26: Generated content lives in `public/content/` and is gitignored; `public/runtime/` is committed.
@@ -734,4 +857,5 @@ Version 2 adds three fields to the shape in 5.1, each present and empty on upgra
 - 2026-10-26: `react-router` always resolves to `runtime/wrap/react-router.js`, inspector on or off. The iframe's `localStorage` and `sessionStorage` are Proxy views scoped under `cs300-lab:sandbox:` so student code cannot touch the site's progress, and `run()` clears that scope before each run unless `preserveStorage: true`. Decided by the Phase 3 runtime stream.
 - 2026-10-26: Phase 4 contracts pinned: the `dom` snapshot message, `dom-highlight` and `resize` parent messages, `dom` as an `inspector.views` value and the default for a vanilla workspace, and the vanilla download layout. The DOM view is the vanilla counterpart of boundaries and flash. Phase 4 ownership is in `docs/PHASE4.md`.
 - 2026-10-26: The bridge has a fourth part, `src/runner/bridge/dom.js`, concatenated after `fetch-shim.js`; it owns the `dom` snapshots and `dom-highlight`, and the overlay host is shared with the inspector hook. A content build defaults `inspector.views` to `[dom]` for a vanilla step. Decided by the Phase 4 runtime stream.
+- 2026-10-28: Phase 7 contracts pinned in section 8: the `files` field and `fileNotes`, the project layout and the file tree, the `project-tree` fence body, the Git and deployment explainer props, the deployable download, the Fall 2026 units, and the names. Phase 7 ownership is in `docs/PHASE7.md`.
 - 2026-10-27: Phase 6 contracts pinned in section 7: the `demo` fence and registry, the `predict` and `quiz` fences, the "Read more" section, the `links` field, the release fields and `--all`, the tour, and progress JSON version 2. Phase 6 ownership is in `docs/PHASE6.md`.
