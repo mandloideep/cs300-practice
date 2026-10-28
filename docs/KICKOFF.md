@@ -1,5 +1,7 @@
 # Kickoff: build Phase 1 of cs300-react-lab
 
+The repository was renamed `cs300-practice` in Phase 7, and the site moved to `https://mandloideep.github.io/cs300-practice/`; this brief keeps the names it was written with.
+
 You are working in the repository `mandloideep/cs300-react-lab`, checked out at `~/Code/work/neiu/teaching/cs300/cs300-react-lab`.
 It is public, on `main`, and contains only a README.
 Build Phase 1 of the CS300 Lab described in `docs/DESIGN.md` in this repository.

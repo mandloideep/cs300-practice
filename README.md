@@ -1,10 +1,10 @@
-# cs300-react-lab
+# cs300-practice
 
 CS300 Lab is a static, client-side learning site for CS300 at Northeastern Illinois University.
 Students read a short explanation, edit code in the browser, run it, see the rendered result and the console, and check their work against stated expectations.
 Content is organized by topic, with a semester path layered on top, so topics are reused across semesters.
 
-The site is deployed to GitHub Pages at <https://mandloideep.github.io/cs300-react-lab/>.
+The site is deployed to GitHub Pages at <https://mandloideep.github.io/cs300-practice/>.
 Everything runs in the visitor's browser: there is no server, no account, no database, and no analytics.
 
 The design of record is [docs/DESIGN.md](docs/DESIGN.md).
@@ -22,7 +22,7 @@ npm run dev
 ```
 
 `npm run dev` compiles `content/` into `public/content/` and then starts the Vite dev server.
-Open the URL it prints, which ends in `/cs300-react-lab/`.
+Open the URL it prints, which ends in `/cs300-practice/`.
 
 To check a production build locally:
 
@@ -62,7 +62,7 @@ Markdown keeps one sentence per physical line, and the edit blocks in each `step
 - `src/styles/tokens.css` holds the design tokens, and `src/styles/global.css` holds the base styles.
 - `content/` holds the topics, paths, areas, and API presets as plain files.
 - `src/runner/` compiles a workspace with Sucrase, links its modules as blob URLs, and builds the document for the sandboxed result iframe, including the bridge script that reports console output, errors, and check results.
-- `src/runner/harness/index.html` is a development-only page that runs any step from `content/` and prints every bridge message; with `npm run dev` it is at `/cs300-react-lab/src/runner/harness/index.html`.
+- `src/runner/harness/index.html` is a development-only page that runs any step from `content/` and prints every bridge message; with `npm run dev` it is at `/cs300-practice/src/runner/harness/index.html`.
 - `public/runtime/` holds the vendored React runtime that the result iframe loads through an import map.
 - `scripts/` holds the content, runtime, and export build scripts.
 
@@ -389,7 +389,7 @@ Every explainer keeps the contract in [docs/CONTRACTS.md](docs/CONTRACTS.md) sec
 - It takes the step's own values from its props where that makes sense, and works with no props.
 - The code it shows carries no explanatory comments; the caption explains.
 
-With `npm run dev` running, `/cs300-react-lab/src/demos/harness/index.html` lists every explainer, and `?id=<id>&width=320` shows one at phone width with optional `&props=<json>` and its default props below it.
+With `npm run dev` running, `/cs300-practice/src/demos/harness/index.html` lists every explainer, and `?id=<id>&width=320` shows one at phone width with optional `&props=<json>` and its default props below it.
 `tests/demos.spec.js` mounts every built explainer on that page, steps it from the first stage to the last from the keyboard, checks the 320 pixel column, and runs axe in light and dark with motion allowed and reduced.
 When an explainer is built, set its Status in [docs/EXPLAINERS.md](docs/EXPLAINERS.md) to `built`.
 
@@ -439,7 +439,7 @@ npm run export:d2l -- fall-2026
 For each unit, `dist-d2l/<path-id>/<unit-id>.html` is a complete page in the CS300 Brightspace template, ready to upload to Content as an HTML file.
 `dist-d2l/<path-id>/<unit-id>.fragment.html` holds only the page content, for pasting into an existing D2L page that already uses the template.
 Each page has the unit intro, a link to the unit in the lab, the required topics with links to each topic, the optional topics, and the notes about work on your own computer.
-Links point at `https://mandloideep.github.io/cs300-react-lab/`.
+Links point at `https://mandloideep.github.io/cs300-practice/`.
 The template is copied into `scripts/export-d2l.mjs` from the Fall course repository's D2L build kit; update the copy there if the build kit's template changes.
 `dist-d2l/` is generated and not committed.
 

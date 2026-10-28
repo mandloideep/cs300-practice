@@ -24,7 +24,7 @@ Change this file only through the orchestrator, and record every change in the "
 | `test` | Playwright |
 | `export:d2l` | `node scripts/export-d2l.mjs` |
 
-- `vite.config.js` sets `base: "/cs300-react-lab/"`.
+- `vite.config.js` sets `base: "/cs300-practice/"`; it was `"/cs300-react-lab/"` until the repository was renamed in Phase 7.
 - Plain CSS with design tokens in `src/styles/tokens.css`; light and dark through `prefers-color-scheme`; no CSS framework.
 - Hash routing with `react-router` in declarative mode (`HashRouter`, `Routes`, `Route`).
 - Source files are `.js` and `.jsx`; no TypeScript.

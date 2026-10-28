@@ -7,7 +7,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 // the content build compiled as closed is skipped, and each topic lists its lecture links.
 // Usage: npm run export:d2l -- <path-id>   (after npm run build:content)
 
-const SITE_URL = "https://mandloideep.github.io/cs300-react-lab/";
+const SITE_URL = "https://mandloideep.github.io/cs300-practice/";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const contentDir = path.join(root, "public/content");
 const outRoot = path.join(root, "dist-d2l");

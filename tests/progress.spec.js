@@ -160,7 +160,8 @@ test.describe("completion on the unit page", () => {
 
     const allSteps = await page.evaluate(async () => {
       const index = await (await fetch("content/index.json")).json();
-      const unit = index.paths[0].units[0];
+      const path = index.paths.find((candidate) => candidate.id === "fall-2026");
+      const unit = path.units.find((candidate) => candidate.id === "week-10");
       return unit.topics
         .filter((entry) => entry.required)
         .flatMap((entry) =>
