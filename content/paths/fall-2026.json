@@ -5,7 +5,7 @@
     {
       "id": "foundations",
       "title": "Foundations: HTML, CSS, JavaScript, the DOM, fetch, and tooling",
-      "intro": "Weeks 3 to 9 built a page by hand: the document, its stylesheet, the JavaScript that reads and changes it, the events it answers, the data it fetches, and the modules it is split into. These topics are that material as guided practice: each idea is a short step you edit, run, and check, with the console or the page showing what your code did. Nothing here is required this term. Use it to revisit an idea before a React week leans on it, to see in Why React behaves this way which JavaScript rule is behind a React behavior that surprised you, or to meet Node, npm, and Vite in Tooling from scratch before the Week 10 project. Take a topic in the order listed, because each one assumes the ones before it.",
+      "intro": "Weeks 3 to 9 built a page by hand: the document, its stylesheet, the JavaScript that reads and changes it, the events it answers, the data it fetches, and the modules it is split into. These topics are that material in CS300 Practice: each idea is a short step you edit, run, and check, with the console or the page showing what your code did. Nothing here is required this term. Use it to revisit an idea before a React week leans on it, to see in Why React behaves this way which JavaScript rule is behind a React behavior that surprised you, or to meet Node, npm, and Vite in Tooling from scratch before the Week 10 project. Take a topic in the order listed, because each one assumes the ones before it.",
       "topics": [
         {
           "id": "html-structure",
@@ -75,10 +75,10 @@
     {
       "id": "week-10",
       "title": "React, Vite, JSX, components, props, and lists",
-      "intro": "In Week 8 we built CourseHub by hand: we wrote the HTML, styled it, and then kept the page in step with our data by finding elements, building strings of markup, and replacing what was on the screen every time something changed. This week you will build the same kind of page with React. You will describe what the page should look like for the data you have, and React will update the DOM for you. You will see how a Vite project is put together, write JSX, split a page into components that receive props, and render lists of data with stable keys, then load that data from a real API. Each topic runs in the browser, so you can edit the code, run it, watch the inspector draw your components, and check your work as you go.",
+      "intro": "In Week 8 we built CourseHub by hand: we wrote the HTML, styled it, and then kept the page in step with our data by finding elements, building strings of markup, and replacing what was on the screen every time something changed. This week you will build the same kind of page with React. You will describe what the page should look like for the data you have, and React will update the DOM for you. You will see how a Vite project is put together, write JSX, split a page into components that receive props, and render lists of data with stable keys, then load that data from a real API. Start with Using CS300 Practice, a fifteen-minute tour of the site; after it, each topic runs in the browser, so you can edit the code, run it, watch the inspector draw your components, and check your work as you go.",
       "topics": [
         {
-          "id": "using-the-lab",
+          "id": "getting-started",
           "required": false
         },
         {
@@ -103,13 +103,14 @@
         }
       ],
       "localNotes": [
-        "The Vite scaffold and build steps run on your own computer: you create the project with npm and run npm run build in your own terminal, and the lab shows the exact commands and the output to expect."
+        "The Vite scaffold and build steps run on your own computer: you create the project with npm and run npm run build in your own terminal, and CS300 Practice shows the exact commands and the output to expect."
       ]
     },
     {
       "id": "week-11",
       "title": "State, events, and component communication",
-      "intro": "In Week 10 we built the product page: a list of cards rendered from data, split into components that receive props. It could show data but not respond to it, because nothing on the page could change. This week the page comes alive. You will handle a click with an event handler, give a component a value it owns with useState, and watch React re-render only the component whose state changed. Then you will meet the problem every real app runs into, two components that need the same value, and solve it the way React does: move the state up to the parent, pass the value down as a prop, and pass a function down so that a child can ask for a change. In Session 1 we draw that sequence on the board as event, callback prop, setter, and re-render; in these topics the inspector's flow view draws it for you from the clicks you make, so you can check your mental model against what React really did. In Session 2 the same rule reaches the form fields: React owns what the shopper types, validates it on every keystroke, and adds the new product to the list without changing the array it already holds, which is the one bug this week that produces no error anywhere.",
+      "opens": "2026-11-02",
+      "intro": "In Week 10 we built the product page: a list of cards rendered from data, split into components that receive props. It could show data but not respond to it, because nothing on the page could change. This week the page comes alive. You will handle a click with an event handler, give a component a value it owns with useState, and watch React re-render only the component whose state changed. Then you will meet the problem every real app runs into, two components that need the same value, and solve it the way React does: move the state up to the parent, pass the value down as a prop, and pass a function down so that a child can ask for a change. In Session 1 we draw that sequence on the board as event, callback prop, setter, and re-render; in CS300 Practice the inspector's flow view draws it for you from the clicks you make, so you can check your mental model against what React really did. In Session 2 the same rule reaches the form fields: React owns what the shopper types, validates it on every keystroke, and adds the new product to the list without changing the array it already holds, which is the one bug this week that produces no error anywhere.",
       "topics": [
         {
           "id": "state-usestate",
@@ -131,7 +132,8 @@
     {
       "id": "week-12",
       "title": "Effects, fetching, persistence, and routing",
-      "intro": "In Week 11 every change on the page came from a click: an event, a setter, a re-render. This week the page starts talking to things outside React, and the two core topics are Effects and Refs and browser APIs. An effect is how a component synchronizes with something that is not a prop or state, such as the document title, a timer, a browser event, or a server, and cleans up after itself; a ref is how it reaches a DOM element or keeps a value across renders without re-rendering. The three follow-through topics apply effects to the three jobs every app has: Persistence keeps a value in localStorage across reloads, Fetching and request states loads data with one status value, cleans up a request that is no longer wanted, and shows you a stale response and a duplicate request in the network pane before fixing them, and Routing turns one page into several with React Router. Work through the first two before the rest, and keep the inspector's network view open on every fetching step.",
+      "opens": "2026-11-09",
+      "intro": "In Week 11 every change on the page came from a click: an event, a setter, a re-render. This week the page starts talking to things outside React, and the two core topics are Effects and Refs and browser APIs. An effect is how a component synchronizes with something that is not a prop or state, such as the document title, a timer, a browser event, or a server, and cleans up after itself; a ref is how it reaches a DOM element or keeps a value across renders without re-rendering. The three follow-through topics apply effects to the three jobs every app has: Persistence keeps a value in localStorage across reloads, Fetching and request states loads data with one status value, cleans up a request that is no longer wanted, and shows you a stale response and a duplicate request in the network pane before fixing them, and Routing turns one page into several with React Router. Work through the first two before the rest, and keep the network view of the CS300 Practice inspector open on every fetching step.",
       "topics": [
         {
           "id": "effects",
@@ -161,7 +163,8 @@
     {
       "id": "week-13",
       "title": "Route data, custom hooks, and URL state",
-      "intro": "Week 12 gave the shop its pages and its requests. This week they meet: each route owns the request for its own data, keyed on the id that useParams reads from the address, and the request logic lives in a custom hook that every page shares. In Route data and custom hooks you reuse useFetch on a list page and a detail page, tell a product the server no longer has from a request that failed, write a useLocalStorage hook that remembers saved products, and read how custom hooks relate to useState and useEffect. In URL state you move a search and a category filter into the address with useSearchParams, so that a shopper can bookmark, share, and press Back through them, show the shareable address with a copy button, and then walk the whole app from the address bar the way the Week 13 integration check asks: direct load, refresh, Back, Forward, and a bad id.",
+      "opens": "2026-11-16",
+      "intro": "Week 12 gave the shop its pages and its requests. This week they meet: each route owns the request for its own data, keyed on the id that useParams reads from the address, and the request logic lives in a custom hook that every page shares. In Route data and custom hooks you reuse useFetch on a list page and a detail page, tell a product the server no longer has from a request that failed, write a useLocalStorage hook that remembers saved products, and read how custom hooks relate to useState and useEffect. In URL state you move a search and a category filter into the address with useSearchParams, so that a shopper can bookmark, share, and press Back through them, show the shareable address with a copy button, and then walk the whole app from the address bar the way the Week 13 integration check asks: direct load, refresh, Back, Forward, and a bad id. Both topics run in CS300 Practice up to that last walk, which is for your own browser.",
       "topics": [
         {
           "id": "route-data-and-custom-hooks",

@@ -63,7 +63,7 @@ This `href` starts with `https://`, so it is an **external link** to another sit
 A link to a page of your own site is written as a path instead, such as `href="about.html"`, and the browser looks for that file next to the current one.
 
 `<img>` is a void element with two attributes that are never optional.
-In a project folder `src` is a path to a file beside `index.html`, such as `images/logo.svg`; the lab keeps no image files, so this `src` carries the picture itself as a **data URL**, and the browser treats it exactly as it would treat a file.
+In a project folder `src` is a path to a file beside `index.html`, such as `images/logo.svg`; this site keeps no image files, so this `src` carries the picture itself as a **data URL**, and the browser treats it exactly as it would treat a file.
 `alt` is read aloud by a screen reader, shown by the browser when the file fails to load, and indexed by a search engine.
 Write what the picture shows, not the word "image".
 `width` and `height` tell the browser how much room to reserve before the picture arrives, so the text below does not jump when it loads.

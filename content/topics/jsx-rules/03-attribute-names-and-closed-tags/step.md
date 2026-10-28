@@ -64,7 +64,7 @@ JSX has no void elements; every element must be closed.
 `<input></input>` is closed, so it compiles, but it is unusual and suggests the input could have children.
 
 The same applies to `<img />`, `<br />`, `<hr />`, and any component with nothing inside, such as `<FindConcept />`.
-Leave the tag open, as `<input id="concept-search">` alone, and the file does not compile at all: Vite says `Expected corresponding JSX closing tag for 'input'`, and the lab reports `Unterminated JSX contents`.
+Leave the tag open, as `<input id="concept-search">` alone, and the file does not compile at all: Vite says `Expected corresponding JSX closing tag for 'input'`, and this site reports `Unterminated JSX contents`.
 
 Other HTML-to-JSX differences follow the same idea.
 Event attributes are camelCase, so `onclick` becomes `onClick`, and `style` takes a JavaScript object, so `style="color: red"` becomes `style={{ color: "red" }}`.

@@ -41,7 +41,7 @@ export default function Home() {
   );
 }
 
-export const WELCOME_TOPIC = "using-the-lab";
+export const WELCOME_TOPIC = "getting-started";
 
 // The card for new visitors (docs/CONTRACTS.md section 7.6): it points at the topic that teaches
 // the site until every step of it is complete or the student hides the card.

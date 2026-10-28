@@ -1,15 +1,16 @@
 {
   "id": "spring-2027",
   "title": "Spring 2027",
+  "active": false,
   "units": [
     {
       "id": "week-03",
       "title": "HTML: the document, text, links, images, landmarks, forms, and tables",
       "opens": "2027-01-25",
-      "intro": "Start with Using the lab, a fifteen-minute tour of the lab itself: what each pane of a step page is for, how to type an edit and read the console, and how a check tells you a step is done. Everything we build this semester is a web page, so then we start with the language of pages. This week you will type a document from its skeleton up: headings and paragraphs, lists, links and images with text alternatives, the landmarks that give a page its regions, a form whose fields have labels, and a table. Each step shows the page the browser draws from your markup and the tree it built from it, so you can see that HTML is structure, not appearance; the appearance comes next week.",
+      "intro": "Start with Using CS300 Practice, a fifteen-minute tour of the site itself: what each pane of a step page is for, how to type an edit and read the console, and how a check tells you a step is done. Everything we build this semester is a web page, so then we start with the language of pages. This week you will type a document from its skeleton up: headings and paragraphs, lists, links and images with text alternatives, the landmarks that give a page its regions, a form whose fields have labels, and a table. Each step shows the page the browser draws from your markup and the tree it built from it, so you can see that HTML is structure, not appearance; the appearance comes next week.",
       "topics": [
         {
-          "id": "using-the-lab",
+          "id": "getting-started",
           "required": true
         },
         {
@@ -18,7 +19,7 @@
         }
       ],
       "localNotes": [
-        "Set up VS Code and a local preview on your own computer this week, as the Week 2 setup guide describes; every page in the lab can also be downloaded and opened from a folder."
+        "Set up VS Code and a local preview on your own computer this week, as the Week 2 setup guide describes; every page in CS300 Practice can also be downloaded and opened from a folder."
       ]
     },
     {
@@ -108,7 +109,7 @@
         }
       ],
       "localNotes": [
-        "The lab's \"Run, keeping saved data\" button plays the part of a reload; on your own computer, open the Application panel in DevTools to see the stored JSON and edit it by hand."
+        "This site's \"Run, keeping saved data\" button plays the part of a reload; on your own computer, open the Application panel in DevTools to see the stored JSON and edit it by hand."
       ]
     },
     {
@@ -127,7 +128,7 @@
         }
       ],
       "localNotes": [
-        "The Week 8 notes build the same application from empty files with Live Server and a Git history on your own computer; the lab starts you from the finished structure and style so the behavior, data, and architecture get the time."
+        "The Week 8 notes build the same application from empty files with Live Server and a Git history on your own computer; CS300 Practice starts you from the finished structure and style so the behavior, data, and architecture get the time."
       ]
     },
     {
@@ -182,7 +183,7 @@
         }
       ],
       "localNotes": [
-        "The Vite scaffold and build steps run on your own computer: you create the project with npm and run npm run build in your own terminal, and the lab shows the exact commands and the output to expect."
+        "The Vite scaffold and build steps run on your own computer: you create the project with npm and run npm run build in your own terminal, and CS300 Practice shows the exact commands and the output to expect."
       ]
     },
     {

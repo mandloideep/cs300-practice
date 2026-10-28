@@ -1,7 +1,7 @@
 # Interactive explainers: the inventory
 
 An explainer is a small interactive React component that sits inside a step's explanation and shows one idea moving: a value being copied, a function being called later, a request leaving and coming back.
-This file is the complete list of the explainers the lab needs, for the content that exists today and for every topic in [CURRICULUM.md](CURRICULUM.md), so that writing a step is a matter of picking from the list rather than inventing a picture.
+This file is the complete list of the explainers CS300 Practice needs, for the content that exists today and for every topic in [CURRICULUM.md](CURRICULUM.md), so that writing a step is a matter of picking from the list rather than inventing a picture.
 [PHASE6.md](PHASE6.md) says how explainers are built and placed; this file says which ones exist and what each shows.
 
 ## How to read the tables
@@ -15,13 +15,13 @@ This file is the complete list of the explainers the lab needs, for the content 
 Every explainer honors the one contract in [PHASE6.md](PHASE6.md): it never autoplays, it has Play, Pause, Step, and Reset controls that work from the keyboard, reduced motion shows the final state with Step still working, it carries a text description for assistive technology, and it draws only with the design tokens.
 Each one takes its data from the fence body where that makes sense, so the same explainer can show the step's own values rather than a canned example.
 
-## The lab itself
+## The site itself
 
 | Id | Shows | Serves | Phase | Status |
 | --- | --- | --- | --- | --- |
-| `page-tour` | The step page in miniature with each pane labeled; selecting a pane says what it is for and when to look at it | *using-the-lab* | 6 | in use |
-| `edit-run-loop` | The cycle of edit, Run, result, console, and checks as one loop the student advances a stage at a time | *using-the-lab* | 6 | in use |
-| `inspector-tour` | A three-component tree with boundaries, a re-render flash, and the state panel, driven by a Click button inside the explainer | *using-the-lab*, react-mental-model | 6 | in use |
+| `page-tour` | The step page in miniature with each pane labeled; selecting a pane says what it is for and when to look at it | *getting-started* | 6 | in use |
+| `edit-run-loop` | The cycle of edit, Run, result, console, and checks as one loop the student advances a stage at a time | *getting-started* | 6 | in use |
+| `inspector-tour` | A three-component tree with boundaries, a re-render flash, and the state panel, driven by a Click button inside the explainer | *getting-started*, react-mental-model | 6 | in use |
 | `project-tree` | A project folder as a tree that grows a stage at a time from the fence body, after `npm create vite`, `npm install`, and `npm run build`, with each file's description when selected | *getting-started*, vite-project-anatomy, tooling-from-scratch, modules-and-imports, app-architecture, *git-basics* | 7 | planned |
 
 ## HTML
@@ -82,7 +82,7 @@ Each one takes its data from the fence body where that makes sense, so the same 
 | Id | Shows | Serves | Phase | Status |
 | --- | --- | --- | --- | --- |
 | `error-propagation` | A `throw` unwinding frames until a `catch` takes it, and what happens when none does | *errors-and-debugging* | 6 | in use |
-| `error-decoder` | The common messages, `x is not defined`, `cannot read properties of undefined`, `x is not a function`, each with the line that causes it | *errors-and-debugging*, *using-the-lab* | 6 | in use |
+| `error-decoder` | The common messages, `x is not defined`, `cannot read properties of undefined`, `x is not a function`, each with the line that causes it | *errors-and-debugging*, *getting-started* | 6 | in use |
 | `event-loop` | The call stack, the timer and event queues, and the order in which plain code, `setTimeout`, a click, and a promise reaction run | *async-and-the-event-loop*, fetch-basics/synchronous-and-asynchronous | 6 | in use |
 | `promise-states` | A promise moving from pending to fulfilled or rejected, with `then`, `catch`, and `finally` attached and fired | *async-and-the-event-loop*, fetch-basics/promises-then-async-and-await | 6 | in use |
 | `async-await-unroll` | An `async` function and its `then` chain side by side, advanced one `await` at a time | *async-and-the-event-loop*, fetch-basics/promises-then-async-and-await | 6 | in use |
@@ -175,5 +175,5 @@ Each one takes its data from the fence body where that makes sense, so the same 
 | 9 | 11 |
 | later | 3 |
 
-Phase 6 builds its explainers in the order the content needs them, as [PHASE6.md](PHASE6.md) lists: the lab and the JavaScript foundation first, then React, then HTML and CSS.
+Phase 6 builds its explainers in the order the content needs them, as [PHASE6.md](PHASE6.md) lists: the site itself and the JavaScript foundation first, then React, then HTML and CSS.
 A step that needs an explainer not in this file adds it here first, with its Phase and `planned`, so the file stays the complete list.

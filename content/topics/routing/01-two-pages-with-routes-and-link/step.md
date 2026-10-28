@@ -11,7 +11,7 @@ required: [home-route-renders, nav-has-two-links, link-switches-page]
 **We used this in:** [Components and props](#/topic/components-and-props), where a page was a tree of components, and the Week 8 CourseHub, where every page was its own HTML file.
 
 This step turns one page into two with React Router: `Routes` reads the address and chooses which component to render, and `Link` changes the address without a reload.
-Watch the address bar the lab draws above the result, because that address is what the router sees.
+Watch the address bar this site draws above the result, because that address is what the router sees.
 
 ```demo name="router-match"
 ```
@@ -74,7 +74,7 @@ The nav is outside `Routes`, so it renders on every page, and inside `BrowserRou
 Every app we have built so far was one page.
 A shop needs several: a home page, a product list, a page per product, and a form.
 In a Vite project you install React Router with `npm install react-router`, and it does one job: it reads the address in the browser's address bar and chooses which of your components to render.
-In the lab the package is already available, and because the result runs inside a frame of its own, the lab draws its own address bar above the result so you can see what the router sees.
+On this site the package is already available, and because the result runs inside a frame of its own, the site draws its own address bar above the result so you can see what the router sees.
 
 ### Reading the router from the outside in
 
@@ -90,7 +90,7 @@ A plain `<a href="/products">` would throw all of that away and reload the page 
 
 **If it breaks:** If the console says `useHref() may be used only in the context of a <Router> component`, the `nav` is outside `BrowserRouter`; move it inside.
 If both pages render at once, the routes are outside `Routes`, or `App` still returns the old `<HomePage />` somewhere.
-If clicking a link makes the whole result go blank, it is an `<a href>` and not a `Link`; the frame navigated away and the lab lost it, so run the code again.
+If clicking a link makes the whole result go blank, it is an `<a href>` and not a `Link`; the frame navigated away and this site lost it, so run the code again.
 
 **Check:** Run the code.
 The home page shows with Home and Products links above it.

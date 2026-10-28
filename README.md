@@ -69,7 +69,7 @@ Markdown keeps one sentence per physical line, and the edit blocks in each `step
 A step page shows the explanation, the editor with file tabs, the result, the console, the inspector (boundaries, re-render flash, tree and state, flow trace, and the DOM view for plain pages), the network pane on fetching steps, the check panel, and step navigation.
 Every edit step has "Download this workspace", which writes a Vite project for a React workspace or a plain folder for an HTML, CSS, and JavaScript one, and a step whose code saves to `localStorage` gets a second "Run, keeping saved data" button that runs without clearing the result's storage.
 Progress stays in the browser and can be exported and imported on the home page.
-A five-stop tour of the step page opens on the first edit step a browser visits and again from the Tour button in the header, and the home page points new visitors at the `using-the-lab` topic until they finish it or hide the card.
+A five-stop tour of the step page opens on the first edit step a browser visits and again from the Tour button in the header, and the home page points new visitors at the `getting-started` topic until they finish it or hide the card.
 
 Routes use hash routing so that deep links work on GitHub Pages: `#/`, `#/topics`, `#/topic/<id>`, `#/topic/<id>/<n>`, `#/path/<pathId>`, and `#/path/<pathId>/<unit>`.
 
@@ -422,7 +422,7 @@ It never copies topic content, so improving a topic improves every path that use
 Every topic id must exist under `content/topics/`, every `required` is `true` or `false`, and `localNotes` is a list of sentences.
 Two optional fields control when students see the path, as the "Deployment" section explains.
 `opens` on a unit is the date it is released, written as `YYYY-MM-DD`; set it to the Monday of the unit's week so the scheduled deploy opens it that morning, and leave it out for a unit that is open from the start.
-`active` on the path is `true` by default; set it to `false` when a semester is over and the path is kept only for its history, and the deployed site leaves it out along with every topic that no active path releases.
+`active` on the path is `true` by default; set it to `false` for a semester that is over or not yet taught, such as Spring 2027 while Fall 2026 runs, and the deployed site leaves it out along with every topic that no active path releases.
 Validation still requires every topic to be in some path, whatever the dates and `active` say.
 The unit page is `#/path/<path-id>/<unit-id>`, which is the link to post in D2L.
 Run `npm run validate` after editing.
@@ -438,7 +438,8 @@ npm run export:d2l -- fall-2026
 
 For each unit, `dist-d2l/<path-id>/<unit-id>.html` is a complete page in the CS300 Brightspace template, ready to upload to Content as an HTML file.
 `dist-d2l/<path-id>/<unit-id>.fragment.html` holds only the page content, for pasting into an existing D2L page that already uses the template.
-Each page has the unit intro, a link to the unit on CS300 Practice, the required topics with links to each topic, the optional topics, and the notes about work on your own computer.
+Each page has the unit intro, one line saying that this is practice with nothing graded and nothing submitted, a link to the unit on CS300 Practice, the required topics under "Guided Practice" and the optional ones under "Optional practice", each with a link, and the notes about work on your own computer.
+The first unit of the path with Guided Practice, Week 10 in Fall 2026, also has a "Before you start" block: progress stays in the browser, a private window forgets it, and the `getting-started` tour comes first.
 Links point at `https://mandloideep.github.io/cs300-practice/`.
 The template is copied into `scripts/export-d2l.mjs` from the Fall course repository's D2L build kit; update the copy there if the build kit's template changes.
 `dist-d2l/` is generated and not committed.

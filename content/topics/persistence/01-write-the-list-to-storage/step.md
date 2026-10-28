@@ -56,7 +56,7 @@ In Week 6 we kept data across page loads with `localStorage`, which stores strin
 `localStorage` holds strings only, which is why the effect stringifies the array, and the dependency array means the write happens after every change to `savedIds` and never otherwise.
 The effect also runs after the first render, which writes `[]` on load; that is harmless, and the next step makes it correct.
 
-The result page shares storage with the lab itself, so the lab keeps your code's keys in a scope of their own with that prefix, and clears that scope before each run so that every step starts clean; your code sees the key as `saved-for-later`, and in your own Vite project it would be stored as `saved-for-later` too.
+The result page shares storage with this site itself, so the site keeps your code's keys in a scope of their own with that prefix, and clears that scope before each run so that every step starts clean; your code sees the key as `saved-for-later`, and in your own Vite project it would be stored as `saved-for-later` too.
 
 **If it breaks:** If the key never appears, `setItem` is outside the effect, or the key is spelled differently.
 If the stored value is `1,6` without brackets, the array was stored without `JSON.stringify`, so the browser turned it into text its own way.

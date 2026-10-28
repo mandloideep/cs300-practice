@@ -96,7 +96,7 @@ A delay of `0` only means "as soon as the stack is empty", the case [Fetch basic
 A long synchronous loop is the one thing that makes every one of them wait, so long work should be broken up or moved off the main thread, a topic for later in the course.
 
 Try the common mistake on purpose: change the `250` in `busyUntil` to `1000` and run.
-For a whole second nothing happens, the lab's editor included, and then everything prints at once, every timer after about 1000 ms.
+For a whole second nothing happens, this site's editor included, and then everything prints at once, every timer after about 1000 ms.
 Change it back to `250`.
 
 **If it breaks:** If the page freezes for a long time, the `while` loop's condition never becomes false; it must compare `Date.now()` with `busyUntil`, not with a fixed number.

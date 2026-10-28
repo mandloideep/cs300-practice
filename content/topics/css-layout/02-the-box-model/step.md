@@ -63,7 +63,7 @@ Nothing about the width changed; the card still said `width: 100%`.
 
 By default, `width` sets the size of the **content** layer only.
 Padding and border are added on the outside of that, so a card that is `100%` wide plus `1.5rem` of padding on each side plus a `0.25rem` border on each side is `100%` plus `3.5rem` wide, which is wider than the space it sits in.
-Hover the card with the browser's DevTools open and the Computed panel draws the four layers with their sizes; the lab's DOM view shows the same box when you hover its row.
+Hover the card with the browser's DevTools open and the Computed panel draws the four layers with their sizes; this site's DOM view shows the same box when you hover its row.
 
 ### `border-box` everywhere
 

@@ -117,8 +117,8 @@ test.describe("the home-page card", () => {
       const response = await route.fetch();
       const index = await response.json();
       index.topics.unshift({
-        id: "using-the-lab",
-        title: "Using the lab",
+        id: "getting-started",
+        title: "Using CS300 Practice",
         area: "tooling",
         summary: "How a step page works.",
         prerequisites: [],
@@ -135,14 +135,14 @@ test.describe("the home-page card", () => {
     });
   }
 
-  test("links to Using the lab until it is hidden", async ({ page }) => {
+  test("links to Using CS300 Practice until it is hidden", async ({ page }) => {
     await serveWelcomeTopic(page);
     await page.goto("#/");
     const card = page.getByRole("region", { name: "New to CS300 Practice?" });
     await expect(card).toBeVisible();
-    await expect(card.getByRole("link", { name: "Start Using the lab" })).toHaveAttribute(
+    await expect(card.getByRole("link", { name: "Start Using CS300 Practice" })).toHaveAttribute(
       "href",
-      "#/topic/using-the-lab",
+      "#/topic/getting-started",
     );
     const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
     expect(results.violations.map((violation) => violation.id)).toEqual([]);
@@ -156,7 +156,7 @@ test.describe("the home-page card", () => {
     await expect(card).toHaveCount(0);
   });
 
-  test("is gone once every step of Using the lab is complete", async ({ page }) => {
+  test("is gone once every step of Using CS300 Practice is complete", async ({ page }) => {
     await serveWelcomeTopic(page);
     await page.addInitScript((key) => {
       localStorage.setItem(
@@ -164,8 +164,8 @@ test.describe("the home-page card", () => {
         JSON.stringify({
           version: 2,
           completed: {
-            "using-the-lab/1": "2026-10-27T00:00:00Z",
-            "using-the-lab/2": "2026-10-27T00:00:00Z",
+            "getting-started/1": "2026-10-27T00:00:00Z",
+            "getting-started/2": "2026-10-27T00:00:00Z",
           },
           files: {},
           pathId: null,
@@ -178,11 +178,11 @@ test.describe("the home-page card", () => {
     await expect(page.getByRole("region", { name: "New to CS300 Practice?" })).toHaveCount(0);
   });
 
-  test("is absent while the build has no Using the lab topic", async ({ page }) => {
+  test("is absent while the build has no Using CS300 Practice topic", async ({ page }) => {
     await page.route("**/content/index.json", async (route) => {
       const response = await route.fetch();
       const index = await response.json();
-      index.topics = index.topics.filter((topic) => topic.id !== "using-the-lab");
+      index.topics = index.topics.filter((topic) => topic.id !== "getting-started");
       await route.fulfill({ response, json: index });
     });
     await page.goto("#/");

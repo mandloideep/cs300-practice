@@ -381,6 +381,58 @@ describe("export:d2l on a gated build", () => {
     assert.doesNotMatch(week3, /Lecture:/);
   });
 
+  it("heads the topics Guided Practice and Optional practice and says nothing is graded", () => {
+    const content = index("2027-01-15");
+    content.paths[0].units[2].topics[0].required = false;
+    const { pages } = exportPath(content, "spring", () => ({ links: null }));
+    const [week1, week3] = pages.map(({ fragment }) => fragment);
+    assert.match(
+      week1,
+      /<h2>Guided Practice<\/h2>\n<ol>\n {2}<li><a href="[^"]+#\/topic\/topic-a">/,
+    );
+    assert.doesNotMatch(week1, /Optional practice/);
+    assert.match(week1, / minutes, 1 step\.</);
+    assert.match(
+      week3,
+      /<h2>Optional practice<\/h2>\n<ol>\n {2}<li><a href="[^"]+#\/topic\/topic-d">/,
+    );
+    assert.doesNotMatch(week3, /Guided Practice/);
+    for (const { fragment } of pages) {
+      assert.match(
+        fragment,
+        /<p>One paragraph\.<\/p>\n<p>This is practice: nothing here is graded, and there is nothing to submit\.<\/p>\n<div class="notice cs300-download">/,
+      );
+      assert.match(fragment, /in CS300 Practice<\/a><\/p>/);
+    }
+    assert.match(pages[0].page, /<title>Unit week-1 \| CS300 Practice<\/title>/);
+  });
+
+  it("puts Before you start on the first unit with Guided Practice only, with the tour", () => {
+    const content = index("2027-01-15");
+    content.paths[0].units[0].topics[0].required = false;
+    content.topics.push({
+      id: "getting-started",
+      title: "Using CS300 Practice",
+      summary: "A tour.",
+      minutes: 15,
+      steps: [],
+    });
+    const { pages } = exportPath(content, "spring", () => ({ links: null }));
+    const [week1, week3] = pages.map(({ fragment }) => fragment);
+    assert.doesNotMatch(week1, /Before you start/);
+    assert.match(
+      week3,
+      /<\/div>\n<h2>Before you start<\/h2>\n<ul>\n {2}<li>Your progress stays in the browser you use, so use your own laptop, or export your progress from the <a href="https:\/\/mandloideep\.github\.io\/cs300-practice\/">home page<\/a> and import it on the next computer\.<\/li>\n {2}<li>A private or incognito window forgets everything when you close it\.<\/li>\n {2}<li>Take the 15-minute tour first: <a href="https:\/\/mandloideep\.github\.io\/cs300-practice\/#\/topic\/getting-started">Using CS300 Practice<\/a>\.<\/li>\n<\/ul>\n<h2>Guided Practice<\/h2>/,
+    );
+  });
+
+  it("leaves the tour out of Before you start when the build has no tour topic", () => {
+    const { pages } = exportPath(index("2027-01-15"), "spring", () => ({ links: null }));
+    assert.match(pages[0].fragment, /<h2>Before you start<\/h2>/);
+    assert.doesNotMatch(pages[0].fragment, /minute tour/);
+    assert.doesNotMatch(pages[1].fragment, /Before you start/);
+  });
+
   it("names the --all build when a path is inactive", () => {
     assert.throws(
       () => exportPath(index("2027-01-15"), "old", () => null),

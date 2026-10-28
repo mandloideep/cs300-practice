@@ -52,7 +52,7 @@ There are two changes in this script, the submit and the remove.
 
 Each change now follows the same three beats: change the array, save it, render it.
 
-The lab's **Run** button clears the result's storage before it runs, so that every run starts clean.
+This site's **Run** button clears the result's storage before it runs, so that every run starts clean.
 To see persistence, use **Run, keeping saved data**, which runs the code again without clearing, the way a real reload keeps what the page saved.
 
 ## Read more

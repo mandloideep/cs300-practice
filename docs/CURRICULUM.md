@@ -1,6 +1,6 @@
 # Curriculum map: JavaScript, the browser, React, tooling, and production
 
-This file is the complete list of topics the lab will teach, from the first JavaScript value to a client-side application a team can ship.
+This file is the complete list of topics CS300 Practice will teach, from the first JavaScript value to a client-side application a team can ship.
 It is organized the way [javascript.info](https://javascript.info) organizes the language and the browser, because that table of contents is the most complete map of what a web developer needs, and then it adds the parts that site does not cover: React, tooling and libraries, and production.
 javascript.info is the map, not the source.
 Its chapter list is the checklist below, its prose is not copied, and each topic links to the matching chapter and to MDN as further reading through the `links` field that [PHASE6.md](PHASE6.md) defines.
@@ -86,7 +86,7 @@ Every React topic exists and is retrofitted in Phase 6 with the explainers liste
 
 The Git and deployment topics are written in Phase 7 as `PHASE7.md` plans them: Git runs only on the student's computer, the explainers model it, one edit step resolves a conflict in the site, and the local steps end with a repository, a merged pull request, and a project on GitHub Pages.
 The library tour explains what problem each library solves, shows one call, and says when not to reach for it.
-The Tailwind steps run inside the lab through the vendored Tailwind browser build that [PHASE6.md](PHASE6.md) specifies; the other libraries are taught through explainers and local steps, because the runner resolves only the pinned React packages.
+The Tailwind steps run inside this site through the vendored Tailwind browser build that [PHASE6.md](PHASE6.md) specifies; the other libraries are taught through explainers and local steps, because the runner resolves only the pinned React packages.
 
 ## Part 5: production
 
@@ -94,19 +94,19 @@ The Tailwind steps run inside the lab through the vendored Tailwind browser buil
 | --- | --- | --- | --- |
 | *testing-client-apps* | why-tests, a-unit-test-with-vitest, a-component-test, an-end-to-end-test-with-playwright, what-to-test-and-what-not-to, tests-in-ci | `test-runner`, `test-pyramid`, `terminal` | 9 |
 | *building-for-production* | vite-build-and-dist, hashed-files-and-caching, code-splitting-and-lazy-routes, environment-variables, source-maps, measure-with-lighthouse | `dev-server-vs-build`, `bundle-map`, `env-at-build`, `loading-waterfall`, `static-deploy` | 9 |
-| *deploying-and-ci* | static-hosting, preview-deploys, the-lab-s-own-workflow | `ci-pipeline`, `static-deploy` | 9 |
+| *deploying-and-ci* | static-hosting, preview-deploys, the-site-s-own-workflow | `ci-pipeline`, `static-deploy` | 9 |
 | *resilience-in-production* | error-boundaries, loading-and-empty-states, retries-and-timeouts, accessibility-as-a-check, performance-basics, logging-and-monitoring | `error-boundary`, `accessibility-tree`, `fetch-timeline` | 9 |
 | *security-for-client-apps* | nothing-secret-in-the-client, xss-and-why-react-escapes, dangerouslysetinnerhtml, cors-and-https, dependency-audits, the-supply-chain | `secrets-in-the-client`, `xss-escape`, `cors-check`, `env-at-build` | 9 |
 | *how-teams-ship* | repositories-branches-and-pull-requests, code-review, issues-and-planning, semantic-versioning-and-changelogs, releases-and-rollbacks, documentation | `semver`, `ci-pipeline`, `feature-flag` | 9 |
 
-The production topics are read steps with explainers, local steps that download a project with its tests and workflow, and a few edit steps where the lab can show the idea, such as an error boundary or escaped markup.
+The production topics are read steps with explainers, local steps that download a project with its tests and workflow, and a few edit steps where this site can show the idea, such as an error boundary or escaped markup.
 They use this repository as the worked example: its `check.yml` and `deploy.yml`, its Playwright suite, and its GitHub Pages deployment are the artifacts the steps read.
 
-## Part 6: the lab itself
+## Part 6: the site itself
 
 | Topic | Steps | Explainers | Phase |
 | --- | --- | --- | --- |
-| using-the-lab, `getting-started` after Phase 7 | what-a-step-page-is, your-first-edit, the-files-of-a-step, read-the-console, use-a-check, meet-the-inspector, progress-downloads-and-shortcuts | `page-tour`, `edit-run-loop`, `project-tree`, `error-decoder`, `inspector-tour` | 6 and 7 |
+| getting-started | what-a-step-page-is, your-first-edit, the-files-of-a-step, read-the-console, use-a-check, meet-the-inspector, progress-downloads-and-shortcuts | `page-tour`, `edit-run-loop`, `project-tree`, `error-decoder`, `inspector-tour` | 6 and 7 |
 
 ## Counts
 
@@ -117,7 +117,7 @@ They use this repository as the worked example: its `check.yml` and `deploy.yml`
 | React | 16 | 0 | 16 | 0 | 0 | 0 | 0 |
 | Tooling and libraries | 1 | 7 | 1 | 3 | 3 | 0 | 1 |
 | Production | 0 | 6 | 0 | 0 | 0 | 6 | 0 |
-| The lab itself | 1 | 0 | 1 | 0 | 0 | 0 | 0 |
+| The site itself | 1 | 0 | 1 | 0 | 0 | 0 | 0 |
 
 Phase 6 wrote ten topics and retrofitted twenty-one, Phase 7 writes three and retouches the onboarding topic, Phase 8 writes four, Phase 9 writes six, and five wait for a later phase.
 A topic that is added later goes into this file first, with its steps, its explainers, and its phase, so the file stays the complete map.

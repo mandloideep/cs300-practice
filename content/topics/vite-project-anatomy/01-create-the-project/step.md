@@ -3,7 +3,7 @@ title: Create the project on your computer
 mode: local
 ---
 
-**We used this in:** [The React mental model](#/topic/react-mental-model) wrote React components in the lab; now we set up the same kind of project on your own computer.
+**We used this in:** [The React mental model](#/topic/react-mental-model) wrote React components in CS300 Practice; now we set up the same kind of project on your own computer.
 
 This step creates a React project with **Vite** in your own terminal, installs it, and starts its development server.
 Watch what each command prints: it tells you whether the command worked before you move to the next one.
@@ -11,7 +11,7 @@ Watch what each command prints: it tells you whether the command worked before y
 ```demo name="terminal"
 ```
 
-This step runs in your own terminal, not in the lab.
+This step runs in your own terminal, not on this site.
 Open Visual Studio Code, open a terminal with `` Ctrl+` `` or **Terminal > New Terminal**, and move to the folder where you keep your course work.
 
 ## Check Node first
@@ -117,7 +117,7 @@ The download differs from a freshly generated project in a few small, deliberate
 
 - `package.json` pins the course versions, React 19.2.8 and Vite 8.2.4, instead of the newest releases that `@latest` installs.
 - The welcome page is trimmed to a heading, a paragraph, and the counter, without the logo images and links.
-- The styles are one `styles.css` file linked from `index.html`, which is also how the lab loads styles; a generated project instead imports `./index.css` from `src/main.jsx` and `./App.css` from `src/App.jsx`, and Vite handles both ways.
+- The styles are one `styles.css` file linked from `index.html`, which is also how this site loads styles; a generated project instead imports `./index.css` from `src/main.jsx` and `./App.css` from `src/App.jsx`, and Vite handles both ways.
 - There is no linter configuration.
 
 Everything this topic teaches works the same in your generated project and in the download.

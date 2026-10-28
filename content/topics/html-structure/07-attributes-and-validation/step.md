@@ -62,10 +62,10 @@ That is why we check with tools instead of trusting the page looks right.
 
 ### Three ways to check a page
 
-**The DOM view** in this lab, and the **Elements** panel in your browser's DevTools (F12), show the tree the browser built.
+**The DOM view** on this site, and the **Elements** panel in your browser's DevTools (F12), show the tree the browser built.
 When the tree does not match the file, the file has a nesting mistake, and the first branch that sits in the wrong place is next to it.
 
-**The checks** in this lab read the tree too: they ask the questions a screen reader would ask.
+**The checks** on this site read the tree too: they ask the questions a screen reader would ask.
 Does every field have a label?
 Is there one `<main>`?
 Does every image have `alt` text?

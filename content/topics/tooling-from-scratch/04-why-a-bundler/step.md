@@ -5,7 +5,7 @@ entry: index.html
 required: [sessions-listed, no-bare-import-on-the-page, formatted-by-path]
 ---
 
-**We used this in:** [Modules and imports](#/topic/modules-and-imports/6) watched a bare import fail in the lab; this step asks where a package lives on disk and who turns its name into a path.
+**We used this in:** [Modules and imports](#/topic/modules-and-imports/6) watched a bare import fail in the browser; this step asks where a package lives on disk and who turns its name into a path.
 
 This step imports a package by its name, the way every React file imports `react`, and watches the browser refuse.
 Then it imports the same package by the path of its file, which the browser accepts, and that difference is the reason bundlers exist.
@@ -40,7 +40,7 @@ The console shows an **uncaught** error from the browser itself:
 TypeError: Failed to resolve module specifier "study-format". Relative references must start with either "/", "./", or "../".
 ```
 
-The lab passes a script written inside the page straight to the browser, so this is exactly what Chrome says on any web server, and other browsers say the same thing in their own words.
+This site passes a script written inside the page straight to the browser, so this is exactly what Chrome says on any web server, and other browsers say the same thing in their own words.
 Read the second sentence: the browser only follows addresses.
 `./format.js` and `/src/main.js` are addresses, relative to the page; `study-format` is a **bare specifier**, a name, and the browser has no idea that a name means "look in `node_modules`, read that folder's `package.json`, and load the file its `exports` field names".
 That lookup is a rule of Node and npm, not of the web.
@@ -52,8 +52,8 @@ Remove the inline script.
 ```
 
 Before the next edit, try the bare name inside `src/main.js` once: add `import { formatMinutes } from "study-format";` as its first line and run.
-This time the lab stops before the browser sees the file, and the result says **Did not compile** with the lab's own message, `Cannot import "study-format". The lab provides these packages:` followed by the React packages.
-The lab, like a bundler, reads your imports before the browser does; it knows only those few names, which is why every React step can import `react` and nothing else.
+This time CS300 Practice stops before the browser sees the file, and the result says **Did not compile** with this site's own message, `Cannot import "study-format". CS300 Practice provides these packages:` followed by the React packages.
+This site, like a bundler, reads your imports before the browser does; it knows only those few names, which is why every React step can import `react` and nothing else.
 Delete that line again.
 
 Now import the package the way the browser can follow, by the path of its file from `src/main.js`.

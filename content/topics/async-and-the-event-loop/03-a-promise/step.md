@@ -50,7 +50,7 @@ What does the `Right away:` line show?
 
 Run it.
 The console shows `Request sent` and then `Right away: [Promise]`.
-`loadCourses` returned at once with the promise itself, not with the courses, which do not exist yet; the lab prints any promise as `[Promise]`, while the browser's own console shows `Promise {<pending>}`.
+`loadCourses` returned at once with the promise itself, not with the courses, which do not exist yet; this site prints any promise as `[Promise]`, while the browser's own console shows `Promise {<pending>}`.
 `Request sent` came first because the executor runs immediately, inside `new Promise`, before `loadCourses` even returns.
 
 A promise starts **pending**.

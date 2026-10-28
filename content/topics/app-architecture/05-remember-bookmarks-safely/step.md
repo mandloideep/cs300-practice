@@ -118,7 +118,7 @@ If the warning never clears, `showStorageWarning("")` is missing from the succes
 **Check:** Run the code, save a book, and press **Run, keeping saved data**; the book is still saved and no warning shows.
 Press **Run** and the bookmark is gone, because a plain run clears the result's storage.
 Press **Run checks**; the checks save a book, read the stored JSON, and remove it again.
-The lab's own test also seeds broken text into the storage and confirms the warning appears while the page keeps working.
+This site's own test also seeds broken text into the storage and confirms the warning appears while the page keeps working.
 
 ```quiz
 The stored text is `{not json` when the page loads; what happens?

@@ -17,10 +17,10 @@ Watch what each tag you write turns into.
 ```
 
 The workspace is a plain page whose script is `src/main.jsx`, a file with one small component, `Badge`, and one line that prints the function as text with `String(Badge)`.
-In the lab, as in Vite, a `.jsx` file is transformed before it runs, so what prints is the function after the transform.
+On this site, as in Vite, a `.jsx` file is transformed before it runs, so what prints is the function after the transform.
 
 ```predict
-What does `console.log(String(Badge))` print in the lab?
+What does `console.log(String(Badge))` print here?
 - The function with `<p className="badge">` as you wrote it
 - A red `SyntaxError`, because browsers cannot read JSX
 = The function with a call such as `_jsxDEV('p', ...)` where the tag was
@@ -29,7 +29,7 @@ What does `console.log(String(Badge))` print in the lab?
 Press **Run**.
 The console shows the function with a call in place of the tag: the tag became a call, with the tag name as its first argument and an object of props as its second, `{ className: "badge", children: ["Now studying ", course] }`.
 The text and the `{course}` inside the tag became the `children` list, in order.
-The extra arguments after the props, `void 0, true, {fileName: ..., lineNumber: 2}`, are there only in development: they tell React which file and line made the element, which is how its warnings, and the lab's inspector, can point you at your own code.
+The extra arguments after the props, `void 0, true, {fileName: ..., lineNumber: 2}`, are there only in development: they tell React which file and line made the element, which is how its warnings, and this site's inspector, can point you at your own code.
 
 A browser would indeed throw a `SyntaxError` at the first `<`, because JSX is not JavaScript.
 The transformer is what makes it JavaScript.
@@ -92,9 +92,9 @@ npx esbuild src/main.jsx --bundle --minify --outfile=dist/main.js
 Without `--bundle`, it only transforms: one file in, the same file with JSX rewritten out, as you just saw.
 With `--bundle`, it also follows every import, resolves bare names in `node_modules`, and writes one file with everything in it; `--minify` then removes spaces and shortens names.
 
-Vite used esbuild for its transforms and for preparing packages from version 2 to version 7, and many tools still do; the React runtime this lab loads in the result pane is built with esbuild.
+Vite used esbuild for its transforms and for preparing packages from version 2 to version 7, and many tools still do; the React runtime this site loads in the result pane is built with esbuild.
 Vite 8 does the same two jobs with **Oxc** for the transform and **Rolldown** for the bundle, both written in Rust, and the output is the same shape you see here.
-The lab transforms with **Sucrase**, a smaller transformer that is quick enough to run inside your browser on every **Run**; that is the `_jsxDEV` in your console.
+This site transforms with **Sucrase**, a smaller transformer that is quick enough to run inside your browser on every **Run**; that is the `_jsxDEV` in your console.
 A production build uses a lighter call, `jsx("p", { ... })` from `react/jsx-runtime`, with no file names or line numbers, because nobody reads warnings on a live site.
 
 The names will keep changing, as they did between Vite 7 and Vite 8; the two jobs, transform and bundle, will not.

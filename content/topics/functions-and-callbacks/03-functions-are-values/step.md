@@ -26,7 +26,7 @@ console.log("The value itself:", addCurve);
 ```
 
 Run it: `addCurve is a function` and `The value itself: [Function addCurve]`.
-Without parentheses, `addCurve` is not a call; it is the function itself, and the lab's console prints a function as its name in brackets.
+Without parentheses, `addCurve` is not a call; it is the function itself, and this site's console prints a function as its name in brackets.
 `typeof` has a word for this type too, `function`, beside `string`, `number`, and `boolean` from [JavaScript basics](#/topic/javascript-basics).
 
 Because the function is a value, assigning it to another variable gives the same function a second name.

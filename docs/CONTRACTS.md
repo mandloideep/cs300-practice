@@ -702,7 +702,7 @@ The unit page shows a closed unit's title and date with no links; the path page 
 
 The step-page tour is `src/ui/Tour.jsx`, five dialogs built on `src/ui/Dialog.jsx` that focus the explanation, the editor, Run, the result, and the console and check panel in that order, with Next, Back, and Skip.
 It opens once per browser, on the first step page visited while `tour.stepPage` is null in progress, and from a `Tour` button in the site header on step pages; finishing or skipping stores the date.
-The home page shows a card that links to `#/topic/using-the-lab` until every step of that topic is complete or `tour.homeCard` holds a dismissal date.
+The home page shows a card that links to `#/topic/getting-started`, which was `using-the-lab` before Phase 7, until every step of that topic is complete or `tour.homeCard` holds a dismissal date.
 
 ### 7.7 Progress JSON version 2
 
