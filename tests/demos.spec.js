@@ -63,10 +63,10 @@ async function pressControl(frame, name) {
   await button.press("Enter");
 }
 
-test("the registry lists every Phase 6 explainer once", () => {
+test("the registry lists every explainer once", () => {
   const ids = registry.map((entry) => entry.id);
   expect(new Set(ids).size).toBe(ids.length);
-  expect(ids.length).toBe(68);
+  expect(ids.length).toBe(77);
   for (const entry of registry) {
     expect(entry.title, entry.id).toBeTruthy();
     expect(entry.description, entry.id).toMatch(/[.!?]$/);
