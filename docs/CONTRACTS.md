@@ -842,6 +842,14 @@ A vanilla download's `README.md` gains one sentence that says to set the Pages s
 
 Student-facing prose says "CS300 Practice" where it names the site and "this site" or "the browser" where it means the place the code runs; it never says "lab".
 
+### 8.8 A starter that does not compile
+
+An `edit` step whose starter is meant to fail, such as `git-collaboration/resolve-a-conflict`, whose `src/App.jsx` holds conflict markers, carries `starterCompiles: false` in its front matter; the default is `true`.
+The validator then skips the Sucrase check on the workspace files, still requires the solution to compile, and rejects the field when the starter does compile, so the flag cannot go stale.
+The compiled step carries `"starterCompiles": false`.
+`tests/runner.spec.js` expects at least one compile diagnostic from such a starter instead of none, and the step suite still runs its solution through its checks.
+The validator also rejects a conflict marker line (`<<<<<<<`, `=======`, or `>>>>>>>` at the start of a line) in any solution file.
+
 ## Decisions log
 
 - 2026-10-26: Generated content lives in `public/content/` and is gitignored; `public/runtime/` is committed.
@@ -857,5 +865,6 @@ Student-facing prose says "CS300 Practice" where it names the site and "this sit
 - 2026-10-26: `react-router` always resolves to `runtime/wrap/react-router.js`, inspector on or off. The iframe's `localStorage` and `sessionStorage` are Proxy views scoped under `cs300-lab:sandbox:` so student code cannot touch the site's progress, and `run()` clears that scope before each run unless `preserveStorage: true`. Decided by the Phase 3 runtime stream.
 - 2026-10-26: Phase 4 contracts pinned: the `dom` snapshot message, `dom-highlight` and `resize` parent messages, `dom` as an `inspector.views` value and the default for a vanilla workspace, and the vanilla download layout. The DOM view is the vanilla counterpart of boundaries and flash. Phase 4 ownership is in `docs/PHASE4.md`.
 - 2026-10-26: The bridge has a fourth part, `src/runner/bridge/dom.js`, concatenated after `fetch-shim.js`; it owns the `dom` snapshots and `dom-highlight`, and the overlay host is shared with the inspector hook. A content build defaults `inspector.views` to `[dom]` for a vanilla step. Decided by the Phase 4 runtime stream.
+- 2026-10-28: `starterCompiles: false` (8.8) added at the content stream's request, so a step can start from a file that does not compile; the field is explicit rather than detected from markers. The content stream implements it in `scripts/lib/content.mjs`, `scripts/test/`, and `tests/runner.spec.js` as a one-time exception to its ownership.
 - 2026-10-28: Phase 7 contracts pinned in section 8: the `files` field and `fileNotes`, the project layout and the file tree, the `project-tree` fence body, the Git and deployment explainer props, the deployable download, the Fall 2026 units, and the names. Phase 7 ownership is in `docs/PHASE7.md`.
 - 2026-10-27: Phase 6 contracts pinned in section 7: the `demo` fence and registry, the `predict` and `quiz` fences, the "Read more" section, the `links` field, the release fields and `--all`, the tour, and progress JSON version 2. Phase 6 ownership is in `docs/PHASE6.md`.
