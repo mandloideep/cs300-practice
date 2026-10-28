@@ -1,6 +1,7 @@
 // The Phase 6 step fences and sections of docs/CONTRACTS.md section 7, shared by the validator
 // and the renderer so that both read a step the same way:
-// - a demo fence, ```demo name="<id>"```, whose body is empty or one JSON object of props;
+// - a demo fence, ```demo name="<id>"```, whose body is empty or one JSON object of props, except
+//   project-tree's, which is the indented listing of section 8.3;
 // - predict and quiz fences: a question line, two to four options starting with "- ", exactly one
 //   starting with "= " (the answer), and for a quiz, explanation lines starting with "> ";
 // - the "## Read more" heading, which folds the step from there to the **Check:** paragraph;
@@ -41,6 +42,10 @@ export function parseDemo(token) {
       error: `names explainer ${JSON.stringify(id)}, which is not in src/demos/registry.json`,
     };
   }
+  if (id === PROJECT_TREE) {
+    const parsed = parseProjectTree(fenceCode(token.content));
+    return parsed.error ? { id, error: `body ${parsed.error}` } : { id, props: parsed.props };
+  }
   const body = fenceCode(token.content).trim();
   if (body === "") return { id, props: {} };
   let props;
@@ -53,6 +58,83 @@ export function parseDemo(token) {
     return { id, error: "body must be one JSON object of props, or empty" };
   }
   return { id, props };
+}
+
+// The project-tree fence body of docs/CONTRACTS.md section 8.3, an indented listing rather than
+// JSON: one entry per line, two spaces per level, a folder ending in "/", a description after two
+// or more spaces, "stage: <label>" starting a stage, and in a stage after the first, "+ " starting
+// each entry, the "+ " counting as one level of indentation. Returns { props } or { error }.
+export const PROJECT_TREE = "project-tree";
+
+const MAX_STAGES = 6;
+const MAX_ENTRIES = 60;
+
+export function parseProjectTree(body) {
+  const lines = body.split("\n").map((line) => line.replace(/\s+$/, ""));
+  const stages = [];
+  const folders = [];
+  const seen = new Set();
+  let count = 0;
+  for (const [index, line] of lines.entries()) {
+    if (line === "") continue;
+    const where = `line ${index + 1} of the listing`;
+    const stage = /^stage:(.*)$/.exec(line);
+    if (stage) {
+      const label = stage[1].trim();
+      if (label === "") return { error: `${where}: a stage: line needs a label` };
+      if (stages.length > 0 && stages[0].label === null) {
+        return { error: `${where}: a stage: line must come before every entry` };
+      }
+      stages.push({ label, entries: [] });
+      continue;
+    }
+    if (stages.length === 0) stages.push({ label: null, entries: [] });
+    const later = stages.length > 1;
+    const added = line.startsWith("+ ");
+    if (!later && line.startsWith("+")) {
+      return { error: `${where}: a + entry belongs only in a stage after the first` };
+    }
+    if (later && !added) {
+      return { error: `${where}: in a stage after the first, each entry starts with "+ "` };
+    }
+    const text = added ? `  ${line.slice(2)}` : line;
+    const indent = /^ */.exec(text)[0].length;
+    if (indent % 2 !== 0) {
+      return { error: `${where}: indent each level by two spaces` };
+    }
+    const depth = indent / 2;
+    const [rawName, ...rest] = text.slice(indent).split(/\s{2,}/);
+    const name = rawName.trim();
+    const folder = name.endsWith("/");
+    const bare = folder ? name.slice(0, -1) : name;
+    if (bare === "" || bare.includes("/") || /^\+/.test(bare)) {
+      return { error: `${where}: each entry needs a name, without a slash except the last` };
+    }
+    folders.length = Math.min(folders.length, depth);
+    if (folders.length < depth) {
+      return { error: `${where}: the indentation does not nest under a folder above it` };
+    }
+    const path = depth === 0 ? bare : `${folders[depth - 1]}/${bare}`;
+    if (seen.has(path)) return { error: `${where}: ${path} is listed twice` };
+    seen.add(path);
+    const description = rest.join("  ").trim();
+    stages[stages.length - 1].entries.push({
+      path,
+      depth,
+      kind: folder ? "folder" : "file",
+      description: description === "" ? null : description,
+      fresh: true,
+    });
+    if (folder) folders.push(path);
+    count += 1;
+  }
+  if (stages.length === 0) return { props: {} };
+  const empty = stages.find((stage) => stage.entries.length === 0);
+  if (empty) return { error: `stage ${JSON.stringify(empty.label)} lists no entries` };
+  if (stages.length > MAX_STAGES)
+    return { error: `has ${stages.length} stages; at most ${MAX_STAGES}` };
+  if (count > MAX_ENTRIES) return { error: `lists ${count} entries; at most ${MAX_ENTRIES}` };
+  return { props: { stages } };
 }
 
 // One predict or quiz fence, numbered k within its kind:

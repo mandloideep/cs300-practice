@@ -187,6 +187,26 @@ const VARIANTS = {
     { repo: "cs300-practice", route: "/", base: "/" },
   ],
   "ci-pipeline": [{ failAt: 1 }, { stages: ["lint", "test", "build"], failAt: 0 }],
+  "project-tree": [
+    {
+      stages: [
+        {
+          label: null,
+          entries: [
+            { path: "src", depth: 0, kind: "folder", description: null, fresh: true },
+            {
+              path: "src/App.jsx",
+              depth: 1,
+              kind: "file",
+              description: "The top component",
+              fresh: true,
+            },
+            { path: "index.html", depth: 0, kind: "file", description: null, fresh: true },
+          ],
+        },
+      ],
+    },
+  ],
 };
 
 for (const [id, variants] of Object.entries(VARIANTS)) {

@@ -16,7 +16,7 @@ An **edit** step has the explanation and, beside it, an editor with the code, th
 A **read** step, like this one, has the explanation only, and a **Mark this step as read** button at the end.
 A **local** step happens on your own computer: it explains what to type in your terminal and offers a download of the project to run there, and it ends with **I did this on my computer**.
 
-The line above each step's title says where you are, such as **Step 1 of 6**.
+The line above each step's title says where you are, such as **Step 1 of 7**.
 At the bottom of every step page, the step navigation links to the previous and the next step and lists every step in the topic, each marked once you complete it.
 
 ## The panes of an edit step

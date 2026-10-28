@@ -66,9 +66,16 @@ Markdown keeps one sentence per physical line, and the edit blocks in each `step
 - `public/runtime/` holds the vendored React runtime that the result iframe loads through an import map.
 - `scripts/` holds the content, runtime, and export build scripts.
 
-A step page shows the explanation, the editor with file tabs, the result, the console, the inspector (boundaries, re-render flash, tree and state, flow trace, and the DOM view for plain pages), the network pane on fetching steps, the check panel, and step navigation.
+A step page shows the explanation, the editor with the step's files as a tree, the result, the console, the inspector (boundaries, re-render flash, tree and state, flow trace, and the DOM view for plain pages), the network pane on fetching steps, the check panel, and step navigation.
 Every edit step has "Download this workspace", which writes a Vite project for a React workspace or a plain folder for an HTML, CSS, and JavaScript one, and a step whose code saves to `localStorage` gets a second "Run, keeping saved data" button that runs without clearing the result's storage.
 Progress stays in the browser and can be exported and imported on the home page.
+
+The tree beside the code (`src/editor/FileTree.jsx`) lists the step's files in their folders, marks the open file and every edited one, and says in one line under it what the selected entry is for.
+Its last node, **On your computer**, is closed at first and holds what the downloaded project has beyond the workspace: `package.json`, `vite.config.js`, `.gitignore`, the GitHub Pages workflow, `README.md`, `.env` when the step reads an API base, and `node_modules`, `package-lock.json`, and `dist`, which `npm install` and `npm run build` create and the zip never holds.
+One function, `projectLayout` in `src/ui/workspaceProject.js`, computes both the tree and the zip, so the two cannot differ.
+The sentences come from `src/editor/fileRoles.js`, a dictionary of well-known paths and patterns, unless the step's `files` field gives its own.
+The **Files** button in the editor's header hides and shows the tree and is kept in progress as `preferences.filesOpen`; at phone width the tree is a disclosure above the code that names the open file.
+A React download has `base: "./"`, a `.gitignore`, `.github/workflows/deploy.yml`, and a "Deploy to GitHub Pages" section in its README, so it deploys with no edit beyond setting the Pages source.
 A five-stop tour of the step page opens on the first edit step a browser visits and again from the Tour button in the header, and the home page points new visitors at the `getting-started` topic until they finish it or hide the card.
 
 Routes use hash routing so that deep links work on GitHub Pages: `#/`, `#/topics`, `#/topic/<id>`, `#/topic/<id>/<n>`, `#/path/<pathId>`, and `#/path/<pathId>/<unit>`.
@@ -178,6 +185,7 @@ required: [one-products-request, uses-api-base, products-render]
 | `inspector.watch` | no | Component names pinned at the top of the inspector tree |
 | `api.default` | no | `fixtures`, `custom`, or a preset id; include it only when the workspace fetches |
 | `required` | no | Check ids that must pass; the default is every check `check.js` returns |
+| `files` | no | On an edit step, a map from a workspace path to one sentence that says what the file is for; the tree shows it in place of the sentence from `src/editor/fileRoles.js` |
 
 The body follows the Week 8 pattern: a short explanation, small typed edits with an explanation beside each, a `**Check:**` paragraph, and an `**If it breaks:**` paragraph.
 Put each full sentence on its own line, and never use the em dash character.
@@ -392,6 +400,30 @@ Every explainer keeps the contract in [docs/CONTRACTS.md](docs/CONTRACTS.md) sec
 With `npm run dev` running, `/cs300-practice/src/demos/harness/index.html` lists every explainer, and `?id=<id>&width=320` shows one at phone width with optional `&props=<json>` and its default props below it.
 `tests/demos.spec.js` mounts every built explainer on that page, steps it from the first stage to the last from the keyboard, checks the 320 pixel column, and runs axe in light and dark with motion allowed and reduced.
 When an explainer is built, set its Status in [docs/EXPLAINERS.md](docs/EXPLAINERS.md) to `built`.
+
+### The `project-tree` fence
+
+`project-tree` is the one explainer whose fence body is not JSON but an indented listing of a project folder.
+Each line is one entry, indented two spaces per level, with a folder's name ending in `/` and an optional description after two or more spaces.
+A line `stage: <label>` starts a stage, and in every stage after the first each line starts with `+ `, which counts as one level of indentation, and adds an entry under the folders listed before it:
+
+````markdown
+```demo name="project-tree"
+stage: After npm create vite
+my-first-react/
+  index.html          The page the browser opens
+  src/
+    main.jsx          Finds the root div and renders App into it
+stage: After npm install
++ node_modules/       Every installed package; never edited, never committed
++ package-lock.json   The exact version npm chose for every package
+```
+````
+
+Step moves between stages, the entries a stage adds are marked new, and selecting an entry shows its description; a caption whose label starts with "After" names the command, as in "npm install added node_modules/ and package-lock.json".
+With no `stage:` line the listing is one stage, and Step moves the selection through its entries.
+An empty body shows the Vite project of `vite-project-anatomy`.
+The validator rejects indentation that does not nest under a folder, a `+ ` line in the first stage, a stage line after entries, a stage with no entries, and an entry without a name.
 
 ## Adding a path
 
