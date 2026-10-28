@@ -6,6 +6,7 @@
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { openHarness, resultFrame, run, runStep } from "./support/harness.js";
+import { fileNode, openFile } from "./support/files.js";
 import { TOPIC_ID, buildVanillaTopic, readVanillaFixture, serveTopic } from "./support/vanilla.js";
 
 const fixture = readVanillaFixture();
@@ -392,9 +393,9 @@ test.describe("the DOM view on the step page", () => {
 
   test("selecting a row opens its line of index.html", async ({ page }) => {
     await openStep(page);
-    await page.getByRole("tab", { name: "main.js" }).click();
+    await openFile(page, "main.js");
     await row(page, "<h1>").locator(".dom-row__name").click();
-    await expect(page.getByRole("tab", { name: "index.html", selected: true })).toBeVisible();
+    await expect(fileNode(page, "index.html")).toHaveAttribute("aria-selected", "true");
     await expect(page.locator(".cm-editor .cm-lineNumbers .cm-activeLineGutter")).toHaveText(
       String(LINES.h1),
     );

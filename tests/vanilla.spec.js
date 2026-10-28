@@ -8,6 +8,7 @@
 import { readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
 import { strFromU8, unzipSync } from "fflate";
+import { fileNode, openFile, workspaceNodes } from "./support/files.js";
 import { openHarness, resultFrame, run } from "./support/harness.js";
 import {
   TOPIC_ID,
@@ -172,11 +173,8 @@ test.describe("the vanilla fixture on the step page", () => {
   test("the page runs, its console arrives, and the checks read the DOM", async ({ page }) => {
     await openStep(page, 1, "Add a third book");
     await expect(page.locator("h1")).toHaveText(TOPIC_TITLE);
-    await expect(page.getByRole("tab")).toHaveText(["index.html", "main.js", "styles.css"]);
-    await expect(page.getByRole("tab", { name: "index.html" })).toHaveAttribute(
-      "aria-selected",
-      "true",
-    );
+    await expect(workspaceNodes(page)).toHaveText(["index.html", "main.js", "styles.css"]);
+    await expect(fileNode(page, "index.html")).toHaveAttribute("aria-selected", "true");
 
     await expect(frame(page).locator("#books li")).toHaveText([
       "Eloquent JavaScript",
@@ -245,7 +243,7 @@ test.describe("the vanilla fixture on the step page", () => {
     page,
   }) => {
     await openStep(page, 1, "Add a third book");
-    await page.getByRole("tab", { name: "main.js" }).click();
+    await openFile(page, "main.js");
     const source = `${fixture.files["main.js"]}\nthrow new Error("boom");\n`;
     const line = lineOf(source, 'throw new Error("boom")');
     const editor = page.locator(".cm-content");
@@ -264,9 +262,9 @@ test.describe("the vanilla fixture on the step page", () => {
     await expect(error.locator("pre")).not.toContainText("blob:");
     const link = error.getByRole("button", { name: `main.js:${line}` });
     await expect(link).toBeVisible();
-    await page.getByRole("tab", { name: "index.html" }).click();
+    await openFile(page, "index.html");
     await link.click();
-    await expect(page.getByRole("tab", { name: "main.js", selected: true })).toBeVisible();
+    await expect(fileNode(page, "main.js")).toHaveAttribute("aria-selected", "true");
     await expect(page.locator(".cm-editor .cm-lineNumbers .cm-activeLineGutter")).toHaveText(
       String(line),
     );

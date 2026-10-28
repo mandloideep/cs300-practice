@@ -17,7 +17,7 @@ Watch the result pane after each run, because that is where an edit shows up.
 
 The result pane already shows the starter page: a heading and one sentence.
 The site ran the starter for you when the step opened, and the status pill at the top of the result says **Ready**.
-In the editor, the tab that is open is `src/App.jsx`, the file both edits change.
+In the editor, the file that is open is `src/App.jsx`, the file both edits change; the tree beside the code shows it selected inside the `src` folder.
 
 Each edit below is a card.
 Its first line names the file, and its second line says where the code goes: which existing line it replaces, or which line it goes after or before.
@@ -60,7 +60,7 @@ Run again: the result shows a boxed list of three items, the loop you will follo
 Keep the indentation at the start of each line; the code would run without it, but every file in this course is indented so that you can see what sits inside what.
 The editor closes a tag for you when you type `<li>`, so watch that you do not end up with two `</li>` on one line.
 
-The editor notices what you changed: the tab of an edited file shows a dot after its name, and the editor's header says `1 file edited` instead of `Starter files`.
+The editor notices what you changed: an edited file shows a dot after its name in the tree, and the editor's header says `1 file edited` instead of `Starter files`.
 Your edits are kept in this browser as you type, so you can close the tab and come back to them.
 
 **If it breaks:** If the result pane says **Did not compile**, read the message under it: it names the file and the line, and the most common cause is a tag that is not closed, such as `<li>` without `</li>`.

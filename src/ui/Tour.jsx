@@ -18,7 +18,7 @@ export const STOPS = [
   {
     targets: [".pane--editor"],
     title: "The editor",
-    text: "Type the edits into these files, one tab per file. Your changes are kept in this browser, and Reset to starter brings the original back.",
+    text: "Type the edits into these files. The tree beside the code shows the step's files in their folders and says what the selected one is for; On your computer at its end lists the files the downloaded project adds. Your changes are kept in this browser, and Reset to starter brings the original back.",
   },
   {
     targets: [".pane--editor .toolbar .button--primary"],

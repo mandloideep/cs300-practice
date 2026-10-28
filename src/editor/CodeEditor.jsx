@@ -1,19 +1,38 @@
-import { useEffect, useImperativeHandle, useRef } from "react";
+import { useEffect, useImperativeHandle, useRef, useState, useSyncExternalStore } from "react";
 import { EditorView } from "@codemirror/view";
 import { Annotation, EditorSelection, EditorState } from "@codemirror/state";
-import { editableExtensions, tabId } from "./setup.js";
+import { editableExtensions } from "./setup.js";
 import { flashLines, refreshResultLink, resultLink } from "./resultLink.js";
-import FileTabs from "./FileTabs.jsx";
+import FileTree from "./FileTree.jsx";
 
 const external = Annotation.define();
 
+const PHONE = "(max-width: 600px)";
+
+function subscribePhone(listener) {
+  const query = window.matchMedia(PHONE);
+  query.addEventListener("change", listener);
+  return () => query.removeEventListener("change", listener);
+}
+
+function usePhoneWidth() {
+  return useSyncExternalStore(
+    subscribePhone,
+    () => window.matchMedia(PHONE).matches,
+    () => false,
+  );
+}
+
 // One EditorView for the workspace; each file keeps its own EditorState, so undo history and
-// cursor position survive switching tabs. With a run `session`, the editor is linked to the
-// result: component names under the cursor or pointer highlight their boxes, and jumps flash
-// their lines.
+// cursor position survive switching files. The project's files are a tree beside the code, or at
+// phone width a disclosure above it that names the active file; `filesOpen` hides the tree
+// beside the code. With a run `session`, the editor is linked to the result: component names
+// under the cursor or pointer highlight their boxes, and jumps flash their lines.
 export default function CodeEditor({
   ref,
   files,
+  layout,
+  filesOpen = true,
   activeFile,
   onActiveFileChange,
   onChange,
@@ -28,6 +47,8 @@ export default function CodeEditor({
   const callbacks = useRef({ onChange, onRun });
   const activeRef = useRef(activeFile);
   const link = useRef({ components: [], onHighlight: null });
+  const phone = usePhoneWidth();
+  const [disclosed, setDisclosed] = useState(false);
   const latestCommit = session?.latestCommit ?? null;
   const send = session?.send ?? null;
 
@@ -134,25 +155,65 @@ export default function CodeEditor({
     },
   }));
 
-  const panelId = `${idPrefix}-panel`;
+  const treeId = `${idPrefix}-files`;
+  const pathId = `${idPrefix}-path`;
+  const edited = modifiedFiles?.has(activeFile);
+  const tree = (
+    <FileTree
+      id={treeId}
+      layout={layout}
+      activeFile={activeFile}
+      onSelect={(path) => {
+        onActiveFileChange(path);
+        if (phone) setDisclosed(false);
+      }}
+      modifiedFiles={modifiedFiles}
+      idPrefix={idPrefix}
+    />
+  );
 
   return (
-    <div className="code-editor">
-      <FileTabs
-        files={Object.keys(files)}
-        activeFile={activeFile}
-        onSelect={onActiveFileChange}
-        modifiedFiles={modifiedFiles}
-        panelId={panelId}
-        idPrefix={idPrefix}
-      />
-      <div
-        id={panelId}
-        className="code-editor__panel"
-        role="tabpanel"
-        aria-labelledby={`${idPrefix}-tab-${tabId(activeFile)}`}
-        ref={hostRef}
-      />
+    <div className={phone || !filesOpen ? "code-editor" : "code-editor code-editor--tree"}>
+      {phone ? (
+        <div className="code-editor__disclosure">
+          <button
+            type="button"
+            className="file-disclosure"
+            aria-expanded={disclosed}
+            aria-controls={treeId}
+            onClick={() => setDisclosed((open) => !open)}
+          >
+            <span className="file-disclosure__label">Files</span>
+            <span id={pathId} className="file-disclosure__path">
+              {activeFile}
+              {edited && <span className="visually-hidden"> (edited)</span>}
+            </span>
+          </button>
+          <div className="code-editor__files" hidden={!disclosed}>
+            {tree}
+          </div>
+        </div>
+      ) : (
+        <div className="code-editor__files" hidden={!filesOpen}>
+          {tree}
+        </div>
+      )}
+      <div className="code-editor__code">
+        {!phone && (
+          <p id={pathId} className="code-editor__path">
+            {activeFile}
+            {edited && (
+              <>
+                <span className="file-tree__modified" aria-hidden="true" title="Edited">
+                  •
+                </span>
+                <span className="visually-hidden"> (edited)</span>
+              </>
+            )}
+          </p>
+        )}
+        <div className="code-editor__panel" ref={hostRef} />
+      </div>
     </div>
   );
 }
