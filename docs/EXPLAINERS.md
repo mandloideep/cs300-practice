@@ -22,7 +22,7 @@ Each one takes its data from the fence body where that makes sense, so the same 
 | `page-tour` | The step page in miniature with each pane labeled; selecting a pane says what it is for and when to look at it | *getting-started* | 6 | in use |
 | `edit-run-loop` | The cycle of edit, Run, result, console, and checks as one loop the student advances a stage at a time | *getting-started* | 6 | in use |
 | `inspector-tour` | A three-component tree with boundaries, a re-render flash, and the state panel, driven by a Click button inside the explainer | *getting-started*, react-mental-model | 6 | in use |
-| `project-tree` | A project folder as a tree that grows a stage at a time from the fence body, after `npm create vite`, `npm install`, and `npm run build`, with each file's description when selected | *getting-started*, vite-project-anatomy, tooling-from-scratch, modules-and-imports, app-architecture, *git-basics* | 7 | planned |
+| `project-tree` | A project folder as a tree that grows a stage at a time from the fence body, after `npm create vite`, `npm install`, and `npm run build`, with each file's description when selected | *getting-started*, vite-project-anatomy, tooling-from-scratch, modules-and-imports, app-architecture, *git-basics* | 7 | in use |
 
 ## HTML
 
