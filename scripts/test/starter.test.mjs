@@ -91,15 +91,21 @@ describe("starterCompiles", () => {
     ]);
   });
 
-  it("still requires the solution to compile and to hold no conflict marker", () => {
+  it("still requires the solution to compile", () => {
     writeStep({ front: "starterCompiles: false\n", body: "", solution: CONFLICTED });
-    assert.deepEqual(
-      problems().map((problem) => problem.replace(/Sucrase: .*/s, "Sucrase")),
-      [
-        "solution/src/App.jsx: solution file does not compile with Sucrase",
-        "solution/src/App.jsx: solution file holds a conflict marker line (<<<<<<<, =======, or >>>>>>>)",
-      ],
+    assert.match(
+      problems()[0],
+      /^solution\/src\/App\.jsx: solution file does not compile with Sucrase/,
     );
+  });
+
+  it("rejects a conflict marker line in a solution file, even one that compiles", () => {
+    const marked = "export const note = `\n=======\n`;\n" + RESOLVED;
+    writeStep({ front: "starterCompiles: false\n", body: "", solution: marked });
+    const solutionProblems = problems().filter((problem) => problem.startsWith("solution/"));
+    assert.deepEqual(solutionProblems, [
+      "solution/src/App.jsx: solution file holds a conflict marker line (<<<<<<<, =======, or >>>>>>>)",
+    ]);
   });
 
   it("rejects a value that is not a boolean and the field on a step that is not an edit step", () => {

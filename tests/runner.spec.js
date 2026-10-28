@@ -1,10 +1,10 @@
 // Runner tests. They drive the dev-only harness at src/runner/harness/index.html, which builds runs
 // with buildRun from src/runner/ and mounts them in the sandboxed result iframe.
 
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { expect, test } from "@playwright/test";
-import { editSteps, openHarness, resultFrame, run, runStep } from "./support/harness.js";
+import { editSteps, openHarness, resultFrame, run, runStep, topicsDir } from "./support/harness.js";
 
 const ofType = (result, type) => result.messages.filter((message) => message.type === type);
 
@@ -75,13 +75,18 @@ test.describe("solution of every edit step", () => {
 
 // A step with starterCompiles: false (CONTRACTS 8.8) starts from a file that does not compile,
 // such as one holding conflict markers, so its starter must stop at a compile diagnostic.
+const starterCompiles = (step) =>
+  !/^starterCompiles:\s*false\s*$/m.test(
+    readFileSync(path.join(topicsDir, step.id, "step.md"), "utf8").split(/^---$/m)[1] ?? "",
+  );
+
 test.describe("starter of every edit step", () => {
   for (const step of steps) {
     test(step.id, async ({ page }) => {
       test.fixme(usesRouter(step.solution) && !ROUTER_WRAPPER, NEEDS_RUNTIME_ROUTER);
       await openHarness(page);
       const result = await runStep(page, step.id, "workspace");
-      if (!step.starterCompiles) {
+      if (!starterCompiles(step)) {
         expect(result.diagnostics.length).toBeGreaterThan(0);
         return;
       }
