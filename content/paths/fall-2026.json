@@ -73,6 +73,20 @@
       ]
     },
     {
+      "id": "git-and-github",
+      "title": "Git and GitHub: version control, pull requests, and deployment",
+      "intro": "We covered Git in class: commits, branches, merges, and working with a repository on GitHub. These topics are practice for that material, at your own pace and in any week. Git basics keeps a project's history on your own computer, and Git collaboration takes it to GitHub, where you resolve a conflict, open a pull request, and merge it the way a team does. Deploy with GitHub Pages is where your own project goes on the web: by its last step, a React project of yours has an address anyone can open, and every push updates it.",
+      "topics": [
+        {
+          "id": "git-basics",
+          "required": false
+        }
+      ],
+      "localNotes": [
+        "Git runs in a terminal on your own computer, not in this site, so the steps that say \"on your computer\" need Git installed, and the GitHub steps need a free GitHub account."
+      ]
+    },
+    {
       "id": "week-10",
       "title": "React, Vite, JSX, components, props, and lists",
       "intro": "In Week 8 we built CourseHub by hand: we wrote the HTML, styled it, and then kept the page in step with our data by finding elements, building strings of markup, and replacing what was on the screen every time something changed. This week you will build the same kind of page with React. You will describe what the page should look like for the data you have, and React will update the DOM for you. You will see how a Vite project is put together, write JSX, split a page into components that receive props, and render lists of data with stable keys, then load that data from a real API. Each topic runs in the browser, so you can edit the code, run it, watch the inspector draw your components, and check your work as you go.",
