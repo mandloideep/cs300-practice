@@ -1,0 +1,123 @@
+.branch-and-merge {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+figure.demo-frame .branch-and-merge .demo-caption {
+  margin: 0;
+}
+
+figure.demo-frame .branch-and-merge__graph {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-1) 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+figure.demo-frame .branch-and-merge__row {
+  --lane-width: 1.5rem;
+
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-2);
+  min-height: 2.75rem;
+  padding: 0 var(--space-2);
+  transition: background-color 200ms ease;
+}
+
+figure.demo-frame .branch-and-merge__row.is-new {
+  background: var(--color-accent-soft);
+}
+
+figure.demo-frame .branch-and-merge__track {
+  position: relative;
+  flex: none;
+  width: calc(var(--lanes) * var(--lane-width));
+}
+
+figure.demo-frame .branch-and-merge__lanes {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+figure.demo-frame .branch-and-merge__lanes line {
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+figure.demo-frame .branch-and-merge__edge--0 {
+  stroke: var(--color-accent);
+}
+
+figure.demo-frame .branch-and-merge__edge--1 {
+  stroke: var(--color-warning);
+}
+
+figure.demo-frame .branch-and-merge__dot {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--lane) * var(--lane-width) + var(--lane-width) / 2);
+  width: 0.875rem;
+  height: 0.875rem;
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  transform: translate(-50%, -50%);
+}
+
+figure.demo-frame .branch-and-merge__dot--1 {
+  border-color: var(--color-warning);
+}
+
+figure.demo-frame .branch-and-merge__row.is-new .branch-and-merge__dot--0 {
+  background: var(--color-accent);
+}
+
+figure.demo-frame .branch-and-merge__row.is-new .branch-and-merge__dot--1 {
+  background: var(--color-warning);
+}
+
+figure.demo-frame .branch-and-merge__label {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-2);
+  min-width: 0;
+  padding: var(--space-1) 0;
+  font-size: var(--text-sm);
+  line-height: 1.35;
+}
+
+figure.demo-frame .branch-and-merge__hash {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .branch-and-merge__text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+figure.demo-frame .branch-and-merge__pointers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+figure.demo-frame .branch-and-merge__pointers .demo-chip {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}
+
+figure.demo-frame .branch-and-merge__pointer--side {
+  border-color: var(--color-warning);
+}
