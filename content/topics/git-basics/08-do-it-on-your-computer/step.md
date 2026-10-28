@@ -225,7 +225,7 @@ Reload `index.html` in the browser after the merge: it lists four topics, and th
 
 ### Keep this repository
 
-The next topic, Git collaboration, starts from this `study-plan` repository: it puts it on GitHub, opens a pull request, and makes a real conflict.
+The next topic, [Git collaboration](#/topic/git-collaboration), starts from this `study-plan` repository: it puts it on GitHub, opens a pull request, and makes a real conflict.
 Keep the folder where it is.
 
 ### What Visual Studio Code shows

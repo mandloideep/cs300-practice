@@ -93,7 +93,7 @@ Tutorials written before 2019 use `git checkout -- <file>` for `git restore <fil
 Both still work; `restore` was added because `checkout` did too many different things.
 
 **If it breaks:** `error: pathspec 'index.html' did not match any file(s) known to git` means the file name is wrong or the file was never committed; check the name with `git status`.
-If `git revert` stops with a conflict, a later commit changed the same lines; the topic Git collaboration shows how to resolve a conflict, and `git revert --abort` cancels the revert for now.
+If `git revert` stops with a conflict, a later commit changed the same lines; [Resolve a conflict](#/topic/git-collaboration/2) shows how to resolve one, and `git revert --abort` cancels the revert for now.
 
 **Check:** For each of the four mistakes in the table, you can name the command that undoes it and say whether anything is lost.
 Then press **Mark this step as read**.

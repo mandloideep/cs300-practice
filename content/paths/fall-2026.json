@@ -80,6 +80,10 @@
         {
           "id": "git-basics",
           "required": false
+        },
+        {
+          "id": "git-collaboration",
+          "required": false
         }
       ],
       "localNotes": [

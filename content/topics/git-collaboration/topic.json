@@ -1,0 +1,37 @@
+{
+  "id": "git-collaboration",
+  "title": "Git collaboration",
+  "area": "tooling",
+  "summary": "Work on one repository with other people: resolve a merge conflict, push and pull through GitHub, open, review, and merge a pull request, and recover when something goes wrong. You will finish with a merged pull request on GitHub and a real conflict you resolved yourself.",
+  "prerequisites": ["git-basics"],
+  "links": [
+    {
+      "kind": "reading",
+      "title": "Pro Git: Basic branching and merging, with merge conflicts",
+      "url": "https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging"
+    },
+    {
+      "kind": "reading",
+      "title": "Pro Git: Working with remotes",
+      "url": "https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes"
+    },
+    {
+      "kind": "reading",
+      "title": "GitHub Docs: About pull requests",
+      "url": "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests"
+    },
+    {
+      "kind": "reference",
+      "title": "GitHub Docs: About pull request reviews",
+      "url": "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/about-pull-request-reviews"
+    },
+    {
+      "kind": "reference",
+      "title": "GitHub Docs: Resolving a merge conflict using the command line",
+      "url": "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line"
+    }
+  ],
+  "minutes": 60,
+  "updated": "2026-10-28",
+  "changeNote": "First version."
+}

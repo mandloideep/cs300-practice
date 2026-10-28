@@ -87,7 +87,7 @@ Git refuses `-d` for a branch whose commits are not merged yet, which protects w
 
 A merge compares three snapshots: the commit where the branches split, called the **merge base**, here `e12a937`, and the newest commit on each side.
 A change made on only one side since the base is taken as it is.
-When both sides changed the same lines differently, Git cannot choose, stops, and asks you; that is a **merge conflict**, and the next topic, Git collaboration, starts there.
+When both sides changed the same lines differently, Git cannot choose, stops, and asks you; that is a **merge conflict**, and [Git collaboration](#/topic/git-collaboration), the next topic, starts there.
 
 ### This site's merges
 
@@ -97,7 +97,7 @@ When a branch was merged while `main` had not moved, `main` simply moved forward
 ### Other ways to merge
 
 `git merge --no-ff add-react` makes a merge commit even when a fast-forward was possible, which some teams prefer so that every branch shows as a loop in the graph.
-GitHub offers three ways to merge a pull request, including two that never make a merge commit; Git collaboration compares them.
+GitHub offers three ways to merge a pull request, including two that never make a merge commit; [Code review](#/topic/git-collaboration/5) compares them.
 
 **If it breaks:** `merge: add-react - not something we can merge` means there is no branch by that name; check it with `git branch`.
 `Already up to date.` means the other branch has nothing `main` does not have; check that you committed on it.

@@ -71,7 +71,7 @@ These three words come up in every step of this topic.
 ### Git and GitHub
 
 **Git** is a program that runs on your own computer and keeps the history inside the project folder; it works with no network and no account.
-**GitHub** is a website that keeps a copy of a Git repository online, so that a team shares one history and a project can be published; the next topic, Git collaboration, starts there.
+**GitHub** is a website that keeps a copy of a Git repository online, so that a team shares one history and a project can be published; [Git collaboration](#/topic/git-collaboration), the next topic, starts there.
 This topic uses Git alone.
 
 ### This site's history
