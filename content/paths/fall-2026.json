@@ -3,6 +3,76 @@
   "title": "Fall 2026",
   "units": [
     {
+      "id": "foundations",
+      "title": "Foundations: HTML, CSS, JavaScript, the DOM, fetch, and tooling",
+      "intro": "Weeks 3 to 9 built a page by hand: the document, its stylesheet, the JavaScript that reads and changes it, the events it answers, the data it fetches, and the modules it is split into. These topics are that material as guided practice: each idea is a short step you edit, run, and check, with the console or the page showing what your code did. Nothing here is required this term. Use it to revisit an idea before a React week leans on it, to see in Why React behaves this way which JavaScript rule is behind a React behavior that surprised you, or to meet Node, npm, and Vite in Tooling from scratch before the Week 10 project. Take a topic in the order listed, because each one assumes the ones before it.",
+      "topics": [
+        {
+          "id": "html-structure",
+          "required": false
+        },
+        {
+          "id": "css-layout",
+          "required": false
+        },
+        {
+          "id": "javascript-basics",
+          "required": false
+        },
+        {
+          "id": "functions-and-callbacks",
+          "required": false
+        },
+        {
+          "id": "scope-and-closures",
+          "required": false
+        },
+        {
+          "id": "objects-and-references",
+          "required": false
+        },
+        {
+          "id": "arrays-in-depth",
+          "required": false
+        },
+        {
+          "id": "errors-and-debugging",
+          "required": false
+        },
+        {
+          "id": "dom-events",
+          "required": false
+        },
+        {
+          "id": "fetch-basics",
+          "required": false
+        },
+        {
+          "id": "async-and-the-event-loop",
+          "required": false
+        },
+        {
+          "id": "modules-and-imports",
+          "required": false
+        },
+        {
+          "id": "app-architecture",
+          "required": false
+        },
+        {
+          "id": "tooling-from-scratch",
+          "required": false
+        },
+        {
+          "id": "why-react-behaves-this-way",
+          "required": false
+        }
+      ],
+      "localNotes": [
+        "Every step here can also be downloaded and run from a folder on your own computer; the HTML, CSS, and DOM steps open as plain pages, and the tooling topic's last step walks through npm install and npm run dev."
+      ]
+    },
+    {
       "id": "week-10",
       "title": "React, Vite, JSX, components, props, and lists",
       "intro": "In Week 8 we built CourseHub by hand: we wrote the HTML, styled it, and then kept the page in step with our data by finding elements, building strings of markup, and replacing what was on the screen every time something changed. This week you will build the same kind of page with React. You will describe what the page should look like for the data you have, and React will update the DOM for you. You will see how a Vite project is put together, write JSX, split a page into components that receive props, and render lists of data with stable keys, then load that data from a real API. Each topic runs in the browser, so you can edit the code, run it, watch the inspector draw your components, and check your work as you go.",
