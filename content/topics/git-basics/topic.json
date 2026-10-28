@@ -1,0 +1,37 @@
+{
+  "id": "git-basics",
+  "title": "Git basics",
+  "area": "tooling",
+  "summary": "Keep a project's history with Git on your own computer: the working tree, the staging area, and commits, what to commit and what to ignore, how to undo safely, and branches and merges. You will finish with a repository of your own whose log shows a merged branch.",
+  "prerequisites": [],
+  "links": [
+    {
+      "kind": "reading",
+      "title": "Pro Git: About version control",
+      "url": "https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control"
+    },
+    {
+      "kind": "reading",
+      "title": "Pro Git: Recording changes to the repository",
+      "url": "https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository"
+    },
+    {
+      "kind": "reading",
+      "title": "Pro Git: Undoing things",
+      "url": "https://git-scm.com/book/en/v2/Git-Basics-Undoing-Things"
+    },
+    {
+      "kind": "reading",
+      "title": "Pro Git: Branches in a nutshell",
+      "url": "https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell"
+    },
+    {
+      "kind": "reference",
+      "title": "Git reference manual",
+      "url": "https://git-scm.com/docs"
+    }
+  ],
+  "minutes": 50,
+  "updated": "2026-10-28",
+  "changeNote": "First version."
+}

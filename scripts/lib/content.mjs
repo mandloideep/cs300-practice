@@ -73,14 +73,22 @@ function checkStyle(contentDir, problems) {
   }
 }
 
+// [{ file, error }] for every JavaScript file of a workspace or solution that Sucrase rejects.
+function compileErrors(files) {
+  return Object.entries(files)
+    .filter(([file]) => /\.(jsx?|mjs)$/.test(file))
+    .map(([file, code]) => ({ file, error: compiles(code, file) }))
+    .filter(({ error }) => error);
+}
+
 function checkCompiles(files, base, label, problems) {
-  for (const [file, code] of Object.entries(files)) {
-    if (!/\.(jsx?|mjs)$/.test(file)) continue;
-    const error = compiles(code, file);
-    if (error)
-      problems.add(path.join(base, file), `${label} file does not compile with Sucrase: ${error}`);
+  for (const { file, error } of compileErrors(files)) {
+    problems.add(path.join(base, file), `${label} file does not compile with Sucrase: ${error}`);
   }
 }
+
+// A line Git writes into a file with a merge conflict (CONTRACTS 8.8).
+const CONFLICT_MARKER = /^(?:<{7}|={7}|>{7})(?:\s|$)/m;
 
 function loadFixtures(stepDir, problems) {
   const dir = path.join(stepDir, "fixtures");
@@ -260,6 +268,15 @@ function loadStep(topicDir, dirName, index, context, problems) {
     }
   });
 
+  let starterCompiles = true;
+  if (front.starterCompiles !== undefined) {
+    if (typeof front.starterCompiles !== "boolean")
+      problems.add(stepFile, "starterCompiles must be true or false");
+    else if (front.mode !== "edit")
+      problems.add(stepFile, "starterCompiles belongs only on an edit step");
+    else starterCompiles = front.starterCompiles;
+  }
+
   const checkFile = path.join(stepDir, "check.js");
   let check = null;
   try {
@@ -303,8 +320,21 @@ function loadStep(topicDir, dirName, index, context, problems) {
         );
       }
       if (!("index.html" in workspace)) problems.add(stepDir, "workspace/ has no index.html");
-      checkCompiles(workspace, path.join(stepDir, "workspace"), "workspace", problems);
+      if (starterCompiles)
+        checkCompiles(workspace, path.join(stepDir, "workspace"), "workspace", problems);
+      else if (compileErrors(workspace).length === 0)
+        problems.add(
+          stepFile,
+          "starterCompiles is false, but every workspace file compiles; remove the field",
+        );
       checkCompiles(solution, path.join(stepDir, "solution"), "solution", problems);
+      for (const [file, text] of Object.entries(solution)) {
+        if (CONFLICT_MARKER.test(text))
+          problems.add(
+            path.join(stepDir, "solution", file),
+            "solution file holds a conflict marker line (<<<<<<<, =======, or >>>>>>>)",
+          );
+      }
 
       const { files, failures } = applyEdits(workspace, edits);
       for (const { index: i, edit, reason } of failures) {
@@ -349,6 +379,7 @@ function loadStep(topicDir, dirName, index, context, problems) {
         : inspector,
     api,
     required,
+    starterCompiles,
     demos: fences.demos.filter((demo) => !demo.error).map((demo) => demo.id),
     questions: fences.questions
       .filter((question) => !question.error)

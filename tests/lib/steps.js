@@ -30,6 +30,7 @@ function frontMatter(markdown) {
     title: unquote(field("title")),
     mode: field("mode"),
     entry: field("entry"),
+    starterCompiles: field("starterCompiles") !== "false",
     required: list(field("required")),
     inspector: /^inspector:/m.test(block)
       ? { views: list(nested("inspector", "views")), watch: list(nested("inspector", "watch")) }
