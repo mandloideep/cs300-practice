@@ -8,8 +8,8 @@ import { useSyncExternalStore } from "react";
 
 export const PROGRESS_KEY = "cs300-lab:progress";
 export const PROGRESS_VERSION = 2;
-export const NEWER_VERSION_MESSAGE = "This file was exported by a newer version of the lab.";
-const NOT_AN_EXPORT_MESSAGE = "That file is not a CS300 Lab progress export.";
+export const NEWER_VERSION_MESSAGE = "This file was exported by a newer version of CS300 Practice.";
+const NOT_AN_EXPORT_MESSAGE = "That file is not a CS300 Practice progress export.";
 const listeners = new Set();
 
 const DEFAULT_PREFERENCES = { explanationsOpen: false };

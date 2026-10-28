@@ -78,7 +78,7 @@ There are three ways to write the second argument.
 
 Do not try the third one with this effect.
 With no array, the effect runs after every render, it calls `setSavedAt` with a new date, that causes a render, the effect runs again, and so on without end.
-React logs `Maximum update depth exceeded` and keeps going, and the lab would slow to a crawl.
+React logs `Maximum update depth exceeded` and keeps going, and this site would slow to a crawl.
 The check reads the console for that message, and the last step of this topic shows what the loop looks like so that you recognize it when it happens to you.
 
 **If it breaks:** If the notice never changes after an add, the array is still `[]`, or it names something other than `items`.

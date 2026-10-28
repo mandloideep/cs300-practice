@@ -14,7 +14,7 @@ On the Step 3 solution, you type `/products?q=red` into the address bar and pres
 - The not-found page, because no route is written as `/products?q=red`
 ```
 
-Do it on the Step 3 solution, in the lab's address bar first and then in a Vite project.
+Do it on the Step 3 solution, in this site's address bar first and then in a Vite project.
 The Vite project is the one that matters, because it is what the grader and your users open; download the Step 3 workspace, run `npm install` and `npm run dev`, and type each address into the browser's own address bar.
 
 ## The walk
@@ -46,7 +46,7 @@ The keyboard row is the one most often skipped, and the one a screen reader user
 - A filter that lives in `useState` and is empty on direct load.
 - A detail page that reads a list it never loaded.
 - A `NavLink` without `end` that marks Home on every page.
-- A `Link` written as `<a href>`, which reloads and loses state in Vite and loses the frame in the lab.
+- A `Link` written as `<a href>`, which reloads and loses state in Vite and loses the frame on this site.
 - A `setSearchParams` call that replaces the other parameter.
 - A 404 shown as a failure with a retry that cannot succeed.
 
@@ -57,7 +57,7 @@ Every one of those appeared in these three topics as a step's "if it breaks", an
 For Assignment 6 and the Capstone, keep a short record: the address, what you expected, what happened, and a screenshot or the Network row for anything that surprised you.
 That record is the evidence the course asks for, and it is what you will wish you had when a classmate opens your link on their phone.
 
-**If it breaks:** If a row fails in Vite but not in the lab, the difference is almost always the host: check that the dev server is running and that the address starts with its port, and read the deployment topic's note on the fallback rule before deploying.
+**If it breaks:** If a row fails in Vite but not on this site, the difference is almost always the host: check that the dev server is running and that the address starts with its port, and read the deployment topic's note on the fallback rule before deploying.
 
 **Check:** Walk the table on the Step 3 solution and tick each row.
 Then change one thing on purpose, such as removing `end` from the Home link or writing `{ q: value }` instead of the copied parameters, and find which row catches it.

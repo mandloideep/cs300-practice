@@ -101,7 +101,7 @@ The process from our Week 10 reading:
 
 The header and footer each get their own file, the way a real Vite project keeps one component per file.
 `export default` makes the function the one thing this file offers to other files, exactly like the modules we wrote in Week 8.
-The import path starts with `./` because the file sits in the same folder, and it includes the extension, which the lab requires.
+The import path starts with `./` because the file sits in the same folder, and it includes the extension, which this site requires.
 
 Each piece can change on its own; editing `SiteFooter` cannot break a `CourseCard`.
 

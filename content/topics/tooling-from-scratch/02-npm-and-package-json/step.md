@@ -13,7 +13,7 @@ Watch how each field you add becomes something npm will do for you.
 ```
 
 The workspace has a new file, `package.json`, beside `index.html`.
-`src/main.js` imports it, which the lab allows, as Vite does: a module that imports a `.json` file gets its value as an object.
+`src/main.js` imports it, which this site allows, as Vite does: a module that imports a `.json` file gets its value as an object.
 Press **Run**: the console shows `Project: study-timer 1.0.0`, read from the `name` and `version` fields.
 
 Open `package.json` and read it from the top.

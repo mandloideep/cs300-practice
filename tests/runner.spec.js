@@ -208,7 +208,7 @@ test.describe("runner behavior", () => {
       "react-router",
     ]);
     expect(importMap.imports["react-dom/client"]).toMatch(
-      /^http:\/\/localhost:\d+\/cs300-react-lab\/runtime\/react-dom-client\.js$/,
+      /^http:\/\/localhost:\d+\/cs300-practice\/runtime\/react-dom-client\.js$/,
     );
   });
 

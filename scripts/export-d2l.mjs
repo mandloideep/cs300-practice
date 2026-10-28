@@ -4,10 +4,13 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 // Writes one Brightspace page per open unit of a path to dist-d2l/<path-id>/<unit-id>.html, plus
 // the bare content block as <unit-id>.fragment.html for pasting into an existing D2L page. A unit
-// the content build compiled as closed is skipped, and each topic lists its lecture links.
+// the content build compiled as closed is skipped, and each topic lists its lecture links. The
+// required topics are the week's Guided Practice; the first unit that has any also carries the
+// "Before you start" block, since it is the first page a student follows from D2L.
 // Usage: npm run export:d2l -- <path-id>   (after npm run build:content)
 
-const SITE_URL = "https://mandloideep.github.io/cs300-react-lab/";
+const SITE_URL = "https://mandloideep.github.io/cs300-practice/";
+const TOUR_TOPIC = "getting-started";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const contentDir = path.join(root, "public/content");
 const outRoot = path.join(root, "dist-d2l");
@@ -385,28 +388,50 @@ function topicList(entries, topics) {
     const topic = topics.get(entry.id);
     const url = `${SITE_URL}#/topic/${encodeURIComponent(entry.id)}`;
     const details = topic
-      ? `<br>${escapeHtml(topic.summary)} About ${escapeHtml(topic.minutes)} minutes, ${topic.steps.length} steps.`
+      ? `<br>${escapeHtml(topic.summary)} About ${escapeHtml(topic.minutes)} minutes, ${topic.steps.length} ${topic.steps.length === 1 ? "step" : "steps"}.`
       : "";
     return `        <li><a href="${url}">${escapeHtml(topic?.title ?? entry.id)}</a>${details}${lectureList(topic)}</li>`;
   });
   return `      <ol>\n${items.join("\n")}\n      </ol>`;
 }
 
-export function renderUnit(path, unit, topics) {
+// tour is the compiled index entry of the onboarding topic, or undefined when it is not released.
+function beforeYouStart(tour) {
+  const items = [
+    `Your progress stays in the browser you use, so use your own laptop, or export your progress from the <a href="${SITE_URL}">home page</a> and import it on the next computer.`,
+    "A private or incognito window forgets everything when you close it.",
+  ];
+  if (tour) {
+    const url = `${SITE_URL}#/topic/${encodeURIComponent(tour.id)}`;
+    items.push(
+      `Take the ${escapeHtml(tour.minutes)}-minute tour first: <a href="${url}">${escapeHtml(tour.title)}</a>.`,
+    );
+  }
+  return [
+    `      <h2>Before you start</h2>`,
+    `      <ul>`,
+    ...items.map((item) => `        <li>${item}</li>`),
+    `      </ul>`,
+  ];
+}
+
+export function renderUnit(path, unit, topics, { tour = null, firstPractice = false } = {}) {
   const required = (unit.topics ?? []).filter((entry) => entry.required);
   const optional = (unit.topics ?? []).filter((entry) => !entry.required);
   const unitUrl = `${SITE_URL}#/path/${encodeURIComponent(path.id)}/${encodeURIComponent(unit.id)}`;
   const parts = [
     `      <h1>${escapeHtml(unit.title)}</h1>`,
     unit.intro ? `      <p>${escapeHtml(unit.intro)}</p>` : null,
+    `      <p>This is practice: nothing here is graded, and there is nothing to submit.</p>`,
     `      <div class="notice cs300-download">`,
-    `        <p><a href="${unitUrl}">Open ${escapeHtml(unit.title)} in the CS300 Lab</a></p>`,
+    `        <p><a href="${unitUrl}">Open ${escapeHtml(unit.title)} in CS300 Practice</a></p>`,
     `      </div>`,
   ];
+  if (firstPractice) parts.push(...beforeYouStart(tour));
   if (required.length > 0)
-    parts.push(`      <h2>Required topics</h2>`, topicList(required, topics));
+    parts.push(`      <h2>Guided Practice</h2>`, topicList(required, topics));
   if (optional.length > 0)
-    parts.push(`      <h2>Optional topics</h2>`, topicList(optional, topics));
+    parts.push(`      <h2>Optional practice</h2>`, topicList(optional, topics));
   if (unit.localNotes?.length > 0) {
     parts.push(
       `      <h2>On your own computer</h2>`,
@@ -430,14 +455,14 @@ export function exportPath(index, pathId, readTopic) {
       `name a path id, for example npm run export:d2l -- ${paths[0]?.id ?? "fall-2026"}. ${known}`,
     );
   }
-  const labPath = paths.find((candidate) => candidate.id === pathId);
-  if (!labPath) {
+  const semesterPath = paths.find((candidate) => candidate.id === pathId);
+  if (!semesterPath) {
     throw new ExportError(
       `no path "${pathId}". ${known} An inactive path is compiled only by npm run build:content -- --all.`,
     );
   }
 
-  const units = (labPath.units ?? []).filter((unit) => !unit.closed);
+  const units = (semesterPath.units ?? []).filter((unit) => !unit.closed);
   const topics = new Map();
   for (const unit of units) {
     for (const entry of unit.topics ?? []) {
@@ -450,14 +475,19 @@ export function exportPath(index, pathId, readTopic) {
     }
   }
 
+  const tour = (index.topics ?? []).find((topic) => topic.id === TOUR_TOPIC);
+  const firstPractice = units.find((unit) => unit.topics?.some((entry) => entry.required));
   const pages = units.map((unit) => {
-    const content = renderUnit(labPath, unit, topics);
-    const page = TEMPLATE.replace("{{PAGE_TITLE}}", escapeHtml(`${unit.title} | CS300 Lab`))
+    const content = renderUnit(semesterPath, unit, topics, {
+      tour,
+      firstPractice: unit === firstPractice,
+    });
+    const page = TEMPLATE.replace("{{PAGE_TITLE}}", escapeHtml(`${unit.title} | CS300 Practice`))
       .replace("{{PAGE_CONTENT}}", () => content)
-      .replace("{{FOOTER}}", escapeHtml(`CS300 ${labPath.title}`));
+      .replace("{{FOOTER}}", escapeHtml(`CS300 ${semesterPath.title}`));
     return { unit, page, fragment: content.replace(/^ {6}/gm, "") + "\n" };
   });
-  return { pages, closed: (labPath.units ?? []).filter((unit) => unit.closed) };
+  return { pages, closed: (semesterPath.units ?? []).filter((unit) => unit.closed) };
 }
 
 function readCompiled(file) {

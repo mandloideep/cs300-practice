@@ -40,7 +40,7 @@ function readCustomBase(topicId, n) {
 }
 
 // The API to write into a downloaded workspace's .env: the selected preset or custom base, or
-// the first preset when the lab was on Fixtures, which exist only inside the lab.
+// the first preset when the site was on Fixtures, which exist only inside the site.
 function downloadApi(apiSource, presets = []) {
   if (apiSource.kind === "fixtures") {
     const first = presets[0];

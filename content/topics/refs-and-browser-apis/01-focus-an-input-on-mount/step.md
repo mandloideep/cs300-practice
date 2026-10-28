@@ -55,7 +55,7 @@ The fence starts with a blank line, so the effect sits under the ref.
 
 Run the code.
 The Title field shows its focus ring and the cursor is in it, ready to type.
-The lab moved your keyboard focus into the result to do that; click the editor to come back.
+This site moved your keyboard focus into the result to do that; click the editor to come back.
 
 The cursor should also return to the title after a product is added, because clicking **Add product** moved the focus to the button.
 Add one line to the end of `handleSubmit`.

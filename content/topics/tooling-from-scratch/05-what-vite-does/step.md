@@ -65,7 +65,7 @@ dist/
 ```
 
 The odd letters in each name are a **hash** of the file's contents, so a changed file gets a new name and a browser that cached the old one cannot show it by mistake.
-`dist/` is plain HTML, CSS, and JavaScript with no JSX, no bare imports, and no `node_modules`; any static host, such as GitHub Pages, which hosts this lab, can serve it.
+`dist/` is plain HTML, CSS, and JavaScript with no JSX, no bare imports, and no `node_modules`; any static host, such as GitHub Pages, which hosts this site, can serve it.
 
 ## Read more
 
@@ -76,14 +76,14 @@ In Vite 8, the version this course uses, **Rolldown** bundles, both for the buil
 Earlier versions of Vite used **esbuild** for the transforms and the preparation and another bundler, Rollup, for the build, and you will meet both names in tutorials; the next step says what esbuild does, because it set the standard these tools follow.
 A project's `vite.config.js` chooses plugins, such as `@vitejs/plugin-react`, which adds the React parts of the transform and the state-keeping hot replacement.
 
-### The lab does the development job too
+### CS300 Practice does the development job too
 
-This lab is a development server that runs inside your browser instead of on your computer.
+This site is a development server that runs inside your browser instead of on your computer.
 When you press **Run**, it transforms each file of the workspace with a small transformer called Sucrase, gives each module an address of its own, maps the bare names `react`, `react-dom`, and `react-router` to copies of React it ships with, and loads the result into the result pane.
-That is why the lab can import `react` but not `study-format`: it plays Vite's part, with a fixed list of packages instead of a `node_modules` folder.
+That is why this site can import `react` but not `study-format`: it plays Vite's part, with a fixed list of packages instead of a `node_modules` folder.
 
 **If it breaks:** If `npm run dev` on your computer prints `vite: command not found`, the packages are not installed in that folder; run `npm install` there first.
-If the page at the printed address is blank, open the browser's console with F12; a red error names the file and line, as in the lab.
+If the page at the printed address is blank, open the browser's console with F12; a red error names the file and line, as on this site.
 If a change does not appear after you save, check that the terminal running `npm run dev` is still open and shows no error.
 
 **Check:** You can say, in one sentence each, what `npm run dev` does when the browser asks for a `.jsx` file, and what `npm run build` writes into `dist/`.

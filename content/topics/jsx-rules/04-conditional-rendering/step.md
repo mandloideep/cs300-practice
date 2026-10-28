@@ -53,7 +53,7 @@ Add the build evidence under the button.
       {showEnvironment && <p role="status">Vite mode: {import.meta.env.MODE}</p>}
 ```
 
-`import.meta.env.MODE` is a value Vite provides, and the lab runs our code the way `npm run dev` does, so it shows `development`.
+`import.meta.env.MODE` is a value Vite provides, and this site runs our code the way `npm run dev` does, so it shows `development`.
 
 ## Read more
 

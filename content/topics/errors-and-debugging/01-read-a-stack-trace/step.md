@@ -97,12 +97,12 @@ The top frame is often not where the bug lives.
 One frame down, `reportLine` passed `student.scores` along without asking whether it existed, and the real cause is the data, Diana's object on line 5, which no frame mentions at all.
 That is the usual shape of a bug: the error shows up in the function that finally touches the bad value, and you follow the trace back toward the place the value came from.
 
-Frames from code you did not write, such as the lab's own files or a library, can sit between yours in a longer trace; skip them and look for `src/` paths.
+Frames from code you did not write, such as this site's own files or a library, can sit between yours in a longer trace; skip them and look for `src/` paths.
 Other browsers write the same trace in their own format: Firefox, for example, writes `average@src/main.js:10:30` and leaves the message off the first line.
 The functions and the order are the same everywhere.
 
 Try the common mistake on purpose.
-Change `console.log(error.stack)` to `console.log(error)` and run: the console shows only `TypeError: Cannot read properties of undefined (reading 'length')`, because the lab prints an error by its type and message.
+Change `console.log(error.stack)` to `console.log(error)` and run: the console shows only `TypeError: Cannot read properties of undefined (reading 'length')`, because this site prints an error by its type and message.
 The trace lives in `error.stack`; change it back.
 
 **If it breaks:** If the console shows `SyntaxError` or the result says the code did not compile, a comma or a bracket is missing in the `students` array; every object but the last ends with `},`.

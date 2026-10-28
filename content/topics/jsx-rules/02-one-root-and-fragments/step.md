@@ -57,7 +57,7 @@ function RootFacts() {
 ```
 
 On your computer, Vite stops with `Adjacent JSX elements must be wrapped in an enclosing tag` and suggests `Did you want a JSX fragment <>...</>?`.
-The lab's compiler is less helpful: it reports a general syntax error such as `Unexpected token` or `Unterminated regular expression` at the second tag.
+This site's compiler is less helpful: it reports a general syntax error such as `Unexpected token` or `Unterminated regular expression` at the second tag.
 Whenever a compile error points at the start of a JSX tag, look for two roots first.
 
 The wrapper `<div>` satisfied the one-root rule, but it is a real element on the page, and the page did not want it.
@@ -65,7 +65,7 @@ The wrapper `<div>` satisfied the one-root rule, but it is a real element on the
 Use a `<div>` when you want a box you can style or that means something on the page.
 Use a fragment when you only need to satisfy the one-root rule.
 
-**If it breaks:** If only one of the two tags changed, the lab may still run the page, but Vite on your computer refuses with `Expected corresponding closing tag for JSX fragment`; make both tags empty.
+**If it breaks:** If only one of the two tags changed, this site may still run the page, but Vite on your computer refuses with `Expected corresponding closing tag for JSX fragment`; make both tags empty.
 If the layout did not change, run again after saving both edits; the result shows the last run, not the last keystroke.
 
 **Check:** The bottom of the page shows **One root** and **Fragment** in a left column with their definitions beside them, and the `<dl>` has no `<div>` inside it.

@@ -10,7 +10,7 @@ Watch how `dist/index.html` differs from the `index.html` you edited, and why th
 ```
 
 This step runs in your own terminal, in the project folder from Step 1.
-If you followed Steps 2 and 3 only in the lab, use the workspace download on this step, which is that project with the edits from Steps 2 and 3 already made; unzip it and run `npm install` first.
+If you followed Steps 2 and 3 only on this site, use the workspace download on this step, which is that project with the edits from Steps 2 and 3 already made; unzip it and run `npm install` first.
 
 ## Build
 
@@ -117,7 +117,7 @@ The stylesheet link now points at one CSS file in `assets` as well.
 
 `assets/index-Bd5MmS7H.js` is a **bundle**: `main.jsx`, `App.jsx`, `Greeting.jsx`, and the production build of React joined into one file, with the JSX already turned into JavaScript and the spaces and long names squeezed out.
 Open it and you will see one very long line.
-The production build of React is smaller and faster than the development build, and it leaves out the development warnings that the lab and `npm run dev` show us.
+The production build of React is smaller and faster than the development build, and it leaves out the development warnings that this site and `npm run dev` show us.
 
 The letters after `index-` are a **content hash**, a short fingerprint of the file's contents.
 Change any source file and build again, and that name changes.

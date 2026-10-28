@@ -59,7 +59,7 @@ If the console warns that the initial state changed between renders, the parse r
 
 **Check:** Run the code, save two products, and run it again with the storage kept.
 The same two products are marked.
-Press **Run checks**: the checks compare the marked products with the stored ids on load and after a toggle, and the lab's own test reloads the page to confirm the ids survive.
+Press **Run checks**: the checks compare the marked products with the stored ids on load and after a toggle, and this site's own test reloads the page to confirm the ids survive.
 
 ```quiz
 Why does `useState` get an arrow function here instead of `JSON.parse(localStorage.getItem("saved-for-later"))`?

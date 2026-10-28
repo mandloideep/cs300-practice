@@ -1,6 +1,6 @@
 # Maintenance guide
 
-This guide lists what keeps the CS300 Lab healthy from one semester to the next.
+This guide lists what keeps CS300 Practice healthy from one semester to the next.
 Everything here is a content edit or one command; nothing needs a server or an account.
 The design of record is [DESIGN.md](DESIGN.md), the shared interfaces are in [CONTRACTS.md](CONTRACTS.md), and the phase plans are in PHASE2.md to PHASE5.md.
 

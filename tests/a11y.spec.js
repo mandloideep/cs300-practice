@@ -11,7 +11,11 @@ import AxeBuilder from "@axe-core/playwright";
 const TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"];
 
 const PAGES = [
-  { name: "home", url: "#/", ready: (page) => page.getByRole("heading", { name: "CS300 Lab" }) },
+  {
+    name: "home",
+    url: "#/",
+    ready: (page) => page.getByRole("heading", { name: "CS300 Practice", exact: true }),
+  },
   {
     name: "catalog",
     url: "#/topics",
@@ -170,7 +174,7 @@ test.describe("keyboard-only operation of the step page", () => {
     const toEditor = await tabUntil(page, (stop) => stop.kind === "editor");
     expectOrder(toEditor, [
       ["a", "Skip to content"],
-      ["a", "CS300 Lab"],
+      ["a", "CS300 Practice"],
       ["a", "Home"],
       ["a", "Topics"],
       ["button", "Tour"],

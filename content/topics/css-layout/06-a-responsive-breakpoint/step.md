@@ -34,7 +34,7 @@ Add the first breakpoint at the end of the file.
 ```
 
 From 768 pixels wide, the header becomes the row from Step 3 and the cards get two columns.
-The result pane in this lab is narrower than 768 pixels on most screens, so the page keeps its stacked layout after you run it.
+The result pane on this site is narrower than 768 pixels on most screens, so the page keeps its stacked layout after you run it.
 Make your browser window wider and the pane grows with it; past the breakpoint the header snaps into a row and the cards into two columns.
 The check does the opposite: it narrows the result pane to 480 pixels, confirms the stacked layout, and reads the breakpoint rules from the stylesheet.
 

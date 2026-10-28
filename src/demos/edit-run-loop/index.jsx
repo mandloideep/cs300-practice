@@ -7,8 +7,8 @@ export const defaults = {};
 
 const LOOP = ["Edit", "Run", "Result", "Console", "Checks"];
 
-const FIRST = 'heading.textContent = "Hello, lab";';
-const FIXED = 'heading.textContent = "Hello, lab!";';
+const FIRST = 'heading.textContent = "Hello, CS300";';
+const FIXED = 'heading.textContent = "Hello, CS300!";';
 
 const STAGES = [
   {
@@ -25,26 +25,26 @@ const STAGES = [
     ran: null,
     checks: null,
     caption:
-      "You press Run, or Ctrl+Enter. The lab compiles your files and loads the page fresh in the result pane.",
+      "You press Run, or Ctrl+Enter. The site compiles your files and loads the page fresh in the result pane.",
   },
   {
     at: "Result",
     line: FIRST,
-    ran: "Hello, lab",
+    ran: "Hello, CS300",
     checks: null,
     caption: "The result pane shows the page your code made, as a browser draws it.",
   },
   {
     at: "Console",
     line: FIRST,
-    ran: "Hello, lab",
+    ran: "Hello, CS300",
     checks: null,
     caption: "The console shows what the code logged, and any error with a link to its line.",
   },
   {
     at: "Checks",
     line: FIRST,
-    ran: "Hello, lab",
+    ran: "Hello, CS300",
     checks: [true, false],
     caption:
       "The checks test the result against the step. One fails, and its hint says what to look at.",
@@ -52,14 +52,14 @@ const STAGES = [
   {
     at: "Edit",
     line: FIXED,
-    ran: "Hello, lab",
+    ran: "Hello, CS300",
     checks: [true, false],
     caption: "Back to the editor: the hint asked for an exclamation mark, so you add one.",
   },
   {
     at: "Checks",
     line: FIXED,
-    ran: "Hello, lab!",
+    ran: "Hello, CS300!",
     checks: [true, true],
     caption:
       "Run again and every check passes. That loop, edit, run, look, check, is how every step works.",
@@ -68,7 +68,7 @@ const STAGES = [
 
 const CHECKS = [
   { title: "One message in the console", hint: null },
-  { title: "The heading says Hello, lab!", hint: "End the heading with an exclamation mark." },
+  { title: "The heading says Hello, CS300!", hint: "End the heading with an exclamation mark." },
 ];
 
 export function stepCount() {

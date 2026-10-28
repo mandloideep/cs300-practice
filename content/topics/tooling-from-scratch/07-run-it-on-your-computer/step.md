@@ -4,13 +4,13 @@ mode: local
 ---
 
 This step runs the whole topic for real, on your own computer: you install a project's packages, start Vite, and build the project for production.
-The project is the study timer from the earlier steps, and its one script imports the `ms` package by its bare name, which the lab could not do.
+The project is the study timer from the earlier steps, and its one script imports the `ms` package by its bare name, which this site could not do.
 Watch each command create the files the earlier steps read: `node_modules`, `package-lock.json`, and `dist`.
 
 ```demo name="terminal"
 ```
 
-This step happens in a terminal, not in the lab.
+This step happens in a terminal, not on this site.
 Open Visual Studio Code, open a terminal with `` Ctrl+` `` or **Terminal > New Terminal**, and keep this page beside it.
 
 ## Check Node
@@ -56,7 +56,7 @@ found 0 vulnerabilities
 - Forty-one, one for every package in the lockfile
 ```
 About fifteen: the packages Vite needs and the one platform package of Rolldown and of Lightning CSS that matches your computer, which is why the count in the summary depends on your system.
-`package-lock.json` now exists too; open it and search for `"node_modules/rolldown"`, and you will find the same kind of entry you read in the lab, this time with the download address and the checksum.
+`package-lock.json` now exists too; open it and search for `"node_modules/rolldown"`, and you will find the same kind of entry you read on this site, this time with the download address and the checksum.
 
 ## Start the development server
 

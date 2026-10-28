@@ -13,7 +13,7 @@ Most of the errors you will meet this semester are one of five messages, and eac
 This step's starter was broken on purpose in four places, and each run shows only the first problem, because an uncaught error stops the script there.
 Fix them one at a time, read each message before you fix it, and then break the file a fifth way yourself.
 
-**We used this in:** [JavaScript basics](#/topic/javascript-basics) listed these five messages in a table in its last step; here you cause each one and read it in the lab.
+**We used this in:** [JavaScript basics](#/topic/javascript-basics) listed these five messages in a table in its last step; here you cause each one and read it on this site.
 
 ```demo name="error-decoder"
 ```
@@ -85,7 +85,7 @@ let waitlist = 0;
 
 Run it, and every line prints with no red line.
 
-The fifth message you will cause yourself, because the lab does not let a starter that does not parse onto the page.
+The fifth message you will cause yourself, because this site does not let a starter that does not parse onto the page.
 Delete the `)` before the `;` at the end of line 12, so that it reads `console.log("Course:", course.title;`, and run.
 Nothing prints at all, not even the first line, and the result pane says **Your code did not compile.** with a link to line 12 and the message `Unexpected token, expected ","`.
 That is a **syntax error**: the file is not valid JavaScript, so none of it runs, which is the difference from the four errors above, where every line before the broken one ran.

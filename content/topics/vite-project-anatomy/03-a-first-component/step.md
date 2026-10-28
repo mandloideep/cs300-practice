@@ -71,7 +71,7 @@ A React component follows three rules from our Week 10 notes:
 A return value that fits on one line needs no parentheses; we add `( ... )` around JSX only when it spans several lines, as in `App`.
 After the first edit nothing is on the page yet, because no file imports `Greeting.jsx`.
 
-The lab needs the `.jsx` extension in the import path; Vite on your computer accepts `"./Greeting"` too, and our notes use both forms.
+This site needs the `.jsx` extension in the import path; Vite on your computer accepts `"./Greeting"` too, and our notes use both forms.
 Because `Greeting.jsx` uses `export default`, we could choose any name after `import`, but matching the component name keeps the code readable.
 
 Each `<Greeting />` is a separate instance of the component, which is why we can write it once and use it as many times as we like.

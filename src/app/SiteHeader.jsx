@@ -17,7 +17,7 @@ export default function SiteHeader({ mainId }) {
       </a>
       <div className="site-header__inner">
         <Link className="site-brand" to="/">
-          CS300 <span>Lab</span>
+          CS300 <span>Practice</span>
         </Link>
         <nav className="site-nav" aria-label="Main">
           <ul>

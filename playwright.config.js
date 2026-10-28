@@ -9,13 +9,13 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [["github"], ["list"]] : "list",
   use: {
-    baseURL: `http://localhost:${port}/cs300-react-lab/`,
+    baseURL: `http://localhost:${port}/cs300-practice/`,
     trace: "on-first-retry",
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
     command: `npm run dev -- --port ${port} --strictPort`,
-    url: `http://localhost:${port}/cs300-react-lab/`,
+    url: `http://localhost:${port}/cs300-practice/`,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },

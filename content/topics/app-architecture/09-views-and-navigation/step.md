@@ -118,7 +118,7 @@ The `messages` object moved out of `render` into `browseView`, because those sen
 The last loop sets `aria-current` on the button for the current view, which the stylesheet underlines.
 
 In Week 8 the navigation buttons were links whose `href` began with a hash, and a `hashchange` listener read the address: hash routing.
-The lab's result pane has no address bar of its own, so here the buttons carry a `data-view` attribute and one delegated listener does the same job; the [Routing](#/topic/routing) topic does it with real addresses.
+This site's result pane has no address bar of its own, so here the buttons carry a `data-view` attribute and one delegated listener does the same job; the [Routing](#/topic/routing) topic does it with real addresses.
 
 **If it breaks:** If the console reports `views[state.view] is not a function`, the view name in state does not match a key in the `views` object.
 If clicking a navigation button does nothing, the listener is on `app` instead of `nav`, and the buttons sit in the header.

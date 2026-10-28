@@ -160,7 +160,8 @@ test.describe("completion on the unit page", () => {
 
     const allSteps = await page.evaluate(async () => {
       const index = await (await fetch("content/index.json")).json();
-      const unit = index.paths[0].units[0];
+      const path = index.paths.find((candidate) => candidate.id === "fall-2026");
+      const unit = path.units.find((candidate) => candidate.id === "week-10");
       return unit.topics
         .filter((entry) => entry.required)
         .flatMap((entry) =>
@@ -277,7 +278,7 @@ test.describe("export and import", () => {
       buffer: Buffer.from(JSON.stringify({ version: 3, completed: {}, files: {} })),
     });
     await expect(transfer.getByRole("status")).toHaveText(
-      "This file was exported by a newer version of the lab.",
+      "This file was exported by a newer version of CS300 Practice.",
     );
     await expect(page.getByRole("dialog")).toHaveCount(0);
 
@@ -287,7 +288,7 @@ test.describe("export and import", () => {
       buffer: Buffer.from(JSON.stringify({ hello: "world" })),
     });
     await expect(transfer.getByRole("status")).toHaveText(
-      "That file is not a CS300 Lab progress export.",
+      "That file is not a CS300 Practice progress export.",
     );
 
     await input.setInputFiles({

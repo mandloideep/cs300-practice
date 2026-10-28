@@ -22,7 +22,7 @@ You could add a `console.log` on every line, but a breakpoint shows every variab
 First, open DevTools on the result.
 In Chrome or Edge, right-click inside the result pane, on the sentence it shows, and choose **Inspect**; on a Mac you can also press Command, Option, and I together, and on Windows or Linux F12 or Control, Shift, and I.
 DevTools opens beside or below the page.
-Right-clicking the result is the useful habit, because the lab runs your code inside a frame of its own, and **Inspect** points DevTools at that frame rather than at the lab around it.
+Right-clicking the result is the useful habit, because this site runs your code inside a frame of its own, and **Inspect** points DevTools at that frame rather than at the site around it.
 Leave DevTools open for the rest of this step.
 
 Now add a `debugger` statement inside the loop, after the line that adds to `total`.
@@ -42,7 +42,7 @@ What does a `debugger;` line do when DevTools is closed?
 
 Run the code with DevTools open.
 DevTools switches to its **Sources** panel and highlights the `debugger` line, and a **Paused in debugger** bar appears over the page.
-The tab at the top of the code has a long random name instead of `main.js`, because the lab gives your files a temporary address for each run, but the code in it is your `src/main.js`.
+The tab at the top of the code has a long random name instead of `main.js`, because this site gives your files a temporary address for each run, but the code in it is your `src/main.js`.
 On the right, the **Scope** section lists the variables of `average` at this moment: `scores` is `[95, 88, 92]`, `i` is `0`, and `total` is `95`.
 You can also hover over a variable in the code to see its value.
 
@@ -63,7 +63,7 @@ On the fourth pause `i` is `3` and `total` is `NaN`.
 The loop ran one pass too many, because its test is `i <= scores.length`.
 
 Press **Resume** until the code finishes; Bob's scores pause four more times, or you can press the **Deactivate breakpoints** button, the arrow with a line through it, and then **Resume** once.
-While the code is paused, the whole lab page is frozen, including the editor, which is normal; it comes back the moment the code runs on.
+While the code is paused, the whole CS300 Practice page is frozen, including the editor, which is normal; it comes back the moment the code runs on.
 
 Fix the test so the loop stops after the last index.
 
@@ -81,17 +81,17 @@ Run it, and the console shows `Alice: 91.7` and `Bob: 74.0`.
 
 ## Read more
 
-The `debugger` statement is the fastest way into the Sources panel in the lab, because it finds your file for you.
+The `debugger` statement is the fastest way into the Sources panel on this site, because it finds your file for you.
 Once DevTools is paused in your file, you can also click a line number in the code to set a breakpoint there without typing anything, and click it again to remove it; right-click a line number and choose **Add conditional breakpoint** to stop only when an expression such as `i === 3` is true, which skips straight to the pass you care about.
 The buttons beside **Resume** step through the code: **Step over** (F10) runs the current line and stops on the next one, and **Step into** (F11) follows a function call inside.
 
 While paused, the **Console** tab of DevTools runs in the paused function, so typing `scores[i]` there shows its value at that moment.
 That console is also where `console.table`, `console.group`, `console.count`, and `console.time` from the last step print; try `console.table(students)` there once the code has finished.
-DevTools also shows the full stack trace of an uncaught error, with each frame a link, while the lab's console pane shows the first frame only.
+DevTools also shows the full stack trace of an uncaught error, with each frame a link, while this site's console pane shows the first frame only.
 
 Reach for a breakpoint when a value is wrong and you do not know where it goes wrong, and for a `console.log` when you already know which value to watch.
 
-**If it breaks:** If the code does not pause, DevTools was closed when you pressed **Run**, or it is open on the lab page rather than on the result; open it with **Inspect** on the result and run again.
+**If it breaks:** If the code does not pause, DevTools was closed when you pressed **Run**, or it is open on the CS300 Practice page rather than on the result; open it with **Inspect** on the result and run again.
 If the page stays frozen, the code is still paused: switch to DevTools and press **Resume**, or deactivate breakpoints.
 If the console still shows `NaN`, the loop test still reads `<=`.
 

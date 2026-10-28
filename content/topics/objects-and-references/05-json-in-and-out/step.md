@@ -11,7 +11,7 @@ This step makes that round trip with a cart, then with an order that holds thing
 
 Press **Run**.
 The console shows the cart, `{"owner":"Alice","items":[{"title":"Notebook","price":4.5,"quantity":2},{"title":"Pens","price":3,"quantity":1}]}`.
-The lab's console prints every object in this compact form, which is JSON, so keep an eye on the types and not only on the text.
+This site's console prints every object in this compact form, which is JSON, so keep an eye on the types and not only on the text.
 
 ```demo name="json-roundtrip"
 ```

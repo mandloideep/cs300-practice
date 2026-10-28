@@ -118,7 +118,7 @@ function Anatomy({ errorKey }) {
     { text: error.message, says: "what went wrong, in the words of the browser" },
     {
       text: `main.js:2:${error.column}`,
-      says: "the file, line, and column; in the lab, click it to jump there",
+      says: "the file, line, and column; here, click it to jump there",
     },
   ];
   return (

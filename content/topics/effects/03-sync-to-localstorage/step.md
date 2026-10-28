@@ -43,7 +43,7 @@ Writing to it is a side effect, something that reaches outside the component, so
 
 We write the whole array rather than one product, because `localStorage` holds one string per key, and replacing it is simpler and safer than editing it.
 
-The result page shares the browser's storage with the lab itself, so the lab keeps your code's keys in a scope of their own with that prefix; your code sees the key as `products`, and in your own Vite project it would be stored as `products` too.
+The result page shares the browser's storage with this site itself, so the site keeps your code's keys in a scope of their own with that prefix; your code sees the key as `products`, and in your own Vite project it would be stored as `products` too.
 
 Reading it back on load is the subject of the persistence topic, and it takes one more idea, a lazy initial state, that we save for there.
 

@@ -9,7 +9,7 @@ required: [browser-globals, no-process, where-it-runs]
 
 This step asks the code where it is running, by printing the type of three names that only exist in some places.
 JavaScript is one language with more than one home: the browser is one, and Node.js, which runs JavaScript in a terminal, is another.
-Watch which names exist in the lab, and then compare with what the same file prints in Node.
+Watch which names exist in the browser, and then compare with what the same file prints in Node.
 
 ```demo name="terminal"
 ```
@@ -36,13 +36,13 @@ console.log("typeof process:", typeof process);
 ```
 
 ```predict
-What does the console show for `typeof process` in the lab?
+What does the console show for `typeof process` here?
 - `typeof process: object`
 - A red `ReferenceError: process is not defined`
 = `typeof process: undefined`
 ```
 
-It shows `undefined`, with no error, because the lab runs your code in a browser page, which has no `process`.
+It shows `undefined`, with no error, because this site runs your code in a browser page, which has no `process`.
 
 The last edit uses the answer to decide, the way real code that runs in both places does.
 
@@ -80,12 +80,12 @@ That is the whole difference between the two homes: the same language, with diff
 A file that uses `document.querySelector` cannot run in Node, and a file that reads `process.argv` cannot run in a browser.
 
 Why this matters for the rest of the semester: the tools that turn a React project into a page, npm, Vite, and the bundler inside it, are JavaScript programs that run in Node on your computer, and the page they produce runs in the browser.
-The next steps meet each of those tools, one at a time, with the lab showing what each one reads and writes.
+The next steps meet each of those tools, one at a time, with this site showing what each one reads and writes.
 
 If you do not have Node yet, nothing in this topic needs it until the last step, which shows you how to install it.
 
 **If it breaks:** If the console shows `ReferenceError: process is not defined`, the line used `process` directly, such as `console.log(process)`, instead of `typeof process`; only `typeof` is safe on a name that does not exist.
-If the last line prints `This file is running in Node.` in the lab, the comparison is flipped; it should test `=== "undefined"` and pick `"Node"` when it is true.
+If the last line prints `This file is running in Node.` in the browser, the comparison is flipped; it should test `=== "undefined"` and pick `"Node"` when it is true.
 If `node src/main.js` on your computer says `command not found`, Node is not installed yet; the last step of this topic installs it.
 
 **Check:** Run the code.

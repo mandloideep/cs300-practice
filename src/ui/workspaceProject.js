@@ -84,15 +84,15 @@ function readme(topic, step, api) {
 The code reads the API address from \`import.meta.env.API_BASE\`, which comes from the \`.env\` file in this folder.
 ${
   api.fromFixtures
-    ? `In the lab you were using Fixtures, which exist only inside the lab, so \`.env\` points at ${api.title} instead; change it to any API you like.`
-    : `It holds the API you had selected in the lab, ${api.title}; change it to any API you like.`
+    ? `In CS300 Practice you were using Fixtures, which exist only inside the site, so \`.env\` points at ${api.title} instead; change it to any API you like.`
+    : `It holds the API you had selected in CS300 Practice, ${api.title}; change it to any API you like.`
 }
 `
     : "";
   return `# ${topic.title}: step ${step.n}, ${step.title}
 
-This folder is your workspace from CS300 Lab, as a Vite project you can run on your own computer.
-It uses React from npm, the same version the lab runs in the browser.
+This folder is your workspace from CS300 Practice, as a Vite project you can run on your own computer.
+It uses React from npm, the same version CS300 Practice runs in the browser.
 
 Open a terminal in this folder and run these three commands.
 
@@ -110,7 +110,7 @@ ${apiNote}`;
 function vanillaReadme(topic, step) {
   return `# ${topic.title}: step ${step.n}, ${step.title}
 
-This folder is your workspace from CS300 Lab: plain HTML, CSS, and JavaScript, with nothing to install.
+This folder is your workspace from CS300 Practice: plain HTML, CSS, and JavaScript, with nothing to install.
 
 Open \`index.html\` in your browser to see the page.
 To run it from a local address instead, which is what a browser needs for \`fetch\` and modules, serve the folder from a terminal opened in it and open the address it prints.

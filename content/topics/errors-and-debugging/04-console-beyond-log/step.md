@@ -85,10 +85,10 @@ That is the difference from the last two steps: `throw` changes what the code do
 ## Read more
 
 The levels exist so that you can find the line that matters among a hundred that do not.
-In the browser's own console, each level gets its own color and icon, and the **levels** filter at the top hides the ones you do not want; Chrome hides **debug**, which it calls **Verbose**, until you turn it on, while the lab shows all five.
+In the browser's own console, each level gets its own color and icon, and the **levels** filter at the top hides the ones you do not want; Chrome hides **debug**, which it calls **Verbose**, until you turn it on, while this site shows all five.
 The browser itself uses the **error** level for the problems it finds, so an error you print yourself sits beside the ones the browser prints, which is right for a real problem and wrong for anything else.
 
-The console has more methods that print only in the browser's own console, not in the lab's console pane:
+The console has more methods that print only in the browser's own console, not in this site's console pane:
 
 - `console.table(students)` draws an array of objects as a table with one row per object.
 - `console.group("Bob")` and `console.groupEnd()` indent the lines between them under a heading you can fold.
@@ -110,11 +110,11 @@ The console shows `Gradebook loaded: 4 students` at the info level, the first st
 Press **Run checks** to confirm.
 
 ```quiz
-Which of these prints a line in the lab's console pane?
+Which of these prints a line in this site's console pane?
 - `console.table(students)`
 = `console.debug("detail")`
 - `console.count("checked")`
-> The lab shows the five levels, `log`, `info`, `warn`, `error`, and `debug`; `table`, `group`, `count`, and `time` print only in the browser's own console.
+> This site shows the five levels, `log`, `info`, `warn`, `error`, and `debug`; `table`, `group`, `count`, and `time` print only in the browser's own console.
 ```
 
 <details>

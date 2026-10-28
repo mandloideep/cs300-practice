@@ -85,7 +85,7 @@ The **component** is the function the module exports, and React calls it once pe
 The order follows the import graph: `App.jsx` imports `ProductCard.jsx`, so the imported module runs first, the dependency before the file that needs it, exactly as in [Modules and imports](#/topic/modules-and-imports/3).
 
 That is why a value you want to keep between renders never goes at the top of a component file as a plain variable: the module's variables are shared by every card and never trigger a render, while `useState` gives each card its own value and redraws it.
-And it is why a file per component costs nothing at run time: Vite and the lab load each module once, and the build joins them into one file anyway.
+And it is why a file per component costs nothing at run time: Vite and this site load each module once, and the build joins them into one file anyway.
 
 **If it breaks:** If the result says `ProductCard is not defined`, the import line is missing at the top of `App.jsx`.
 If it says `does not provide an export named 'default'`, the `export default` is missing in front of `function ProductCard`.

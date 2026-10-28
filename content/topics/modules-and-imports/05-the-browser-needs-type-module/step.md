@@ -57,7 +57,7 @@ This is called being **deferred**, and every module script is deferred without y
 ## Read more
 
 Keep the attribute from here on.
-If you remove it again now that the tag is in the `<head>`, the page stays unrendered and the lab's console stays empty, because a classic script in the `<head>` runs before the lab's console starts listening; the browser's own console, opened with F12, still shows the `SyntaxError`.
+If you remove it again now that the tag is in the `<head>`, the page stays unrendered and this site's console stays empty, because a classic script in the `<head>` runs before this site's console starts listening; the browser's own console, opened with F12, still shows the `SyntaxError`.
 
 The two kinds of script differ in more than `import`.
 A classic script runs the moment the browser reaches its tag, unless it has `defer`, so a classic script in the `<head>` would find no `#grades` at all.

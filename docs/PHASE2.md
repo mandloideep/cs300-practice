@@ -1,5 +1,7 @@
 # Phase 2 plan: flow trace, editor linking, progress, and accessibility
 
+The repository was renamed `cs300-practice` in Phase 7, and the site moved to `https://mandloideep.github.io/cs300-practice/`; this brief keeps the names it was written with.
+
 This document plans Phase 2 of the CS300 Lab as the design of record describes it in section 13 of [DESIGN.md](DESIGN.md).
 It follows the shape of [KICKOFF.md](KICKOFF.md): where the repository stands, what to build, in what order, what done means, and the decisions already made.
 Read `docs/DESIGN.md` and `docs/CONTRACTS.md` completely before writing code; this document only adds scope and order.

@@ -30,7 +30,7 @@ const status = document.querySelector("#status");
 console.log("status is", status);
 ```
 
-The console shows the element as `<p#status>`, the lab's short way of printing a node: tag, then id, then classes.
+The console shows the element as `<p#status>`, this site's short way of printing a node: tag, then id, then classes.
 
 `document.querySelectorAll` returns every match as a **NodeList**, which you can count with `length`.
 Add a selection of the list items below the first log.

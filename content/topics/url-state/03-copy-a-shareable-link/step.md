@@ -74,7 +74,7 @@ The parameters appear in the order they were first set: a category chosen before
 `copied` is ordinary state: whether the copy succeeded is not something to bookmark, so it stays in `useState`, which is the other half of the Week 13 rule.
 
 `writeText` returns a promise because the browser may ask the user first, and it rejects when the page is not allowed to write the clipboard.
-In a Vite project you would copy `window.location.origin + shareable` to get a full link; the lab's result runs in a frame with no address of its own, so here we copy the part that carries the state.
+In a Vite project you would copy `window.location.origin + shareable` to get a full link; this site's result runs in a frame with no address of its own, so here we copy the part that carries the state.
 
 **If it breaks:** If the page shows `undefined` in the share line, `shareable` reads properties that `useLocation` does not have; they are `pathname` and `search`.
 If the console says `useLocation is not defined`, the import at the top does not include it.

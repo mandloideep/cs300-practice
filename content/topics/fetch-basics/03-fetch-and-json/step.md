@@ -64,7 +64,7 @@ The toolbar above the editor has an **API source** selector with three kinds of 
 - **Custom** is any base URL you type, for example your own server or a classmate's deployment.
 
 Our code never names a server.
-It reads the chosen base URL from `import.meta.env.API_BASE`, which the lab fills in from the selector, so switching the source never means editing the request.
+It reads the chosen base URL from `import.meta.env.API_BASE`, which this site fills in from the selector, so switching the source never means editing the request.
 
 ### The response and the body
 

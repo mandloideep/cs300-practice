@@ -63,9 +63,9 @@ Run the page: the heading changes inside the `App` outline, inside `#root`, belo
 
 ## Read more
 
-### What the lab leaves out
+### What this site leaves out
 
-The lab runs these files in the browser without Vite, so `package.json`, `vite.config.js`, and `node_modules` are not here; they matter only on your computer.
+This site runs these files in the browser without Vite, so `package.json`, `vite.config.js`, and `node_modules` are not here; they matter only on your computer.
 Your generated files may use single quotes and leave out semicolons, while ours use double quotes and semicolons like the rest of our course code; JavaScript reads both the same way.
 
 ### index.html

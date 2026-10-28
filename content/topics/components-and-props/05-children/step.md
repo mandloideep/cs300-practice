@@ -73,7 +73,7 @@ The same `Card` holds a course in one place and an advising note in another, and
 
 **If it breaks:** If a box is empty, `Card` is missing `{children}` inside its `article`, or it destructures a different name such as `child`.
 Make sure both tags in `CourseCard` changed.
-The lab's compiler reads only the opening tag, so `<Card>` closed by `</article>` may still look right here, but Vite on your own computer rejects it with an error about a missing closing tag.
+This site's compiler reads only the opening tag, so `<Card>` closed by `</article>` may still look right here, but Vite on your own computer rejects it with an error about a missing closing tag.
 If the advising note has no border, it was written with a plain `<div>` instead of `<Card>`.
 
 **Check:** Run the code.

@@ -6,7 +6,7 @@ required: [updated-line, no-inline-script, dates-module-ran]
 ---
 
 A teammate wanted the gradebook to say when it was last updated, found a tutorial that uses a package called `date-fns`, and pasted its two lines into `index.html`.
-This step runs that code, reads why the browser refuses it, and replaces it with a small file of our own that the lab can run.
+This step runs that code, reads why the browser refuses it, and replaces it with a small file of our own that this site can run.
 Watch the top of the console and the new line under the rows.
 
 Open `index.html`.
@@ -28,7 +28,7 @@ The text in quotes after `from` is the **module specifier**, and the browser tre
 `"./students.js"` is an address: the file `students.js` next to the importing file.
 `"date-fns"` starts with none of `/`, `./`, or `../` and is not a full URL, so it is a **bare specifier**, a name with no address, and the browser has nowhere to look it up.
 The only place a browser can look up a bare name is an **import map**, a short list in the page that pairs each name with an address.
-The lab's page has one, which is how React files here can say `import { useState } from "react"`, and it lists only React's own packages.
+The CS300 Practice page has one, which is how React files here can say `import { useState } from "react"`, and it lists only React's own packages.
 
 ```demo name="bare-import-fail"
 ```
@@ -62,7 +62,7 @@ With the import typed as `from "dates.js"`, what does a run show?
 ```
 
 Run the code.
-The result pane says the code did not compile with `Cannot import "dates.js"`, and the same list of packages: without `./`, the name of your own file is a bare specifier too, and it is in `main.js`, which the lab checks.
+The result pane says the code did not compile with `Cannot import "dates.js"`, and the same list of packages: without `./`, the name of your own file is a bare specifier too, and it is in `main.js`, which this site checks.
 Put the `./` back.
 
 Now show the date, after the summary is rendered.
@@ -81,22 +81,22 @@ Last, delete the pasted script from `index.html`, all four lines of it.
 Run the code.
 The last line of the page shows today's date, such as `Updated October 27`, the console shows `dates.js ran` before `main.js ran`, and there is no red line.
 
-The fix the lab can run is always the same: an import whose path starts with `./` and names a file in the workspace.
+The fix this site can run is always the same: an import whose path starts with `./` and names a file in the workspace.
 A real project does want packages by name, though: thousands of them, installed with `npm install date-fns`, which downloads the package into a folder called `node_modules`.
 The browser still cannot read `"date-fns"` from there, because it has no idea that folder exists.
 So how does a real project's `import { format } from "date-fns"` ever work?
-A tool reads your files before the browser does, finds `date-fns` in `node_modules`, and rewrites the import to an address the browser can load, the same job the lab did for your `./` imports all through this topic.
+A tool reads your files before the browser does, finds `date-fns` in `node_modules`, and rewrites the import to an address the browser can load, the same job this site did for your `./` imports all through this topic.
 That tool is a **bundler**, Vite is the one we use, and [Tooling from scratch](#/topic/tooling-from-scratch) takes it apart.
 
 ## Read more
 
-The lab checks the files your `<script src>` tags load before the browser ever sees them, and an inline script is left to the browser, so the same mistake reads differently in each place.
+This site checks the files your `<script src>` tags load before the browser ever sees them, and an inline script is left to the browser, so the same mistake reads differently in each place.
 Try it: add `import { format } from "date-fns";` as the first line of `src/main.js` and run.
-Nothing runs this time, and the result pane says the code did not compile: `Cannot import "date-fns". The lab provides these packages: react, react-dom, react-dom/client, react/jsx-runtime, react/jsx-dev-runtime, react-router.`
-That list is the lab's import map, and `date-fns` is not on it.
+Nothing runs this time, and the result pane says the code did not compile: `Cannot import "date-fns". CS300 Practice provides these packages: react, react-dom, react-dom/client, react/jsx-runtime, react/jsx-dev-runtime, react-router.`
+That list is this site's import map, and `date-fns` is not on it.
 Delete the line from `src/main.js` again.
 
-An inline module script cannot reach the workspace's files either, because the lab gives your files their addresses only when a `<script src>` or an `import` in one of them names them; keep every module in a file and load it with `src`.
+An inline module script cannot reach the workspace's files either, because this site gives your files their addresses only when a `<script src>` or an `import` in one of them names them; keep every module in a file and load it with `src`.
 
 **If it breaks:** If the console still shows `Failed to resolve module specifier "date-fns"`, part of the inline script is still in `index.html`; delete everything from `<script type="module">` to its `</script>`, and keep the tag in the `<head>`.
 If the result pane says it cannot import `"dates.js"`, the import in `src/main.js` is missing its `./`.

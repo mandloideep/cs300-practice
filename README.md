@@ -1,10 +1,10 @@
-# cs300-react-lab
+# cs300-practice
 
-CS300 Lab is a static, client-side learning site for CS300 at Northeastern Illinois University.
+CS300 Practice is a static, client-side learning site for CS300 at Northeastern Illinois University.
 Students read a short explanation, edit code in the browser, run it, see the rendered result and the console, and check their work against stated expectations.
 Content is organized by topic, with a semester path layered on top, so topics are reused across semesters.
 
-The site is deployed to GitHub Pages at <https://mandloideep.github.io/cs300-react-lab/>.
+The site is deployed to GitHub Pages at <https://mandloideep.github.io/cs300-practice/>.
 Everything runs in the visitor's browser: there is no server, no account, no database, and no analytics.
 
 The design of record is [docs/DESIGN.md](docs/DESIGN.md).
@@ -22,7 +22,7 @@ npm run dev
 ```
 
 `npm run dev` compiles `content/` into `public/content/` and then starts the Vite dev server.
-Open the URL it prints, which ends in `/cs300-react-lab/`.
+Open the URL it prints, which ends in `/cs300-practice/`.
 
 To check a production build locally:
 
@@ -62,14 +62,14 @@ Markdown keeps one sentence per physical line, and the edit blocks in each `step
 - `src/styles/tokens.css` holds the design tokens, and `src/styles/global.css` holds the base styles.
 - `content/` holds the topics, paths, areas, and API presets as plain files.
 - `src/runner/` compiles a workspace with Sucrase, links its modules as blob URLs, and builds the document for the sandboxed result iframe, including the bridge script that reports console output, errors, and check results.
-- `src/runner/harness/index.html` is a development-only page that runs any step from `content/` and prints every bridge message; with `npm run dev` it is at `/cs300-react-lab/src/runner/harness/index.html`.
+- `src/runner/harness/index.html` is a development-only page that runs any step from `content/` and prints every bridge message; with `npm run dev` it is at `/cs300-practice/src/runner/harness/index.html`.
 - `public/runtime/` holds the vendored React runtime that the result iframe loads through an import map.
 - `scripts/` holds the content, runtime, and export build scripts.
 
 A step page shows the explanation, the editor with file tabs, the result, the console, the inspector (boundaries, re-render flash, tree and state, flow trace, and the DOM view for plain pages), the network pane on fetching steps, the check panel, and step navigation.
 Every edit step has "Download this workspace", which writes a Vite project for a React workspace or a plain folder for an HTML, CSS, and JavaScript one, and a step whose code saves to `localStorage` gets a second "Run, keeping saved data" button that runs without clearing the result's storage.
 Progress stays in the browser and can be exported and imported on the home page.
-A five-stop tour of the step page opens on the first edit step a browser visits and again from the Tour button in the header, and the home page points new visitors at the `using-the-lab` topic until they finish it or hide the card.
+A five-stop tour of the step page opens on the first edit step a browser visits and again from the Tour button in the header, and the home page points new visitors at the `getting-started` topic until they finish it or hide the card.
 
 Routes use hash routing so that deep links work on GitHub Pages: `#/`, `#/topics`, `#/topic/<id>`, `#/topic/<id>/<n>`, `#/path/<pathId>`, and `#/path/<pathId>/<unit>`.
 
@@ -339,7 +339,7 @@ The step page lists the topic's links and then the step's under the step title, 
 ## Adding an explainer
 
 An explainer is a small React component that shows one idea moving inside a step's explanation.
-[docs/EXPLAINERS.md](docs/EXPLAINERS.md) lists every explainer the lab plans, and a new one goes there first.
+[docs/EXPLAINERS.md](docs/EXPLAINERS.md) lists every explainer the site plans, and a new one goes there first.
 Every id in that file also has an entry in `src/demos/registry.json` with its title and a one-sentence description:
 
 ```json
@@ -389,7 +389,7 @@ Every explainer keeps the contract in [docs/CONTRACTS.md](docs/CONTRACTS.md) sec
 - It takes the step's own values from its props where that makes sense, and works with no props.
 - The code it shows carries no explanatory comments; the caption explains.
 
-With `npm run dev` running, `/cs300-react-lab/src/demos/harness/index.html` lists every explainer, and `?id=<id>&width=320` shows one at phone width with optional `&props=<json>` and its default props below it.
+With `npm run dev` running, `/cs300-practice/src/demos/harness/index.html` lists every explainer, and `?id=<id>&width=320` shows one at phone width with optional `&props=<json>` and its default props below it.
 `tests/demos.spec.js` mounts every built explainer on that page, steps it from the first stage to the last from the keyboard, checks the 320 pixel column, and runs axe in light and dark with motion allowed and reduced.
 When an explainer is built, set its Status in [docs/EXPLAINERS.md](docs/EXPLAINERS.md) to `built`.
 
@@ -422,7 +422,7 @@ It never copies topic content, so improving a topic improves every path that use
 Every topic id must exist under `content/topics/`, every `required` is `true` or `false`, and `localNotes` is a list of sentences.
 Two optional fields control when students see the path, as the "Deployment" section explains.
 `opens` on a unit is the date it is released, written as `YYYY-MM-DD`; set it to the Monday of the unit's week so the scheduled deploy opens it that morning, and leave it out for a unit that is open from the start.
-`active` on the path is `true` by default; set it to `false` when a semester is over and the path is kept only for its history, and the deployed site leaves it out along with every topic that no active path releases.
+`active` on the path is `true` by default; set it to `false` for a semester that is over or not yet taught, such as Spring 2027 while Fall 2026 runs, and the deployed site leaves it out along with every topic that no active path releases.
 Validation still requires every topic to be in some path, whatever the dates and `active` say.
 The unit page is `#/path/<path-id>/<unit-id>`, which is the link to post in D2L.
 Run `npm run validate` after editing.
@@ -438,8 +438,9 @@ npm run export:d2l -- fall-2026
 
 For each unit, `dist-d2l/<path-id>/<unit-id>.html` is a complete page in the CS300 Brightspace template, ready to upload to Content as an HTML file.
 `dist-d2l/<path-id>/<unit-id>.fragment.html` holds only the page content, for pasting into an existing D2L page that already uses the template.
-Each page has the unit intro, a link to the unit in the lab, the required topics with links to each topic, the optional topics, and the notes about work on your own computer.
-Links point at `https://mandloideep.github.io/cs300-react-lab/`.
+Each page has the unit intro, one line saying that this is practice with nothing graded and nothing submitted, a link to the unit on CS300 Practice, the required topics under "Guided Practice" and the optional ones under "Optional practice", each with a link, and the notes about work on your own computer.
+The first unit of the path with Guided Practice, Week 10 in Fall 2026, also has a "Before you start" block: progress stays in the browser, a private window forgets it, and the `getting-started` tour comes first.
+Links point at `https://mandloideep.github.io/cs300-practice/`.
 The template is copied into `scripts/export-d2l.mjs` from the Fall course repository's D2L build kit; update the copy there if the build kit's template changes.
 `dist-d2l/` is generated and not committed.
 

@@ -68,7 +68,7 @@ A later version of the page can add a branch for `version === 1` that converts t
 
 Passing `readSavedIds` without parentheses is the same distinction as `onClick={handleAdd}` in [State and useState](#/topic/state-usestate): `useState` will call it, once, when it needs the initial value.
 
-The lab's own progress file uses the same idea: it carries `version: 1`, and a newer lab refuses a file from the future instead of guessing at it.
+CS300 Practice's own progress file uses the same idea: it carries a `version` number, and a newer release of the site refuses a file from the future instead of guessing at it.
 
 **If it breaks:** If the console says `Cannot read properties of undefined (reading 'length')`, the reader returns `data.ids` without checking the version, and an old array is in storage.
 If the saved products no longer survive a reload, the writer and the reader disagree on the shape, such as `ids` on one side and `saved` on the other.
@@ -77,7 +77,7 @@ Writing `useState(readSavedIds())` raises no error at all, but it reads storage 
 
 **Check:** Run the code and save a product.
 The stored value is now an object, `{"version":1,"ids":[...]}`, and the ids match the marked products.
-Press **Run checks** to confirm; the lab's own test also loads the page with an old-style array in storage and confirms that it starts clean instead of crashing.
+Press **Run checks** to confirm; this site's own test also loads the page with an old-style array in storage and confirms that it starts clean instead of crashing.
 
 ```quiz
 Why is the state line `useState(readSavedIds)` rather than `useState(readSavedIds())`?

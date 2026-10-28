@@ -102,7 +102,7 @@ Choose **Fragrances**: the address bar shows `/products?category=fragrances` and
 Type `coco`: the address becomes `/products?category=fragrances&q=coco` and one product remains; the category survived the typing.
 Press **Back** in the address bar: both filters go at once and every product returns, because each keystroke replaced the entry that choosing Fragrances pushed, so the category and the whole search share one entry.
 Press **Forward**: Fragrances and `coco` come back together.
-In a Vite project, reloading the page keeps the address and so keeps both filters; in the lab, pressing **Run** starts a fresh history, so use Back and the address bar to see it.
+In a Vite project, reloading the page keeps the address and so keeps both filters; on this site, pressing **Run** starts a fresh history, so use Back and the address bar to see it.
 Press **Run checks**.
 
 ```quiz

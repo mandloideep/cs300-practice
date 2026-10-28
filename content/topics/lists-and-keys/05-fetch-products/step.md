@@ -76,7 +76,7 @@ The **API source** selector has three kinds of entry.
 - **Custom** is any base URL you type, for example your own server or a classmate's deployment.
 
 Our code never names a server.
-It reads the chosen base URL from `import.meta.env.API_BASE`, which the lab fills in from the selector, the same way a Vite project reads settings from `import.meta.env`.
+It reads the chosen base URL from `import.meta.env.API_BASE`, which this site fills in from the selector, the same way a Vite project reads settings from `import.meta.env`.
 Switching the source never means editing the request code.
 
 ### The request, line by line
