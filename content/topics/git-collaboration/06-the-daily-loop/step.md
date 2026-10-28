@@ -57,7 +57,7 @@ A team writes a few conventions down, usually in the repository's `README.md` or
 ### This site's loop
 
 This site follows the same loop at a larger scale.
-Several pieces of work run at once, each on its own branch, and each is merged into `main` when it is finished and `check.yml` has passed on it; the deploy workflow then publishes `main`, which the topic Deploy with GitHub Pages explains.
+Several pieces of work run at once, each on its own branch, and each is merged into `main` when it is finished and `check.yml` has passed on it; the deploy workflow then publishes `main`, which [A workflow on every push](#/topic/deploy-with-github-pages/4) explains.
 A topic such as this one is one turn: written on its branch, checked, merged, and live.
 
 ### When you are the only developer

@@ -84,6 +84,10 @@
         {
           "id": "git-collaboration",
           "required": false
+        },
+        {
+          "id": "deploy-with-github-pages",
+          "required": false
         }
       ],
       "localNotes": [

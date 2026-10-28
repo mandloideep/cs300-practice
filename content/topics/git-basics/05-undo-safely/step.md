@@ -80,7 +80,7 @@ When unsure, use `revert`.
 
 ### Reverting and deploying
 
-The topic Deploy with GitHub Pages uses this idea for a site that rebuilds on every push: when a commit breaks the site, `git revert` and a push put the previous version back online, with the history saying exactly what happened.
+[Update and roll back](#/topic/deploy-with-github-pages/6) uses this idea for a site that rebuilds on every push: when a commit breaks the site, `git revert` and a push put the previous version back online, with the history saying exactly what happened.
 
 ### A commit that is not finished yet
 

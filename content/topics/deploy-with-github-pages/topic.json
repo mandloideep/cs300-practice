@@ -1,0 +1,37 @@
+{
+  "id": "deploy-with-github-pages",
+  "title": "Deploy with GitHub Pages",
+  "area": "tooling",
+  "summary": "Put a project on the web with GitHub Pages: what a static host serves, a plain page published from a branch, the base and the routing a Vite project needs, and a GitHub Actions workflow that builds and publishes on every push. You will finish with your own React project at your own address, updating every time you push.",
+  "prerequisites": ["git-collaboration"],
+  "links": [
+    {
+      "kind": "reading",
+      "title": "GitHub Docs: What is GitHub Pages?",
+      "url": "https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages"
+    },
+    {
+      "kind": "reading",
+      "title": "Vite: Deploying a static site",
+      "url": "https://vite.dev/guide/static-deploy"
+    },
+    {
+      "kind": "reference",
+      "title": "GitHub Docs: Configuring a publishing source for your GitHub Pages site",
+      "url": "https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site"
+    },
+    {
+      "kind": "reference",
+      "title": "GitHub Docs: Using custom workflows with GitHub Pages",
+      "url": "https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages"
+    },
+    {
+      "kind": "reference",
+      "title": "GitHub Docs: Understanding GitHub Actions",
+      "url": "https://docs.github.com/en/actions/get-started/understand-github-actions"
+    }
+  ],
+  "minutes": 45,
+  "updated": "2026-10-28",
+  "changeNote": "First version."
+}
