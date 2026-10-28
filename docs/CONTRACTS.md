@@ -751,7 +751,7 @@ The compiled step gains `"fileNotes": { "<path>": "<sentence>" }`, `{}` when the
 - `source` is `workspace` for a file the editor holds and `download` for a file or folder only the download has; every `download` entry comes after every `workspace` entry.
 - `createdBy` is `null` or the command that creates the entry on the student's computer: `npm install` for `node_modules` and `package-lock.json`, `npm run build` for `dist`.
 - `description` is `fileNotes[path]` when the step has one, else the match in `src/editor/fileRoles.js`, else "A file of this step's project."; a folder's is `null` unless the dictionary names it.
-- The zip builder writes exactly the `workspace` files and the `download` entries of `kind: "file"`, so the tree and the download cannot differ; `node_modules` and `dist` are listed and never written.
+- The zip builder writes exactly the `workspace` files and the `download` entries of `kind: "file"` whose `createdBy` is `null`, so the tree and the download cannot differ; `node_modules`, `dist`, and `package-lock.json` are listed with their command and never written, because the site cannot produce a valid lockfile.
 
 `src/editor/FileTree.jsx` takes `{ layout, activeFile, onSelect, modifiedFiles, showDownload, idPrefix }`, renders `role="tree"` with `role="treeitem"` nodes and `aria-expanded` on folders, follows the WAI-ARIA tree keyboard pattern (Up, Down, Left, Right, Home, End, Enter, Space, and type-ahead), marks the active file with `aria-selected`, and shows the selected entry's description in an element the tree's `aria-describedby` names.
 The `download` entries sit under one collapsed node, **On your computer**, that `showDownload: false` leaves out.
