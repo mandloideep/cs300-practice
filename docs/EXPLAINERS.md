@@ -143,14 +143,14 @@ Each one takes its data from the fence body where that makes sense, so the same 
 
 | Id | Shows | Serves | Phase | Status |
 | --- | --- | --- | --- | --- |
-| `three-trees` | The working tree, the staging area, and the repository as three columns; a file edited, added, and committed moves across them with the `git status` output for each state | *git-basics*/the-three-places, undo-safely | 7 | planned |
-| `commit-graph` | Commits as a chain from the fence body, each with a short hash, a message, and a parent arrow; selecting one shows the snapshot it holds and the diff from its parent | *git-basics*/why-keep-history, read-the-history | 7 | planned |
-| `branch-and-merge` | A `main` and a feature branch; Step commits on either, `HEAD` follows the switch, and the merge draws a fast-forward or a merge commit depending on whether `main` moved | *git-basics*/a-branch-is-a-pointer, merge-a-branch | 7 | planned |
-| `merge-conflict` | Two branches that change the same line, the merge that stops, the file with conflict markers, and the resolved file after a choice the student makes | *git-collaboration*/what-a-conflict-is, resolve-a-conflict | 7 | planned |
-| `remote-sync` | A local and a remote history side by side; `push`, `fetch`, and `pull` move commits between them, with ahead and behind counts and a rejected push when the remote has moved | *git-collaboration*/a-remote-on-github, the-daily-loop, when-things-go-wrong | 7 | planned |
-| `pull-request-flow` | A branch pushed, a pull request opened, review comments, the checks running, the merge, and the branch deleted, one stage at a time | *git-collaboration*/a-pull-request, code-review, the-daily-loop | 7 | planned |
-| `static-deploy` | `dist/` copied to a host, the address each file gets under `/<repo>/`, a route refreshed, and what the host answers with and without a `404.html` | *deploy-with-github-pages*/what-a-static-host-serves, the-address-and-the-base, *deploying-and-ci* | 7 | planned |
-| `ci-pipeline` | Push, install, build, and deploy as stages with the log of each, a failing build that stops the rest, and the site unchanged until a run is green | *deploy-with-github-pages*/a-workflow-on-every-push, update-and-roll-back, *deploying-and-ci* | 7 | planned |
+| `three-trees` | The working tree, the staging area, and the repository as three columns; a file edited, added, and committed moves across them with the `git status` output for each state | *git-basics*/the-three-places, undo-safely | 7 | in use |
+| `commit-graph` | Commits as a chain from the fence body, each with a short hash, a message, and a parent arrow; selecting one shows the snapshot it holds and the diff from its parent | *git-basics*/why-keep-history, read-the-history | 7 | in use |
+| `branch-and-merge` | A `main` and a feature branch; Step commits on either, `HEAD` follows the switch, and the merge draws a fast-forward or a merge commit depending on whether `main` moved | *git-basics*/a-branch-is-a-pointer, merge-a-branch | 7 | in use |
+| `merge-conflict` | Two branches that change the same line, the merge that stops, the file with conflict markers, and the resolved file after a choice the student makes | *git-collaboration*/what-a-conflict-is, resolve-a-conflict | 7 | in use |
+| `remote-sync` | A local and a remote history side by side; `push`, `fetch`, and `pull` move commits between them, with ahead and behind counts and a rejected push when the remote has moved | *git-collaboration*/a-remote-on-github, the-daily-loop, when-things-go-wrong | 7 | in use |
+| `pull-request-flow` | A branch pushed, a pull request opened, review comments, the checks running, the merge, and the branch deleted, one stage at a time | *git-collaboration*/a-pull-request, code-review, the-daily-loop | 7 | in use |
+| `static-deploy` | `dist/` copied to a host, the address each file gets under `/<repo>/`, a route refreshed, and what the host answers with and without a `404.html` | *deploy-with-github-pages*/what-a-static-host-serves, the-address-and-the-base, *deploying-and-ci* | 7 | in use |
+| `ci-pipeline` | Push, install, build, and deploy as stages with the log of each, a failing build that stops the rest, and the site unchanged until a run is green | *deploy-with-github-pages*/a-workflow-on-every-push, update-and-roll-back, *deploying-and-ci* | 7 | in use |
 
 ## Production
 
