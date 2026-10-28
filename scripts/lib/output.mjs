@@ -45,6 +45,7 @@ export function buildTopic(topic, render) {
         inspector: step.inspector,
         api: step.api,
         required: step.required,
+        starterCompiles: step.starterCompiles,
         links: step.links,
         demos: step.demos,
         questions: step.questions,

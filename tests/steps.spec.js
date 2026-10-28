@@ -59,7 +59,9 @@ test.describe("edit steps run their solution on the step page", () => {
       if (step.fixtureDelay > 0) test.slow();
       await openStep(page, step);
       const status = page.locator(".pane--result .status-pill");
-      await expect(status).toHaveText("Ready", { timeout: 15_000 });
+      await expect(status).toHaveText(step.starterCompiles ? "Ready" : "Did not compile", {
+        timeout: 15_000,
+      });
 
       await page.getByRole("button", { name: "Show solution" }).click();
       await page.getByRole("button", { name: "Load solution" }).click();

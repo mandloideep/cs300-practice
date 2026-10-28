@@ -14,6 +14,7 @@ function frontMatter(markdown) {
   return {
     mode: field("mode"),
     entry: field("entry"),
+    starterCompiles: field("starterCompiles") !== "false",
     required: list
       ? list
           .replace(/^\[|\]$/g, "")

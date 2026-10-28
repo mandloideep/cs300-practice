@@ -73,12 +73,18 @@ test.describe("solution of every edit step", () => {
   }
 });
 
+// A step with starterCompiles: false (CONTRACTS 8.8) starts from a file that does not compile,
+// such as one holding conflict markers, so its starter must stop at a compile diagnostic.
 test.describe("starter of every edit step", () => {
   for (const step of steps) {
     test(step.id, async ({ page }) => {
       test.fixme(usesRouter(step.solution) && !ROUTER_WRAPPER, NEEDS_RUNTIME_ROUTER);
       await openHarness(page);
       const result = await runStep(page, step.id, "workspace");
+      if (!step.starterCompiles) {
+        expect(result.diagnostics.length).toBeGreaterThan(0);
+        return;
+      }
       expect(result.diagnostics).toEqual([]);
       expect(result.timedOut).toBe(false);
       expect(result.messages.map((message) => message.type)).toContain("settled");
