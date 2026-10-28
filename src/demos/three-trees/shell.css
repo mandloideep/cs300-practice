@@ -69,8 +69,8 @@ figure.demo-frame .git-shell__output {
 
 figure.demo-frame .git-shell__out-line {
   display: block;
-  padding-left: calc(var(--git-indent, 0ch) + 2ch);
-  text-indent: -2ch;
+  padding-left: calc(var(--git-indent, 0ch) + var(--git-hang, 0ch) + 2ch);
+  text-indent: calc(-2ch - var(--git-hang, 0ch));
 }
 
 figure.demo-frame .git-shell__output.is-error {

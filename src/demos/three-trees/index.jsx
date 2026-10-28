@@ -9,18 +9,42 @@ export const defaults = { file: "App.jsx" };
 
 const FILE = /^(?!.*\.\.)[\w.-]+(\/[\w.-]+){0,3}$/;
 
-const VERSIONS = {
-  jsx: ["<h1>Shop</h1>", "<h1>The Shop</h1>", "<h1>The Shop (test)</h1>"],
-  js: ['const title = "Shop";', 'const title = "The Shop";', 'const title = "The Shop (test)";'],
-  css: ["h1 { color: black; }", "h1 { color: navy; }", "h1 { color: red; }"],
-  html: ["<title>Shop</title>", "<title>The Shop</title>", "<title>The Shop (test)</title>"],
-  text: ["# Shop", "# The Shop", "# The Shop (test)"],
+const EDITS = {
+  jsx: {
+    lines: ["<h1>Shop</h1>", "<h1>The Shop</h1>", "<h1>The Shop (test)</h1>"],
+    thing: "heading",
+    message: "Rename the heading",
+  },
+  js: {
+    lines: [
+      'const title = "Shop";',
+      'const title = "The Shop";',
+      'const title = "The Shop (test)";',
+    ],
+    thing: "title",
+    message: "Rename the title",
+  },
+  css: {
+    lines: ["h1 { color: black; }", "h1 { color: navy; }", "h1 { color: red; }"],
+    thing: "heading color",
+    message: "Color the heading navy",
+  },
+  html: {
+    lines: ["<title>Shop</title>", "<title>The Shop</title>", "<title>The Shop (test)</title>"],
+    thing: "page title",
+    message: "Rename the page title",
+  },
+  text: {
+    lines: ["# Shop", "# The Shop", "# The Shop (test)"],
+    thing: "heading",
+    message: "Rename the heading",
+  },
 };
 
 const KINDS = { tsx: "jsx", ts: "js", mjs: "js", cjs: "js", htm: "html" };
 
 const FIRST = { hash: "a1b2c3d", message: "Initial page" };
-const SECOND = { hash: "9f4e2b7", message: "Rename the heading" };
+const SECOND_HASH = "9f4e2b7";
 
 function settings(props) {
   const file =
@@ -29,7 +53,7 @@ function settings(props) {
       : defaults.file;
   const extension = /\.(\w+)$/.exec(file)?.[1] ?? "";
   const kind = KINDS[extension] ?? extension;
-  return { file, lines: VERSIONS[kind] ?? VERSIONS.text };
+  return { file, ...(EDITS[kind] ?? EDITS.text) };
 }
 
 function status(file, { staged, unstaged }) {
@@ -56,7 +80,8 @@ function status(file, { staged, unstaged }) {
   return lines[lines.length - 1] === "" ? lines.slice(0, -1) : lines;
 }
 
-function stages({ file }) {
+function stages({ file, thing, message }) {
+  const second = { hash: SECOND_HASH, message };
   return [
     {
       versions: [0, 0, 0],
@@ -67,7 +92,7 @@ function stages({ file }) {
     {
       versions: [1, 0, 0],
       commits: [FIRST],
-      saved: "You change the heading and save.",
+      saved: `You change the ${thing} and save.`,
       run: [],
       caption: `You edit ${file} and save. Only the working tree changes. git status lists it under "Changes not staged for commit": Git sees the change but will not record it until you add it.`,
     },
@@ -80,7 +105,7 @@ function stages({ file }) {
     {
       versions: [2, 1, 0],
       commits: [FIRST],
-      saved: "You try another heading and save.",
+      saved: `You try another ${thing} and save.`,
       run: [],
       caption: `You edit the same line again. The staging area kept the copy you added, so ${file} now appears in both sections of git status: a commit now would record the staged copy, not this experiment.`,
     },
@@ -92,17 +117,17 @@ function stages({ file }) {
     },
     {
       versions: [1, 1, 1],
-      commits: [FIRST, SECOND],
+      commits: [FIRST, second],
       run: [
         {
-          command: `git commit -m "${SECOND.message}"`,
+          command: `git commit -m "${second.message}"`,
           output: [
-            `[main ${SECOND.hash}] ${SECOND.message}`,
+            `[main ${second.hash}] ${second.message}`,
             " 1 file changed, 1 insertion(+), 1 deletion(-)",
           ],
         },
       ],
-      caption: `git commit records the staging area as a new commit, ${SECOND.hash}, after ${FIRST.hash}. All three places agree again and git status is clean. Reset puts the file back where it started.`,
+      caption: `git commit records the staging area as a new commit, ${second.hash}, after ${FIRST.hash}. All three places agree again and git status is clean. Reset puts the file back where it started.`,
     },
   ];
 }
