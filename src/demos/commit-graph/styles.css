@@ -1,0 +1,197 @@
+.commit-graph {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  container-type: inline-size;
+}
+
+figure.demo-frame .commit-graph .demo-caption {
+  margin: 0;
+}
+
+figure.demo-frame .commit-graph__layout {
+  display: grid;
+  gap: var(--space-3);
+}
+
+@container (min-width: 36rem) {
+  figure.demo-frame .commit-graph__layout {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    align-items: start;
+  }
+}
+
+figure.demo-frame .commit-graph__chain {
+  display: flex;
+  flex-direction: column;
+}
+
+figure.demo-frame .commit-graph__item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+figure.demo-frame .commit-graph__commit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  width: 100%;
+  min-height: 2.75rem;
+  padding: var(--space-1) var(--space-2);
+  border: 2px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease;
+}
+
+figure.demo-frame .commit-graph__commit:hover {
+  border-color: var(--color-accent);
+}
+
+figure.demo-frame .commit-graph__commit:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+figure.demo-frame .commit-graph__commit.is-selected {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+figure.demo-frame .commit-graph__dot {
+  flex: none;
+  width: 0.875rem;
+  height: 0.875rem;
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+}
+
+figure.demo-frame .commit-graph__commit.is-selected .commit-graph__dot {
+  background: var(--color-accent);
+}
+
+figure.demo-frame .commit-graph__text {
+  display: flex;
+  flex: 1 1 8rem;
+  flex-direction: column;
+  min-width: 0;
+}
+
+figure.demo-frame .commit-graph__hash {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+}
+
+figure.demo-frame .commit-graph__message {
+  font-size: var(--text-sm);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+figure.demo-frame .commit-graph__commit .demo-chip {
+  font-size: var(--text-xs);
+}
+
+figure.demo-frame .commit-graph__parent {
+  margin-left: calc(var(--space-2) + 2px);
+  padding: var(--space-1) 0 var(--space-1) var(--space-3);
+  border-left: 2px solid var(--color-border-strong);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+figure.demo-frame .commit-graph__detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+figure.demo-frame .commit-graph__panel .demo-panel__title {
+  font-family: var(--font-mono);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+figure.demo-frame .commit-graph__files,
+figure.demo-frame .commit-graph__changes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+}
+
+figure.demo-frame .commit-graph__changes {
+  gap: var(--space-2);
+}
+
+figure.demo-frame .commit-graph__file,
+figure.demo-frame .commit-graph__change-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+}
+
+figure.demo-frame .commit-graph__change-name {
+  margin-bottom: var(--space-1);
+}
+
+figure.demo-frame .commit-graph__file .demo-chip,
+figure.demo-frame .commit-graph__change-name .demo-chip {
+  font-size: var(--text-xs);
+}
+
+figure.demo-frame .commit-graph__same {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+figure.demo-frame .commit-graph__diff {
+  margin: 0;
+  padding: var(--space-1) 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-code-bg);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.55;
+}
+
+figure.demo-frame .commit-graph__diff-line {
+  display: block;
+  min-height: 1.55em;
+  padding: 0 var(--space-2) 0 calc(var(--space-2) + 2ch + var(--diff-indent, 0ch) + 2ch);
+  border-left: 3px solid transparent;
+  text-indent: -2ch;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+figure.demo-frame .commit-graph__diff-line.is-add {
+  border-left-color: var(--color-success);
+  background: var(--diff-inserted);
+}
+
+figure.demo-frame .commit-graph__diff-line.is-del {
+  border-left-color: var(--color-danger);
+  background: var(--diff-deleted);
+}
+
+figure.demo-frame .commit-graph__sign {
+  display: inline-block;
+  width: 2ch;
+  margin-left: calc(-2ch - var(--diff-indent, 0ch));
+  margin-right: var(--diff-indent, 0ch);
+  text-indent: 0;
+}

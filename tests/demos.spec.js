@@ -2,8 +2,9 @@
 // component: it mounts on the fixture page, never plays on its own, steps from the first stage to
 // the last from the keyboard, opens on the last stage under reduced motion with Back, Step, and
 // Reset still working, fits a 320 pixel column, and passes axe in light and dark with motion
-// allowed and reduced. The last test mounts explainers on a step page from compiled placeholders
-// served in place of the step's own HTML, so it depends on no step's real text.
+// allowed and reduced; the prop sets in VARIANTS are stepped through at 320 pixels too. The last
+// test mounts explainers on a step page from compiled placeholders served in place of the step's
+// own HTML, so it depends on no step's real text.
 
 /* global document, requestAnimationFrame */
 
@@ -63,10 +64,10 @@ async function pressControl(frame, name) {
   await button.press("Enter");
 }
 
-test("the registry lists every Phase 6 explainer once", () => {
+test("the registry lists every explainer once", () => {
   const ids = registry.map((entry) => entry.id);
   expect(new Set(ids).size).toBe(ids.length);
-  expect(ids.length).toBe(68);
+  expect(ids.length).toBe(77);
   for (const entry of registry) {
     expect(entry.title, entry.id).toBeTruthy();
     expect(entry.description, entry.id).toMatch(/[.!?]$/);
@@ -149,6 +150,76 @@ for (const { id, title } of built) {
       }
     });
   });
+}
+
+// Props that change what an explainer draws, beyond its defaults: each set is stepped through
+// at 320 pixels from the keyboard and checked with axe in light and dark at its last stage.
+const VARIANTS = {
+  "three-trees": [{ file: "styles.css" }],
+  "commit-graph": [
+    {
+      commits: [
+        { hash: "ae50518", message: "first commit", files: ["README.md"] },
+        {
+          hash: "7e727e1",
+          message: "Add design, kickoff, and Phase 1 contracts documents",
+          files: ["docs/CONTRACTS.md", "docs/DESIGN.md", "docs/KICKOFF.md"],
+        },
+        { hash: "14f5551", message: "Pin edit block semantics", files: ["docs/CONTRACTS.md"] },
+      ],
+    },
+  ],
+  "branch-and-merge": [
+    {
+      mainMovesAfterBranch: true,
+      branch: { name: "cart", commits: ["Add the cart", "Show the cart total"] },
+    },
+  ],
+  "remote-sync": [{ scenario: "pull" }, { scenario: "rejected" }],
+  "static-deploy": [
+    { repo: "study-plan-react", route: "/topics/2", notFoundPage: true },
+    {
+      repo: "study-plan-react",
+      route: "/topics/2",
+      notFoundPage: true,
+      base: "/study-plan-react/",
+    },
+    { repo: "cs300-practice", route: "/", base: "/" },
+  ],
+  "ci-pipeline": [{ failAt: 1 }, { stages: ["lint", "test", "build"], failAt: 0 }],
+};
+
+for (const [id, variants] of Object.entries(VARIANTS)) {
+  const entry = built.find((item) => item.id === id);
+  for (const props of variants) {
+    test(`${id} explainer with ${JSON.stringify(props)} fits 320 pixels and passes axe`, async ({
+      page,
+    }) => {
+      test.skip(!entry, `${id} is not built yet`);
+      await page.setViewportSize({ width: 375, height: 812 });
+      await page.emulateMedia({ reducedMotion: "no-preference" });
+      await page.goto(harness(id, `&width=320&props=${encodeURIComponent(JSON.stringify(props))}`));
+      const frame = page.getByRole("figure", { name: entry.title });
+      await expect(frame).toBeVisible({ timeout: 15_000 });
+      const { total } = await stagePosition(frame);
+      for (let stage = 1; stage <= total; stage += 1) {
+        if (stage > 1) await pressControl(frame, "Step");
+        await expect(frame.locator(".demo-frame__position")).toHaveText(
+          `Stage ${stage} of ${total}`,
+        );
+        const overflow = await frame.evaluate((element) => {
+          const right = element.getBoundingClientRect().right + 0.5;
+          return [...element.querySelectorAll("*")]
+            .filter((child) => child.getBoundingClientRect().right > right)
+            .map((child) => child.outerHTML.slice(0, 80));
+        });
+        expect(overflow, `stage ${stage} overflows the column`).toEqual([]);
+      }
+      await expectNoViolations(page);
+      await page.emulateMedia({ colorScheme: "dark", reducedMotion: "no-preference" });
+      await expectNoViolations(page);
+    });
+  }
 }
 
 test.describe("the frame", () => {
