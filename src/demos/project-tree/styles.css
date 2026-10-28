@@ -1,0 +1,87 @@
+.project-tree {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+figure.demo-frame .project-tree .demo-caption {
+  margin: 0;
+}
+
+figure.demo-frame .project-tree__list {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-1);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-sunken);
+}
+
+figure.demo-frame .project-tree__entry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  width: 100%;
+  min-height: 2rem;
+  padding: var(--space-1) var(--space-2) var(--space-1)
+    calc(var(--space-2) + var(--depth, 0) * var(--space-4));
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+figure.demo-frame .project-tree__entry:hover {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+figure.demo-frame .project-tree__entry:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: -3px;
+}
+
+figure.demo-frame .project-tree__entry--folder {
+  color: var(--color-text);
+}
+
+figure.demo-frame .project-tree__entry.is-fresh {
+  color: var(--color-text);
+}
+
+figure.demo-frame .project-tree__entry.is-selected {
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+  font-weight: var(--weight-bold);
+  box-shadow: inset 3px 0 0 var(--color-accent);
+}
+
+figure.demo-frame .project-tree__name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+figure.demo-frame .project-tree__entry .demo-chip {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+}
+
+figure.demo-frame .project-tree__detail .demo-panel__title {
+  font-family: var(--font-mono);
+  letter-spacing: 0;
+  text-transform: none;
+  overflow-wrap: anywhere;
+}
+
+figure.demo-frame .project-tree__detail p {
+  font-size: var(--text-sm);
+}

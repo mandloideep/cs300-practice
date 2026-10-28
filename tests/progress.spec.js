@@ -5,6 +5,7 @@ import { readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
 import { strFromU8, unzipSync } from "fflate";
 import repository from "../package.json" with { type: "json" };
+import { fileNode } from "./support/files.js";
 
 const PROGRESS_KEY = "cs300-lab:progress";
 const STEP = { topic: "lists-and-keys", n: 2, title: "Stable keys", topicTitle: "Lists and keys" };
@@ -92,14 +93,14 @@ test.describe("workspace download on an edit step", () => {
 
   test("an edited file is downloaded in place of the starter", async ({ page }) => {
     await openStep(page, STEP);
-    const tab = page.getByRole("tab", { name: "src/App.jsx" });
-    await expect(tab).toHaveAttribute("aria-selected", "true");
+    const node = fileNode(page, "src/App.jsx");
+    await expect(node).toHaveAttribute("aria-selected", "true");
 
     const editor = page.locator(".cm-content");
     await editor.click();
     await page.keyboard.press("ControlOrMeta+a");
     await page.keyboard.insertText("const edited = true;\n");
-    await expect(tab).toContainText("•");
+    await expect(node).toContainText("•");
     await expect(page.locator(".pane--editor .pane__header .meta")).toHaveText("1 file edited");
     await expect
       .poll(async () => (await readProgress(page))?.files?.[`${STEP.topic}/${STEP.n}`])

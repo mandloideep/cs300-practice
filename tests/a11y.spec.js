@@ -59,6 +59,19 @@ const PAGES = [
     },
     scope: "dialog[open]",
   },
+  {
+    name: "edit step with the file tree and On your computer open",
+    url: "#/topic/fetching-and-request-states/1",
+    ready: async (page) => {
+      const disclosure = page.locator(".file-disclosure");
+      const tree = page.locator(".pane--editor").getByRole("tree", { name: "Files" });
+      await expect(disclosure.or(tree)).toBeVisible({ timeout: 15_000 });
+      if (await disclosure.isVisible()) await disclosure.click();
+      await tree.locator('[data-source="group"]').click();
+      await tree.locator('[data-path="package-lock.json"]').click();
+      return tree;
+    },
+  },
 ];
 
 const MODES = [
@@ -180,13 +193,14 @@ test.describe("keyboard-only operation of the step page", () => {
       ["button", "Tour"],
       ["a", "Topics"],
       ["a", "Components and props"],
-      ["tab", "src/App.jsx"],
+      ["button", "Files"],
+      ["treeitem", "App.jsx"],
       ["editor", "Code editor for src/App.jsx"],
     ]);
     expect(
       toEditor.filter((stop) => stop.kind === "button").map((stop) => stop.name),
-      "the header's Tour button is the only button before the editor",
-    ).toEqual(["Tour"]);
+      "the header's Tour button and the editor's Files toggle are the only buttons before the editor",
+    ).toEqual(["Tour", "Files"]);
 
     await page.keyboard.press("Tab");
     expect((await focused(page)).kind, "Tab inside the editor indents instead of leaving").toBe(
@@ -266,7 +280,8 @@ test.describe("keyboard-only operation of the step page", () => {
       ["button", "Reset"],
       ["input", ""],
       ["summary", "Read more"],
-      ["tab", "src/App.jsx"],
+      ["button", "Files"],
+      ["treeitem", "App.jsx"],
       ["editor", "Code editor for src/App.jsx"],
     ]);
   });
@@ -334,14 +349,14 @@ test.describe("keyboard-only operation of the step page", () => {
     ]) {
       await expect(page.getByRole("region", { name, exact: true })).toHaveCount(1);
     }
-    await expect(page.getByRole("tablist", { name: "Files" })).toHaveCount(1);
+    await expect(page.getByRole("tree", { name: "Files" })).toHaveCount(1);
     await expect(page.getByRole("toolbar", { name: "Workspace actions" })).toHaveCount(1);
     await expect(page.getByRole("navigation", { name: "Steps in this topic" })).toHaveCount(1);
     await expect(page.getByRole("group", { name: "API source" })).toHaveCount(1);
 
     const unnamed = await page.evaluate(() => {
       const controls = document.querySelectorAll(
-        "main :is(button, a[href], input, select, textarea, [role=button], [role=tab])",
+        "main :is(button, a[href], input, select, textarea, [role=button], [role=treeitem])",
       );
       return [...controls]
         .filter((element) => !element.closest("dialog") && !element.hasAttribute("aria-hidden"))

@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { MergeView } from "@codemirror/merge";
-import { readOnlyExtensions, tabId } from "./setup.js";
-import FileTabs from "./FileTabs.jsx";
+import { readOnlyExtensions } from "./setup.js";
+import FileTree from "./FileTree.jsx";
 
-// Side-by-side, read-only diff of the student's files (left) against the solution (right).
-export default function SolutionDiff({ files, solution, initialFile }) {
+// Side-by-side, read-only diff of the student's files (left) against the solution (right), with
+// the step's files as a tree that marks the ones that differ; the diff compares workspace files
+// only, so the tree leaves the download's files out.
+export default function SolutionDiff({ files, solution, initialFile, layout }) {
   const paths = Object.keys(solution);
   const changed = new Set(paths.filter((path) => files[path] !== solution[path]));
   const [activeFile, setActiveFile] = useState(() =>
@@ -27,33 +29,37 @@ export default function SolutionDiff({ files, solution, initialFile }) {
 
   return (
     <div className="solution-diff">
-      <FileTabs
-        files={paths}
+      <FileTree
+        layout={layout}
         activeFile={activeFile}
         onSelect={setActiveFile}
         modifiedFiles={changed}
-        panelId="solution-diff-panel"
+        showDownload={false}
         idPrefix="solution"
+        label="Files to compare"
+        markLabel="differs from the solution"
       />
-      <div className="solution-diff__labels" aria-hidden="true">
-        <span>Your file</span>
-        <span>Solution</span>
+      <div className="solution-diff__compare">
+        <div className="solution-diff__labels" aria-hidden="true">
+          <span>Your file</span>
+          <span>Solution</span>
+        </div>
+        <div
+          id="solution-diff-panel"
+          role="group"
+          aria-label={`${activeFile}: your file and the solution`}
+          aria-describedby="solution-diff-summary"
+          className="solution-diff__panel"
+          ref={hostRef}
+        />
+        <p id="solution-diff-summary" className="meta">
+          {changed.size === 0
+            ? "Your files already match the solution."
+            : changed.has(activeFile)
+              ? `${activeFile} differs from the solution. Your version is on the left, the solution on the right.`
+              : `${activeFile} matches the solution.`}
+        </p>
       </div>
-      <div
-        id="solution-diff-panel"
-        role="tabpanel"
-        aria-labelledby={`solution-tab-${tabId(activeFile)}`}
-        aria-describedby="solution-diff-summary"
-        className="solution-diff__panel"
-        ref={hostRef}
-      />
-      <p id="solution-diff-summary" className="meta">
-        {changed.size === 0
-          ? "Your files already match the solution."
-          : changed.has(activeFile)
-            ? `${activeFile} differs from the solution. Your version is on the left, the solution on the right.`
-            : `${activeFile} matches the solution.`}
-      </p>
     </div>
   );
 }

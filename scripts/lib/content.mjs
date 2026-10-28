@@ -363,6 +363,23 @@ function loadStep(topicDir, dirName, index, context, problems) {
 
   const local = readTree(path.join(stepDir, "local"));
 
+  const fileNotes = {};
+  if (front.files !== undefined) {
+    const files = front.files;
+    if (front.mode !== "edit") problems.add(stepFile, "files belongs only on an edit step");
+    else if (!files || typeof files !== "object" || Array.isArray(files))
+      problems.add(stepFile, "files must map workspace paths to one sentence each");
+    else {
+      for (const [file, note] of Object.entries(files)) {
+        if (workspace && !(file in workspace))
+          problems.add(stepFile, `files names ${file}, which is not a workspace file`);
+        else if (typeof note !== "string" || note.trim() === "")
+          problems.add(stepFile, `files gives ${file} no sentence; write one non-empty sentence`);
+        else fileNotes[file] = note.trim();
+      }
+    }
+  }
+
   return {
     n,
     slug,
@@ -392,6 +409,7 @@ function loadStep(topicDir, dirName, index, context, problems) {
         explanation,
       })),
     links: compiledLinks(front.links),
+    fileNotes,
     edits: edits.map(({ file, action, anchor, code, lang }) => ({
       file,
       action,

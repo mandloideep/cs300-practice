@@ -29,8 +29,19 @@ export function LocalDownload({ topic, step, announce }) {
         Download this workspace
       </button>
       <p className="meta">
-        {name}.zip, {count} {count === 1 ? "file" : "files"}. Unzip it, then run{" "}
-        <code>npm install</code> and <code>npm run dev</code> in the folder.
+        {name}.zip, {count} {count === 1 ? "file" : "files"}.{" "}
+        {"package.json" in step.local ? (
+          <>
+            Unzip it, then run <code>npm install</code> and <code>npm run dev</code> in the folder.
+          </>
+        ) : "index.html" in step.local ? (
+          <>
+            Unzip it and open its <code>index.html</code> in your browser; there is nothing to
+            install.
+          </>
+        ) : (
+          "Unzip it; there is nothing to install."
+        )}
       </p>
     </div>
   );

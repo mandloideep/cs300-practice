@@ -16,7 +16,7 @@ An **edit** step has the explanation and, beside it, an editor with the code, th
 A **read** step, like this one, has the explanation only, and a **Mark this step as read** button at the end.
 A **local** step happens on your own computer: it explains what to type in your terminal and offers a download of the project to run there, and it ends with **I did this on my computer**.
 
-The line above each step's title says where you are, such as **Step 1 of 6**.
+The line above each step's title says where you are, such as **Step 1 of 7**.
 At the bottom of every step page, the step navigation links to the previous and the next step and lists every step in the topic, each marked once you complete it.
 
 ## The panes of an edit step
@@ -26,7 +26,7 @@ On a wide screen the explanation sits on the left and the work panes run down th
 | Pane | What it is for | When to look at it |
 | --- | --- | --- |
 | Explanation | What the step builds, the edits to type, and what you should see | First, and again after every run |
-| Editor | The step's files, one tab per file, with **Run** and the other buttons under it | Whenever an edit block names a file |
+| Editor | The step's files as a tree in their folders, the code of the selected one, and **Run** and the other buttons under it | Whenever an edit block names a file |
 | Result | The page your code draws, live: you can click and type in it | After every run |
 | Console | Everything your code printed with `console.log`, and every error in red | After every run, even when the page looks right |
 | Inspector | A picture of the page's parts: React components, their state, what re-rendered, or the elements of a plain page | When a step asks you to watch something change |

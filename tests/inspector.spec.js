@@ -5,6 +5,7 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { expect, test } from "@playwright/test";
 import { editSteps, openHarness, resultFrame, run, runStep, topicsDir } from "./support/harness.js";
+import { fileNode } from "./support/files.js";
 
 // A solution that imports react-router runs only once the Phase 3 runtime branch (PHASE3
 // milestone 1) adds public/runtime/wrap/react-router.js, which maps BrowserRouter onto a memory
@@ -402,7 +403,7 @@ test.describe("inspector pane on the step page", () => {
     const [, file, line] = /declared at (.+):(\d+)/.exec(label);
     await target.focus();
     await page.keyboard.press("Enter");
-    await expect(page.getByRole("tab", { name: file, selected: true })).toBeVisible();
+    await expect(fileNode(page, file)).toHaveAttribute("aria-selected", "true");
     await expect(page.locator(".cm-editor .cm-lineNumbers .cm-activeLineGutter")).toHaveText(line);
   });
 
@@ -464,7 +465,7 @@ test.describe("inspector pane on the step page", () => {
     await expect(timeline.getByRole("button").nth(1)).toHaveText(/from 0 to 1/);
 
     await timeline.getByRole("button").first().click();
-    await expect(page.getByRole("tab", { name: "src/App.jsx", selected: true })).toBeVisible();
+    await expect(fileNode(page, "src/App.jsx")).toHaveAttribute("aria-selected", "true");
     await expect(page.locator(".cm-editor .cm-lineNumbers .cm-activeLineGutter")).toHaveText("12");
   });
 });

@@ -3,6 +3,7 @@
 // selector on the real step page sending set-api to the running iframe.
 
 import { expect, test } from "@playwright/test";
+import { fileNode } from "./support/files.js";
 
 const HARNESS = "src/runner/harness/index.html";
 const FETCH_STEP = "lists-and-keys/05-fetch-products";
@@ -495,10 +496,7 @@ test.describe("stale and duplicate requests", () => {
       /^Response: fetch settled: GET \/products\?limit=8 ok 200 in \d+ ms, stale$/,
     );
     await timeline.locator(".flow-row--response .flow-row__button").click();
-    await expect(page.getByRole("tab", { name: "src/api.js" })).toHaveAttribute(
-      "aria-selected",
-      "true",
-    );
+    await expect(fileNode(page, "src/api.js")).toHaveAttribute("aria-selected", "true");
     await expect(page.locator(".cm-activeLine")).toContainText("await fetch(");
 
     await page.getByRole("button", { name: "Trace 2" }).click();

@@ -4,8 +4,11 @@ import { resolveApiBase, useRunSession } from "../runner/useRunSession.js";
 import {
   clearEditedFiles,
   getEditedFiles,
+  isFilesOpen,
   markStepComplete,
   saveEditedFiles,
+  setFilesOpen,
+  useProgress,
 } from "../progress/store.js";
 import InspectorPane from "../inspector/InspectorPane.jsx";
 import NetworkPane from "../network/NetworkPane.jsx";
@@ -15,6 +18,7 @@ import ResultPane from "./ResultPane.jsx";
 import ConsolePane from "./ConsolePane.jsx";
 import CheckPanel, { checkSummaryText, summarizeChecks } from "./CheckPanel.jsx";
 import { WorkspaceDownload } from "./StepActions.jsx";
+import { projectLayout } from "./workspaceProject.js";
 import { StepRunContext } from "./runContext.js";
 import Tour from "./Tour.jsx";
 
@@ -92,6 +96,13 @@ export default function EditStep({ topic, step, presets, announce, explanation }
   const { run, status, diagnostics, checkResults } = session;
   const readyRunId = session.ready ? session.runId : null;
   const runInfo = useMemo(() => ({ readyRunId }), [readyRunId]);
+
+  const filesOpen = isFilesOpen(useProgress());
+  const api = useMemo(
+    () => (step.api ? downloadApi(apiSource, presets) : null),
+    [step.api, apiSource, presets],
+  );
+  const layout = useMemo(() => projectLayout(step, files, api), [step, files, api]);
 
   const modifiedFiles = useMemo(
     () => new Set(Object.keys(files).filter((path) => files[path] !== starter[path])),
@@ -201,10 +212,21 @@ export default function EditStep({ topic, step, presets, announce, explanation }
                 ? "Starter files"
                 : `${modifiedFiles.size} ${modifiedFiles.size === 1 ? "file" : "files"} edited`}
             </span>
+            <button
+              type="button"
+              className="button button--small files-toggle"
+              aria-expanded={filesOpen}
+              aria-controls="editor-files"
+              onClick={() => setFilesOpen(!filesOpen)}
+            >
+              Files
+            </button>
           </div>
           <CodeEditor
             ref={editorRef}
             files={files}
+            layout={layout}
+            filesOpen={filesOpen}
             activeFile={activeFile}
             onActiveFileChange={setActiveFile}
             onChange={onChange}
@@ -259,7 +281,7 @@ export default function EditStep({ topic, step, presets, announce, explanation }
               topic={topic}
               step={step}
               files={files}
-              api={step.api ? downloadApi(apiSource, presets) : null}
+              api={api}
               announce={announce}
             />
           </div>
@@ -320,7 +342,12 @@ export default function EditStep({ topic, step, presets, announce, explanation }
         }
       >
         <Suspense fallback={<p className="meta">Loading the comparison…</p>}>
-          <SolutionDiff files={files} solution={step.solution} initialFile={activeFile} />
+          <SolutionDiff
+            files={files}
+            solution={step.solution}
+            initialFile={activeFile}
+            layout={layout}
+          />
         </Suspense>
       </Dialog>
     </div>

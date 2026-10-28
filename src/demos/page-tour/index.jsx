@@ -15,8 +15,8 @@ const PANES = [
   {
     key: "editor",
     name: "Editor",
-    sketch: ["App.jsx", "main.jsx"],
-    says: "The step's files, one tab each. Type the edit blocks here; your changes are kept in this browser. Run with the Run button or Ctrl+Enter.",
+    sketch: ["src/", "App.jsx", "On your computer"],
+    says: "The step's files as a tree in their folders, with a line that says what the selected file is for; On your computer at the end lists the files the downloaded project adds. Type the edit blocks here; your changes are kept in this browser. Run with the Run button or Ctrl+Enter.",
   },
   {
     key: "result",

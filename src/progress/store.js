@@ -4,7 +4,8 @@ import { useSyncExternalStore } from "react";
 // docs/CONTRACTS.md sections 5.1 and 7.7:
 //   { version: 2, completed: { "<topic>/<n>": ISO date }, files: { "<topic>/<n>": { path: source } },
 //     pathId, answers: { "<topic>/<n>/<question>": { pick, revealedAt } },
-//     preferences: { explanationsOpen }, tour: { stepPage, homeCard } }
+//     preferences: { explanationsOpen, filesOpen? }, tour: { stepPage, homeCard } }
+// An absent preferences.filesOpen means the file tree is open (section 8.2).
 
 export const PROGRESS_KEY = "cs300-lab:progress";
 export const PROGRESS_VERSION = 2;
@@ -72,7 +73,10 @@ function normalize(value) {
     files,
     pathId: typeof value.pathId === "string" ? value.pathId : null,
     answers,
-    preferences: { explanationsOpen: preferences.explanationsOpen === true },
+    preferences: {
+      explanationsOpen: preferences.explanationsOpen === true,
+      ...(typeof preferences.filesOpen === "boolean" ? { filesOpen: preferences.filesOpen } : {}),
+    },
     tour: {
       stepPage: typeof tour.stepPage === "string" ? tour.stepPage : null,
       homeCard: typeof tour.homeCard === "string" ? tour.homeCard : null,
@@ -208,6 +212,14 @@ export function quizScore(progress, topic) {
 
 export function setExplanationsOpen(open) {
   commit({ ...snapshot, preferences: { ...snapshot.preferences, explanationsOpen: open } });
+}
+
+export function isFilesOpen(progress) {
+  return progress.preferences.filesOpen !== false;
+}
+
+export function setFilesOpen(open) {
+  commit({ ...snapshot, preferences: { ...snapshot.preferences, filesOpen: open } });
 }
 
 // Stores today's date under `field` of the tour record: "stepPage" once the step-page tour is
