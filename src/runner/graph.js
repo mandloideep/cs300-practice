@@ -138,7 +138,7 @@ export function createModuleGraph(files) {
           path,
           code,
           entry.start,
-          `Cannot import "${specifier}". The lab provides these packages: ${BARE_LIST}.`,
+          `Cannot import "${specifier}". CS300 Practice provides these packages: ${BARE_LIST}.`,
         );
         ok = false;
         continue;

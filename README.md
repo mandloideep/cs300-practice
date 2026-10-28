@@ -1,6 +1,6 @@
 # cs300-practice
 
-CS300 Lab is a static, client-side learning site for CS300 at Northeastern Illinois University.
+CS300 Practice is a static, client-side learning site for CS300 at Northeastern Illinois University.
 Students read a short explanation, edit code in the browser, run it, see the rendered result and the console, and check their work against stated expectations.
 Content is organized by topic, with a semester path layered on top, so topics are reused across semesters.
 
@@ -339,7 +339,7 @@ The step page lists the topic's links and then the step's under the step title, 
 ## Adding an explainer
 
 An explainer is a small React component that shows one idea moving inside a step's explanation.
-[docs/EXPLAINERS.md](docs/EXPLAINERS.md) lists every explainer the lab plans, and a new one goes there first.
+[docs/EXPLAINERS.md](docs/EXPLAINERS.md) lists every explainer the site plans, and a new one goes there first.
 Every id in that file also has an entry in `src/demos/registry.json` with its title and a one-sentence description:
 
 ```json
@@ -438,7 +438,7 @@ npm run export:d2l -- fall-2026
 
 For each unit, `dist-d2l/<path-id>/<unit-id>.html` is a complete page in the CS300 Brightspace template, ready to upload to Content as an HTML file.
 `dist-d2l/<path-id>/<unit-id>.fragment.html` holds only the page content, for pasting into an existing D2L page that already uses the template.
-Each page has the unit intro, a link to the unit in the lab, the required topics with links to each topic, the optional topics, and the notes about work on your own computer.
+Each page has the unit intro, a link to the unit on CS300 Practice, the required topics with links to each topic, the optional topics, and the notes about work on your own computer.
 Links point at `https://mandloideep.github.io/cs300-practice/`.
 The template is copied into `scripts/export-d2l.mjs` from the Fall course repository's D2L build kit; update the copy there if the build kit's template changes.
 `dist-d2l/` is generated and not committed.

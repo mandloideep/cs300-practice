@@ -1,4 +1,6 @@
-# CS300 Lab: a client-side learning site for the whole course
+# CS300 Practice: a client-side learning site for the whole course
+
+The site was named CS300 Lab until Phase 7; the course reserves "lab" for its graded AI Labs.
 
 Design plan for the public repository `mandloideep/cs300-practice`, named `cs300-react-lab` until Phase 7, prepared October 26, 2026 and updated the same day with the API and network inspector requirements.
 The repository exists, is empty, and is checked out at `~/Code/work/neiu/teaching/cs300/cs300-react-lab`.

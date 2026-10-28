@@ -278,7 +278,7 @@ test.describe("export and import", () => {
       buffer: Buffer.from(JSON.stringify({ version: 3, completed: {}, files: {} })),
     });
     await expect(transfer.getByRole("status")).toHaveText(
-      "This file was exported by a newer version of the lab.",
+      "This file was exported by a newer version of CS300 Practice.",
     );
     await expect(page.getByRole("dialog")).toHaveCount(0);
 
@@ -288,7 +288,7 @@ test.describe("export and import", () => {
       buffer: Buffer.from(JSON.stringify({ hello: "world" })),
     });
     await expect(transfer.getByRole("status")).toHaveText(
-      "That file is not a CS300 Lab progress export.",
+      "That file is not a CS300 Practice progress export.",
     );
 
     await input.setInputFiles({

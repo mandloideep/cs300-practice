@@ -293,6 +293,16 @@ main:focus-visible {
     font-size: var(--text-xl);
   }
 
+  /* Keeps the brand and the three nav pills of a step page on one row on a 360 pixel phone. */
+  .site-header__inner {
+    column-gap: var(--space-2);
+  }
+
+  .site-nav a,
+  .site-nav .site-nav__button {
+    padding-inline: var(--space-2);
+  }
+
   .site-main {
     padding: var(--space-5) var(--space-4) var(--space-7);
   }

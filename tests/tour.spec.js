@@ -138,7 +138,7 @@ test.describe("the home-page card", () => {
   test("links to Using the lab until it is hidden", async ({ page }) => {
     await serveWelcomeTopic(page);
     await page.goto("#/");
-    const card = page.getByRole("region", { name: "New to the lab?" });
+    const card = page.getByRole("region", { name: "New to CS300 Practice?" });
     await expect(card).toBeVisible();
     await expect(card.getByRole("link", { name: "Start Using the lab" })).toHaveAttribute(
       "href",
@@ -152,7 +152,7 @@ test.describe("the home-page card", () => {
     await expect(page.locator("#main-content")).toBeFocused();
     expect(typeof (await readProgress(page)).tour.homeCard).toBe("string");
     await page.reload();
-    await expect(page.getByRole("heading", { name: "CS300 Lab" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "CS300 Practice", exact: true })).toBeVisible();
     await expect(card).toHaveCount(0);
   });
 
@@ -173,9 +173,9 @@ test.describe("the home-page card", () => {
       );
     }, PROGRESS_KEY);
     await page.goto("#/");
-    await expect(page.getByRole("heading", { name: "CS300 Lab" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "CS300 Practice", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "All topics" })).toBeVisible();
-    await expect(page.getByRole("region", { name: "New to the lab?" })).toHaveCount(0);
+    await expect(page.getByRole("region", { name: "New to CS300 Practice?" })).toHaveCount(0);
   });
 
   test("is absent while the build has no Using the lab topic", async ({ page }) => {
@@ -187,6 +187,6 @@ test.describe("the home-page card", () => {
     });
     await page.goto("#/");
     await expect(page.getByRole("heading", { name: "All topics" })).toBeVisible();
-    await expect(page.getByRole("region", { name: "New to the lab?" })).toHaveCount(0);
+    await expect(page.getByRole("region", { name: "New to CS300 Practice?" })).toHaveCount(0);
   });
 });

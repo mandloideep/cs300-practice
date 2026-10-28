@@ -233,7 +233,7 @@ function installInspector() {
     } catch (error) {
       lab.originalConsole.warn.call(
         console,
-        "The lab inspector could not read this commit.",
+        "The CS300 Practice inspector could not read this commit.",
         error,
       );
     }

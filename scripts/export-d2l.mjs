@@ -400,7 +400,7 @@ export function renderUnit(path, unit, topics) {
     `      <h1>${escapeHtml(unit.title)}</h1>`,
     unit.intro ? `      <p>${escapeHtml(unit.intro)}</p>` : null,
     `      <div class="notice cs300-download">`,
-    `        <p><a href="${unitUrl}">Open ${escapeHtml(unit.title)} in the CS300 Lab</a></p>`,
+    `        <p><a href="${unitUrl}">Open ${escapeHtml(unit.title)} in CS300 Practice</a></p>`,
     `      </div>`,
   ];
   if (required.length > 0)
@@ -430,14 +430,14 @@ export function exportPath(index, pathId, readTopic) {
       `name a path id, for example npm run export:d2l -- ${paths[0]?.id ?? "fall-2026"}. ${known}`,
     );
   }
-  const labPath = paths.find((candidate) => candidate.id === pathId);
-  if (!labPath) {
+  const semesterPath = paths.find((candidate) => candidate.id === pathId);
+  if (!semesterPath) {
     throw new ExportError(
       `no path "${pathId}". ${known} An inactive path is compiled only by npm run build:content -- --all.`,
     );
   }
 
-  const units = (labPath.units ?? []).filter((unit) => !unit.closed);
+  const units = (semesterPath.units ?? []).filter((unit) => !unit.closed);
   const topics = new Map();
   for (const unit of units) {
     for (const entry of unit.topics ?? []) {
@@ -451,13 +451,13 @@ export function exportPath(index, pathId, readTopic) {
   }
 
   const pages = units.map((unit) => {
-    const content = renderUnit(labPath, unit, topics);
-    const page = TEMPLATE.replace("{{PAGE_TITLE}}", escapeHtml(`${unit.title} | CS300 Lab`))
+    const content = renderUnit(semesterPath, unit, topics);
+    const page = TEMPLATE.replace("{{PAGE_TITLE}}", escapeHtml(`${unit.title} | CS300 Practice`))
       .replace("{{PAGE_CONTENT}}", () => content)
-      .replace("{{FOOTER}}", escapeHtml(`CS300 ${labPath.title}`));
+      .replace("{{FOOTER}}", escapeHtml(`CS300 ${semesterPath.title}`));
     return { unit, page, fragment: content.replace(/^ {6}/gm, "") + "\n" };
   });
-  return { pages, closed: (labPath.units ?? []).filter((unit) => unit.closed) };
+  return { pages, closed: (semesterPath.units ?? []).filter((unit) => unit.closed) };
 }
 
 function readCompiled(file) {

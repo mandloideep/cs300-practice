@@ -24,7 +24,7 @@ export default function Home() {
     <>
       <PageTitle />
       <div className="page-intro">
-        <h1>CS300 Lab</h1>
+        <h1>CS300 Practice</h1>
         <p>
           Read a short explanation, edit the code, run it, and watch what React does. Everything
           runs in your browser.
@@ -44,7 +44,7 @@ export default function Home() {
 export const WELCOME_TOPIC = "using-the-lab";
 
 // The card for new visitors (docs/CONTRACTS.md section 7.6): it points at the topic that teaches
-// the lab until every step of it is complete or the student hides the card.
+// the site until every step of it is complete or the student hides the card.
 function WelcomeCard({ index }) {
   const progress = useProgress();
   const topic = index.topics?.find((candidate) => candidate.id === WELCOME_TOPIC);
@@ -57,7 +57,7 @@ function WelcomeCard({ index }) {
 
   return (
     <section className="card welcome-card" aria-labelledby="welcome-heading">
-      <h2 id="welcome-heading">New to the lab?</h2>
+      <h2 id="welcome-heading">New to CS300 Practice?</h2>
       <p>
         Start with {topic.title}. In about {topic.minutes} minutes it walks you through a step page,
         from your first edit to a passing check.
@@ -158,7 +158,7 @@ function ProgressTransfer() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `cs300-lab-progress-${new Date().toISOString().slice(0, 10)}.json`;
+    link.download = `cs300-practice-progress-${new Date().toISOString().slice(0, 10)}.json`;
     document.body.append(link);
     link.click();
     link.remove();
