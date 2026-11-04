@@ -51,7 +51,7 @@ To see the stored string, open your browser's developer tools, choose the Applic
 ## Read more
 
 Everything a shopper saves lives in state, and state lives exactly as long as the page.
-In Week 6 we kept data across page loads with `localStorage`, which stores strings under a key in this browser, for this site, until something removes them.
+In Week 7 we kept data across page loads with `localStorage`, which stores strings under a key in this browser, for this site, until something removes them.
 
 `localStorage` holds strings only, which is why the effect stringifies the array, and the dependency array means the write happens after every change to `savedIds` and never otherwise.
 The effect also runs after the first render, which writes `[]` on load; that is harmless, and the next step makes it correct.

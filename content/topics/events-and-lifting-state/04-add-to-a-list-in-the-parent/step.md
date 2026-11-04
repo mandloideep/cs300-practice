@@ -89,7 +89,7 @@ Read the flow view.
 
 ## Read more
 
-`event.preventDefault()` matters because reloading the page is what a submitted form does by default; the event object is the same one the DOM gave us in Week 5.
+`event.preventDefault()` matters because reloading the page is what a submitted form does by default; the event object is the same one the DOM gave us in Week 6.
 `event.target` is the form, which is why `form.elements` can reach each field by its `name`.
 
 We never push into `items`: React compares the new value with the old one to decide whether anything changed, and a pushed-into array is the same array, so React would see no change and skip the render.

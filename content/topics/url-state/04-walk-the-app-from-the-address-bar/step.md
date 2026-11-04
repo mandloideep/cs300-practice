@@ -54,7 +54,7 @@ Every one of those appeared in these three topics as a step's "if it breaks", an
 
 ### Record it
 
-For Assignment 6 and the Capstone, keep a short record: the address, what you expected, what happened, and a screenshot or the Network row for anything that surprised you.
+For Assignment 5 and the Capstone, keep a short record: the address, what you expected, what happened, and a screenshot or the Network row for anything that surprised you.
 That record is the evidence the course asks for, and it is what you will wish you had when a classmate opens your link on their phone.
 
 **If it breaks:** If a row fails in Vite but not on this site, the difference is almost always the host: check that the dev server is running and that the address starts with its port, and read the deployment topic's note on the fallback rule before deploying.

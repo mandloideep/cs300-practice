@@ -51,7 +51,7 @@ The `stored ? ... : []` fallback in the initializer is what keeps a first visit,
 `JSON.parse` undoes the `JSON.stringify` of the last step, so the array comes back as an array of numbers, the same shape the effect wrote.
 The write effect does not change; it still runs after the first render and writes back what was just read, which is now the right value.
 
-This pair, a lazy initial state that reads and an effect that writes, is the whole of persistence, and it is the pattern every Assignment 4 option uses.
+This pair, a lazy initial state that reads and an effect that writes, is the whole of persistence, and it is the pattern to use when your Capstone should remember data.
 
 **If it breaks:** If the console says `Cannot read properties of null (reading 'length')`, the initializer returns `null` when nothing is stored; keep the `stored ? ... : []` fallback.
 If the products come back unmarked after a reload, the function is missing its `return`, or `useState` is called with the result of the function instead of the function itself.

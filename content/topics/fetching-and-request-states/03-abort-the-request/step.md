@@ -83,7 +83,7 @@ When the category changes, React runs the previous cleanup, and that run's contr
 The flag from the last step ignores an answer.
 The request still runs to the end: the browser keeps the connection open, the server does the work, and the bytes arrive only to be thrown away.
 On a phone with a slow connection, or a server that charges per request, that waste matters.
-In Week 9 we met the tool that stops the work: `AbortController`.
+The browser has a tool that stops the work: `AbortController`.
 When `abort()` makes `fetch` reject, the rejection is an `AbortError`, and the browser drops the connection.
 
 ### The options object and one controller per run

@@ -20,7 +20,7 @@ When this step is done and you submit `Kiwi` at `2.49`, what happens on the page
 ```
 
 The browser submitted the form the way it did before JavaScript existed, by loading a new page, and the state went away with the old one.
-A React form needs a submit handler for the same reason the Week 5 form did: to stop that navigation and do the work itself.
+A React form needs a submit handler for the same reason the Week 6 form did: to stop that navigation and do the work itself.
 
 Write the handler under `handleChange`.
 The block starts with `handleChange`, which is already there, so you type the new function below it.
@@ -60,7 +60,7 @@ Read the flow view: the submit event in `AddProductForm`, the `onAdd` call that 
 ## Read more
 
 Three things happen in `handleSubmit`, in order.
-`event.preventDefault()` stops the page from reloading, exactly as in Week 5 and in the last topic.
+`event.preventDefault()` stops the page from reloading, exactly as in Week 6 and in the last topic.
 The product is built from state: there is no `form.elements`, no `querySelector`, and no reading the DOM, because the values were in `fields` all along; `trim` drops stray spaces and `Number` turns the price text into a number.
 `onAdd` is the callback prop from [Events and lifting state](#/topic/events-and-lifting-state), so the product travels up to `App`, and then `setFields` puts the initial object back, which empties every field, because the inputs show whatever the state holds.
 There is no `form.reset()` to call; resetting the state is resetting the form.

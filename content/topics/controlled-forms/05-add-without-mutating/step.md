@@ -15,7 +15,7 @@ Watch the lead sentence and the list when you submit, then again after the fix.
 ```demo name="mutation-vs-copy"
 ```
 
-Replace the log in `handleAdd` with the way you would add to an array in Week 3.
+Replace the log in `handleAdd` with the way you would add to an array in Week 6.
 
 ```predict
 After you replace the log with `push` and `setItems(items)`, run, and add `Kiwi`, what does the page show?

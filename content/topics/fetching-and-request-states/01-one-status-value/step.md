@@ -80,7 +80,7 @@ Each line checks the status for one word, so at most one of them can be true.
 
 ### Four states, one at a time
 
-In Week 9 we drew the life of a request as four states: idle, loading, success, and error.
+In Weeks 7 and 8 we followed a request through loading, success, and error; here we name four states: idle, loading, success, and error.
 A request is in exactly one of them at a time.
 The code we write has to say the same thing, and the easiest way to get that wrong is to keep one boolean per state.
 

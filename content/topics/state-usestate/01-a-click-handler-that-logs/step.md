@@ -63,7 +63,7 @@ The console is empty until you click, and then each click logs one message namin
 
 ## Read more
 
-In Week 5 and Week 6 we wired a button with `querySelector` and `addEventListener("click", handler)`.
+In Weeks 6 and 7 we wired a button with `querySelector` and `addEventListener("click", handler)`.
 In React there is no `querySelector`, because the component already describes the button, and there is no `addEventListener`, because React attaches the listener for us.
 The names are camelCase: `onClick`, `onChange`, `onSubmit`.
 
@@ -77,7 +77,7 @@ You may see each message twice: in development, React's Strict Mode calls every 
 Think of the fix as handing someone your phone number instead of calling them right now.
 
 When the handler needs an argument, the arrow function form `onClick={() => handleDelete(item.id)}` defines a new function that calls yours later, which is still passing a function rather than calling one.
-React also passes an event object to every handler, as the DOM did in Week 5; the next topic uses it to stop a form from reloading the page.
+React also passes an event object to every handler, as the DOM did in Week 6; the next topic uses it to stop a form from reloading the page.
 
 **If it breaks:** If messages appear before any click, look for `handleAdd()` with parentheses inside the `onClick` braces.
 If clicking logs nothing and the console is empty, the button has no `onClick`, or the attribute is written in lowercase as `onclick`, which React does not recognize.

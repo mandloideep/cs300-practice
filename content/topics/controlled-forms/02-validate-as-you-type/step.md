@@ -49,7 +49,7 @@ The tree still shows one state value, because nothing new was stored; the messag
 
 ## Read more
 
-In Week 5 we validated a form when it was submitted, by reading each field and checking it.
+In Week 6 we validated a form when it was submitted, by reading each field and checking it.
 A controlled field lets us check it on every keystroke instead.
 
 When `title` changes, the component re-renders, the `titleTooShort` line runs again, and the rule is computed fresh.

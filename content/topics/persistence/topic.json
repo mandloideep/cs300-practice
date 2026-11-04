@@ -5,8 +5,8 @@
   "summary": "Keep state across page loads by writing it to localStorage in an effect and reading it back with a lazy initial state. You will version the stored shape so that a value saved by an older version of the page cannot crash the new one, and check that a saved list survives a reload.",
   "prerequisites": ["effects"],
   "minutes": 40,
-  "updated": "2026-10-27",
-  "changeNote": "Rewritten so each step opens with an explainer or a prediction, folds the background under Read more, and ends with a quiz.",
+  "updated": "2026-11-04",
+  "changeNote": "Corrected the Fall week reference and pointed the pattern at the Capstone instead of Assignment 4.",
   "links": [
     {
       "kind": "reading",

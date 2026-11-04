@@ -71,7 +71,7 @@ Type `Kiwi` in the Title field: the note reads `Adding Kiwi`, and the state in t
 
 ## Read more
 
-In Week 5 the browser owned what was in an input, and we read `input.value` whenever we needed it.
+In Week 6 the browser owned what was in an input, and we read `input.value` whenever we needed it.
 In React the component's **state** owns the value, and the input only displays it.
 
 The initial value is `""`, not `null` or nothing at all, because React warns when a controlled input starts without a string.

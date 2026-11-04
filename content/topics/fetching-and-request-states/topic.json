@@ -5,8 +5,8 @@
   "summary": "Keep a request's loading, success, and error states in one status value, fetch inside an effect that cleans up after itself, and watch the network pane expose a stale response and a duplicate request. You will add a retry button and then extract the whole pattern into a useFetch hook that the routing topics reuse.",
   "prerequisites": ["effects"],
   "minutes": 75,
-  "updated": "2026-10-27",
-  "changeNote": "Rewritten so each step opens with an explainer or a prediction, folds the background under Read more, and ends with a quiz.",
+  "updated": "2026-11-04",
+  "changeNote": "Corrected the references to the Fall weeks where we first followed request states.",
   "links": [
     {
       "kind": "reading",

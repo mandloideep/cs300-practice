@@ -4,7 +4,7 @@ mode: read
 ---
 
 Three lines made the saved list survive a reload: a lazy initial state that reads, an effect that writes, and a version number on the shape.
-Before you use the pattern in Assignment 4, here is where it fits and where it does not.
+Before you use the pattern in your Capstone, here is where it fits and where it does not.
 
 ```predict
 When does `useState(readSavedIds)` call `readSavedIds`?

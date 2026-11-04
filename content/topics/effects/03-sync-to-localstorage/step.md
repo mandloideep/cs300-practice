@@ -38,7 +38,7 @@ Nothing reads the value back yet, so a fresh run still starts from the six built
 
 ## Read more
 
-In Week 6 we kept data across page loads with `localStorage`, which stores strings under a key in the browser, and `JSON.stringify` turned our arrays into strings.
+In Week 7 we kept data across page loads with `localStorage`, which stores strings under a key in the browser, and `JSON.stringify` turned our arrays into strings.
 Writing to it is a side effect, something that reaches outside the component, so it belongs in the effect and nowhere else.
 
 We write the whole array rather than one product, because `localStorage` holds one string per key, and replacing it is simpler and safer than editing it.
