@@ -15,8 +15,13 @@ No screen reader was used; a VoiceOver check is left for the instructor, as the 
 | Catalog | `#/topics` | axe; the skip link moves focus to the main region |
 | Path | `#/path/fall-2026` | axe |
 | Unit | `#/path/fall-2026/week-10` | axe |
+| Unit with optional topics only | `#/path/fall-2026/week-14` | axe |
+| Unit with three required topics | `#/path/fall-2026/week-15` | axe |
 | Topic with a local step | `#/topic/vite-project-anatomy` | axe |
 | Topic with a read step | `#/topic/react-mental-model/4` | axe |
+| Local step with a terminal session and a project tree | `#/topic/capstone-release-check/1` | axe |
+| Read step with code, predict, and quiz blocks | `#/topic/explaining-your-own-code/1` | axe |
+| Edit step with a routed workspace | `#/topic/accessibility-checks/2` | axe |
 | Edit step with the API selector and network pane | `#/topic/lists-and-keys/5` | axe; every pane is a named region; every control in `main` has a name |
 | Edit step with the solution dialog open | `#/topic/jsx-rules/1` | axe on the open dialog; the dialog traps focus, closes on Escape, and returns focus to Show solution |
 | Edit step, keyboard walk | `#/topic/lists-and-keys/2` | Tab through the whole page in order; Escape then Tab leaves the editor; Enter on Run runs the code |
@@ -73,6 +78,8 @@ The keyboard walk asserts this order of Tab stops on the step page, which is the
   A file from a newer version is refused with "This file was exported by a newer version of the lab."
 - The navigation focus reset skips the router's initial location, so a full page load keeps focus at the top and the skip link is the first Tab stop in development as well as in production.
 - Every progress indicator on the catalog, topic, and unit pages is a `progressbar` with a name, a value, and value text, and the checkmark glyph is hidden from assistive technology in favor of the word Complete.
+- A table in a step's explanation scrolls sideways at phone width, and axe reported it as a scrollable region a keyboard could not reach once the Week 15 pages joined the suite on November 10, 2026.
+  `scripts/lib/render.mjs` now renders every step table with `tabindex="0"`, as Shiki already does for code blocks, and `src/styles/content.css` gives it the same focus ring.
 
 ## Contrast
 

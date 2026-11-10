@@ -32,6 +32,16 @@ const PAGES = [
     ready: (page) => page.getByRole("region", { name: "Required topics" }),
   },
   {
+    name: "unit with optional topics only",
+    url: "#/path/fall-2026/week-14",
+    ready: (page) => page.getByRole("region", { name: "Optional topics" }),
+  },
+  {
+    name: "unit with three required topics",
+    url: "#/path/fall-2026/week-15",
+    ready: (page) => page.getByRole("region", { name: "Required topics" }),
+  },
+  {
     name: "topic with a local step",
     url: "#/topic/vite-project-anatomy",
     ready: (page) => page.getByRole("button", { name: "I did this on my computer" }),
@@ -40,6 +50,21 @@ const PAGES = [
     name: "topic with a read step",
     url: "#/topic/react-mental-model/4",
     ready: (page) => page.getByRole("button", { name: "Mark this step as read" }),
+  },
+  {
+    name: "local step with a terminal session and a project tree",
+    url: "#/topic/capstone-release-check/1",
+    ready: (page) => page.getByRole("button", { name: "I did this on my computer" }),
+  },
+  {
+    name: "read step with code, predict, and quiz blocks",
+    url: "#/topic/explaining-your-own-code/1",
+    ready: (page) => page.getByRole("button", { name: "Mark this step as read" }),
+  },
+  {
+    name: "edit step with a routed workspace",
+    url: "#/topic/accessibility-checks/2",
+    ready: (page) => page.locator(".pane--result .status-pill").filter({ hasText: "Ready" }),
   },
   {
     name: "edit step with the API selector",
