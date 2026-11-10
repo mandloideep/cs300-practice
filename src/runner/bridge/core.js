@@ -119,6 +119,31 @@ if (boot.storagePrefix) {
   }
 }
 
+// A focus() call the student did not cause, from a page that focuses a field as it loads or a
+// check that follows a link to a page that focuses its heading, would make the browser scroll the
+// site to bring the result into view. Such a call still moves focus inside the result, but with
+// preventScroll; a pointer or key press of the student's own in the result lets focus scroll as it
+// would on a real page, until the result loses focus.
+let studentIsHere = false;
+for (const type of ["pointerdown", "keydown"]) {
+  window.addEventListener(
+    type,
+    (event) => {
+      if (event.isTrusted) studentIsHere = true;
+    },
+    true,
+  );
+}
+window.addEventListener("blur", () => {
+  studentIsHere = false;
+});
+for (const Type of [HTMLElement, SVGElement]) {
+  const focus = Type.prototype.focus;
+  Type.prototype.focus = function focusInResult(options) {
+    return focus.call(this, studentIsHere ? options : { ...options, preventScroll: true });
+  };
+}
+
 const LEVELS = ["log", "info", "warn", "error", "debug"];
 const MAX_ITEMS = 100;
 

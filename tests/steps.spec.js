@@ -362,3 +362,34 @@ test.describe("routing solutions in the iframe", () => {
       .toBe("?category=fragrances&q=coco");
   });
 });
+
+// The accessibility-checks steps from Step 3 on start from a workspace that moves focus to the
+// new page's heading after every route change, and their check follows links as soon as the run
+// settles. The bridge gives focus from code preventScroll until the student uses the result
+// (src/runner/bridge/core.js), so the focus lands inside the result without scrolling the page.
+test.describe("focus moved by code inside the result", () => {
+  test("accessibility-checks step 3: the heading takes focus and the step page does not scroll", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await openStep(page, stepById("accessibility-checks/03-fix-a-skipped-heading-level"));
+    await expect(page.locator(".check-summary")).toBeVisible({ timeout: CHECK_SUMMARY_TIMEOUT });
+    const frame = page.frameLocator(".result-frame");
+    await expect(frame.locator("main h1")).toBeFocused();
+    expect(await page.evaluate(() => globalThis.scrollY)).toBe(0);
+  });
+
+  test("accessibility-checks step 2 solution: a click in the result moves focus to the new heading", async ({
+    page,
+  }) => {
+    const step = stepById("accessibility-checks/02-move-focus-to-the-heading");
+    await openHarness(page);
+    const result = await runStep(page, step.id, "solution");
+    expect(result.diagnostics).toEqual([]);
+    const frame = resultFrame(page);
+    await frame.getByRole("link", { name: "Products", exact: true }).click();
+    await expect(frame.getByRole("heading", { level: 1, name: "Products" })).toBeFocused();
+    await frame.getByRole("searchbox", { name: "Search" }).fill("red");
+    await expect(frame.getByRole("searchbox", { name: "Search" })).toBeFocused();
+  });
+});
