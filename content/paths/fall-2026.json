@@ -205,19 +205,15 @@
       "id": "week-14",
       "title": "Capstone release check and deployment",
       "opens": "2026-11-23",
-      "intro": "Week 13 joined the shop's pages and requests and walked the whole app from the address bar. This week is a light one, with the Thanksgiving closure from Thursday, November 26, so both topics are optional, and each fits in one sitting. In Capstone release check you build a small app put together the way the Capstone starter is, preview the build, open every route from a typed address, make the loading, error, and empty states appear on purpose with the boundary data files, and run the tests from a clean install; along the way two bugs turn up that clicking through the app never shows. Deploy with GitHub Pages, from the Git and GitHub unit, puts a React project on the web with the same kind of workflow your Capstone starter carries; it is listed here again so that you can deploy your Capstone early and find a deep-link problem while there is still time to fix it. Do the release check first, then run it again on your own Capstone and keep the record for its verification cases.",
+      "intro": "Week 13 joined the shop's pages and requests and walked the whole app from the address bar. This week is a light one, with the Thanksgiving closure from Thursday, November 26, so the topic is optional and fits in one sitting. In Capstone release check you build a small app put together the way the Capstone starter is, preview the build, open every route from a typed address, make the loading, error, and empty states appear on purpose with the boundary data files, and run the tests from a clean install; along the way two bugs turn up that clicking through the app never shows. Then run the same check on your own Capstone, deploy it with the workflow its starter carries, and keep the record for its verification cases.",
       "topics": [
         {
           "id": "capstone-release-check",
           "required": false
-        },
-        {
-          "id": "deploy-with-github-pages",
-          "required": false
         }
       ],
       "localNotes": [
-        "Both topics run on your own computer, not in this site: the release check needs Node 24, a terminal, and Chrome's DevTools, and the deployment needs Git and a free GitHub account. Every release check step offers a download of the project as that step starts, so you can begin at any step."
+        "The release check runs on your own computer, not in this site: it needs Node 24, a terminal, and Chrome's DevTools. Every step offers a download of the project as that step starts, so you can begin at any step."
       ]
     },
     {
