@@ -17,7 +17,7 @@ const QUIZ = {
   question: "Which component owns the `reviewed` state after this step?",
   options: ["`ReviewPanel`", "`App`", "`Header`"],
   answer: 1,
-  explanation: "The state moves up to `App`, the closest parent of both children.",
+  explanation: "The state moves up to `App`, the closest parent of **both** children.",
 };
 
 const PREDICT = {
@@ -101,6 +101,7 @@ test.describe("a quiz on a read step", () => {
     await expect(quiz.getByRole("status")).toHaveText(
       "Not quite. The answer is App. The state moves up to App, the closest parent of both children.",
     );
+    await expect(quiz.getByRole("status").locator("strong")).toHaveText("both");
     await expect(quiz.locator(".is-answer")).toContainText("App");
     await expect(quiz.locator(".is-wrong")).toContainText("Header");
     await expect(quiz.getByRole("radio", { name: "App" })).toBeDisabled();

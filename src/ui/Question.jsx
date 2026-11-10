@@ -1,7 +1,8 @@
 import { Fragment, useEffect, useId, useState } from "react";
 import { answerKey, revealAnswer, setAnswerPick, useProgress } from "../progress/store.js";
 
-// Text with `code` spans, as content authors write options and explanations.
+// Text with `code` spans and **bold** words, as content authors write questions, options, and
+// explanations; bold marks a control by its name, as the step text does, and code is never bold.
 export function InlineCode({ text }) {
   return text
     .split(/(`[^`]+`)/)
@@ -9,7 +10,17 @@ export function InlineCode({ text }) {
       part.startsWith("`") && part.endsWith("`") && part.length > 1 ? (
         <code key={index}>{part.slice(1, -1)}</code>
       ) : (
-        <Fragment key={index}>{part}</Fragment>
+        <Fragment key={index}>
+          {part
+            .split(/(\*\*[^*]+\*\*)/)
+            .map((piece, inner) =>
+              /^\*\*[^*]+\*\*$/.test(piece) ? (
+                <strong key={inner}>{piece.slice(2, -2)}</strong>
+              ) : (
+                <Fragment key={inner}>{piece}</Fragment>
+              ),
+            )}
+        </Fragment>
       ),
     );
 }

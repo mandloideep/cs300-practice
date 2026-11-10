@@ -86,6 +86,9 @@ export async function createRenderer() {
   });
   const md = createMarkdown();
   md.core.ruler.push("read_more", foldReadMore);
+  // A table scrolls sideways in a narrow column, so it is a Tab stop, as a Shiki code block is,
+  // which lets a keyboard user scroll it with the arrow keys.
+  md.renderer.rules.table_open = () => '<table tabindex="0">\n';
 
   const highlight = (code, lang) =>
     highlighter.codeToHtml(code, { lang: lang || "text", themes: THEMES, defaultColor: false });

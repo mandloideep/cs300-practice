@@ -319,7 +319,7 @@ Which call adds three?
 ````
 
 Each block gets the id `predict-1`, `predict-2`, `quiz-1`, and so on in body order, which names its record in progress; give one a fixed name with `id="<slug>"` in the info string if it might move.
-Options and explanations may use inline code in backticks.
+Questions, options, and explanations may use inline code in backticks and `**bold**` for the name of a control, as the step text does.
 The validator names the line of a block with no answer, more than one answer, fewer than two or more than four options, or an explanation in a predict.
 
 A level-two heading whose text is exactly `Read more` starts the folded part of a step.

@@ -81,7 +81,8 @@
 
 .step-content a:focus-visible,
 .step-content summary:focus-visible,
-.step-content pre:focus-visible {
+.step-content pre:focus-visible,
+.step-content table:focus-visible {
   outline: var(--focus-ring);
   outline-offset: var(--focus-ring-offset);
 }
@@ -122,6 +123,15 @@
   border: 1px solid var(--color-border);
   text-align: left;
   vertical-align: top;
+}
+
+/* In a phone-width column a table scrolls sideways, so a name in code keeps its letters together
+   and widens its column instead of breaking at any letter. */
+@media (max-width: 600px) {
+  .step-content td > code,
+  .step-content th > code {
+    overflow-wrap: break-word;
+  }
 }
 
 .step-content th {
