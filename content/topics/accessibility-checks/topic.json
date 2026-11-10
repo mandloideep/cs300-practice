@@ -1,0 +1,39 @@
+{
+  "id": "accessibility-checks",
+  "title": "Accessibility checks",
+  "area": "react",
+  "summary": "Fix the four accessibility problems a routed React app most often ships with: a form control with no label, focus left behind after a route change, a skipped heading level, and links whose text means nothing on its own. You will then walk a page by keyboard and run an automated check, the evidence the Capstone asks for.",
+  "prerequisites": [
+    "routing"
+  ],
+  "minutes": 45,
+  "updated": "2026-11-10",
+  "changeNote": "First version.",
+  "links": [
+    {
+      "kind": "reading",
+      "title": "MDN: Accessibility",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Accessibility"
+    },
+    {
+      "kind": "reading",
+      "title": "MDN: HTML, a good basis for accessibility",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Accessibility/HTML"
+    },
+    {
+      "kind": "reference",
+      "title": "W3C WAI: Headings tutorial",
+      "url": "https://www.w3.org/WAI/tutorials/page-structure/headings/"
+    },
+    {
+      "kind": "reference",
+      "title": "W3C WAI: Labeling controls",
+      "url": "https://www.w3.org/WAI/tutorials/forms/labels/"
+    },
+    {
+      "kind": "reference",
+      "title": "Chrome DevTools: Lighthouse accessibility audit",
+      "url": "https://developer.chrome.com/docs/lighthouse/accessibility/scoring"
+    }
+  ]
+}

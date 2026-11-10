@@ -1,0 +1,27 @@
+{
+  "id": "explaining-your-own-code",
+  "title": "Explaining your own code",
+  "area": "react",
+  "summary": "Practice the questions the Capstone defense asks, on a small recipe app you have not seen before: where each piece of state lives, what each effect depends on, which route renders which component, and which tests a requested change affects. You will finish with a short script for explaining your own app the same way.",
+  "prerequisites": ["url-state", "testing-react-components"],
+  "minutes": 30,
+  "updated": "2026-11-10",
+  "changeNote": "First version.",
+  "links": [
+    {
+      "kind": "reading",
+      "title": "react.dev: Choosing the state structure",
+      "url": "https://react.dev/learn/choosing-the-state-structure"
+    },
+    {
+      "kind": "reading",
+      "title": "react.dev: Preserving and resetting state",
+      "url": "https://react.dev/learn/preserving-and-resetting-state"
+    },
+    {
+      "kind": "reference",
+      "title": "react.dev: Lifecycle of reactive effects",
+      "url": "https://react.dev/learn/lifecycle-of-reactive-effects"
+    }
+  ]
+}

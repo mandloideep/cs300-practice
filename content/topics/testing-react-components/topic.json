@@ -1,0 +1,37 @@
+{
+  "id": "testing-react-components",
+  "title": "Testing React components",
+  "area": "tooling",
+  "summary": "Add Vitest and Testing Library to a React project, or confirm the Capstone starter has them, and write the three kinds of test the Capstone needs: a render test, a test that types and clicks like a user, and a test of a request that fails. You will see each test fail for the right reason before it passes, and learn which tests a change to the code affects.",
+  "prerequisites": ["route-data-and-custom-hooks"],
+  "minutes": 60,
+  "updated": "2026-11-10",
+  "changeNote": "First version.",
+  "links": [
+    {
+      "kind": "reading",
+      "title": "Vitest: Getting started",
+      "url": "https://vitest.dev/guide/"
+    },
+    {
+      "kind": "reading",
+      "title": "Testing Library: React Testing Library introduction",
+      "url": "https://testing-library.com/docs/react-testing-library/intro/"
+    },
+    {
+      "kind": "reference",
+      "title": "Testing Library: Which query should I use?",
+      "url": "https://testing-library.com/docs/queries/about#priority"
+    },
+    {
+      "kind": "reference",
+      "title": "Testing Library: user-event",
+      "url": "https://testing-library.com/docs/user-event/intro"
+    },
+    {
+      "kind": "reference",
+      "title": "Vitest: vi.stubGlobal",
+      "url": "https://vitest.dev/api/vi#vi-stubglobal"
+    }
+  ]
+}

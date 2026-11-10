@@ -1,0 +1,32 @@
+{
+  "id": "capstone-release-check",
+  "title": "Capstone release check",
+  "area": "tooling",
+  "summary": "Check a release candidate the way the Capstone asks: build it, preview the build, open every route from a typed address, make the loading, error, and empty states appear on purpose, and run the tests from a clean install. You will find and fix two bugs that only a release check catches and keep a written record of what you checked.",
+  "prerequisites": ["url-state"],
+  "minutes": 40,
+  "updated": "2026-11-10",
+  "changeNote": "First version.",
+  "links": [
+    {
+      "kind": "reading",
+      "title": "Vite: Building for production",
+      "url": "https://vite.dev/guide/build"
+    },
+    {
+      "kind": "reading",
+      "title": "Chrome DevTools: Throttle the network",
+      "url": "https://developer.chrome.com/docs/devtools/network#throttle"
+    },
+    {
+      "kind": "reference",
+      "title": "Vite: Previewing the build locally",
+      "url": "https://vite.dev/guide/static-deploy#testing-the-app-locally"
+    },
+    {
+      "kind": "reference",
+      "title": "React Router: useLocation",
+      "url": "https://reactrouter.com/api/hooks/useLocation"
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "title": "Essence Mascara Lash Princess",
+    "category": "beauty",
+    "price": 9.99,
+    "description": "A volumizing mascara for longer, fuller lashes."
+  },
+  {
+    "id": 2,
+    "title": "Eyeshadow Palette with Mirror",
+    "category": "beauty",
+    "price": 19.99,
+    "description": "Twelve shades in one palette, with a mirror in the lid."
+  },
+  {
+    "id": 3,
+    "title": "Powder Canister",
+    "category": "beauty",
+    "price": 14.99,
+    "description": "A light setting powder in a travel canister."
+  },
+  {
+    "id": 4,
+    "title": "Red Lipstick",
+    "category": "beauty",
+    "price": 12.99,
+    "description": "A classic red with a satin finish."
+  },
+  {
+    "id": 5,
+    "title": "Red Nail Polish",
+    "category": "beauty",
+    "price": 8.99,
+    "description": "A glossy red that dries in minutes."
+  },
+  {
+    "id": 6,
+    "title": "Calvin Klein CK One",
+    "category": "fragrances",
+    "price": 49.99,
+    "description": "A fresh, light fragrance for every day."
+  },
+  {
+    "id": 7,
+    "title": "Chanel Coco Noir Eau De",
+    "category": "fragrances",
+    "price": 129.99,
+    "description": "A deep, warm fragrance for the evening."
+  },
+  {
+    "id": 8,
+    "title": "Dior J'adore",
+    "category": "fragrances",
+    "price": 89.99,
+    "description": "A floral fragrance with notes of jasmine and rose."
+  }
+]

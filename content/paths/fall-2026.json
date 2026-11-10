@@ -200,6 +200,48 @@
       "localNotes": [
         "The integration walk in the last step is meant for your own browser: download the URL state workspace, run npm install and npm run dev, and type each address into the address bar, including a refresh on a product page."
       ]
+    },
+    {
+      "id": "week-14",
+      "title": "Capstone release check and deployment",
+      "opens": "2026-11-23",
+      "intro": "Week 13 joined the shop's pages and requests and walked the whole app from the address bar. This week is a light one, with the Thanksgiving closure from Thursday, November 26, so both topics are optional, and each fits in one sitting. In Capstone release check you build a small app put together the way the Capstone starter is, preview the build, open every route from a typed address, make the loading, error, and empty states appear on purpose with the boundary data files, and run the tests from a clean install; along the way two bugs turn up that clicking through the app never shows. Deploy with GitHub Pages, from the Git and GitHub unit, puts a React project on the web with the same kind of workflow your Capstone starter carries; it is listed here again so that you can deploy your Capstone early and find a deep-link problem while there is still time to fix it. Do the release check first, then run it again on your own Capstone and keep the record for its verification cases.",
+      "topics": [
+        {
+          "id": "capstone-release-check",
+          "required": false
+        },
+        {
+          "id": "deploy-with-github-pages",
+          "required": false
+        }
+      ],
+      "localNotes": [
+        "Both topics run on your own computer, not in this site: the release check needs Node 24, a terminal, and Chrome's DevTools, and the deployment needs Git and a free GitHub account. Every release check step offers a download of the project as that step starts, so you can begin at any step."
+      ]
+    },
+    {
+      "id": "week-15",
+      "title": "Testing, accessibility, and explaining your code",
+      "opens": "2026-11-30",
+      "intro": "Week 14 checked a release candidate by hand. This week turns those checks into evidence you can show in the Capstone defense. In Testing React components you add Vitest and Testing Library to a project, the same setup your Capstone starter already has, and write a render test, a test that types like a user, and a test of a request that fails, watching each one fail for the right reason before it passes. In Accessibility checks you fix, in the browser, the four problems a routed app most often ships with: a control with no label, focus left behind after a route change, a skipped heading level, and link text that means nothing on its own; then you walk a page by keyboard and run Lighthouse. In Explaining your own code you read a small recipe app you have not seen before and answer the questions the defense asks about it: where each piece of state lives, what each effect depends on, which route renders what, and which tests a change affects. Take the topics in that order; the last one ends with a rehearsal script for your own Capstone.",
+      "topics": [
+        {
+          "id": "testing-react-components",
+          "required": true
+        },
+        {
+          "id": "accessibility-checks",
+          "required": true
+        },
+        {
+          "id": "explaining-your-own-code",
+          "required": true
+        }
+      ],
+      "localNotes": [
+        "Testing React components runs on your own computer, because Vitest, jsdom, and Testing Library are installed with npm; each step shows the commands and the output to expect, and its download is the project as that step starts. Accessibility checks runs in the browser up to its last step, which uses Lighthouse in Chrome's DevTools on your own Capstone."
+      ]
     }
   ]
 }
