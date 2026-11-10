@@ -22,16 +22,16 @@ Each one takes its data from the fence body where that makes sense, so the same 
 | `page-tour` | The step page in miniature with each pane labeled; selecting a pane says what it is for and when to look at it | getting-started | 6 | in use |
 | `edit-run-loop` | The cycle of edit, Run, result, console, and checks as one loop the student advances a stage at a time | getting-started | 6 | in use |
 | `inspector-tour` | A three-component tree with boundaries, a re-render flash, and the state panel, driven by a Click button inside the explainer | getting-started, react-mental-model | 6 | in use |
-| `project-tree` | A project folder as a tree that grows a stage at a time from the fence body, after `npm create vite`, `npm install`, and `npm run build`, with each file's description when selected | getting-started/the-files-of-a-step, vite-project-anatomy/create-the-project, build-for-production, tooling-from-scratch/run-it-on-your-computer, modules-and-imports/one-file-per-concern, app-architecture/compare-with-the-react-version, git-basics/what-to-commit | 7 | in use |
+| `project-tree` | A project folder as a tree that grows a stage at a time from the fence body, after `npm create vite`, `npm install`, and `npm run build`, with each file's description when selected | getting-started/the-files-of-a-step, vite-project-anatomy/create-the-project, build-for-production, tooling-from-scratch/run-it-on-your-computer, modules-and-imports/one-file-per-concern, app-architecture/compare-with-the-react-version, git-basics/what-to-commit, capstone-release-check/build-and-preview | 7 | in use |
 
 ## HTML
 
 | Id | Shows | Serves | Phase | Status |
 | --- | --- | --- | --- | --- |
 | `nesting-and-repair` | Markup typed with tags out of order and the tree the browser repairs it into | html-structure/the-document-skeleton | 6 | in use |
-| `landmarks-map` | A page with header, nav, main, aside, and footer regions lit one at a time, with the list a screen reader reads | html-structure/landmarks | 6 | in use |
-| `label-for` | A label and an input; clicking the label focuses the input only when `for` and `id` match, which the student toggles | html-structure/a-form-with-labels | 6 | in use |
-| `alt-text` | An image that fails to load, with and without `alt`, and what a screen reader says in each case | html-structure/links-and-images | 6 | in use |
+| `landmarks-map` | A page with header, nav, main, aside, and footer regions lit one at a time, with the list a screen reader reads | html-structure/landmarks, accessibility-checks/fix-a-skipped-heading-level | 6 | in use |
+| `label-for` | A label and an input; clicking the label focuses the input only when `for` and `id` match, which the student toggles | html-structure/a-form-with-labels, accessibility-checks/name-every-control | 6 | in use |
+| `alt-text` | An image that fails to load, with and without `alt`, and what a screen reader says in each case | html-structure/links-and-images, accessibility-checks/link-text-that-makes-sense-alone | 6 | in use |
 | `structure-not-style` | The same document with default styles, no styles, and a stylesheet, switched with one control | html-structure, css-layout | 6 | in use |
 
 ## CSS
@@ -86,7 +86,7 @@ Each one takes its data from the fence body where that makes sense, so the same 
 | `event-loop` | The call stack, the timer and event queues, and the order in which plain code, `setTimeout`, a click, and a promise reaction run | async-and-the-event-loop, fetch-basics/synchronous-and-asynchronous | 6 | in use |
 | `promise-states` | A promise moving from pending to fulfilled or rejected, with `then`, `catch`, and `finally` attached and fired | async-and-the-event-loop, fetch-basics/promises-then-async-and-await | 6 | in use |
 | `async-await-unroll` | An `async` function and its `then` chain side by side, advanced one `await` at a time | async-and-the-event-loop, fetch-basics/promises-then-async-and-await | 6 | in use |
-| `fetch-timeline` | A request leaving, the wait, the response arriving, `json()` parsing it, and the four request states along the way | fetch-basics/fetch-and-json, four-request-states, fetching-and-request-states/one-status-value | 6 | in use |
+| `fetch-timeline` | A request leaving, the wait, the response arriving, `json()` parsing it, and the four request states along the way | fetch-basics/fetch-and-json, four-request-states, fetching-and-request-states/one-status-value, capstone-release-check/loading-empty-and-error-states, testing-react-components/a-user-event-test, a-failing-request-test | 6 | in use |
 | `stale-response` | Two requests racing, the first answered last, and the flag that ignores it | fetching-and-request-states/ignore-a-stale-response | 6 | in use |
 | `abort-controller` | A request in flight cancelled by its controller and the rejection that follows | fetching-and-request-states/abort-the-request | 6 | in use |
 | `module-graph` | Files that import each other drawn as a graph, with an export followed to every import | modules-and-imports, tooling-from-scratch | 6 | in use |
@@ -110,16 +110,16 @@ Each one takes its data from the fence body where that makes sense, so the same 
 | --- | --- | --- | --- | --- |
 | `render-cycle` | A state change, React calling the component function again, the diff, and the commit to the DOM | react-mental-model, state-usestate/what-the-setter-does, why-react-behaves-this-way | 6 | in use |
 | `jsx-to-calls` | JSX and the function calls it compiles to, switched with one control | jsx-rules/expressions-in-braces, tooling-from-scratch | 6 | in use |
-| `props-flow` | Data flowing down a three-level tree and an event flowing up, animated from the student's click | react-mental-model/data-down-events-up, events-and-lifting-state/data-down-actions-up | 6 | in use |
+| `props-flow` | Data flowing down a three-level tree and an event flowing up, animated from the student's click | react-mental-model/data-down-events-up, events-and-lifting-state/data-down-actions-up, explaining-your-own-code/where-state-lives | 6 | in use |
 | `lifting-state` | Two siblings that cannot share a value until the state moves to their parent | events-and-lifting-state/move-the-state-up | 6 | in use |
 | `state-snapshot` | Each render as a snapshot of state, and a `setTimeout` inside an old render reading the old value | state-usestate/what-the-setter-does, why-react-behaves-this-way | 6 | in use |
 | `setter-batching` | Three `setCount(count + 1)` calls in one handler adding one, and the updater form adding three | state-usestate/what-the-setter-does, why-react-behaves-this-way | 6 | in use |
 | `reconcile-keys` | A list rendered with index keys and with stable keys, reordered, with inputs keeping the wrong values in one case | lists-and-keys/stable-keys | 6 | in use |
 | `controlled-input` | The loop between an input's value and the state that owns it, with the keystroke that the state rejects | controlled-forms/a-controlled-input | 6 | in use |
-| `effect-timeline` | Render, commit, effect, cleanup, and re-run laid on a timeline as dependencies change | effects/the-effect-runs-after-the-render, the-dependency-array, cleanup-with-a-timer | 6 | in use |
+| `effect-timeline` | Render, commit, effect, cleanup, and re-run laid on a timeline as dependencies change | effects/the-effect-runs-after-the-render, the-dependency-array, cleanup-with-a-timer, explaining-your-own-code/what-an-effect-depends-on | 6 | in use |
 | `strict-mode-double` | A component rendered twice in development with the second render discarded | effects/strict-mode-and-computed-values | 6 | in use |
 | `ref-vs-state` | A ref changed without a render beside state changed with one | refs-and-browser-apis/a-ref-that-does-not-re-render | 6 | in use |
-| `router-match` | A URL matched against routes top to bottom, with the parameters pulled out of the winning one | routing/two-pages-with-routes-and-link, a-detail-page-with-useparams | 6 | in use |
+| `router-match` | A URL matched against routes top to bottom, with the parameters pulled out of the winning one | routing/two-pages-with-routes-and-link, a-detail-page-with-useparams, capstone-release-check/open-every-route-directly, explaining-your-own-code/which-route-renders-what | 6 | in use |
 | `url-as-state` | Search parameters and the UI that reads them, changed from either side | url-state/a-search-field-in-the-url | 6 | in use |
 | `custom-hook-extract` | Stateful code inside a component folded into a hook, with the same calls shown in both places | route-data-and-custom-hooks/custom-hooks-and-built-in-hooks | 6 | in use |
 | `error-boundary` | A component that throws, the boundary that catches it, and the fallback that renders | *resilience-in-production* | 9 | planned |
@@ -128,7 +128,7 @@ Each one takes its data from the fence body where that makes sense, so the same 
 
 | Id | Shows | Serves | Phase | Status |
 | --- | --- | --- | --- | --- |
-| `terminal` | A scripted command session the student advances one command at a time, with each command's output | tooling-from-scratch, vite-project-anatomy/create-the-project, git-basics/do-it-on-your-computer, git-collaboration/ship-it-together, deploy-with-github-pages/a-plain-page-from-a-branch, deploy-a-vite-project, update-and-roll-back, *testing-client-apps* | 6 | in use |
+| `terminal` | A scripted command session the student advances one command at a time, with each command's output | tooling-from-scratch, vite-project-anatomy/create-the-project, git-basics/do-it-on-your-computer, git-collaboration/ship-it-together, deploy-with-github-pages/a-plain-page-from-a-branch, deploy-a-vite-project, update-and-roll-back, *testing-client-apps*, capstone-release-check/build-and-preview, run-the-tests-and-record-the-check, testing-react-components/add-vitest-and-testing-library | 6 | in use |
 | `bare-import-fail` | A browser trying to load `import "react"` with nothing to resolve it, and the bundler that fills the gap | tooling-from-scratch, modules-and-imports | 6 | in use |
 | `dev-server-vs-build` | A request served by the dev server, transformed on demand, beside the same page served from `dist/` | tooling-from-scratch, vite-project-anatomy/build-for-production | 6 | in use |
 | `package-json-explorer` | A `package.json` with each field named when selected, and the script that `npm run dev` expands to | tooling-from-scratch | 6 | in use |

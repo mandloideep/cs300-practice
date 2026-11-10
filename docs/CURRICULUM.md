@@ -69,6 +69,7 @@ Every React topic exists and is retrofitted in Phase 6 with the explainers liste
 | routing | two-pages-with-routes-and-link, show-the-current-page-with-navlink, a-detail-page-with-useparams, a-catch-all-route, navigate-after-a-submit | `router-match` | 6 |
 | route-data-and-custom-hooks | load-the-list-page-with-usefetch, a-detail-page-keyed-on-useparams, a-missing-product-and-a-failed-request, a-uselocalstorage-hook, custom-hooks-and-built-in-hooks | `custom-hook-extract` | 6 |
 | url-state | a-search-field-in-the-url, a-category-filter-that-survives-back, copy-a-shareable-link, walk-the-app-from-the-address-bar | `url-as-state` | 6 |
+| explaining-your-own-code | where-state-lives, what-an-effect-depends-on, which-route-renders-what, which-tests-a-change-affects | `props-flow`, `effect-timeline`, `router-match` | Weeks 14-15 |
 | why-react-behaves-this-way | callbacks-and-onclick, closures-and-stale-state, map-and-keys, the-event-loop-and-batching, modules-and-components, identity-and-replacing-state | `callback`, `closure`, `state-snapshot`, `setter-batching`, `reconcile-keys`, `event-loop`, `module-graph`, `mutation-vs-copy` | 6 |
 
 ## Part 4: tooling and libraries
@@ -92,6 +93,9 @@ The Tailwind steps run inside this site through the vendored Tailwind browser bu
 
 | Topic | Steps | Explainers | Phase |
 | --- | --- | --- | --- |
+| testing-react-components | add-vitest-and-testing-library, a-render-test, a-user-event-test, a-failing-request-test, which-tests-a-change-affects | `terminal`, `fetch-timeline` | Weeks 14-15 |
+| capstone-release-check | build-and-preview, open-every-route-directly, loading-empty-and-error-states, run-the-tests-and-record-the-check | `terminal`, `project-tree`, `router-match`, `fetch-timeline` | Weeks 14-15 |
+| accessibility-checks | name-every-control, move-focus-to-the-heading, fix-a-skipped-heading-level, link-text-that-makes-sense-alone, walk-it-by-keyboard-and-run-a-checker | `label-for`, `landmarks-map`, `alt-text` | Weeks 14-15 |
 | *testing-client-apps* | why-tests, a-unit-test-with-vitest, a-component-test, an-end-to-end-test-with-playwright, what-to-test-and-what-not-to, tests-in-ci | `test-runner`, `test-pyramid`, `terminal` | 9 |
 | *building-for-production* | vite-build-and-dist, hashed-files-and-caching, code-splitting-and-lazy-routes, environment-variables, source-maps, measure-with-lighthouse | `dev-server-vs-build`, `bundle-map`, `env-at-build`, `loading-waterfall`, `static-deploy` | 9 |
 | *deploying-and-ci* | static-hosting, preview-deploys, the-site-s-own-workflow | `ci-pipeline`, `static-deploy` | 9 |
@@ -99,6 +103,8 @@ The Tailwind steps run inside this site through the vendored Tailwind browser bu
 | *security-for-client-apps* | nothing-secret-in-the-client, xss-and-why-react-escapes, dangerouslysetinnerhtml, cors-and-https, dependency-audits, the-supply-chain | `secrets-in-the-client`, `xss-escape`, `cors-check`, `env-at-build` | 9 |
 | *how-teams-ship* | repositories-branches-and-pull-requests, code-review, issues-and-planning, semantic-versioning-and-changelogs, releases-and-rollbacks, documentation | `semver`, `ci-pipeline`, `feature-flag` | 9 |
 
+The three production topics that exist were written for the Fall 2026 Week 14 and Week 15 units, ahead of Phase 9, because the Capstone needs them that term.
+`testing-react-components` covers the component test of *testing-client-apps*, `capstone-release-check` covers the preview and state checks of *building-for-production* and *resilience-in-production*, and `accessibility-checks` covers *resilience-in-production*'s accessibility-as-a-check; the planned topics keep the rest.
 The production topics are read steps with explainers, local steps that download a project with its tests and workflow, and a few edit steps where this site can show the idea, such as an error boundary or escaped markup.
 They use this repository as the worked example: its `check.yml` and `deploy.yml`, its Playwright suite, and its GitHub Pages deployment are the artifacts the steps read.
 
@@ -110,14 +116,14 @@ They use this repository as the worked example: its `check.yml` and `deploy.yml`
 
 ## Counts
 
-| Part | Topics that exist | Topics to write | Phase 6 | Phase 7 | Phase 8 | Phase 9 | Later |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| The language | 8 | 2 | 8 | 0 | 0 | 0 | 2 |
-| The browser | 5 | 3 | 5 | 0 | 1 | 0 | 2 |
-| React | 16 | 0 | 16 | 0 | 0 | 0 | 0 |
-| Tooling and libraries | 4 | 4 | 1 | 3 | 3 | 0 | 1 |
-| Production | 0 | 6 | 0 | 0 | 0 | 6 | 0 |
-| The site itself | 1 | 0 | 1 | 0 | 0 | 0 | 0 |
+| Part | Topics that exist | Topics to write | Phase 6 | Phase 7 | Weeks 14-15 | Phase 8 | Phase 9 | Later |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| The language | 8 | 2 | 8 | 0 | 0 | 0 | 0 | 2 |
+| The browser | 5 | 3 | 5 | 0 | 0 | 1 | 0 | 2 |
+| React | 17 | 0 | 16 | 0 | 1 | 0 | 0 | 0 |
+| Tooling and libraries | 4 | 4 | 1 | 3 | 0 | 3 | 0 | 1 |
+| Production | 3 | 6 | 0 | 0 | 3 | 0 | 6 | 0 |
+| The site itself | 1 | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
 
-Phase 6 wrote ten topics and retrofitted twenty-one, Phase 7 writes three and retouches the onboarding topic, Phase 8 writes four, Phase 9 writes six, and five wait for a later phase.
+Phase 6 wrote ten topics and retrofitted twenty-one, Phase 7 writes three and retouches the onboarding topic, the Fall 2026 Week 14 and Week 15 units add four, Phase 8 writes four, Phase 9 writes six, and five wait for a later phase.
 A topic that is added later goes into this file first, with its steps, its explainers, and its phase, so the file stays the complete map.
