@@ -77,7 +77,7 @@ test("lists a product with no price without breaking", async () => {
 
 The first test is the walk's finding, a typed `/products/3`, and the second is the boundary file's, a record with no price.
 Run `npm test`: five pass.
-[Testing React components](#/topic/testing-react-components) builds tests like these one at a time.
+The Week 15 topic Testing React components builds tests like these one at a time.
 
 ## Watch one fail
 
@@ -96,8 +96,8 @@ Make the change and run `npm test`.
  ❯ src/App.test.jsx (5 tests | 1 failed) 1093ms
    ✓ lists every product in the data file 55ms
    ✓ opens a product page from a typed address 7ms
-   ✓ says so when the catalog is empty 4ms
    × lists a product with no price without breaking 1005ms
+   ✓ says so when the catalog is empty 4ms
    ✓ offers Retry when the data cannot be loaded, and Retry recovers 22ms
 
  FAIL  src/App.test.jsx > lists a product with no price without breaking
@@ -138,7 +138,7 @@ This topic walked six of them on a small app:
 | 10. At least five automated tests | `npm ci` and `npm test`, five passing |
 
 Run the same walk on your Capstone with its own routes and data files, first on the preview and then on the deployed address in a private window, and record each case as you go.
-The other four, the primary flow, the form, the keyboard, and three widths, are yours to add; [Accessibility checks](#/topic/accessibility-checks) covers the keyboard.
+The other four, the primary flow, the form, the keyboard, and three widths, are yours to add; the Week 15 topic Accessibility checks covers the keyboard.
 
 ### Why a test for a bug you already fixed
 

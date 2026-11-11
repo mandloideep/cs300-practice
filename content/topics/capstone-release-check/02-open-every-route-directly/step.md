@@ -140,7 +140,7 @@ GitHub Pages answers it with `404.html`, which this project's workflow makes as 
 After you deploy, repeat this walk on the live address in a private window.
 
 **If it breaks:** If every typed address shows Page not found, `basename` is missing from `BrowserRouter` in `src/main.jsx`.
-If `/products/3` shows **Loading product 3...** forever, the console names the error; a `SyntaxError` about `<` means the data address is wrong and the server answered with `index.html`.
+If `/products/3` shows **Could not load product 3.** with an error about an unexpected token `<`, the data address is wrong and the server answered with `index.html` instead of JSON.
 If the page still says no product has the id 3 after the fix, the preview is serving the old build; run `npm run build` and restart the preview.
 
 **Check:** Every address in the table shows what the table says from a new tab and after a refresh, Back and Forward restore the search and the product, and `RELEASE-CHECK.md` has a row for each, with the `/products/3` finding and its fix.

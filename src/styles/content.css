@@ -128,8 +128,8 @@
 /* In a phone-width column a table scrolls sideways, so a name in code keeps its letters together
    and widens its column instead of breaking at any letter. */
 @media (max-width: 600px) {
-  .step-content td > code,
-  .step-content th > code {
+  .step-content td code,
+  .step-content th code {
     overflow-wrap: break-word;
   }
 }

@@ -22,7 +22,7 @@ Open `/products/3`: `Loading product 3...` shows the same way.
 ## Error and recovery, with no network
 
 Tick **Disable cache** in the Network tab, so that the browser cannot answer from its own copy, and set the throttling menu to **Offline**.
-Press **Home** and then **Products** in the shop's navigation, which asks for the data again without reloading the page: it says `Could not load products. Failed to fetch.` with a **Retry** button.
+Press **Home** and then **Products** in the shop's navigation, which asks for the data again without reloading the page: it says `Could not load products. Failed to fetch` with a **Retry** button.
 Set it back to **No throttling** and press **Retry**: the list loads without a reload of the page.
 That is the recovery the Capstone asks for: the visitor gets out of the failure without starting over.
 
@@ -76,7 +76,7 @@ Do the same in `src/ProductPage.jsx`: the same import under the `api.js` import,
 <p className="product-price">{formatPrice(product.price)}</p>
 ```
 
-The page now lists **Sample Fragrance** with **Price not listed**, and `/products/9` opens it.
+Run `npm run build` and restart the preview: the page now lists **Sample Fragrance** with **Price not listed**, and `/products/9` opens it.
 Set `DATA_FILE` back to `"products.json"`, rebuild, and confirm the eight products are back; a boundary file left in place is a bug you would deploy.
 Write a row in `RELEASE-CHECK.md` for each state you made appear, with the finding and its fix for `incomplete.json`.
 

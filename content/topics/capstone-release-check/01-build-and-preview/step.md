@@ -124,13 +124,13 @@ A bug that lives in that difference shows only in the build, which is why the Ca
 
 `vite.config.js` sets `base: "/shop-release/"`, so every asset path in `dist/index.html` starts with `/shop-release/`, and `import.meta.env.BASE_URL` is `/shop-release/` in the code.
 `src/main.jsx` passes it to `BrowserRouter` as `basename`, so the router reads `/shop-release/products/3` as the route `/products/3`, and `src/api.js` puts it in front of `data/products.json`.
-The Capstone's deployment section asks for the same three things with your repository's name; [The address and the base](#/topic/deploy-with-github-pages/3) explains why.
+The Capstone's deployment section asks for the same three things with your repository's name, and its starter is set up the same way.
 
 ### What preview does that Pages does not
 
 The preview server answers an address with no file behind it, such as `/shop-release/products/3`, with `index.html`, so React starts and the router shows the page.
 GitHub Pages answers the same address with `404.html`, which is why the workflow copies `index.html` to that name.
-A route that refreshes well in the preview therefore also needs that copy, or `HashRouter`, once it is deployed.
+A route that refreshes well in the preview therefore also needs that copy once it is deployed.
 
 **If it breaks:** `Missing script: "preview"` means the terminal is not in the project folder.
 `Port 4173 is in use` means an earlier preview is still running in another terminal; stop it with **Ctrl+C**, or open the address the new one printed.

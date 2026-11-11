@@ -118,7 +118,7 @@ A user sets **Servings** to 4 on Tomato soup, then presses **Next recipe**. What
 ```
 
 Both addresses match the same route, so React renders the same component at the same place in the tree and keeps its state; only `id` changed.
-That is a fair defense question, and "I did not know" is a worse answer than "React keeps it, and here is how I would reset it": `<RecipePage key={id} ... />` makes each recipe a new component, or the servings could move into the address.
+That is a fair defense question, and "I did not know" is a worse answer than "React keeps it, and here is how I would reset it": a small route component that reads `id` with `useParams` and renders `<RecipePage key={id} ... />` makes each recipe a new component, or the servings could move into the address.
 
 ## A state map
 
